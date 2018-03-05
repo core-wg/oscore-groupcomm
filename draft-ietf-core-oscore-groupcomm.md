@@ -262,7 +262,8 @@ After compression (85 bytes):
 ~~~~~~~~~~~
 Flag byte: 0b00111001 = 0x39
 
-Option Value: 39 05 03 44 61 6c COUNTERSIGN 25 (7 bytes + size of COUNTERSIGN)
+Option Value: 39 05 03 44 61 6c COUNTERSIGN 25 (7 bytes + size of
+ COUNTERSIGN)
 
 Payload: ae a0 15 56 67 92 4d ff 8a 24 e4 cb 35 b9 (14 bytes)
 ~~~~~~~~~~~
