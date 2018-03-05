@@ -2,7 +2,7 @@
 
 This is the working area for the IETF [CORE Working Group](https://datatracker.ietf.org/wg/core/documents/) Internet-Draft, " Secure group communication for CoAP".
 
-* [Editor's Copy](https://core-wg.github.io/oscore-groupcomm/#go.draft-ietf-core-oscore-groupcomm.html)
+* [Editor's Copy](https://core-wg.github.io/oscore-groupcomm/#go.draft-ietf-core-oscore-groupcomm.html) [![Build Status](https://travis-ci.org/core-wg/oscore-groupcomm.svg?branch=master)](https://travis-ci.org/core-wg/oscore-groupcomm)
 * [Working Group Draft](https://tools.ietf.org/html/draft-ietf-core-oscore-groupcomm)
 * [Compare Editor's Copy to Working Group Draft](https://core-wg.github.io/oscore-groupcomm/#go.draft-ietf-core-oscore-groupcomm.diff)
 
