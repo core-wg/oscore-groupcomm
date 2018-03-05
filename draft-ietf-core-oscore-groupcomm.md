@@ -1,6 +1,6 @@
 ---
 title: Secure group communication for CoAP
-# abbrev: 
+# abbrev:
 docname: draft-ietf-core-oscore-groupcomm-latest
 
 
@@ -47,7 +47,7 @@ author:
         code: SE-16440 Stockholm
         country: Sweden
         email: francesca.palombini@ericsson.com
-        
+
       -
         ins: J. Park
         name: Jiye Park
@@ -115,7 +115,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 Readers are expected to be familiar with the terms and concepts described in CoAP {{RFC7252}} including "endpoint", "sender" and "recipient"; group communication for CoAP {{RFC7390}}; COSE and counter signatures {{RFC8152}}.
 
-Readers are also expected to be familiar with the terms and concepts for protection and processing of CoAP messages through OSCORE, such as "Security Context", "Master Secret" and "Master Salt", defined in {{I-D.ietf-core-object-security}}. 
+Readers are also expected to be familiar with the terms and concepts for protection and processing of CoAP messages through OSCORE, such as "Security Context", "Master Secret" and "Master Salt", defined in {{I-D.ietf-core-object-security}}.
 
 Terminology for constrained environments, such as "constrained device", "constrained-node network", is defined in {{RFC7228}}.
 
@@ -203,7 +203,7 @@ When creating a protected CoAP message, an endpoint in the group computes the CO
 * The "unprotected" field of the "Headers" field SHALL additionally include the following parameter:
 
     - CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the endpoint by means of its own private key as described in Section 4.5 of {{RFC8152}}. The presence of this parameter is explicitly signaled, by using the reserved sixth least significant bit of the first byte of flag bits in the value of the Object-Security option (see Section 6.1 of {{I-D.ietf-core-object-security}}).
-  
+
 * The Additional Authenticated Data (AAD) considered to compute the COSE object is extended, by adding the countersignature algorithm used to protect group messages. In particular, the "external_aad" defined in Section 5.4 of {{I-D.ietf-core-object-security}} SHALL also include "alg_countersign", which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}).
 
 ~~~~~~~~~~~ CDDL
@@ -221,16 +221,16 @@ external_aad = [
    - The fourth least significant bit of the first byte of flag bits SHALL be set to 1, to indicate the presence of the "kid" parameter for both group requests and responses.
 
    - The fifth least significant bit of the first byte of flag bits MUST be set to 1 for group requests, to indicate the presence of the kid context in the OSCORE payload. The kid context flag MAY be set to 1 for responses.
-   
+
    - The sixth least significant bit of the first byte of flag bits is originally marked as reserved in {{I-D.ietf-core-object-security}} and its usage is defined in this specification. This bit is set to 1 if the "CounterSignature0" parameter is present, or to 0 otherwise. In order to ensure source authentication of group messages as described in this specification, this bit SHALL be set to 1.
 
    - The 'kid context' value encodes the Group Identifier value (Gid) of the group's Security Context.
-  
-   - The following q bytes (q given by the Counter Signature Algorithm specified in the Security Context) encode the value of the "CounterSignature0" parameter including the counter signature of the COSE object. 
-   
+
+   - The following q bytes (q given by the Counter Signature Algorithm specified in the Security Context) encode the value of the "CounterSignature0" parameter including the counter signature of the COSE object.
+
    - The remaining bytes in the Object-Security value encode the value of the "kid" parameter, which is always present both in group requests and in responses.
 
-~~~~~~~~~~~                
+~~~~~~~~~~~
  0 1 2 3 4 5 6 7 <----------- n bytes -----------> <-- 1 byte -->
 +-+-+-+-+-+-+-+-+---------------------------------+--------------+
 |0 0|1|h|1|  n  |       Partial IV (if any)       |  s (if any)  |
@@ -238,11 +238,11 @@ external_aad = [
 
 <------ s bytes ------> <--------- q bytes --------->
 -----------------------+-----------------------------+-----------+
-   kid context = Gid   |      CounterSignature0      |    kid    | 
+   kid context = Gid   |      CounterSignature0      |    kid    |
 -----------------------+-----------------------------+-----------+
 ~~~~~~~~~~~
 {: #fig-option-value title="Object-Security Value" artwork-align="center"}
-   
+
 ## Examples: Request
 
 Request with kid = 0x25, Partial IV = 5 and kid context = 0x44616c, assuming the label for the new kid context defined in {{I-D.ietf-core-object-security}} has value 10. COUNTERSIGN is the CounterSignature0 byte string as described in {{sec-cose-object}} and is 64 bytes long in this example. The ciphertext in this example is 14 bytes long.
@@ -267,7 +267,7 @@ Option Value: 39 05 03 44 61 6c COUNTERSIGN 25 (7 bytes + size of COUNTERSIGN)
 Payload: ae a0 15 56 67 92 4d ff 8a 24 e4 cb 35 b9 (14 bytes)
 ~~~~~~~~~~~
 
-## Example: Response 
+## Example: Response
 
 Response with kid = 0x52. COUNTERSIGN is the CounterSignature0 byte string as described in {{sec-cose-object}} and is 64 bytes long in this example. The ciphertext in this example is 14 bytes long.
 
@@ -371,7 +371,7 @@ The Group Manager may additionally be responsible for the following tasks:
 
 * Autonomously and locally enforcing access policies to authorize new endpoints to join its OSCORE groups.
 
-# Security Considerations  # {#sec-security-considerations} 
+# Security Considerations  # {#sec-security-considerations}
 
 The same security considerations from OSCORE (Section 11 of {{I-D.ietf-core-object-security}}) apply to this specification. Additional security aspects to be taken into account are discussed below.
 
@@ -439,7 +439,7 @@ Group Communication for CoAP {{RFC7390}} provides the necessary background for m
 * Integrated building control: enabling Building Automation and Control Systems (BACSs) to control multiple heating, ventilation and air-conditioning units to pre-defined presets. Controlled units can be organized into groups in order to reflect their physical position in the building, e.g. devices in the same room can be configured as members of a single group. As a practical guideline, events within intervals of seconds are typically acceptable. Controlled units are expected to possibly reply back to the BACS issuing control commands, in order to report about the execution of the requested operation (e.g. OK, failure, error) and their current operational status.
 
 * Software and firmware updates: software and firmware updates often comprise quite a large amount of data. This can overload a LLN that is otherwise typically used to deal with only small amounts of data, on an infrequent base. Rather than sending software and firmware updates as unicast messages to each individual device, multicasting such updated data to a larger group of devices at once displays a number of benefits. For instance, it can significantly reduce the network load and decrease the overall time latency for propagating this data to all devices. Even if the complete whole update process itself is secured, securing the individual messages is important, in case updates consist of relatively large amounts of data. In fact, checking individual received data piecemeal for tampering avoids that devices store large amounts of partially corrupted data and that they detect tampering hereof only after all data has been received. Devices receiving software and firmware updates are expected to possibly reply back, in order to provide a feedback about the execution of the update operation (e.g. OK, failure, error) and their current operational status.
-      
+
 * Parameter and configuration update: by means of multicast communication, it is possible to update the settings of a group of similar devices, both simultaneously and efficiently. Possible parameters are related, for instance, to network load management or network access controls. Devices receiving parameter and configuration updates are expected to possibly reply back, to provide a feedback about the execution of the update operation (e.g. OK, failure, error) and their current operational status.
 
 * Commissioning of LLNs systems: a commissioning device is responsible for querying all devices in the local network or a selected subset of them, in order to discover their presence, and be aware of their capabilities, default configuration, and operating conditions. Queried devices displaying similarities in their capabilities and features, or sharing a common physical location can be configured as members of a single group. Queried devices are expected to reply back to the commissioning device, in order to notify their presence, and provide the requested information and their current operational status.
