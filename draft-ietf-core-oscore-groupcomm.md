@@ -243,7 +243,7 @@ external_aad = [
 ~~~~~~~~~~~
 {: #fig-option-value title="Object-Security Value" artwork-align="center"}
 
-## Examples: Request
+## Example: Request
 
 Request with kid = 0x25, Partial IV = 5 and kid context = 0x44616c, assuming the label for the new kid context defined in {{I-D.ietf-core-object-security}} has value 10. COUNTERSIGN is the CounterSignature0 byte string as described in {{sec-cose-object}} and is 64 bytes long in this example. The ciphertext in this example is 14 bytes long.
 
