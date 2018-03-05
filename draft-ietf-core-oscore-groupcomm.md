@@ -14,9 +14,7 @@ cat: std
 
 coding: us-ascii
 pi:    # can use array (if all yes) or hash here
-#  - toc
-#  - sortrefs
-#  - symrefs
+
   toc: yes
   sortrefs:   # defaults to yes
   symrefs: yes
