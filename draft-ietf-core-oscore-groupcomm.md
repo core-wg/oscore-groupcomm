@@ -209,7 +209,13 @@ external_aad = [
 ]
 ~~~~~~~~~~~
 
-* The OSCORE compression defined in Section 6 of {{I-D.ietf-core-object-security}} is used, with the following additions for the encoding of the OSCORE Option.
+## OSCORE Header Compression {#compression}
+
+The OSCORE compression defined in Section 6 of {{I-D.ietf-core-object-security}} is used, with the following additions for the encoding of the OSCORE Option.
+
+### Encoding of the OSCORE Option Value {#obj-sec-value}
+
+* The first byte, containing the OSCORE flag bits, are extended with the following set of bits
 
    - The fourth least significant bit of the first byte of flag bits SHALL be set to 1, to indicate the presence of the 'kid' parameter for both group requests and responses.
 
@@ -217,24 +223,28 @@ external_aad = [
 
    - The sixth least significant bit of the first byte of flag bits is originally marked as reserved in {{I-D.ietf-core-object-security}} and its usage is defined in this specification. This bit is set to 1 if the 'CounterSignature0' parameter is present, or to 0 otherwise. In order to ensure source authentication of group messages as described in this specification, this bit SHALL be set to 1.
 
-   - The 'kid context' value encodes the Group Identifier value (Gid) of the group's Security Context.
+The flag bits are registered in the OSCORE Flag Bits registry specified in {{oscore-flag-bits}}.
 
-   - The following q bytes (q given by the Counter Signature Algorithm specified in the Security Context) encode the value of the 'CounterSignature0' parameter including the counter signature of the COSE object.
+* The 'kid context' value encodes the Group Identifier value (Gid) of the group's Security Context.
 
-   - The remaining bytes in the OSCORE Option value encode the value of the 'kid' parameter, which is always present both in group requests and in responses.
+* The remaining bytes in the OSCORE Option value encode the value of the 'kid' parameter, which is always present both in group requests and in responses.
 
-~~~~~~~~~~~
- 0 1 2 3 4 5 6 7 <----------- n bytes -----------> <-- 1 byte -->
-+-+-+-+-+-+-+-+-+---------------------------------+--------------+
-|0 0|1|h|1|  n  |       Partial IV (if any)       |  s (if any)  |
-+-+-+-+-+-+-+-+-+---------------------------------+--------------+
+~~~~~~~~~~~                
+ 0 1 2 3 4 5 6 7 <------------- n bytes -------------->
++-+-+-+-+-+-+-+-+--------------------------------------
+|0 0|1|h|1|  n  |       Partial IV (if any) ...    
++-+-+-+-+-+-+-+-+--------------------------------------
 
-<------ s bytes ------> <--------- q bytes --------->
------------------------+-----------------------------+-----------+
-   kid context = Gid   |      CounterSignature0      |    kid    |
------------------------+-----------------------------+-----------+
+ <- 1 byte -> <----- s bytes ------>                    
++------------+----------------------+------------------+
+| s (if any) | kid context (if any) | kid (if any) ... |
++------------+----------------------+------------------+
 ~~~~~~~~~~~
 {: #fig-option-value title="OSCORE Option Value" artwork-align="center"}
+
+### Encoding of the OSCORE Payload {#oscore-payl}
+
+The payload of the OSCORE message SHALL encode the ciphertext concatenated with the value of the CounterSignature0 (if present) of the COSE object.
 
 ## Example: Request
 
