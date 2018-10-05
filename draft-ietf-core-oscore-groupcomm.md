@@ -264,10 +264,10 @@ After compression (85 bytes):
 ~~~~~~~~~~~
 Flag byte: 0b00111001 = 0x39
 
-Option Value: 39 05 03 44 61 6c COUNTERSIGN 25 (7 bytes + size of
- COUNTERSIGN)
+Option Value: 39 05 03 44 61 6c 25 (7 bytes)
 
-Payload: ae a0 15 56 67 92 4d ff 8a 24 e4 cb 35 b9 (14 bytes)
+Payload: ae a0 15 56 67 92 4d ff 8a 24 e4 cb 35 b9 COUNTERSIGN
+(14 bytes + size of COUNTERSIGN)
 ~~~~~~~~~~~
 
 ## Example: Response
@@ -289,9 +289,10 @@ After compression (80 bytes):
 ~~~~~~~~~~~
 Flag byte: 0b00101000 = 0x28
 
-Option Value: 28 COUNTERSIGN 52 (2 bytes + size of COUNTERSIGN)
+Option Value: 28 52 (2 bytes)
 
-Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b (14 bytes)
+Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b COUNTERSIGN
+(14 bytes + size of COUNTERSIGN)
 ~~~~~~~~~~~
 
 # Message Processing # {#mess-processing}
