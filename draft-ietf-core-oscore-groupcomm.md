@@ -1,5 +1,5 @@
 ---
-title: Secure group communication for CoAP
+title: Secure Group Communication for CoAP
 # abbrev:
 docname: draft-ietf-core-oscore-groupcomm-latest
 
@@ -102,11 +102,11 @@ This document describes a mode for protecting group communication over the Const
 
 The Constrained Application Protocol (CoAP) {{RFC7252}} is a web transfer protocol specifically designed for constrained devices and networks {{RFC7228}}.
 
-Group communication for CoAP {{RFC7390}} addresses use cases where deployed devices benefit from a group communication model, for example to reduce latencies and improve performance. Use cases include lighting control, integrated building control, software and firmware updates, parameter and configuration updates, commissioning of constrained networks, and emergency multicast (see {{sec-use-cases}}). Furthermore, {{RFC7390}} recognizes the importance to introduce a secure mode for CoAP group communication. This specification defines such a mode.
+Group communication for CoAP {{RFC7390}} addresses use cases where deployed devices benefit from a group communication model, for example to reduce latencies, improve performance and reduce bandwidth utilisation. Use cases include lighting control, integrated building control, software and firmware updates, parameter and configuration updates, commissioning of constrained networks, and emergency multicast (see {{sec-use-cases}}). Furthermore, {{RFC7390}} recognizes the importance to introduce a secure mode for CoAP group communication. This specification defines such a mode.
 
-Object Security for Constrained RESTful Environments (OSCORE){{I-D.ietf-core-object-security}} describes a security protocol based on the exchange of protected CoAP messages. OSCORE builds on CBOR Object Signing and Encryption (COSE) {{RFC8152}} and provides end-to-end encryption, integrity, and replay protection between a sending endpoint and a receiving endpoint possibly involving intermediary endpoints. To this end, a CoAP message is protected by including its payload (if any), certain options, and header fields in a COSE object, which finally replaces the authenticated and encrypted fields in the protected message.
+Object Security for Constrained RESTful Environments (OSCORE){{I-D.ietf-core-object-security}} describes a security protocol based on the exchange of protected CoAP messages. OSCORE builds on CBOR Object Signing and Encryption (COSE) {{RFC8152}} and provides end-to-end encryption, integrity, replay protection and binding of response to request between a sending endpoint and a receiving endpoint, also in the presence of intermediary endpoints. To this end, a CoAP message is protected by including its payload (if any), certain options, and header fields in a COSE object, which finally replaces the authenticated and encrypted fields in the protected message.
 
-This document describes group OSCORE, providing end-to-end security of CoAP messages exchanged between members of a group. In particular, the described approach defines how OSCORE should be used in a group communication setting, so that end-to-end security is assured by using the same security method. That is, end-to-end security is assured for (multicast) CoAP requests sent by client endpoints to the group and for related CoAP responses sent as reply by multiple server endpoints. Group OSCORE provides source authentication of all CoAP messages exchanged within the group, by means of digital signatures produced through private keys of sender devices and embedded in the protected CoAP messages.
+This document defines group OSCORE, providing end-to-end security of CoAP messages exchanged between members of a group, while preserving total independence from the underlying layers. In particular, the described approach defines how OSCORE should be used in a group communication setting, so that end-to-end security is assured by using the same security method. That is, end-to-end security is assured for (multicast) CoAP requests sent by client endpoints to the group and for related CoAP responses sent as reply by multiple server endpoints. Group OSCORE provides source authentication of all CoAP messages exchanged within the group, by means of digital signatures produced through private keys of sender devices and embedded in the protected CoAP messages.
 
 As in OSCORE, it is still possible to simultaneously rely on DTLS to protect hop-by-hop communication between a sender endpoint and a proxy (and vice versa), and between a proxy and a recipient endpoint (and vice versa). Note that, in such a case, DTLS cannot be used to secure messages sent over multicast.
 
@@ -130,7 +130,7 @@ This document refers also to the following terminology.
 
 * Silent server: member of a group that never replies back after receiving request messages.
 
-* Group ID: group identifier assigned to the group. Group IDs are unique within the set of groups of a same Group Manager.
+* Group Identifier (Gid): identifier assigned to the group. Group Identifiers are unique within the set of groups of a same Group Manager.
 
 * Endpoint ID: Sender ID of the endpoint, as defined in {{I-D.ietf-core-object-security}}. An Endpoint ID is provided to an endpoint upon joining a group, is valid only within that group, and is unique within the same group. Endpoints which are configured only as silent servers do not have an Endpoint ID.
 
@@ -145,13 +145,11 @@ To support group communication secured with OSCORE, each endpoint registered as 
 
 1. one Common Context, shared by all the endpoints in the group. In particular:
 
-   * All the endpoints in the group agree on the same COSE AEAD algorithm.
-
-   * The ID Context parameter stores the Group ID of the group, which is used to retrieve the Security Context for processing messages intended to the group's endpoints (see {{mess-processing}}). The choice of the Group ID for a given group's Security Context is application specific. An example of specific formatting of the Group ID that would follow this specification is given in {{gid-ex}}. It is the role of the application to specify how to handle possible collisions.
+   * The ID Context parameter stores the Gid of the group, which is used to retrieve the Security Context for processing messages intended to the group's endpoints (see {{mess-processing}}). The choice of the Gid for a given group's Security Context is application specific. An example of specific formatting of the Gid that would follow this specification is given in {{gid-ex}}. It is the role of the application to specify how to handle possible collisions.
 
    * A new parameter Counter Signature Algorithm is included, and its value identifies the algorithm used for source authenticating messages sent within the group, by means of a counter signature (see Section 4.5 of {{RFC8152}}). Its value is immutable once the Common Context is established. The EdDSA signature algorithm ed25519 {{RFC8032}} is mandatory to implement.
 
-2. one Sender Context, unless the endpoint is configured exclusively as silent server. The Sender Context is used to secure outgoing group messages and is initialized according to Section 3 of {{I-D.ietf-core-object-security}}, once the endpoint has joined the group. In practice, the symmetric keying material in the Sender Context of the sender endpoint is shared with all the recipient endpoints that have received group messages from that same sender endpoint. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, the Sender Context stores also the endpoint's public-private key pair.
+2. one Sender Context, unless the endpoint is configured exclusively as silent server. The Sender Context is used to secure outgoing group messages and is initialized according to Section 3 of {{I-D.ietf-core-object-security}}, once the endpoint has joined the group. In practice, the symmetric keying material in the Sender Context of the sender endpoint is shared with all the recipient endpoints that have received group messages from that same sender endpoint. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, the Sender Context stores also the endpoint's private key.
 
 3. one Recipient Context for each distinct endpoint from which group messages are received, used to process such incoming messages. The recipient endpoint creates a new Recipient Context upon receiving an incoming message from another endpoint in the group for the first time (see {{ssec-verify-request}} and {{ssec-verify-response}}). In practice, the symmetric keying material in a given Recipient Context of the recipient endpoint is shared with the associated sender endpoint from which group messages are received. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, each Recipient Context stores also the public key of the associated other endpoint from which group messages are received.
 
@@ -165,8 +163,6 @@ The table in {{fig-additional-context-information}} overviews the new informatio
    |      Common Context       | Counter signature algorithm |
    |                           |                             |
    |      Sender Context       | Endpoint's own private key  |
-   |                           |                             |
-   |      Sender Context       | Endpoint's own public key   |
    |                           |                             |
    |  Each Recipient Context   | Public key of the           |
    |                           | associated other endpoint   |
@@ -195,13 +191,15 @@ Especially in dynamic, large-scale, groups where endpoints can join and leave at
 
 When creating a protected CoAP message, an endpoint in the group computes the COSE object using the untagged COSE_Encrypt0 structure {{RFC8152}} as defined in Section 5 of {{I-D.ietf-core-object-security}}, with the following modifications.
 
-* The Additional Authenticated Data (AAD) considered to compute the COSE object is extended with the counter signature algorithm used to protect group messages. In particular, with reference to Section 5.4 of {{I-D.ietf-core-object-security}}, the 'algorithms' array in the external_aad SHALL also include 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}). This AAD structure is used both for the encryption process producing the ciphertext and for the signing process producing the counter signature.
+* The Additional Authenticated Data (AAD) considered to compute the COSE object is extended with the counter signature algorithm used to protect group messages. In particular, with reference to Section 5.4 of {{I-D.ietf-core-object-security}}, the 'algorithms' array in the aad_array SHALL also include 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}). This AAD structure is used both for the encryption process producing the ciphertext and for the signing process producing the counter signature.
 
 ~~~~~~~~~~~ CDDL
-external_aad = [
-   ...
+aad_array = [
+   oscore_version : uint,
    algorithms : [alg_aead : int / tstr , alg_countersign : int / tstr],
-   ...
+   request_kid : bstr,
+   request_piv : bstr,
+   options : bstr
 ]
 ~~~~~~~~~~~
 
@@ -209,7 +207,7 @@ external_aad = [
 
 * The 'unprotected' field SHALL additionally include the following parameter:
 
-    - CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the endpoint by means of its own private key as described in Section 4.5 of {{RFC8152}}.
+    - CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the endpoint by means of its own private key as described in Section 4.5 of {{RFC8152}}. The presence of this parameter is explicitly signaled, by using one of the reserved significant bit of the first byte of flag bits in the value of the OSCORE Option (see Section 6.1 of {{I-D.ietf-core-object-security}}).
 
 ## OSCORE Header Compression {#compression}
 
@@ -316,7 +314,7 @@ A client transmits a secure group request as described in Section 8.1 of {{I-D.i
 
 Upon receiving a secure group request, a server proceeds as described in Section 8.2 of {{I-D.ietf-core-object-security}}, with the following modifications.
 
-* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}}. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Group ID ('kid context'), then the server creates a new Recipient Context, initializes it according to Section 3 of {{I-D.ietf-core-object-security}}, and includes the client's public key.
+* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}}. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the server creates a new Recipient Context, initializes it according to Section 3 of {{I-D.ietf-core-object-security}}, and includes the client's public key.
 
 * In step 4, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
@@ -335,7 +333,7 @@ A server that has received a secure group request may reply with a secure respon
 
 Upon receiving a secure response message, the client proceeds as described in Section 8.4 of {{I-D.ietf-core-object-security}}, with the following modifications.
 
-* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}}. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Group ID ('kid context'), then the client creates a new Recipient Context, initializes it according to Section 3 of {{I-D.ietf-core-object-security}}, and includes the server's public key.
+* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}}. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client creates a new Recipient Context, initializes it according to Section 3 of {{I-D.ietf-core-object-security}}, and includes the server's public key.
 
 * In step 3, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
@@ -344,7 +342,7 @@ Upon receiving a secure response message, the client proceeds as described in Se
 
 # Synchronization of Sender Sequence Numbers # {#sec-synch-seq-num}
 
-Upon joining the group, new servers are not aware of the sender sequence number values currently used by different clients to transmit group requests. This means that, when such servers receive a secure group request from a given client for the first time, they are not able to verify if that request is fresh and has not been replayed. The same holds when a server loses synchronization with sender sequence numbers of clients, for instance after a device reboot.
+Upon joining the group, new servers are not aware of the sender sequence number values currently used by different clients to transmit group requests. This means that, when such servers receive a secure group request from a given client for the first time, they are not able to verify if that request is fresh and has not been replayed or (purposely) delayed. The same holds when a server loses synchronization with sender sequence numbers of clients, for instance after a device reboot.
 
 The exact way to address this issue depends on the specific use case and its synchronization requirements. The list of methods to handle synchronization of sender sequence numbers is part of the group communication policy, and different servers can use different methods. {{synch-ex}} describes three possible approaches that can be considered.
 
@@ -352,7 +350,7 @@ The exact way to address this issue depends on the specific use case and its syn
 
 The Group Manager is responsible for performing the following tasks:
 
-* Creating and managing OSCORE groups. This includes the assignment of a Group ID to every newly created group, as well as ensuring uniqueness of Group IDs within the set of its OSCORE groups.
+* Creating and managing OSCORE groups. This includes the assignment of a Gid to every newly created group, as well as ensuring uniqueness of Gids within the set of its OSCORE groups.
 
 * Defining policies for authorizing the joining of its OSCORE groups. Such policies can be enforced by a third party, which is in a trust relation with the Group Manager and enforces join policies on behalf of the Group Manager.
 
@@ -370,7 +368,7 @@ The Group Manager is responsible for performing the following tasks:
 
 * Providing the management keying material that a new endpoint requires to participate in the rekeying process, consistent with the key management scheme used in the group joined by the new endpoint.
 
-* Updating the Group ID of its OSCORE groups, upon renewing the respective Security Context.
+* Updating the Gid of its OSCORE groups, upon renewing the respective Security Context.
 
 The Group Manager may additionally be responsible for the following tasks:
 
@@ -426,15 +424,7 @@ Therefore, when experiencing a wrap-around of its own sender sequence number, a 
 
 This document has no actions for IANA.
 
-# Acknowledgments # {#acknowldegment}
-
-The authors sincerely thank Stefan Beck, Rolf Blom, Carsten Bormann, Esko Dijk, Klaus Hartke, Rikard Hoeglund, Richard Kelsey, John Mattsson, Jim Schaad, Ludwig Seitz and Peter van der Stok for their feedback and comments.
-
-The work on this document has been partly supported by the EIT-Digital High Impact Initiative ACTIVE.
-
 --- back
-
-
 
 # Assumptions and Security Objectives # {#sec-requirements}
 
@@ -603,7 +593,7 @@ Upon receiving a group request from a client, a server does not take any action 
 
 Upon receiving a group request from a given client for the first time, a server initializes its last-seen sender sequence number in its Recipient Context associated to that client. However, the server drops the group request without delivering it to the application layer. This provides a reference point to identify if future group requests from the same client are fresher than the last one received.
 
-A replay time interval exists, between when a possibly replayed message is originally transmitted by a given client and the first authentic fresh message from that same client is received. This can be acceptable for use cases where servers admit such a trade-off between performance and assurance of message freshness.
+A replay time interval exists, between when a possibly replayed or delayed message is originally transmitted by a given client and the first authentic fresh message from that same client is received. This can be acceptable for use cases where servers admit such a trade-off between performance and assurance of message freshness.
 
 ## Challenge-Response Synchronization ## {#ssec-synch-challenge-response}
 
@@ -684,3 +674,10 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Added Appendix C, providing an example of Group Identifier format.
 
 * Appendix D has been updated to be aligned with draft-palombini-ace-key-groupcomm.
+
+# Acknowledgments # {#acknowldegment}
+{: numbered="no"}
+
+The authors sincerely thank Stefan Beck, Rolf Blom, Carsten Bormann, Esko Dijk, Klaus Hartke, Rikard Hoeglund, Richard Kelsey, John Mattsson, Jim Schaad, Ludwig Seitz and Peter van der Stok for their feedback and comments.
+
+The work on this document has been partly supported by the EIT-Digital High Impact Initiative ACTIVE.
