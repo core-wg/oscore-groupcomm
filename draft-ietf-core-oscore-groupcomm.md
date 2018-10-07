@@ -69,21 +69,13 @@ normative:
 informative:
 
   I-D.ietf-ace-oauth-authz:
-  I-D.ietf-ace-dtls-authorize:
   I-D.ietf-core-echo-request-tag:
-  I-D.palombini-ace-key-groupcomm:
-  I-D.ietf-ace-oscore-profile:
   I-D.somaraju-ace-multicast:
   I-D.tiloca-ace-oscoap-joining:
-  RFC2093:
-  RFC2094:
-  RFC2627:
-  RFC4301:
   RFC4944:
   RFC4949:
   RFC6282:
   RFC6347:
-  RFC6749:
   RFC7228:
   RFC7390:
 
@@ -103,7 +95,7 @@ Object Security for Constrained RESTful Environments (OSCORE){{I-D.ietf-core-obj
 
 This document defines group OSCORE, providing end-to-end security of CoAP messages exchanged between members of a group, and preserving total independence from the underlying layers. In particular, the described approach defines how OSCORE should be used in a group communication setting, so that end-to-end security is assured by using the same security method. That is, end-to-end security is assured for (multicast) CoAP requests sent by client endpoints to the group and for related CoAP responses sent as reply by multiple server endpoints. Group OSCORE provides source authentication of all CoAP messages exchanged within the group, by means of digital signatures produced through private keys of sender devices and embedded in the protected CoAP messages.
 
-As in OSCORE, it is still possible to simultaneously rely on DTLS to protect hop-by-hop communication between a sender endpoint and a proxy (and vice versa), and between a proxy and a recipient endpoint (and vice versa). Note that, in such a case, DTLS cannot be used to secure messages sent over multicast.
+As in OSCORE, it is still possible to simultaneously rely on DTLS {{RFC6347}} to protect hop-by-hop communication between a sender endpoint and a proxy (and vice versa), and between a proxy and a recipient endpoint (and vice versa). Note that, in such a case, DTLS cannot be used to secure messages sent over multicast.
 
 ## Terminology ## {#terminology}
 
@@ -166,7 +158,7 @@ The table in {{fig-additional-context-information}} overviews the new informatio
 
 Upon receiving a secure CoAP message, a recipient endpoint relies on the sender endpoint's public key, in order to verify the counter signature of the COSE Object.
 
-If not already stored in the Recipient Context associated to the sender endpoint, the recipient endpoint retrieves the public key from a key repository trusted to ensure the correct association between the public key and the identifier of the sender endpoint. The correct binding between the sender endpoint and the retrieved public key must be assured, for instance by means of public key certificates. Further discussion about how public keys can be handled and retrieved in the group is provided in {{ssec-provisioning-of-public-keys}}.
+If not already stored in the Recipient Context associated to the sender endpoint, the recipient endpoint retrieves the public key from the Group Manager, which collects endpoints' public keys upon their group joining, acts as trusted key repository and ensures the correct association between the public key and the identifier of the sender endpoint, for instance by means of public key certificates. Further details about how public keys can be handled and retrieved in the group is out of the scope of this document.
 
 An endpoint receives its own Sender ID from the Group Manager upon joining the group. That Sender ID is valid only within that group, and is unique within the same group. An endpoint uses its own Sender ID as 'Partial IV' to generate unique AEAD nonces, as in {{I-D.ietf-core-object-security}}. Endpoints which are configured only as silent servers do not have a Sender ID.
 
@@ -354,7 +346,7 @@ The Group Manager is responsible for performing the following tasks:
 
 1. Creating and managing OSCORE groups. This includes the assignment of a Gid to every newly created group, as well as ensuring uniqueness of Gids within the set of its OSCORE groups.
 
-2. Defining policies for authorizing the joining of its OSCORE groups. Such policies can be enforced by a third party, which is in a trust relation with the Group Manager and enforces join policies on behalf of the Group Manager.
+2. Defining policies for authorizing the joining of its OSCORE groups. Such policies can be enforced locally by the Group Manager, or by a third party in a trust relation with the Group Manager and entrusted to enforce join policies on behalf of the Group Manager.
 
 3. Driving the join process to add new endpoints as group members.
 
@@ -370,11 +362,7 @@ The Group Manager is responsible for performing the following tasks:
 
 9. Updating the Gid of its OSCORE groups, upon renewing the respective Security Context.
 
-The Group Manager may also be responsible for the following tasks:
-
-1. Acting as key repository, in order to handle the public keys of the members of its OSCORE groups, and provide such public keys to other members of the same group upon request. This specification recommends that the Group Manager is entrusted to perform this task. The actual storage of public keys may be entrusted to a separate secure storage device.
-
-2. Autonomously and locally enforcing access policies to authorize new endpoints to join its OSCORE groups.
+10. Acting as key repository, in order to handle the public keys of the members of its OSCORE groups, and provide such public keys to other members of the same group upon request. The actual storage of public keys may be entrusted to a separate secure storage device.
 
 # Security Considerations  # {#sec-security-considerations}
 
@@ -499,89 +487,16 @@ As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple gr
 
 # Set-up of New Endpoints # {#setup}
 
-An endpoint joins a group by explicitly interacting with the responsible Group Manager. Upon joining the group, endpoints are not required to know how many and what endpoints are in the same group.
+An endpoint joins a group by explicitly interacting with the responsible Group Manager. When becoming members of a group, endpoints are not required to know how many and what endpoints are in the same group.
 
 Communications between a joining endpoint and the Group Manager rely on the CoAP protocol and must be secured. Specific details on how to secure communications between joining endpoints and a Group Manager are out of the scope of this document.
 
-The Group Manager provides a joining endpoint with the keying material and parameters to initialize the OSCORE Security Context (see {{sec-context}}). The actual provisioning of keying material and parameters is out of the scope of this document.
+The Group Manager must verify that the joining endpoint is authorized to join the group. To this end, the Group Manager can directly authorize the joining endpoint, or expect it to provide authorization evidence previously obtained from a trusted entity. Further details about the authorization of joining endpoints are out of scope.
+
+In case of successful authorization check, the Group Manager generates a Sender ID assigned to the joining endpoint, before proceeding with the rest of the join process. That is, the Group Manager provides the joining endpoint with the keying material and parameters to initialize the OSCORE Security Context (see {{sec-context}}). The actual provisioning of keying material and parameters to the joining endpoint is out of the scope of this document.
 
 It is RECOMMENDED that the join process adopts the approach described in {{I-D.tiloca-ace-oscoap-joining}} and based on the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. 
 
-## Join Process (TO BE REMOVED) ## {#join-process}
-
-An endpoint requests to join a group by sending a confirmable CoAP POST request to the Group Manager responsible for that group. This join request can reflect the format of the Key Distribution Request message defined in Section 4.1 of {{I-D.palombini-ace-key-groupcomm}}. Besides, it can be addressed to a CoAP resource associated to that group and carries the following information.
-
-* Group identifier: the Group Identifier (Gid) of the group, as known to the joining endpoint at this point in time. This may not fully coincide with the Gid currently associated to the group, e.g. if it includes a dynamic component. This information can be mapped to the first element of the 'scope' parameter of the Key Distribution Request message defined in Section 4.1 of {{I-D.palombini-ace-key-groupcomm}}.
-
-* Role: the exact role of the joining endpoint in the group. Possible values are: "client", "server", "silent server", "client and server", or "client and silent server". This information can be mapped to the second element of the 'scope' parameter of the Key Distribution Request message defined in Section 4.1 of {{I-D.palombini-ace-key-groupcomm}}.
-
-* Retrieval flag: indication of interest to receive the public keys of the endpoints currently in the group, as included in the following join response. This flag must not be present if the Group Manager is not configured to store the public keys of group members, or if the joining endpoint is configured exclusively as silent server for the group to join. This information can be mapped to the 'get_pub_keys' parameter of the Key Distribution Request message defined in Section 4.1 of {{I-D.palombini-ace-key-groupcomm}}.
-
-* Identity credentials: information elements to enforce source authentication of messages from the joining endpoint, such as its public key. The exact content depends on whether the Group Manager is configured to store the public keys of group members. If this is the case, this information is omitted if it has been provided to the same Group Manager upon previously joining the same or a different group under its control. This information is also omitted if the joining endpoint is configured exclusively as silent server for the joined group. {{ssec-provisioning-of-public-keys}} discusses additional details on provisioning of public keys and other information to enforce source authentication of joining endpoints's messages. This information can be mapped to the 'client_cred' parameter of the Key Distribution Request message defined in Section 4.1 of {{I-D.palombini-ace-key-groupcomm}}.
-
-The Group Manager must be able to verify that the joining endpoint is authorized to become a member of the group. To this end, the Group Manager can directly authorize the joining endpoint, or expect it to provide authorization evidence previously obtained from a trusted entity. {{join-ACE-framework}} describes how this can be achieved by leveraging the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}.
-
-In case of successful authorization check, the Group Manager generates an Sender ID assigned to the joining endpoint, before proceeding with the rest of the join process. Instead, in case the authorization check fails, the Group Manager aborts the join process. Further details about the authorization of joining endpoint are out of scope.
-
-As discussed in {{sec-group-key-management}}, it is recommended that the Security Context is renewed before the joining endpoint receives the group keying material and becomes a new active member of the group. This is achieved by securely distributing a new Master Secret and a new Group Identifier to the endpoints currently present in the same group.
-
-Once renewed the Security Context in the group, the Group Manager replies to the joining endpoint with a CoAP response carrying the following information. This join response can reflect the format of the Key Distribution Response message defined in Section 4.2 of {{I-D.palombini-ace-key-groupcomm}}.
-
-* Security Common Context: the OSCORE Security Common Context associated to the joined group (see {{sec-context}}). This information can be mapped to the 'key' parameter of the Key Distribution Response message defined in Section 4.2 of {{I-D.palombini-ace-key-groupcomm}}.
-
-* Sender ID: the Sender ID associated to the joining endpoint. This information is not included in case 'Role' in the join request is equal to "silent server". This information can be mapped to the 'clientID' parameter within the 'key' parameter of the Key Distribution Response message defined in Section 4.2 of {{I-D.palombini-ace-key-groupcomm}}.
-
-* Member public keys: the public keys of the endpoints currently present in the group. This includes: the public keys of the non-silent servers currently in the group, if the joining endpoint is configured (also) as client; and the public keys of the clients currently in the group, if the joining endpoint is configured (also) as server or silent server. This information is omitted in case the Group Manager is not configured to store the public keys of group members or if the 'Retrieval flag' was not present in the join request. {{ssec-provisioning-of-public-keys}} discusses additional details on provisioning public keys upon joining the group and on retrieving public keys of group members. This information can be mapped to the 'pub_keys' parameter of the Key Distribution Response message defined in Section 4.2 of {{I-D.palombini-ace-key-groupcomm}}.
-
-* Group policies: a list of key words indicating the particular policies enforced in the group. This includes, for instance, the method to achieve synchronization of sender sequence numbers among group members (see {{synch-ex}}), as well as the rekeying protocol used to renew the keying material in the group (see {{sec-group-key-management}}). This information can be mapped to the 'group_policies' parameter of the Key Distribution Response message defined in Section 4.2 of {{I-D.palombini-ace-key-groupcomm}}.
-
-* Management keying material: the set of administrative keying material used to participate in the group rekeying process run by the Group Manager (see {{sec-group-key-management}}). The specific elements of this management keying material depend on the group rekeying protocol used in the group. For instance, this can simply consist in a group key encryption key and a pairwise symmetric key shared between the joining endpoint and the Group Manager, in case GKMP {{RFC2093}}{{RFC2094}} is used. Instead, if key-tree based rekeying protocols like LKH {{RFC2627}} are used, it can consist in the set of symmetric keys associated to the key-tree leaf representing the group member up to the key-tree root representing the group key encryption key. This information can be mapped to the 'mgt_key_material' parameter of the Key Distribution Response message defined in Section 4.2 of {{I-D.palombini-ace-key-groupcomm}}.
-
-## Provisioning and Retrieval of Public Keys (TO BE REMOVED) ## {#ssec-provisioning-of-public-keys}
-
-As mentioned in {{sec-group-manager}}, it is recommended that the Group Manager acts as trusted key repository, so storing public keys of group members and providing them to other members of the same group upon request. In such a case, a joining endpoint provides its own public key to the Group Manager, as 'Identity credentials' of the join request, when joining the group (see {{join-process}}).
-
-After that, the Group Manager should verify that the joining endpoint actually owns the associated private key, for instance by performing a proof-of-possession challenge-response, whose details are out of scope. In case of failure, the Group Manager performs up to a pre-defined maximum number of retries, after which it aborts the join process.
-
-In case of successful challenge-response, the Group Manager stores the received public key as associated to the joining endpoint and its Sender ID. From then on, that public key will be available for secure and trusted delivery to other endpoints in the group. A possible approach for a group member to retrieve the public key of other group members is described in Section 7 of {{I-D.palombini-ace-key-groupcomm}}.
-
-Finally, the Group Manager sends the join response to the joining endpoint, as described in {{join-process}}.
-
-The joining endpoint does not have to provide its own public key if that already occurred upon previously joining the same or a different group under the same Group Manager. However, separately for each group under its control, the Group Manager maintains an updated list of active Sender IDs associated to the respective endpoint's public key.
-
-Instead, in case the Group Manager does not act as trusted key repository, the following exchange with the Group Manager can occur during the join process.
-
-1. The joining endpoint signs its own certificate by using its own private key. The certificate includes also the identifier of the issuer Certification Authority (CA). There is no restriction on the Certificate Subject included in the joining endpoint's certificate.
-
-2. The joining endpoint specifies the signed certificate as 'Identity credentials' in the join request ({{join-process}}). The joining endpoint can optionally specify also a list of public key repositories storing its own certificate. In such a case, this information can be mapped to the 'pub_keys_repos' parameter of the Key Distribution Request message defined in Section 4.1 of {{I-D.palombini-ace-key-groupcomm}}.
-
-3. When processing the join request, the Group Manager first validates the certificate by verifying the signature of the issuer CA, and then verifies the signature of the joining endpoint.
-
-4. The Group Manager stores the association between the Certificate Subject of the joining endpoint's certificate and the pair {Group ID, Sender ID of the joining endpoint}. If received from the joining endpoint, the Group Manager also stores the list of public key repositories storing the certificate of the joining endpoint.
-
-When a group member X wants to retrieve the public key of another group member Y in the same group, the endpoint X proceeds as follows.
-
-1. The endpoint X contacts the Group Manager, specifying the pair {Group ID, Sender ID of the endpoint Y}.
-
-2. The Group Manager provides the endpoint X with the Certificate Subject CS from the certificate of endpoint Y. If available, the Group Manager provides the endpoint X also with the list of public key repositories storing the certificate of the endpoint Y.
-
-3. The endpoint X retrieves the certificate of the endpoint X from a key repository storing it, by using the Certificate Subject CS.
-
-## Group Joining Based on the ACE Framework (TO BE REMOVED) ## {#join-ACE-framework}
-
-The join process to register an endpoint as a new member of a group can be based on the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}, built on re-use of OAuth 2.0 {{RFC6749}}.
-
-In particular, the approach described in {{I-D.tiloca-ace-oscoap-joining}} uses the ACE framework to delegate the authentication and authorization of joining endpoints to an Authorization Server in a trust relation with the Group Manager. At the same time, it allows a joining endpoint to establish a secure channel with the Group Manager, by leveraging protocol-specific profiles of ACE, such as {{I-D.ietf-ace-oscore-profile}} and {{I-D.ietf-ace-dtls-authorize}}, to achieve communication security, proof-of-possession and server authentication.
-
-More specifically and with reference to the terminology defined in OAuth 2.0:
-
-* The joining endpoint acts as ACE Client;
-
-* The Group Manager acts as ACE Resource Server, with different CoAP resources for different groups it is responsible for;
-
-* An Authorization Server enables and enforces authorized access of the joining endpoint to the Group Manager and its CoAP resources paired with groups to join.
-
-Messages exchanged among the participants follow the formats defined in {{I-D.palombini-ace-key-groupcomm}}. Both the joining endpoint and the Group Manager have to adopt secure communication also for any message exchange with the Authorization Server. To this end, different alternatives are possible, such as OSCORE, DTLS {{RFC6347}} or IPsec {{RFC4301}}.
 
 # Examples of Synchronization Approaches {#synch-ex}
 
