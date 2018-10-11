@@ -121,7 +121,7 @@ This document refers also to the following terminology.
 
 * Group request: CoAP request message sent by a client endpoint in the group to all server endpoints in that group.
 
-* Source authentication: evidence that a received message in the group originated from a specifically identified group member. This also provides assurances that the message was not tampered with either by a different legitimate group member or by an endpoint which is not a group member.
+* Source authentication: evidence that a received message in the group originated from a specifically identified group member. This also provides assurances that the message was not tampered with by anyone, be it a different legitimate group member or an endpoint which is not a group member.
 
 
 # OSCORE Security Context # {#sec-context}
