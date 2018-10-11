@@ -232,9 +232,9 @@ The OSCORE compression defined in Section 6 of {{I-D.ietf-core-object-security}}
 
     - The fifth least significant bit of the first byte of flag bits MUST be set to 1 for group requests, to indicate the presence of the 'kid context' parameter in the compressed COSE object. The kid context flag MAY be set to 1 for responses.
 
-    - The sixth least significant bit of the first byte of flag bits is originally marked as reserved in {{I-D.ietf-core-object-security}} and its usage is defined in this specification. This bit is set to 1 if the 'CounterSignature0' parameter is present, or to 0 otherwise. In order to ensure source authentication of messages as described in this specification, this bit SHALL be set to 1.
+    - The sixth least significant bit of the first byte of flag bits is defined in this specification. This bit is set to 1 if the 'CounterSignature0' parameter is present, or to 0 otherwise. In order to ensure source authentication of messages as described in this specification, this bit SHALL be set to 1.
 
-The flag bits are registered in the OSCORE Flag Bits registry specified in Section 13.7 of {{I-D.ietf-core-object-security}}.
+The flag bits are registered in the OSCORE Flag Bits registry specified in Section 13.7 of {{I-D.ietf-core-object-security}} and in {{iana-cons}}.
 
 * The 'kid context' value encodes the Group Identifier value (Gid) of the group's Security Context.
 
@@ -422,7 +422,23 @@ In fact, as long as the Master Secret is different for different groups and this
 
 # IANA Considerations # {#iana}
 
-This document has no actions for IANA.
+Note to RFC Editor: Please replace all occurrences of “[[this document]]” with the RFC number of this specification.
+
+## OSCORE Flag Bits Registry {#iana-cons}
+
+The entry with Bit Position TBD is added to the "OSCORE Flag Bits"  registry.
+
+~~~~~~~~~~~
++--------------+-------------+---------------------+-------------------+
+| Bit Position |     Name    |     Description     |   Specification   |
++--------------+-------------+---------------------+-------------------+
+|     TBD      | Counter     | Set to 1 if counter | [[this document]] |
+|              | Signature   | signature present   |                   |
+|              |             | in the compressed   |                   |
+|              |             | COSE object         |                   |
++--------------+-------------+---------------------+-------------------+
+~~~~~~~~~~~
+
 
 --- back
 
