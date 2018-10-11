@@ -1,5 +1,5 @@
 ---
-title: Secure Group Communication for CoAP
+title: Group OSCORE - Secure Group Communication for CoAP
 # abbrev:
 docname: draft-ietf-core-oscore-groupcomm-latest
 
