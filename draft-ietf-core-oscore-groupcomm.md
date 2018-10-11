@@ -95,7 +95,7 @@ Object Security for Constrained RESTful Environments (OSCORE){{I-D.ietf-core-obj
 
 This document defines group OSCORE, providing end-to-end security of CoAP messages exchanged between members of a group, and preserving total independence from the underlying layers. In particular, the described approach defines how OSCORE should be used in a group communication setting, so that end-to-end security is assured by using the same security method. That is, end-to-end security is assured for (multicast) CoAP requests sent by client endpoints to the group and for related CoAP responses sent as reply by multiple server endpoints. Group OSCORE provides source authentication of all CoAP messages exchanged within the group, by means of digital signatures produced through private keys of sender devices and embedded in the protected CoAP messages.
 
-As in OSCORE, it is still possible to simultaneously rely on DTLS {{RFC6347}} to protect hop-by-hop communication between a sender endpoint and a proxy (and vice versa), and between a proxy and a recipient endpoint (and vice versa). Note that, in such a case, DTLS cannot be used to secure messages sent over multicast.
+As in OSCORE, it is still possible to simultaneously rely on DTLS {{RFC6347}} to protect hop-by-hop communication between a sender endpoint and a proxy (and vice versa), and between a proxy and a recipient endpoint (and vice versa). Note that DTLS cannot be used to secure messages sent over multicast.
 
 ## Terminology ## {#terminology}
 
@@ -194,9 +194,11 @@ Therefore, when experiencing a wrap-around of its own sender sequence number, a 
 
 When creating a protected CoAP message, an endpoint in the group computes the COSE object using the untagged COSE_Encrypt0 structure {{RFC8152}} as defined in Section 5 of {{I-D.ietf-core-object-security}}, with the following modifications.
 
-* The Additional Authenticated Data (AAD) considered to compute the COSE object is extended with the counter signature algorithm used to sign messages. In particular, with reference to Section 5.4 of {{I-D.ietf-core-object-security}}, the 'algorithms' array in the aad_array SHALL also include 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}). This AAD structure is used both for the encryption process producing the ciphertext and for the signing process producing the counter signature.
+* The external_aad in the Additional Authenticated Data (AAD) considered to compute the COSE object is extended with the counter signature algorithm used to sign messages. In particular, with reference to Section 5.4 of {{I-D.ietf-core-object-security}}, the 'algorithms' array in the aad_array SHALL also include 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}). This same external_aad structure is used both for the encryption process producing the ciphertext (see Section 5.3 of {{RFC815}}) and for the signing process producing the counter signature (see Section 4.4 of {{RFC815}}).
 
 ~~~~~~~~~~~ CDDL
+external_aad = bstr .cbor aad_array
+
 aad_array = [
    oscore_version : uint,
    algorithms : [alg_aead : int / tstr , alg_countersign : int / tstr],
@@ -210,7 +212,13 @@ aad_array = [
 
 * The 'unprotected' field SHALL additionally include the following parameter:
 
-    - CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the endpoint by means of its own private key as described in Section 4.5 of {{RFC8152}}. The presence of this parameter is explicitly signaled, by using one of the reserved significant bit of the first byte of flag bits in the value of the OSCORE Option (see Section 6.1 of {{I-D.ietf-core-object-security}}).
+    - CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the endpoint using its own private key as described in Appendix A.2 of {{RFC8152}}. In particular, the Sig_structure contains the external_aad as defined above and the ciphertext of the COSE_Encrypt0 object as payload. 
+
+
+<!--    The presence of the CounterSignature0 is explicitly signaled, by using one of the reserved significant bit of the first byte of flag bits in the value of the OSCORE Option (see Section 6.1 of {{I-D.ietf-core-object-security}}). 
+
+
+NOTE: the text above is only true for the compression. If uncompressed COSE object is used, no need to use flag bits-->
 
 ## OSCORE Header Compression {#compression}
 
