@@ -126,7 +126,7 @@ This document refers also to the following terminology.
 
 # OSCORE Security Context # {#sec-context}
 
-To support group communication secured with OSCORE, each endpoint registered as member of a group maintains a Security Context as defined in Section 3 of {{I-D.ietf-core-object-security}}. Each endpoint in a group makes us of:
+To support group communication secured with OSCORE, each endpoint registered as member of a group maintains a Security Context as defined in Section 3 of {{I-D.ietf-core-object-security}}. Each endpoint in a group makes use of:
 
 1. one Common Context, shared by all the endpoints in a given group. In particular:
 
