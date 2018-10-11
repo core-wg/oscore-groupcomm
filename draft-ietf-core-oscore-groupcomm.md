@@ -176,6 +176,20 @@ Consistently with the security assumptions in {{ssec-sec-assumptions}}, it is RE
 
 The specific approach used to distribute the new Gid and Master Secret parameter to the group is out of the scope of this document.
 
+## Update of Security Context and Key Rotation {#ssec-key-rotation}
+
+A group member can receive a message shortly after the group has been rekeyed and a new Security Context has been distributed by the Group Manager. In the following two cases, this may result in misaligned Security Contexts between the sender enpoint transmitting the message and the recipient endpoint receiving it.
+
+In the first case, the sender endpoint protects a message using the old Security Context, i.e. before having received and installed the new Security Context. However, the recipient endpoint receives the message after having installed the new Security Context, hence not being able to correctly process it. A possible way to ameliorate this issue is to preserve the old, immediately previous, Security Context for a maximum amount of time defined by the application. By doing so, the recipient endpoint can still try to process the received message using the old retained Security Context as second attempt. Note that a former (compromised) group member can take advantage of this by sending messages protected with the old retained Security Context. Therefore, a conservative application policy should not admit the storage of old Security Contexts.
+
+In the second case, the sender endpoint protects a message using the new Security Context, but the recipient endpoint receives that request before having received and installed the new Security Context. Therefore, the recipient endpoint would not be able to correctly process the request and hence discards it. If the recipient endpoint receives the new Security Context shortly after that and the sender enpoint uses CoAP retransmissions, the former will still be able to receive and correctly process the message. Otherwise, the recipient endpoint should actively ask the Group Manager for an updated Security Context according to an application-defined policy, for instance after a given number of unsuccessfully decrypted incoming messages.
+
+## Wrap-Around of Partial IVs {#ssec-wrap-around-partial-iv}
+
+A client can eventually experience a wrap-around of its own sender sequence number, which is used as Partial IV in its outgoing group requests and incremented after sending a new request. When this happens, it requires to renew the OSCORE Security Context in the group, in order to avoid reusing nonces together with the same OSCORE Master Secret.
+
+Therefore, when experiencing a wrap-around of its own sender sequence number, a group member MUST NOT transmit further group requests until a new OSCORE Security Context has been installed. In particular, the endpoint SHOULD inform the Group Manager of the occurred wrap-around, in order to trigger a prompt renewal of the OSCORE Security Context.
+
 # The COSE Object # {#sec-cose-object}
 
 When creating a protected CoAP message, an endpoint in the group computes the COSE object using the untagged COSE_Encrypt0 structure {{RFC8152}} as defined in Section 5 of {{I-D.ietf-core-object-security}}, with the following modifications.
@@ -390,25 +404,12 @@ The proof for uniqueness of (key, nonce) pairs in Appendix D.3 of {{I-D.ietf-cor
 
 It follows that each message encrypted/decrypted with the same Sender Key is processed by using a different (ID_PIV, PIV) pair. This means that nonces used by any fixed encrypting endpoint are unique. Thus, each message is processed with a different (key, nonce) pair.
 
-## Update of Security Context and Key Rotation {#ssec-key-rotation}
-
-A group member can receive a message shortly after the group has been rekeyed and a new Security Context has been distributed by the Group Manager. In the following two cases, this may result in misaligned Security Contexts between the sender enpoint transmitting the message and the recipient endpoint receiving it.
-
-In the first case, the sender endpoint protects a message using the old Security Context, i.e. before having received and installed the new Security Context. However, the recipient endpoint receives the message after having installed the new Security Context, hence not being able to correctly process it. A possible way to ameliorate this issue is to preserve the old, immediately previous, Security Context for a maximum amount of time defined by the application. By doing so, the recipient endpoint can still try to process the received message using the old retained Security Context as second attempt. Note that a former (compromised) group member can take advantage of this by sending messages protected with the old retained Security Context. Therefore, a conservative application policy should not admit the storage of old Security Contexts.
-
-In the second case, the sender endpoint protects a message using the new Security Context, but the recipient endpoint receives that request before having received and installed the new Security Context. Therefore, the recipient endpoint would not be able to correctly process the request and hence discards it. If the recipient endpoint receives the new Security Context shortly after that and the sender enpoint uses CoAP retransmissions, the former will still be able to receive and correctly process the message. Otherwise, the recipient endpoint should actively ask the Group Manager for an updated Security Context according to an application-defined policy, for instance after a given number of unsuccessfully decrypted incoming messages.
 
 ## Collision of Group Identifiers {#ssec-gid-collision}
 
 In case endpoints are deployed in multiple groups managed by different non-synchronized Group Managers, it is possible for Group Identifiers of different groups to coincide. However, this does not impair the security of the AEAD algorithm.
 
 In fact, as long as the Master Secret is different for different groups and this condition holds over time, and as long as the Sender IDs within a group are unique, it follows that AEAD keys and nonces are different among different groups.
-
-## Wrap-Around of Partial IVs {#ssec-wrap-around-partial-iv}
-
-A client can eventually experience a wrap-around of its own sender sequence number, which is used as Partial IV in its outgoing group requests and incremented after sending a new request. When this happens, it requires to renew the OSCORE Security Context in the group, in order to avoid reusing nonces together with the same OSCORE Master Secret.
-
-Therefore, when experiencing a wrap-around of its own sender sequence number, a group member MUST NOT transmit further group requests until a new OSCORE Security Context has been installed. In particular, the endpoint SHOULD inform the Group Manager of the occurred wrap-around, in order to trigger a prompt renewal of the OSCORE Security Context.
 
 # IANA Considerations # {#iana}
 
