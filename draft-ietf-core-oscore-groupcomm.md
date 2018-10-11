@@ -254,7 +254,8 @@ The flag bits are registered in the OSCORE Flag Bits registry specified in Secti
 {: #fig-option-value title="OSCORE Option Value" artwork-align="center"}
 
 ### Encoding of the OSCORE Payload {#oscore-payl}
-The payload of the OSCORE message SHALL encode the ciphertext concatenated with the value of the CounterSignature0 (if present) of the COSE object.
+
+The payload of the OSCORE message SHALL encode the ciphertext concatenated with the value of the CounterSignature0 (if present) of the COSE_Encrypt0 object.
 
 ## Example: Request
 
