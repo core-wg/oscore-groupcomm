@@ -194,7 +194,7 @@ Therefore, when experiencing a wrap-around of its own sender sequence number, a 
 
 When creating a protected CoAP message, an endpoint in the group computes the COSE object using the untagged COSE_Encrypt0 structure {{RFC8152}} as defined in Section 5 of {{I-D.ietf-core-object-security}}, with the following modifications.
 
-* The external_aad in the Additional Authenticated Data (AAD) considered to compute the COSE object is extended with the counter signature algorithm used to sign messages. In particular, with reference to Section 5.4 of {{I-D.ietf-core-object-security}}, the 'algorithms' array in the aad_array SHALL also include 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}). This same external_aad structure is used both for the encryption process producing the ciphertext (see Section 5.3 of {{RFC815}}) and for the signing process producing the counter signature (see Section 4.4 of {{RFC815}}).
+* The external_aad in the Additional Authenticated Data (AAD) considered to compute the COSE object is extended with the counter signature algorithm used to sign messages. In particular, with reference to Section 5.4 of {{I-D.ietf-core-object-security}}, the 'algorithms' array in the aad_array SHALL also include 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}). This same external_aad structure is used both for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) and for the signing process producing the counter signature (see Section 4.4 of {{RFC8152}}).
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
