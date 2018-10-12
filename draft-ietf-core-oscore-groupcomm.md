@@ -117,7 +117,7 @@ This document refers also to the following terminology.
 
 * Silent server: member of a group that never replies to requests. Note that a silent server can act as a client, the two roles are independent.
 
-* Group Identifier (Gid): identifier assigned to the group. Group Identifiers should be unique within the set of groups of a given Group Manager, in order to avoid collisions. In case they are, the considerations in {{ssec-gid-collision}} apply.
+* Group Identifier (Gid): identifier assigned to the group. Group Identifiers should be unique within the set of groups of a given Group Manager, in order to avoid collisions. In case they are not, the considerations in {{ssec-gid-collision}} apply.
 
 * Group request: CoAP request message sent by a client endpoint in the group to all server endpoints in that group.
 
