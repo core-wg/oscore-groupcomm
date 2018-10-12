@@ -220,11 +220,11 @@ aad_array = [
 
 NOTE: the text above is only true for the compression. If uncompressed COSE object is used, no need to use flag bits-->
 
-## OSCORE Header Compression {#compression}
+# OSCORE Header Compression {#compression}
 
 The OSCORE compression defined in Section 6 of {{I-D.ietf-core-object-security}} is used, with the following additions for the encoding of the OSCORE Option.
 
-### Encoding of the OSCORE Option Value {#obj-sec-value}
+## Encoding of the OSCORE Option Value {#obj-sec-value}
 
 Analogous to {{I-D.ietf-core-object-security}}, the value of the OSCORE option SHALL contain the OSCORE flag bits, the Partial IV parameter, the kid context parameter (length and value), and the kid parameter, with the following modifications:
 
@@ -255,7 +255,7 @@ The flag bits are registered in the OSCORE Flag Bits registry specified in Secti
 ~~~~~~~~~~~
 {: #fig-option-value title="OSCORE Option Value" artwork-align="center"}
 
-### Encoding of the OSCORE Payload {#oscore-payl}
+## Encoding of the OSCORE Payload {#oscore-payl}
 
 The payload of the OSCORE message SHALL encode the ciphertext of the COSE object concatenated with the value of the CounterSignature0 (if present) of the COSE object, computed as in Appendix A.2 of {{RFC8152}}.
 
