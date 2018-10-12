@@ -316,7 +316,7 @@ Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b COUNTERSIGN
 
 Each request message and response message is protected and processed as specified in {{I-D.ietf-core-object-security}}, with the modifications described in the following sections. The following security objectives are fulfilled, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication, message integrity, and message ordering.
 
-Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{I-D.ietf-core-object-security}}. However, a receiver endpoint MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}}, or which is not cryptographically validated in a successful way. Either case, the recipient MUST NOT send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the group.
+Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{I-D.ietf-core-object-security}}. However, a recipient MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}}, or which is not cryptographically validated in a successful way. Either case, the recipient MUST NOT send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the group.
 
 As per {{RFC7252}}{{RFC7390}}, group requests sent over multicast must be Non-confirmable. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments.
 
@@ -326,13 +326,13 @@ A client transmits a secure group request as described in Section 8.1 of {{I-D.i
 
 * In step 2, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
-* In step 4, the encoding of the compressed COSE object is modified as described in {{sec-cose-object}}.
+* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}}. The encoding of the compressed COSE object is modified as described in {{compression}}.
 
 ## Verifying the Request ## {#ssec-verify-request}
 
 Upon receiving a secure group request, a server proceeds as described in Section 8.2 of {{I-D.ietf-core-object-security}}, with the following modifications.
 
-* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}}. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the server creates a new Recipient Context, initializes it according to Section 3 of {{I-D.ietf-core-object-security}}, and includes the client's public key.
+* In step 2, the decoding of the compressed COSE object follows {{compression}}. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the server creates a new Recipient Context, initializes it according to Section 3 of {{I-D.ietf-core-object-security}}, also retrieving the client's public key.
 
 * In step 4, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
@@ -344,14 +344,14 @@ A server that has received a secure group request may reply with a secure respon
 
 * In step 2, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
-* In step 4, the encoding of the compressed COSE object is modified as described in {{sec-cose-object}}.
+* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}}. The encoding of the compressed COSE object is modified as described in {{compression}}.
 
 
 ## Verifying the Response ## {#ssec-verify-response}
 
 Upon receiving a secure response message, the client proceeds as described in Section 8.4 of {{I-D.ietf-core-object-security}}, with the following modifications.
 
-* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}}. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client creates a new Recipient Context, initializes it according to Section 3 of {{I-D.ietf-core-object-security}}, and includes the server's public key.
+* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}}. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client creates a new Recipient Context, initializes it according to Section 3 of {{I-D.ietf-core-object-security}}, also retrieving the server's public key.
 
 * In step 3, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
