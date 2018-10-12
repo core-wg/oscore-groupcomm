@@ -81,7 +81,7 @@ informative:
 
 --- abstract
 
-This document describes a mode for protecting group communication over the Constrained Application Protocol (CoAP). The proposed mode relies on Object Security for Constrained RESTful Environments (OSCORE) and the CBOR Object Signing and Encryption (COSE) format. In particular, it is defined how OSCORE should be used in a group communication setting, while fulfilling the same security requirements for request messages and related response messages. Source authentication of all messages exchanged within the group is ensured, by means of digital signatures produced through private keys of sender endpoints and embedded in the protected CoAP messages.
+This document describes a mode for protecting group communication over the Constrained Application Protocol (CoAP). The proposed mode relies on Object Security for Constrained RESTful Environments (OSCORE) and the CBOR Object Signing and Encryption (COSE) format. In particular, it is defined how OSCORE should be used in a group communication setting, while fulfilling the same security requirements for request messages and related response messages. Source authentication of all messages exchanged within the group is ensured using digital signatures produced with the senders private keys and embedded in the protected CoAP messages.
 
 --- middle
 
@@ -95,7 +95,7 @@ Object Security for Constrained RESTful Environments (OSCORE){{I-D.ietf-core-obj
 
 This document defines group OSCORE, providing end-to-end security of CoAP messages exchanged between members of a group, and preserving total independence from the underlying layers. In particular, the described approach defines how OSCORE should be used in a group communication setting, so that end-to-end security is assured by using the same security method. That is, end-to-end security is assured for (multicast) CoAP requests sent by client endpoints to the group and for related CoAP responses sent as reply by multiple server endpoints. Group OSCORE provides source authentication of all CoAP messages exchanged within the group, by means of digital signatures produced through private keys of sender devices and embedded in the protected CoAP messages.
 
-As in OSCORE, it is still possible to simultaneously rely on DTLS {{RFC6347}} to protect hop-by-hop communication between a sender endpoint and a proxy (and vice versa), and between a proxy and a recipient endpoint (and vice versa). Note that DTLS cannot be used to secure messages sent over multicast.
+As in OSCORE, it is still possible to simultaneously rely on DTLS {{RFC6347}} to protect hop-by-hop communication between a sender and a proxy (and vice versa), and between a proxy and a recipient (and vice versa). Note that DTLS cannot be used to secure messages sent over multicast.
 
 ## Terminology ## {#terminology}
 
@@ -156,7 +156,7 @@ The table in {{fig-additional-context-information}} overviews the new informatio
 ~~~~~~~~~~~
 {: #fig-additional-context-information title="Additions to the OSCORE Security Context" artwork-align="center"}
 
-Upon receiving a secure CoAP message, a recipient endpoint uses the sender's public key, in order to verify the counter signature of the COSE Object.
+Upon receiving a secure CoAP message, a recipient uses the sender's public key, in order to verify the counter signature of the COSE Object.
 
 If not already stored in the Recipient Context associated to the sender, the recipient retrieves the public key from the Group Manager, which collects public keys upon their group joining, acts as trusted key repository and ensures the correct association between the public key and the identifier of the sender, for instance by means of public key certificates. Further details about how public keys can be handled and retrieved in the group is out of the scope of this document.
 
@@ -178,17 +178,17 @@ The specific approach used to distribute the new Gid and Master Secret parameter
 
 ## Update of Security Context and Key Rotation {#ssec-key-rotation}
 
-A group member can receive a message shortly after the group has been rekeyed and a new Security Context has been distributed by the Group Manager. In the following two cases, this may result in misaligned Security Contexts between the sender enpoint transmitting the message and the recipient endpoint receiving it.
+A group member can receive a message shortly after the group has been rekeyed and a new Security Context has been distributed by the Group Manager. In the following two cases, this may result in misaligned Security Contexts between the sender and the recipient.
 
-In the first case, the sender endpoint protects a message using the old Security Context, i.e. before having received and installed the new Security Context. However, the recipient endpoint receives the message after having installed the new Security Context, hence not being able to correctly process it. A possible way to ameliorate this issue is to preserve the old, immediately previous, Security Context for a maximum amount of time defined by the application. By doing so, the recipient endpoint can still try to process the received message using the old retained Security Context as second attempt. Note that a former (compromised) group member can take advantage of this by sending messages protected with the old retained Security Context. Therefore, a conservative application policy should not admit the storage of old Security Contexts.
+In the first case, the sender protects a message using the old Security Context, i.e. before having received and installed the new Security Context. However, the recipient receives the message after having installed the new Security Context, hence not being able to correctly process it. A possible way to ameliorate this issue is to preserve the old, immediately previous, Security Context for a maximum amount of time defined by the application. By doing so, the recipient can still try to process the received message using the old retained Security Context as second attempt. Note that a former (compromised) group member can take advantage of this by sending messages protected with the old retained Security Context. Therefore, a conservative application policy should not admit the storage of old Security Contexts.
 
-In the second case, the sender endpoint protects a message using the new Security Context, but the recipient endpoint receives that request before having received and installed the new Security Context. Therefore, the recipient endpoint would not be able to correctly process the request and hence discards it. If the recipient endpoint receives the new Security Context shortly after that and the sender enpoint uses CoAP retransmissions, the former will still be able to receive and correctly process the message. Otherwise, the recipient endpoint should actively ask the Group Manager for an updated Security Context according to an application-defined policy, for instance after a given number of unsuccessfully decrypted incoming messages.
+In the second case, the sender protects a message using the new Security Context, but the recipient receives that request before having received and installed the new Security Context. Therefore, the recipient would not be able to correctly process the request and hence discards it. If the recipient receives the new Security Context shortly after that and the sender enpoint uses CoAP retransmissions, the former will still be able to receive and correctly process the message. Otherwise, the recipient should actively ask the Group Manager for an updated Security Context according to an application-defined policy, for instance after a given number of unsuccessfully decrypted incoming messages.
 
 ## Wrap-Around of Partial IVs {#ssec-wrap-around-partial-iv}
 
-A client can eventually experience a wrap-around of its own sender sequence number, which is used as Partial IV in its outgoing group requests and incremented after sending a new request. When this happens, it requires to renew the OSCORE Security Context in the group, in order to avoid reusing nonces together with the same OSCORE Master Secret.
+A client can eventually experience a wrap-around of its own Sender Sequence Number, which is used as Partial IV in outgoing requests and incremented after each request. When this happens, the OSCORE Security Context MUST be renewed in the group, in order to avoid reusing nonces with the same keys.
 
-Therefore, when experiencing a wrap-around of its own sender sequence number, a group member MUST NOT transmit further group requests until a new OSCORE Security Context has been installed. In particular, the endpoint SHOULD inform the Group Manager of the occurred wrap-around, in order to trigger a prompt renewal of the OSCORE Security Context.
+Therefore, when experiencing a wrap-around of its own Sender Sequence Number, a group member MUST NOT transmit further group requests until a new OSCORE Security Context has been derived. In particular, the endpoint SHOULD inform the Group Manager of the occurred wrap-around, in order to trigger a prompt renewal of the OSCORE Security Context.
 
 # The COSE Object # {#sec-cose-object}
 
@@ -311,7 +311,7 @@ Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b COUNTERSIGN
 
 Each request message and response message is protected and processed as specified in {{I-D.ietf-core-object-security}}, with the modifications described in the following sections. The following security objectives are fulfilled, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication, message integrity, and message ordering.
 
-Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{I-D.ietf-core-object-security}}. However, a receiver endpoint MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}}, or which is not cryptographically validated in a successful way. Either case, the recipient endpoint MUST NOT send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the group.
+Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{I-D.ietf-core-object-security}}. However, a receiver endpoint MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}}, or which is not cryptographically validated in a successful way. Either case, the recipient MUST NOT send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the group.
 
 As per {{RFC7252}}{{RFC7390}}, group requests sent over multicast must be Non-confirmable. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments.
 
@@ -359,7 +359,7 @@ Upon joining the group, new servers are not aware of the sender sequence number 
 
 The exact way to address this issue is application specific, and depends on the particular use case and its synchronization requirements. The list of methods to handle synchronization of sender sequence numbers is part of the group communication policy, and different servers can use different methods.
 
-Requests sent over Multicast must be Non-Confirmable (Section 8.1 of {{RFC7252}}), as overall most of the messages sent within a group. Thus, sender endpoints should store their outgoing messages for an amount of time defined by the application and sufficient to correctly handle possible retransmissions.
+Requests sent over Multicast must be Non-Confirmable (Section 8.1 of {{RFC7252}}), as overall most of the messages sent within a group. Thus, senders should store their outgoing messages for an amount of time defined by the application and sufficient to correctly handle possible retransmissions.
 
 {{synch-ex}} describes three possible approaches that can be considered for synchronization of sequence numbers.
 
@@ -397,7 +397,7 @@ The approach described in this document relies on commonly shared group keying m
 
 * Messages are encrypted at a group level (group-level data confidentiality), i.e. they can be decrypted by any member of the group, but not by an external adversary or other external entities.
 
-* The AEAD algorithm provides only group authentication, i.e. it ensures that a message sent to a group has been sent by a member of that group, but not by the alleged sender endpoint. This is why source authentication of messages sent to a group is ensured through a counter signature computed by the sender endpoint using its own private key and then appended to the message payload.
+* The AEAD algorithm provides only group authentication, i.e. it ensures that a message sent to a group has been sent by a member of that group, but not by the alleged sender. This is why source authentication of messages sent to a group is ensured through a counter signature computed by the sender using its own private key and then appended to the message payload.
 
 Note that, even if an endpoint is authorized to be a group member and to take part in group communication, there is a risk that it behaves inappropriately. For instance, it can forward the content of messages in the group to unauthorized entities. However, in many use cases, the devices in the group belong to a common authority and are configured by a commissioner (see {{sec-use-cases}}), which results in a practically limited risk and enables a prompt detection/reaction in case of misbehaving.
 
@@ -478,7 +478,7 @@ The approach described in this document aims at fulfilling the following securit
 
 * Message integrity: messages sent within the group shall be integrity protected. That is, it is essential to ensure that a message has not been tampered with by an external adversary or other external entities which are not group members.
 
-* Message ordering: it must be possible to determine the ordering of messages coming from a single sender endpoint. In accordance with OSCORE {{I-D.ietf-core-object-security}}, this results in providing relative freshness of group requests and absolute freshness of responses. It is not required to determine ordering of messages from different sender endpoints.
+* Message ordering: it must be possible to determine the ordering of messages coming from a single sender. In accordance with OSCORE {{I-D.ietf-core-object-security}}, this results in providing relative freshness of group requests and absolute freshness of responses. It is not required to determine ordering of messages from different senders.
 
 
 # List of Use Cases # {#sec-use-cases}
@@ -509,7 +509,7 @@ As an example, a 3-byte Group Identifier can be composed of: i) a 1-byte Group P
 
 Using an immutable Group Prefix for a group assumes that enough time elapses between two consecutive usages of the same Group Epoch value in that group. This ensures that the Gid value is temporally unique during the lifetime of a given message. Thus, the expected highest rate for addition/removal of group members and consequent group rekeying should be taken into account for a proper dimensioning of the Group Epoch size.
 
-As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple groups managed by different non-synchronized Group Managers, it is possible that Group Identifiers of different groups coincide at some point in time. In this case, a recipient endpoint has to handle coinciding Group Identifiers, and has to try using different OSCORE Security Contexts to process an incoming message, until the right one is found and the message is correctly verified. Therefore, it is favourable that Group Identifiers from different Group Managers have a size that result in a small probability of collision. How small this probability should be is up to system designers.
+As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple groups managed by different non-synchronized Group Managers, it is possible that Group Identifiers of different groups coincide at some point in time. In this case, a recipient has to handle coinciding Group Identifiers, and has to try using different OSCORE Security Contexts to process an incoming message, until the right one is found and the message is correctly verified. Therefore, it is favourable that Group Identifiers from different Group Managers have a size that result in a small probability of collision. How small this probability should be is up to system designers.
 
 # Set-up of New Endpoints # {#setup}
 
