@@ -192,9 +192,9 @@ Therefore, when experiencing a wrap-around of its own Sender Sequence Number, a 
 
 # The COSE Object # {#sec-cose-object}
 
-When creating a protected CoAP message, an endpoint in the group computes the COSE object using the untagged COSE_Encrypt0 structure {{RFC8152}} as defined in Section 5 of {{I-D.ietf-core-object-security}}, with the following modifications.
+Building on Section 5 of {{I-D.ietf-core-object-security}}, this section defines how to use COSE {{RFC8152}} to wrap and protect data in the original message. OSCORE uses the untagged COSE_Encrypt0 structure with an Authenticated Encryption with Additional Data (AEAD) algorithm. For Group OSCORE, the following modifications apply:
 
-* The external_aad in the Additional Authenticated Data (AAD) considered to compute the COSE object is extended with the counter signature algorithm used to sign messages. In particular, with reference to Section 5.4 of {{I-D.ietf-core-object-security}}, the 'algorithms' array in the aad_array SHALL also include 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}). This same external_aad structure is used both for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) and for the signing process producing the counter signature (see Section 4.4 of {{RFC8152}}).
+* The external_aad in the Additional Authenticated Data (AAD) is extended with the counter signature algorithm used to sign messages. In particular, compared Section 5.4 of {{I-D.ietf-core-object-security}}, the 'algorithms' array in the aad_array MUST also include 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}). This external_aad structure is used both for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) and for the signing process producing the counter signature, as defined below.
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
@@ -208,9 +208,9 @@ aad_array = [
 ]
 ~~~~~~~~~~~
 
-* The value of the 'kid' parameter in the 'unprotected' field of response messagess SHALL be set to the Sender ID of the endpoint transmitting the message, i.e. the Sender ID. That is, unlike in {{I-D.ietf-core-object-security}}, the 'kid' parameter is always present in all messages, i.e. both requests and responses.
+* The value of the 'kid' parameter in the 'unprotected' field of response messages MUST be set to the Sender ID of the endpoint transmitting the message. That is, unlike in {{I-D.ietf-core-object-security}}, the 'kid' parameter is always present in all messages, i.e. both requests and responses.
 
-* The 'unprotected' field SHALL additionally include the following parameter:
+* The 'unprotected' field MUST additionally include the following parameter:
 
     - CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the endpoint using its own private key as described in Appendix A.2 of {{RFC8152}}. In particular, the Sig_structure contains the external_aad as defined above and the ciphertext of the COSE_Encrypt0 object as payload. 
 
