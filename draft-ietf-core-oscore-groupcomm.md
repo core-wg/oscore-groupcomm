@@ -226,13 +226,15 @@ The OSCORE compression defined in Section 6 of {{I-D.ietf-core-object-security}}
 
 ### Encoding of the OSCORE Option Value {#obj-sec-value}
 
-* The first byte, containing the OSCORE flag bits, is extended with the following set of bits.
+Analogous to {{I-D.ietf-core-object-security}}, the value of the OSCORE option SHALL contain the OSCORE flag bits, the Partial IV parameter, the kid context parameter (length and value), and the kid parameter, with the following modifications:
 
-    - The fourth least significant bit of the first byte of flag bits SHALL be set to 1 in every message, to indicate the presence of the 'kid' parameter for all group requests and responses. That is, unlike in {{I-D.ietf-core-object-security}}, the 'kid' parameter is always present in all messages, i.e. both requests and responses.
+* The first byte, containing the OSCORE flag bits, has the following encoding modifications:
 
-    - The fifth least significant bit of the first byte of flag bits MUST be set to 1 for group requests, to indicate the presence of the 'kid context' parameter in the compressed COSE object. The kid context flag MAY be set to 1 for responses.
+    - The fourth least significant bit MUST be set to 1 in every message, to indicate the presence of the 'kid' parameter for all group requests and responses. That is, unlike in {{I-D.ietf-core-object-security}}, the 'kid' parameter is always present in all messages.
 
-    - The sixth least significant bit of the first byte of flag bits is defined in this specification. This bit is set to 1 if the 'CounterSignature0' parameter is present, or to 0 otherwise. In order to ensure source authentication of messages as described in this specification, this bit SHALL be set to 1.
+    - The fifth least significant bit MUST be set to 1 for group requests, to indicate the presence of the 'kid context' parameter in the compressed COSE object. The kid context flag MAY be set to 1 for responses.
+
+    - The sixth least significant bit is set to 1 if the 'CounterSignature0' parameter is present, or to 0 otherwise. In order to ensure source authentication of messages as described in this specification, this bit MUST be set to 1.
 
 The flag bits are registered in the OSCORE Flag Bits registry specified in Section 13.7 of {{I-D.ietf-core-object-security}} and in {{iana-cons}}.
 
@@ -255,15 +257,20 @@ The flag bits are registered in the OSCORE Flag Bits registry specified in Secti
 
 ### Encoding of the OSCORE Payload {#oscore-payl}
 
-The payload of the OSCORE message SHALL encode the ciphertext concatenated with the value of the CounterSignature0 (if present) of the COSE_Encrypt0 object.
+The payload of the OSCORE message SHALL encode the ciphertext of the COSE object concatenated with the value of the CounterSignature0 (if present) of the COSE object, computed as in Appendix A.2 of {{RFC8152}}.
 
-## Example: Request
+## Examples of Compressed COSE Objects
 
-Request with kid = 0x25, Partial IV = 5 and kid context = 0x44616c, assuming the label for the new kid context defined in {{I-D.ietf-core-object-security}} has value 10. COUNTERSIGN is the CounterSignature0 byte string as described in {{sec-cose-object}} and is 64 bytes long in this example. The ciphertext in this example is 14 bytes long.
+This section covers a list of OSCORE Header Compression examples for group requests and responses. The examples assume the COSE_Encrypt0 object is set (which means the CoAP message and cryptographic material is known). Note that the full CoAP unprotected message, as well as the full security context, is not reported in the examples, but only the input necessary to the compression mechanism, i.e. the COSE_Encrypt0 object. The output is the compressed COSE object as defined in {{compression}}, divided into two parts, since the object is transported in two CoAP fields: OSCORE option and payload.
 
-Before compression (96 bytes):
+The examples assume that tje label for the new kid context defined in {{I-D.ietf-core-object-security}} has value 10. COUNTERSIGN is the CounterSignature0 byte string as described in {{sec-cose-object}} and is 64 bytes long.
+
+1. Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25, Partial IV = 5 and kid context = 0x44616c
+
 
 ~~~~~~~~~~~
+Before compression (96 bytes):
+
 [
 h'',
 { 4:h'25', 6:h'05', 10:h'44616c', 9:COUNTERSIGN },
@@ -271,9 +278,9 @@ h'aea0155667924dff8a24e4cb35b9'
 ]
 ~~~~~~~~~~~
 
+~~~~~~~~~~~
 After compression (85 bytes):
 
-~~~~~~~~~~~
 Flag byte: 0b00111001 = 0x39
 
 Option Value: 39 05 03 44 61 6c 25 (7 bytes)
@@ -282,13 +289,11 @@ Payload: ae a0 15 56 67 92 4d ff 8a 24 e4 cb 35 b9 COUNTERSIGN
 (14 bytes + size of COUNTERSIGN)
 ~~~~~~~~~~~
 
-## Example: Response
-
-Response with kid = 0x52. COUNTERSIGN is the CounterSignature0 byte string as described in {{sec-cose-object}} and is 64 bytes long in this example. The ciphertext in this example is 14 bytes long.
-
-Before compression (88 bytes):
+2. Response with ciphertext = 60b035059d9ef5667c5a0710823b, kid = 0x52 and no Partial IV
 
 ~~~~~~~~~~~
+Before compression (88 bytes):
+
 [
 h'',
 { 4:h'52', 9:COUNTERSIGN },
@@ -296,9 +301,9 @@ h'60b035059d9ef5667c5a0710823b'
 ]
 ~~~~~~~~~~~
 
+~~~~~~~~~~~
 After compression (80 bytes):
 
-~~~~~~~~~~~
 Flag byte: 0b00101000 = 0x28
 
 Option Value: 28 52 (2 bytes)
