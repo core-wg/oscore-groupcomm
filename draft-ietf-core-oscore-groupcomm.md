@@ -312,6 +312,20 @@ Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b COUNTERSIGN
 (14 bytes + size of COUNTERSIGN)
 ~~~~~~~~~~~
 
+# Message Binding, Sequence Numbers, Freshness and Replay Protection
+
+The requirements and properties described in Section 7 of {{I-D.ietf-core-object-security}} also apply to OSCORE used in group communication. In particular, group OSCORE provides message binding of responses to requests, which provides relative freshness of responses, and replay protection of requests. More details about error processing for replay detection in group OSCORE are specified in {{mess-processing}}. The mechanisms describing replay protection and freshness of Observe notifications do not apply to group OSCORE, as Observe is not defined for group settings.
+
+## Synchronization of Sender Sequence Numbers # {#sec-synch-seq-num}
+
+Upon joining the group, new servers are not aware of the Sender Sequence Number values currently used by different clients to transmit group requests. This means that, when such servers receive a secure group request from a given client for the first time, they are not able to verify if that request is fresh and has not been replayed or (purposely) delayed. The same holds when a server loses synchronization with Sender Sequence Numbers of clients, for instance after a device reboot.
+
+The exact way to address this issue is application specific, and depends on the particular use case and its synchronization requirements. The list of methods to handle synchronization of sender sequence numbers is part of the group communication policy, and different servers can use different methods.
+
+Requests sent over Multicast must be Non-Confirmable (Section 8.1 of {{RFC7252}}), as overall most of the messages sent within a group. Thus, senders should store their outgoing messages for an amount of time defined by the application and sufficient to correctly handle possible retransmissions.
+
+{{synch-ex}} describes three possible approaches that can be considered for synchronization of sequence numbers.
+
 # Message Processing # {#mess-processing}
 
 Each request message and response message is protected and processed as specified in {{I-D.ietf-core-object-security}}, with the modifications described in the following sections. The following security objectives are fulfilled, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication, message integrity, and message ordering.
@@ -357,16 +371,6 @@ Upon receiving a secure response message, the client proceeds as described in Se
 
 * In step 5, the client also verifies the counter signature using the public key of the server from the associated Recipient Context.
 
-
-# Synchronization of Sender Sequence Numbers # {#sec-synch-seq-num}
-
-Upon joining the group, new servers are not aware of the sender sequence number values currently used by different clients to transmit group requests. This means that, when such servers receive a secure group request from a given client for the first time, they are not able to verify if that request is fresh and has not been replayed or (purposely) delayed. The same holds when a server loses synchronization with sender sequence numbers of clients, for instance after a device reboot.
-
-The exact way to address this issue is application specific, and depends on the particular use case and its synchronization requirements. The list of methods to handle synchronization of sender sequence numbers is part of the group communication policy, and different servers can use different methods.
-
-Requests sent over Multicast must be Non-Confirmable (Section 8.1 of {{RFC7252}}), as overall most of the messages sent within a group. Thus, senders should store their outgoing messages for an amount of time defined by the application and sufficient to correctly handle possible retransmissions.
-
-{{synch-ex}} describes three possible approaches that can be considered for synchronization of sequence numbers.
 
 # Responsibilities of the Group Manager # {#sec-group-manager}
 
