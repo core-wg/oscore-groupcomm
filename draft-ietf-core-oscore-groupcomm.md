@@ -91,9 +91,9 @@ The Constrained Application Protocol (CoAP) {{RFC7252}} is a web transfer protoc
 
 Group communication for CoAP {{RFC7390}} addresses use cases where deployed devices benefit from a group communication model, for example to reduce latencies, improve performance and reduce bandwidth utilisation. Use cases include lighting control, integrated building control, software and firmware updates, parameter and configuration updates, commissioning of constrained networks, and emergency multicast (see {{sec-use-cases}}). Furthermore, {{RFC7390}} recognizes the importance to introduce a secure mode for CoAP group communication. This specification defines such a mode.
 
-Object Security for Constrained RESTful Environments (OSCORE){{I-D.ietf-core-object-security}} describes a security protocol based on the exchange of protected CoAP messages. OSCORE builds on CBOR Object Signing and Encryption (COSE) {{RFC8152}} and provides end-to-end encryption, integrity, replay protection and binding of response to request between a sending endpoint and a receiving endpoint, also in the presence of intermediary endpoints. To this end, a CoAP message is protected by including its payload (if any), certain options, and header fields in a COSE object, which finally replaces the authenticated and encrypted fields in the protected message.
+Object Security for Constrained RESTful Environments (OSCORE){{I-D.ietf-core-object-security}} describes a security protocol based on the exchange of protected CoAP messages. OSCORE builds on CBOR Object Signing and Encryption (COSE) {{RFC8152}} and provides end-to-end encryption, integrity, replay protection and binding of response to request between a sender and a receipient, also in the presence of intermediaries. To this end, a CoAP message is protected by including its payload (if any), certain options, and header fields in a COSE object, which finally replaces the authenticated and encrypted fields in the protected message.
 
-This document defines group OSCORE, providing end-to-end security of CoAP messages exchanged between members of a group, and preserving total independence from the underlying layers. In particular, the described approach defines how OSCORE should be used in a group communication setting, so that end-to-end security is assured by using the same security method. That is, end-to-end security is assured for (multicast) CoAP requests sent by client endpoints to the group and for related CoAP responses sent as reply by multiple server endpoints. Group OSCORE provides source authentication of all CoAP messages exchanged within the group, by means of digital signatures produced through private keys of sender devices and embedded in the protected CoAP messages.
+This document defines group OSCORE, providing end-to-end security of CoAP messages exchanged between members of a group, and preserving total independence from the underlying layers. In particular, the described approach defines how OSCORE should be used in a group communication setting, so that end-to-end security is assured by using the same security method. That is, end-to-end security is assured for (multicast) CoAP requests sent by a client to the group and for related CoAP responses sent as reply by multiple servers. Group OSCORE provides source authentication of all CoAP messages exchanged within the group, by means of digital signatures produced through private keys of sender devices and embedded in the protected CoAP messages.
 
 As in OSCORE, it is still possible to simultaneously rely on DTLS {{RFC6347}} to protect hop-by-hop communication between a sender and a proxy (and vice versa), and between a proxy and a recipient (and vice versa). Note that DTLS cannot be used to secure messages sent over multicast.
 
@@ -119,7 +119,7 @@ This document refers also to the following terminology.
 
 * Group Identifier (Gid): identifier assigned to the group. Group Identifiers should be unique within the set of groups of a given Group Manager, in order to avoid collisions. In case they are not, the considerations in {{ssec-gid-collision}} apply.
 
-* Group request: CoAP request message sent by a client endpoint in the group to all server endpoints in that group.
+* Group request: CoAP request message sent by a client in the group to all servers in that group.
 
 * Source authentication: evidence that a received message in the group originated from a specifically identified group member. This also provides assurances that the message was not tampered with by anyone, be it a different legitimate group member or an endpoint which is not a group member.
 
@@ -200,7 +200,7 @@ aad_array = [
 
 * The 'unprotected' field MUST additionally include the following parameter:
 
-    - CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the endpoint using its own private key as described in Appendix A.2 of {{RFC8152}}. In particular, the Sig_structure contains the external_aad as defined above and the ciphertext of the COSE_Encrypt0 object as payload. 
+    - CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the sender using its own private key as described in Appendix A.2 of {{RFC8152}}. In particular, the Sig_structure contains the external_aad as defined above and the ciphertext of the COSE_Encrypt0 object as payload. 
 
 
 <!--    The presence of the CounterSignature0 is explicitly signaled, by using one of the reserved significant bit of the first byte of flag bits in the value of the OSCORE Option (see Section 6.1 of {{I-D.ietf-core-object-security}}). 
