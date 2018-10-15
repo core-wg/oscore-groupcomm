@@ -372,7 +372,7 @@ The Group Manager is responsible for performing the following tasks:
 
 4. Establishing Security Common Contexts and providing them to authorized group members during the join process, together with a corresponding Security Sender Context.
 
-5. Generating and managing Sender IDs within its OSCORE groups, as well as assigning and providing them to new endpoints during the join process. This includes ensuring uniqueness of Endpoints IDs within each of its OSCORE groups.
+5. Generating and managing Sender IDs within its OSCORE groups, as well as assigning and providing them to new endpoints during the join process. This includes ensuring uniqueness of Sender IDs within each of its OSCORE groups.
 
 6. Defining a communication policy for each of its OSCORE groups, and signalling it to new endpoints during the join process.
 
@@ -382,7 +382,7 @@ The Group Manager is responsible for performing the following tasks:
 
 9. Updating the Gid of its OSCORE groups, upon renewing the respective Security Context.
 
-10. Acting as key repository, in order to handle the public keys of the members of its OSCORE groups, and provide such public keys to other members of the same group upon request. The actual storage of public keys may be entrusted to a separate secure storage device.
+10. Acting as key repository, in order to handle the public keys of the members of its OSCORE groups, and providing such public keys to other members of the same group upon request. The actual storage of public keys may be entrusted to a separate secure storage device.
 
 # Security Considerations  # {#sec-security-considerations}
 
@@ -404,11 +404,11 @@ The proof for uniqueness of (key, nonce) pairs in Appendix D.3 of {{I-D.ietf-cor
 
 * Uniqueness of Sender IDs within the group is enforced by the Group Manager.
 
-* The case A referred to messages including a Partial IV concerns only group requests, and same considerations from {{I-D.ietf-core-object-security}} apply here as well.
+* The case A in Appendix D.3 of {{I-D.ietf-core-object-security}} for messages including a Partial IV concerns only group requests, and same considerations from {{I-D.ietf-core-object-security}} apply here as well.
 
-* The case B referred to messages not including a Partial IV concerns all group responses, and same considerations from {{I-D.ietf-core-object-security}} apply here as well.
+* The case B in Appendix D.3 of {{I-D.ietf-core-object-security}} for messages not including a Partial IV concerns all group responses, and same considerations from {{I-D.ietf-core-object-security}} apply here as well.
 
-It follows that each message encrypted/decrypted with the same Sender Key is processed by using a different (ID_PIV, PIV) pair. This means that nonces used by any fixed encrypting endpoint are unique. Thus, each message is processed with a different (key, nonce) pair.
+As a consequence, each message encrypted/decrypted with the same Sender Key is processed by using a different (ID_PIV, PIV) pair. This means that nonces used by any fixed encrypting endpoint are unique. Thus, each message is processed with a different (key, nonce) pair.
 
 ## Management of Group Keying Material # {#sec-cons-group-key-management}
 
@@ -428,7 +428,7 @@ In the second case, the sender protects a message using the new Security Context
 
 In case endpoints are deployed in multiple groups managed by different non-synchronized Group Managers, it is possible for Group Identifiers of different groups to coincide. That can also happen if the application can not guarantee unique Group Identifiers within a given Group Manager. However, this does not impair the security of the AEAD algorithm.
 
-In fact, as long as the Master Secret is different for different groups and this condition holds over time, and as long as the Sender IDs within a group are unique, it follows that AEAD keys are different among different groups.
+In fact, as long as the Master Secret is different for different groups and this condition holds over time, and as long as the Sender IDs within a group are unique, AEAD keys are different among different groups.
 
 # IANA Considerations # {#iana}
 
