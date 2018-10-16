@@ -136,7 +136,7 @@ To support group communication secured with OSCORE, each endpoint registered as 
 
 2. one Sender Context, unless the endpoint is configured exclusively as silent server. The Sender Context is used to secure outgoing messages and is initialized according to Section 3 of {{I-D.ietf-core-object-security}}, once the endpoint has joined the group. The Sender Context of a given endpoint matches the corresponding Recipient Context in all the endpoints receiving a protected message from that endpoint. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, the Sender Context stores also the endpoint's private key.
 
-3. one Recipient Context for each distinct endpoint from which messages are received, used to process incoming messages. The recipient creates a new Recipient Context upon receiving an incoming message from another endpoint in the group for the first time (see {{ssec-verify-request}} and {{ssec-verify-response}}). Each Recipient Context matches the Sender Context of the endpoint from which protected messages are received. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, each Recipient Context stores also the public key of the associated other endpoint from which messages are received.
+3. one Recipient Context for each distinct endpoint from which messages are received, used to process incoming messages. The recipient may create a new Recipient Context upon receiving an incoming message from another endpoint in the group for the first time (see {{ssec-verify-request}} and {{ssec-verify-response}}). Each Recipient Context matches the Sender Context of the endpoint from which protected messages are received. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, each Recipient Context stores also the public key of the associated other endpoint from which messages are received.
 
 The table in {{fig-additional-context-information}} overviews the new information included in the OSCORE Security Context, with respect to what defined in Section 3 of {{I-D.ietf-core-object-security}}.
 
@@ -156,7 +156,7 @@ The table in {{fig-additional-context-information}} overviews the new informatio
 ~~~~~~~~~~~
 {: #fig-additional-context-information title="Additions to the OSCORE Security Context" artwork-align="center"}
 
-Upon receiving a secure CoAP message, a recipient uses the sender's public key, in order to verify the counter signature of the COSE Object ({{sec-cose-object}}).
+Upon receiving a secure CoAP message, a recipient uses the sender's public key, in order to verify the counter signature of the COSE Object (see {{sec-cose-object}}).
 
 If not already stored in the Recipient Context associated to the sender, the recipient retrieves the public key from the Group Manager, which collects public keys upon endpoints' joining, acts as trusted key repository and ensures the correct association between the public key and the identifier of the sender, for instance by means of public key certificates.
 
