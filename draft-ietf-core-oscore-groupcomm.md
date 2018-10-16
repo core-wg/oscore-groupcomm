@@ -168,6 +168,8 @@ The Sender/Recipient Keys and the Common IV are derived according to the same sc
 
 In order to establish a new Security Context in a group, a new Group Identifier (Gid) for that group and a new value for the Master Secret parameter MUST be distributed. An example of Gid format supporting this operation is provided in {{gid-ex}}. Then, each group member re-derives the keying material stored in its own Sender Context and Recipient Contexts as described in {{sec-context}}, using the updated Gid.
 
+<!-- Comment from John: what about the other parameters? salt, etc should be mentioned if it is MAY or MUST NOT and why -->
+
 Consistently with the security assumptions in {{ssec-sec-assumptions}}, it is RECOMMENDED to adopt a group key management scheme, and securely distribute a new value for the Gid and for the Master Secret parameter of the group's Security Context, before a new joining endpoint is added to the group or after a currently present endpoint leaves the group. This is necessary to preserve backward security and forward security in the group.
 
 The specific approach used to distribute the new Gid and Master Secret parameter to the group is out of the scope of this document.
@@ -318,7 +320,11 @@ Requests sent over Multicast must be Non-Confirmable (Section 8.1 of {{RFC7252}}
 
 Each request message and response message is protected and processed as specified in {{I-D.ietf-core-object-security}}, with the modifications described in the following sections. The following security objectives are fulfilled, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication, message integrity, and message ordering.
 
+<!-- Comment from John: message ordering is not provided -->
+
 Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{I-D.ietf-core-object-security}}. However, a recipient MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}}, or which is not cryptographically validated in a successful way. Either case, the recipient MUST NOT send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the group.
+
+<!-- Comment from John: why MUST NOT? This should be application dependent, we should not mandate anything, rather have sec cons about this -->
 
 As per {{RFC7252}}{{RFC7390}}, group requests sent over multicast must be Non-confirmable. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments.
 
