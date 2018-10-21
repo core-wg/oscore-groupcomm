@@ -589,7 +589,27 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -02 to -03 ## {#sec-02-03}
 
-* TBD
+* Revised structure and phrasing for improved readability and better alignment with draft-ietf-core-object-security.
+
+* Added discussion on wrap-Around of Partial IVs (see Section 2.2).
+
+* Separate sections for the COSE Object (Section 3) and the OSCORE Header Compression (Section 4).
+
+* The countersignature is now appended to the encrypted payload of the OSCORE message, rather than included in the OSCORE Option (see Section 4).
+
+* Extended scope of Section 5, now titled " Message Binding, Sequence Numbers, Freshness and Replay Protection".
+
+* Clarifications about Non-Confirmable messages in Section 5.1 "Synchronization of Sender Sequence Numbers".
+
+* Clarifications about error handling in Section 6 "Message Processing".
+
+* Compacted list of responsibilities of the Group Manager in Section 7.
+
+* Revised and extended security considerations in Section 8.
+
+* Added IANA considerations for the OSCORE Flag Bits Registry in Section 9.
+
+* Revised Appendix D, now giving a short high-level description of a new endpoint set-up.
 
 ## Version -01 to -02 ## {#sec-01-02}
 
