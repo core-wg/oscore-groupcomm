@@ -134,7 +134,7 @@ To support group communication secured with OSCORE, each endpoint registered as 
 
    * A new parameter Counter Signature Algorithm is included. Its value identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 4.5 of {{RFC8152}}) which provides source authentication within the group. Its value is immutable once the Common Context is established. The EdDSA signature algorithm ed25519 {{RFC8032}} is mandatory to implement. If Elliptic Curve Digital Signature Algorithm (ECDSA) is used, it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{RFC6979}}.
 
-   * A new parameter Counter Signature Parameters is included. This parameter indicates the values of the parameters associated to the signature algorithm specified in the parameter Counter Signature Algorithm. The value of this parameter MAY be empty. The exact structure of this parameter depends on the value of the parameter Countersignature Algorithm, according to the Counter Signature Parameters Registry defined in {{iana-cons-cs-params}}.
+   * A new parameter Counter Signature Parameters is included. This parameter indicates the values of the parameters associated to the digital signature algorithm specified in the parameter Counter Signature Algorithm. The value of this parameter MAY be empty. The exact structure of this parameter depends on the value of the parameter Countersignature Algorithm, according to the Counter Signature Parameters Registry defined in {{iana-cons-cs-params}}.
 
 2. one Sender Context, unless the endpoint is configured exclusively as silent server. The Sender Context is used to secure outgoing messages and is initialized according to Section 3 of {{I-D.ietf-core-object-security}}, once the endpoint has joined the group. The Sender Context of a given endpoint matches the corresponding Recipient Context in all the endpoints receiving a protected message from that endpoint. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, the Sender Context stores also the endpoint's private key.
 
@@ -210,12 +210,6 @@ aad_array = [
 
     - CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the sender using its own private key as described in Appendix A.2 of {{RFC8152}}. In particular, the Sig_structure contains the external_aad as defined above and the ciphertext of the COSE_Encrypt0 object as payload. 
 
-
-<!--    The presence of the CounterSignature0 is explicitly signaled, by using one of the reserved significant bit of the first byte of flag bits in the value of the OSCORE Option (see Section 6.1 of {{I-D.ietf-core-object-security}}). 
-
-
-NOTE: the text above is only true for the compression. If uncompressed COSE object is used, no need to use flag bits-->
-
 # OSCORE Header Compression {#compression}
 
 The OSCORE compression defined in Section 6 of {{I-D.ietf-core-object-security}} is used, with the following additions for the encoding of the OSCORE Option and the OSCORE Payload.
@@ -230,9 +224,7 @@ Analogously to {{I-D.ietf-core-object-security}}, the value of the OSCORE option
 
     - The fifth least significant bit MUST be set to 1 for group requests, to indicate the presence of the 'kid context' parameter in the compressed COSE object. The 'kid context' MAY be present in responses if the application requires it. In such a case, the kid context flag MUST be set to 1.
 
-    - The sixth least significant bit is set to 1 if the 'CounterSignature0' parameter is present, or to 0 otherwise. In order to ensure source authentication of messages as described in this specification, this bit MUST be set to 1.
-
-The flag bits are registered in the OSCORE Flag Bits registry specified in Section 13.7 of {{I-D.ietf-core-object-security}} and in {{iana-cons-flag-bit}} of this Specification.
+The flag bits are registered in the OSCORE Flag Bits registry specified in Section 13.7 of {{I-D.ietf-core-object-security}}.
 
 * The 'kid context' value encodes the Group Identifier value (Gid) of the group's Security Context.
 
@@ -241,19 +233,19 @@ The flag bits are registered in the OSCORE Flag Bits registry specified in Secti
 ~~~~~~~~~~~
  0 1 2 3 4 5 6 7 <----------- n bytes ------------>
 +-+-+-+-+-+-+-+-+----------------------------------+
-|0 0|1|h|1|  n  |       Partial IV (if any)        |
+|0 0|0|h|1|  n  |       Partial IV (if any)        |
 +-+-+-+-+-+-+-+-+----------------------------------+
 
- <-- 1 byte --> <------ s bytes ------> 
-+--------------+-----------------------+-----------+
-|  s (if any)  |   kid context = Gid   |    kid    |
-+--------------+-----------------------+-----------+
+ <-- 1 byte ---> <------ s bytes ------> 
++---------------+-----------------------+-----------+
+|  s (if any)   |   kid context = Gid   |    kid    |
++---------------+-----------------------+-----------+
 ~~~~~~~~~~~
 {: #fig-option-value title="OSCORE Option Value" artwork-align="center"}
 
 ## Encoding of the OSCORE Payload {#oscore-payl}
 
-The payload of the OSCORE message SHALL encode the ciphertext of the COSE object concatenated with the value of the CounterSignature0 (if present) of the COSE object, computed as in Appendix A.2 of {{RFC8152}}.
+The payload of the OSCORE message SHALL encode the ciphertext of the COSE object concatenated with the value of the CounterSignature0 of the COSE object, computed as in Appendix A.2 of {{RFC8152}}.
 
 ## Examples of Compressed COSE Objects
 
@@ -452,22 +444,6 @@ This document has the following actions for IANA.
 ## Counter Signature Parameters Registry {#iana-cons-cs-params}
 
 TBD
-
-## OSCORE Flag Bits Registry {#iana-cons-flag-bit}
-
-The entry with Bit Position TBD is added to the "OSCORE Flag Bits"  registry.
-
-~~~~~~~~~~~
-+--------------+-------------+---------------------+-------------------+
-| Bit Position |     Name    |     Description     |   Specification   |
-+--------------+-------------+---------------------+-------------------+
-|     TBD      | Counter     | Set to 1 if counter | [[this document]] |
-|              | Signature   | signature present   |                   |
-|              |             | in the compressed   |                   |
-|              |             | COSE object         |                   |
-+--------------+-------------+---------------------+-------------------+
-~~~~~~~~~~~
-
 
 --- back
 
