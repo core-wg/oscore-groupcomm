@@ -67,11 +67,10 @@ normative:
   RFC8174:
 
 informative:
-
+  I-D.ietf-ace-key-groupcomm-oscore:
   I-D.ietf-ace-oauth-authz:
   I-D.ietf-core-echo-request-tag:
   I-D.somaraju-ace-multicast:
-  I-D.tiloca-ace-oscoap-joining:
   RFC4944:
   RFC4949:
   RFC6282:
@@ -160,7 +159,7 @@ Upon receiving a secure CoAP message, a recipient uses the sender's public key, 
 
 If not already stored in the Recipient Context associated to the sender, the recipient retrieves the public key from the Group Manager, which collects public keys upon endpoints' joining, acts as trusted key repository and ensures the correct association between the public key and the identifier of the sender, for instance by means of public key certificates.
 
-It is RECOMMENDED that the Group Manager collects public keys and provides them to group members upon request as described in {{I-D.tiloca-ace-oscoap-joining}}, where the join process is based on the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. Further details about how public keys can be handled and retrieved in the group is out of the scope of this document.
+It is RECOMMENDED that the Group Manager collects public keys and provides them to group members upon request as described in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. Further details about how public keys can be handled and retrieved in the group is out of the scope of this document.
 
 An endpoint receives its own Sender ID from the Group Manager upon joining the group. That Sender ID is valid only within that group, and is unique within the group. An endpoint uses its own Sender ID (together with other data) to generate unique AEAD nonces for outgoing messages, as in {{I-D.ietf-core-object-security}}. Endpoints which are configured only as silent servers do not have a Sender ID.
 
@@ -176,7 +175,7 @@ Consistently with the security assumptions in {{ssec-sec-assumptions}}, it is RE
 
 <!-- Consider rephrasing the paragraph above: if application requires it, ... , it is RECOMMENDED -->
 
-The specific approach used to distribute the new Gid and Master Secret parameter to the group is out of the scope of this document. However, it is RECOMMENDED that the Group Manager supports the distribution of the new Gid and Master Secret parameter to the group according to the Group Rekeying Process described in {{I-D.tiloca-ace-oscoap-joining}}.
+The specific approach used to distribute the new Gid and Master Secret parameter to the group is out of the scope of this document. However, it is RECOMMENDED that the Group Manager supports the distribution of the new Gid and Master Secret parameter to the group according to the Group Rekeying Process described in {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
 ## Wrap-Around of Partial IVs {#ssec-wrap-around-partial-iv}
 
@@ -542,7 +541,7 @@ The Group Manager must verify that the joining endpoint is authorized to join th
 
 In case of successful authorization check, the Group Manager generates a Sender ID assigned to the joining endpoint, before proceeding with the rest of the join process. That is, the Group Manager provides the joining endpoint with the keying material and parameters to initialize the OSCORE Security Context (see {{sec-context}}). The actual provisioning of keying material and parameters to the joining endpoint is out of the scope of this document.
 
-It is RECOMMENDED that the join process adopts the approach described in {{I-D.tiloca-ace-oscoap-joining}} and based on the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. 
+It is RECOMMENDED that the join process adopts the approach described in {{I-D.ietf-ace-key-groupcomm-oscore}} and based on the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. 
 
 
 # Examples of Synchronization Approaches {#synch-ex}
