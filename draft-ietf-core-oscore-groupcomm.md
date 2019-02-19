@@ -134,6 +134,8 @@ To support group communication secured with OSCORE, each endpoint registered as 
 
    * A new parameter Counter Signature Algorithm is included. Its value identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 4.5 of {{RFC8152}}) which provides source authentication within the group. Its value is immutable once the Common Context is established. The EdDSA signature algorithm ed25519 {{RFC8032}} is mandatory to implement. If Elliptic Curve Digital Signature Algorithm (ECDSA) is used, it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{RFC6979}}.
 
+   * A new parameter Counter Signature Parameters is included. This parameter indicates the values of the parameters associated to the signature algorithm specified in the parameter Counter Signature Algorithm. The value of this parameter MAY be empty. The exact structure of this parameter depends on the value of the parameter Countersignature Algorithm, according to the Counter Signature Parameters Registry defined in {{iana-cons-cs-params}}.
+
 2. one Sender Context, unless the endpoint is configured exclusively as silent server. The Sender Context is used to secure outgoing messages and is initialized according to Section 3 of {{I-D.ietf-core-object-security}}, once the endpoint has joined the group. The Sender Context of a given endpoint matches the corresponding Recipient Context in all the endpoints receiving a protected message from that endpoint. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, the Sender Context stores also the endpoint's private key.
 
 3. one Recipient Context for each distinct endpoint from which messages are received, used to process incoming messages. The recipient may generate the Recipient Context upon receiving an incoming message from another endpoint in the group for the first time (see {{ssec-verify-request}} and {{ssec-verify-response}}). Each Recipient Context matches the Sender Context of the endpoint from which protected messages are received. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, each Recipient Context stores also the public key of the associated other endpoint from which messages are received.
@@ -230,7 +232,7 @@ Analogously to {{I-D.ietf-core-object-security}}, the value of the OSCORE option
 
     - The sixth least significant bit is set to 1 if the 'CounterSignature0' parameter is present, or to 0 otherwise. In order to ensure source authentication of messages as described in this specification, this bit MUST be set to 1.
 
-The flag bits are registered in the OSCORE Flag Bits registry specified in Section 13.7 of {{I-D.ietf-core-object-security}} and in {{iana-cons}} of this Specification.
+The flag bits are registered in the OSCORE Flag Bits registry specified in Section 13.7 of {{I-D.ietf-core-object-security}} and in {{iana-cons-flag-bit}} of this Specification.
 
 * The 'kid context' value encodes the Group Identifier value (Gid) of the group's Security Context.
 
@@ -445,7 +447,13 @@ In fact, as long as the Master Secret is different for different groups and this
 
 Note to RFC Editor: Please replace all occurrences of “[[this document]]” with the RFC number of this specification.
 
-## OSCORE Flag Bits Registry {#iana-cons}
+This document has the following actions for IANA.
+
+## Counter Signature Parameters Registry {#iana-cons-cs-params}
+
+TBD
+
+## OSCORE Flag Bits Registry {#iana-cons-flag-bit}
 
 The entry with Bit Position TBD is added to the "OSCORE Flag Bits"  registry.
 
