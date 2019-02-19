@@ -190,14 +190,16 @@ Therefore, when experiencing a wrap-around of its own Sender Sequence Number, a 
 
 Building on Section 5 of {{I-D.ietf-core-object-security}}, this section defines how to use COSE {{RFC8152}} to wrap and protect data in the original message. OSCORE uses the untagged COSE_Encrypt0 structure with an Authenticated Encryption with Additional Data (AEAD) algorithm. For Group OSCORE, the following modifications apply:
 
-* The external_aad in the Additional Authenticated Data (AAD) is extended with the counter signature algorithm used to sign messages. In particular, compared with Section 5.4 of {{I-D.ietf-core-object-security}}, the 'algorithms' array in the aad_array MUST also include 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}). This external_aad structure is used both for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) and for the signing process producing the counter signature, as defined below.
+* The external_aad in the Additional Authenticated Data (AAD) is extended with the counter signature algorithm and related parameters used to sign messages. In particular, compared with Section 5.4 of {{I-D.ietf-core-object-security}}, the 'algorithms' array in the aad_array MUST also include: 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}); and par_countersign, which contains the Counter Signature Parameters from the Common Context (see {{sec-context}}). This external_aad structure is used both for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) and for the signing process producing the counter signature, as defined below.
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
 
 aad_array = [
    oscore_version : uint,
-   algorithms : [alg_aead : int / tstr , alg_countersign : int / tstr],
+   algorithms : [alg_aead : int / tstr ,
+                 alg_countersign : int / tstr ,
+                 par_countersign : bstr],
    request_kid : bstr,
    request_piv : bstr,
    options : bstr
