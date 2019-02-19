@@ -317,7 +317,11 @@ Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b COUNTERSIGN
 
 # Message Binding, Sequence Numbers, Freshness and Replay Protection
 
-The requirements and properties described in Section 7 of {{I-D.ietf-core-object-security}} also apply to OSCORE used in group communication. In particular, group OSCORE provides message binding of responses to requests, which provides relative freshness of responses, and replay protection of requests. More details about error processing for replay detection in group OSCORE are specified in {{mess-processing}} of this specification. The mechanisms describing replay protection and freshness of Observe notifications do not apply to group OSCORE, as Observe is not defined for group settings.
+The requirements and properties described in Section 7 of {{I-D.ietf-core-object-security}} also apply to OSCORE used in group communication. In particular, group OSCORE provides message binding of responses to requests, which provides relative freshness of responses, and replay protection of requests.
+
+Besides, group OSCORE provides additional assurances on the client side, upon receiving responses bound to a same request. That is, as long as the client retains the CoAP Token used in a request (see Section 2.5 of {{RFC7390}}), group OSCORE ensures that: any possible response sent to that request is not a replay; and at most one response to that request from a given server is accepted.
+
+More details about error processing for replay detection in group OSCORE are specified in {{mess-processing}} of this specification. The mechanisms describing replay protection and freshness of Observe notifications do not apply to group OSCORE, as Observe is not defined for group settings.
 
 ## Synchronization of Sender Sequence Numbers # {#sec-synch-seq-num}
 
@@ -331,9 +335,7 @@ Requests sent over Multicast must be Non-Confirmable (Section 8.1 of {{RFC7252}}
 
 # Message Processing # {#mess-processing}
 
-Each request message and response message is protected and processed as specified in {{I-D.ietf-core-object-security}}, with the modifications described in the following sections. The following security objectives are fulfilled, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication, message integrity, and message ordering.
-
-<!-- Comment from John: message ordering is not provided -->
+Each request message and response message is protected and processed as specified in {{I-D.ietf-core-object-security}}, with the modifications described in the following sections. The following security objectives are fulfilled, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication, message integrity.
 
 Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{I-D.ietf-core-object-security}}. However, a recipient MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}}, or which is not cryptographically validated in a successful way. Either case, the recipient MUST NOT send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the group.
 
@@ -372,12 +374,11 @@ A server that has received a secure group request may reply with a secure respon
 
 Upon receiving a secure response message, the client proceeds as described in Section 8.4 of {{I-D.ietf-core-object-security}}, with the following modifications.
 
-* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}}. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client creates a new Recipient Context, initializes it according to Section 3 of {{I-D.ietf-core-object-security}}, also retrieving the server's public key.
+* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}}. Also, the client checks whether it has previously received a valid secure response to the same secure group request, such that both the just received and the old secure response include the same Recipient ID ('kid'). In case of positive match the client SHALL stop processing the response. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client creates a new Recipient Context, initializes it according to Section 3 of {{I-D.ietf-core-object-security}}, also retrieving the server's public key.
 
 * In step 3, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
-* In step 5, the client also verifies the counter signature using the public key of the server from the associated Recipient Context.
-
+* In step 5, the client also verifies the counter signature using the public key of the server from the associated Recipient Context. In case of success, the client also records the received Recipient ID ('kid') as included in a valid secure response to the corresponding secure group request.
 
 # Responsibilities of the Group Manager # {#sec-group-manager}
 
