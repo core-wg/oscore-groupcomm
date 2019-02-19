@@ -255,7 +255,6 @@ The examples assume that the label for the new kid context defined in {{I-D.ietf
 
 1. Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25, Partial IV = 5 and kid context = 0x44616c
 
-
 ~~~~~~~~~~~
 Before compression (96 bytes):
 
@@ -269,9 +268,9 @@ h'aea0155667924dff8a24e4cb35b9'
 ~~~~~~~~~~~
 After compression (85 bytes):
 
-Flag byte: 0b00111001 = 0x39
+Flag byte: 0b00011001 = 0x19
 
-Option Value: 39 05 03 44 61 6c 25 (7 bytes)
+Option Value: 19 05 03 44 61 6c 25 (7 bytes)
 
 Payload: ae a0 15 56 67 92 4d ff 8a 24 e4 cb 35 b9 COUNTERSIGN
 (14 bytes + size of COUNTERSIGN)
@@ -293,9 +292,9 @@ h'60b035059d9ef5667c5a0710823b'
 ~~~~~~~~~~~
 After compression (80 bytes):
 
-Flag byte: 0b00101000 = 0x28
+Flag byte: 0b00001000 = 0x08
 
-Option Value: 28 52 (2 bytes)
+Option Value: 08 52 (2 bytes)
 
 Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b COUNTERSIGN
 (14 bytes + size of COUNTERSIGN)
