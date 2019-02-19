@@ -586,6 +586,10 @@ In this specification, it is NOT RECOMMENDED that endpoints do not verify the co
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
+## Version -03 to -04 ## {#sec-03-04}
+
+TBD
+
 ## Version -02 to -03 ## {#sec-02-03}
 
 * Revised structure and phrasing for improved readability and better alignment with draft-ietf-core-object-security.
