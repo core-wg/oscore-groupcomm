@@ -337,9 +337,11 @@ Requests sent over Multicast must be Non-Confirmable (Section 8.1 of {{RFC7252}}
 
 Each request message and response message is protected and processed as specified in {{I-D.ietf-core-object-security}}, with the modifications described in the following sections. The following security objectives are fulfilled, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication, message integrity.
 
-Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{I-D.ietf-core-object-security}}. However, a recipient MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}}, or which is not cryptographically validated in a successful way. Either case, the recipient MUST NOT send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the group.
+Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{I-D.ietf-core-object-security}}. However, a recipient MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}}, or which is not cryptographically validated in a successful way. Either case, it is RECOMMENDED that the recipient does not send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the group.
 
 <!-- Comment from John: why MUST NOT? This should be application dependent, we should not mandate anything, rather have sec cons about this -->
+
+<!-- Now chaged into RECOMMENDED ... not -->
 
 As per {{RFC7252}}{{RFC7390}}, group requests sent over multicast must be Non-confirmable. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments.
 
