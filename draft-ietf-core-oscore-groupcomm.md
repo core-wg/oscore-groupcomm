@@ -474,14 +474,37 @@ The columns of this table are:
 Initial entries in the registry are as follows.
 
 ~~~~~~~~~~~
-+---------+-------+------------+-----------------+-------------------+
-|  Name   | Value | Parameters |   Description   |     Reference     |
-+---------+-------+------------+-----------------+-------------------+
-|         |       |            |                 |                   |
-| Ed25519 |  TBD  |    None    | Ed25519 for use |      RFC8032      |
-|         |       |            |  w/ EdDSA only  |                   |
-|         |       |            |                 |                   |
-+---------+-------+------------+-----------------+-------------------|
++--------+-------+--------------------+-------------------+-----------+
+|  Name  | Value |     Parameters     |    Description    | Reference |
++--------+-------+--------------------+-------------------+-----------+
+|        |       |                    |                   |           |
+| EdDSA  |  TBD  | Elliptic curve:    | Edwards-Curve     | RFC 8152  |
+|        |       | integer value from | Digital Signature |           |
+|        |       | the COSE Elliptic  | Algorithm (EdDSA) |           |
+|        |       | Curve Registry     |                   |           |
+|        |       |                    |                   |           |
++--------+-------+--------------------+-------------------+-----------|
+|        |       |                    |                   |           |
+| ES256  |  TBD  | Elliptic curve:    | ECDSA w/ SHA-256  | RFC 8152  |
+|        |       | integer value from |                   |           |
+|        |       | the COSE Elliptic  |                   |           |
+|        |       | Curve Registry     |                   |           |
+|        |       |                    |                   |           |
++--------+-------+--------------------+-------------------+-----------|
+|        |       |                    |                   |           |
+| ES384  |  TBD  | Elliptic curve:    | ECDSA w/ SHA-384  | RFC 8152  |
+|        |       | integer value from |                   |           |
+|        |       | the COSE Elliptic  |                   |           |
+|        |       | Curve Registry     |                   |           |
+|        |       |                    |                   |           |
++--------+-------+--------------------+-------------------+-----------|
+|        |       |                    |                   |           |
+| ES512  |  TBD  | Elliptic curve:    | ECDSA w/ SHA-512  | RFC 8152  |
+|        |       | integer value from |                   |           |
+|        |       | the COSE Elliptic  |                   |           |
+|        |       | Curve Registry     |                   |           |
+|        |       |                    |                   |           |
++--------+-------+--------------------+-------------------+-----------+
 ~~~~~~~~~~~
 
 ## Expert Review Instructions {#review}
