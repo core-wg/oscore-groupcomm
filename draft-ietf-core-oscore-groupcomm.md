@@ -135,7 +135,7 @@ To support group communication secured with OSCORE, each endpoint registered as 
 
    * A new parameter Counter Signature Algorithm is included. Its value identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 4.5 of {{RFC8152}}) which provides source authentication within the group. Its value is immutable once the Common Context is established. The used Counter Signature Algorithm MUST be selected among the ones in the Counter Signature Parameters Registry defined in this specification (see {{iana-cons-cs-params}}). The EdDSA signature algorithm ed25519 {{RFC8032}} is mandatory to implement. If Elliptic Curve Digital Signature Algorithm (ECDSA) is used, it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{RFC6979}}.
 
-   * A new parameter Counter Signature Parameters is included. This parameter indicates the values of the parameters associated to the digital signature algorithm specified in the parameter Counter Signature Algorithm. The value of this parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of the parameter Countersignature Algorithm, and MUST be in accordance with the corresponding entry in the Counter Signature Parameters Registry defined in this specification (see {{iana-cons-cs-params}}).
+   * A new parameter Counter Signature Parameters is included. This parameter indicates the values of the parameters associated to the digital signature algorithm specified in the parameter Counter Signature Algorithm. The value of this parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of the parameter Counter Signature Algorithm, and MUST be in accordance with the corresponding entry in the Counter Signature Parameters Registry defined in this specification (see {{iana-cons-cs-params}}).
 
 2. one Sender Context, unless the endpoint is configured exclusively as silent server. The Sender Context is used to secure outgoing messages and is initialized according to Section 3 of {{I-D.ietf-core-object-security}}, once the endpoint has joined the group. The Sender Context of a given endpoint matches the corresponding Recipient Context in all the endpoints receiving a protected message from that endpoint. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, the Sender Context stores also the endpoint's private key.
 
@@ -144,18 +144,20 @@ To support group communication secured with OSCORE, each endpoint registered as 
 The table in {{fig-additional-context-information}} overviews the new information included in the OSCORE Security Context, with respect to what defined in Section 3 of {{I-D.ietf-core-object-security}}.
 
 ~~~~~~~~~~~
-   +---------------------------+-----------------------------+
-   |      Context portion      |       New information       |
-   +---------------------------+-----------------------------+
-   |                           |                             |
-   |      Common Context       | Counter signature algorithm |
-   |                           |                             |
-   |      Sender Context       | Endpoint's own private key  |
-   |                           |                             |
-   |  Each Recipient Context   | Public key of the           |
-   |                           | associated other endpoint   |
-   |                           |                             |
-   +---------------------------+-----------------------------+
+   +---------------------------+------------------------------+
+   |      Context portion      |       New information        |
+   +---------------------------+------------------------------+
+   |                           |                              |
+   |      Common Context       | Counter signature algorithm  |
+   |                           |                              |
+   |      Common Context       | Counter signature parameters |
+   |                           |                              |
+   |      Sender Context       | Endpoint's own private key   |
+   |                           |                              |
+   |  Each Recipient Context   | Public key of the            |
+   |                           | associated other endpoint    |
+   |                           |                              |
+   +---------------------------+------------------------------+
 ~~~~~~~~~~~
 {: #fig-additional-context-information title="Additions to the OSCORE Security Context" artwork-align="center"}
 
@@ -343,7 +345,7 @@ Furthermore, endpoints in the group locally perform error handling and processin
 
 <!-- Now chaged into RECOMMENDED ... not -->
 
-As per {{RFC7252}}{{RFC7390}}, group requests sent over multicast must be Non-confirmable. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments.
+As per {{RFC7252}}{{RFC7390}}, group requests sent over multicast MUST be Non-Confirmable. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments. Furthermore, according to Section 5.2.3 of {{RFC7252}}, responses to Non-Confirmable group requests SHOULD be also Non-Confirmable. However, endpoints MUST be prepared to receive Confirmable responses in reply to a non-Confirmable group request.
 
 ## Protecting the Request ## {#ssec-protect-request}
 
@@ -352,6 +354,8 @@ A client transmits a secure group request as described in Section 8.1 of {{I-D.i
 * In step 2, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
 * In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}}. The encoding of the compressed COSE object is modified as described in {{compression}}.
+
+* In step 5, the counter signature is computed and the format of the OSCORE mesage is modified as described in {{oscore-payl}}. In particular, the payload of the OSCORE message includes also the counter signature.
 
 ## Verifying the Request ## {#ssec-verify-request}
 
