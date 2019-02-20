@@ -133,9 +133,9 @@ To support group communication secured with OSCORE, each endpoint registered as 
 
    * The ID Context parameter contains the Gid of the group, which is used to retrieve the Security Context for processing messages intended to the endpoints of the group (see {{mess-processing}}). The choice of the Gid is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle possible collisions between Gids, see {{ssec-gid-collision}}.
 
-   * A new parameter Counter Signature Algorithm is included. Its value identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 4.5 of {{RFC8152}}) which provides source authentication within the group. Its value is immutable once the Common Context is established. The used Counter Signature Algorithm MUST be selected among the ones in the Counter Signature Parameters Registry defined in this specification (see {{iana-cons-cs-params}}). The EdDSA signature algorithm ed25519 {{RFC8032}} is mandatory to implement. If Elliptic Curve Digital Signature Algorithm (ECDSA) is used, it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{RFC6979}}.
+   * A new parameter Counter Signature Algorithm is included. Its value identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 4.5 of {{RFC8152}}) which provides source authentication within the group. Its value is immutable once the Common Context is established. The used Counter Signature Algorithm MUST be selected among the signing ones defined in COSE Algorithms Registry (see section 16.4 of {{RFC8152}}). The EdDSA signature algorithm ed25519 {{RFC8032}} is mandatory to implement. If Elliptic Curve Digital Signature Algorithm (ECDSA) is used, it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{RFC6979}}.
 
-   * A new parameter Counter Signature Parameters is included. This parameter indicates the values of the parameters associated to the digital signature algorithm specified in the parameter Counter Signature Algorithm. The value of this parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of the parameter Counter Signature Algorithm, and MUST be in accordance with the corresponding entry in the Counter Signature Parameters Registry defined in this specification (see {{iana-cons-cs-params}}).
+   * A new parameter Counter Signature Parameters is included. This parameter identifies the parameters associated to the digital signature algorithm specified in the Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined in the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), where each entry refers to a specified structure of the Counter Signature Parameters.
 
 2. one Sender Context, unless the endpoint is configured exclusively as silent server. The Sender Context is used to secure outgoing messages and is initialized according to Section 3 of {{I-D.ietf-core-object-security}}, once the endpoint has joined the group. The Sender Context of a given endpoint matches the corresponding Recipient Context in all the endpoints receiving a protected message from that endpoint. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, the Sender Context stores also the endpoint's private key.
 
@@ -456,25 +456,25 @@ In fact, as long as the Master Secret is different for different groups and this
 
 # IANA Considerations # {#iana}
 
-Note to RFC Editor: Please replace all occurrences of "[[this specification]]" with the RFC number of this specification and delete this paragraph.
+Note to RFC Editor: Please replace all occurrences of "\[This Doocument\]" with the RFC number of this specification and delete this paragraph.
 
 This document has the following actions for IANA.
 
 ## Counter Signature Parameters Registry {#iana-cons-cs-params}
 
-This specification establishes the IANA "Counter Signature Parameters Registry" registry. The registry has been created to use the "Expert Review Required" registration procedure {{RFC8126}}. Expert review guidelines are provided in {{review}}.
+This specification establishes the IANA "Counter Signature Parameters" registry. The registry has been created to use the "Expert Review Required" registration procedure {{RFC8126}}. Expert review guidelines are provided in {{review}}.
 
 The columns of this table are:
 
-* Name: A value that can be used to identify an algorithm in documents for easier comprehension. The name SHOULD be unique. However, the 'Value' field is what is used to identify the algorithm, not the 'Name' field.
+* Name: A value that can be used to identify an algorithm in documents for easier comprehension. Its value is taken from the 'Name' column of the COSE Algorithms registry.
 
-* Value: The value to be used to identify this algorithm. Algorithm values MUST be unique. The value can be a positive integer, a negative integer, or a string.  Integer values between -256 and 255 and strings of length 1 are designated as "Standards Action". Integer values from -65536 to 65535 and strings of length 2 are designated as "Specification Required". Integer values greater than 65535 and strings of length greater than 2 are designated as "Expert Review". Integer values less than -65536 are marked as private use.
+* Value: The value to be used to identify this algorithm. Its content is taken from the 'Value' column of the COSE Algorithms registry. The value MUST be the same one used in the COSE Algorithm registry for the entry with the same 'Name' field.
 
-* Parameters: This indicates the number and CBOR type of each parameter for the counter signature algorithm indicated by the 'Value' field, or nihil in case of no parameters.
+* Parameters: This indicates the CBOR encoding of the parameters for the counter signature algorithm indicated by the 'Value' field. Its value MUST be nihil in case of no parameters.
 
-* Description: A short description of the algorithm.
+* Description: A short description of the parameters encoded in the 'Parameters' field.
 
-* Reference: A document where the algorithm is defined (if publicly available).
+* Reference: This contains a pointer to the public specification for the field if one exists.
 
 Initial entries in the registry are as follows.
 
@@ -483,31 +483,31 @@ Initial entries in the registry are as follows.
 |  Name  | Value |     Parameters     |    Description    | Reference |
 +--------+-------+--------------------+-------------------+-----------+
 |        |       |                    |                   |           |
-| EdDSA  |  TBD  | Elliptic curve:    | Edwards-Curve     | RFC 8152  |
-|        |       | integer value from | Digital Signature |           |
-|        |       | the COSE Elliptic  | Algorithm (EdDSA) |           |
-|        |       | Curve Registry     |                   |           |
+| EdDSA  |   -8  | crv : int          | crv value taken   | [This     |
+|        |       |                    | from the COSE     | Document] |
+|        |       |                    | Elliptic Curve    |           |
+|        |       |                    | Registry          |           |
 |        |       |                    |                   |           |
 +--------+-------+--------------------+-------------------+-----------|
 |        |       |                    |                   |           |
-| ES256  |  TBD  | Elliptic curve:    | ECDSA w/ SHA-256  | RFC 8152  |
-|        |       | integer value from |                   |           |
-|        |       | the COSE Elliptic  |                   |           |
-|        |       | Curve Registry     |                   |           |
+| ES256  |   -7  | crv : int          | crv value taken   | [This     |
+|        |       |                    | from the COSE     | Document] |
+|        |       |                    | Elliptic Curve    |           |
+|        |       |                    | Registry          |           |
 |        |       |                    |                   |           |
 +--------+-------+--------------------+-------------------+-----------|
 |        |       |                    |                   |           |
-| ES384  |  TBD  | Elliptic curve:    | ECDSA w/ SHA-384  | RFC 8152  |
-|        |       | integer value from |                   |           |
-|        |       | the COSE Elliptic  |                   |           |
-|        |       | Curve Registry     |                   |           |
+| ES384  |  -35  | crv : int          | crv value taken   | [This     |
+|        |       |                    | from the COSE     | Document] |
+|        |       |                    | Elliptic Curve    |           |
+|        |       |                    | Registry          |           |
 |        |       |                    |                   |           |
 +--------+-------+--------------------+-------------------+-----------|
 |        |       |                    |                   |           |
-| ES512  |  TBD  | Elliptic curve:    | ECDSA w/ SHA-512  | RFC 8152  |
-|        |       | integer value from |                   |           |
-|        |       | the COSE Elliptic  |                   |           |
-|        |       | Curve Registry     |                   |           |
+| ES512  |  -36  | crv : int          | crv value taken   | [This     |
+|        |       |                    | from the COSE     | Document] |
+|        |       |                    | Elliptic Curve    |           |
+|        |       |                    | Registry          |           |
 |        |       |                    |                   |           |
 +--------+-------+--------------------+-------------------+-----------+
 ~~~~~~~~~~~
