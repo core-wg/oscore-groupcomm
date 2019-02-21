@@ -79,6 +79,7 @@ informative:
   RFC6347:
   RFC7228:
   RFC7390:
+  RFC7641:
 
 --- abstract
 
@@ -114,7 +115,7 @@ This document refers also to the following terminology.
 
 * Group: a set of endpoints that share group keying material and security parameters (Common Context, see {{sec-context}}). The term group used in this specification refers thus to a "security group", not to be confused with network/multicast group or application group.
 
-* Group Manager (GM): entity responsible for a group. Each endpoint in a group communicates securely with the respective GM, which is neither required to be an actual group member nor to take part in the group communication. The full list of responsibilities of the Group Manager is provided in {{sec-group-manager}}.
+* Group Manager: entity responsible for a group. Each endpoint in a group communicates securely with the respective Group Manager, which is neither required to be an actual group member nor to take part in the group communication. The full list of responsibilities of the Group Manager is provided in {{sec-group-manager}}.
 
 * Silent server: member of a group that never responds to requests. Note that a silent server can act as a client, the two roles are independent.
 
@@ -164,6 +165,8 @@ The table in {{fig-additional-context-information}} overviews the new informatio
 Upon receiving a secure CoAP message, a recipient uses the sender's public key, in order to verify the counter signature of the COSE Object (see {{sec-cose-object}}).
 
 If not already stored in the Recipient Context associated to the sender, the recipient retrieves the public key from the Group Manager, which collects public keys upon endpoints' joining, acts as trusted key repository and ensures the correct association between the public key and the identifier of the sender, for instance by means of public key certificates.
+
+Note that the retrieval of public keys from the Group Manager by a group membner, and the generation of a Recipient Context related to another group member can be done at any point in time, as long as it is done before message verification. For example, an application can configure a node to retrieve all information and generate the Recipient Context when receiving the first message from an unknown sender, or it can asynchronously retrieve the info and update its list of Recipient Contexts well before receiving any message, e.g. by Observing {{RFC7641}} the Group Manager on updates to the group membership. Such a configuration is application dependent.
 
 It is RECOMMENDED that the Group Manager collects public keys and provides them to group members upon request as described in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. Further details about how public keys can be handled and retrieved in the group is out of the scope of this document.
 
