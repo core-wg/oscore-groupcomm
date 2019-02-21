@@ -368,6 +368,8 @@ Upon receiving a secure group request, a server proceeds as described in Section
 
 * In step 6, the server also verifies the counter signature using the public key of the client from the associated Recipient Context.
 
+* Additionally, if the Recipient Context was generated for the first time upon receiving this request and the message does not verify successfully, the server MAY discard the Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the server's storage and creating processing overhead on the server.
+
 ## Protecting the Response ## {#ssec-protect-response}
 
 A server that has received a secure group request may reply with a secure response, which is protected as described in Section 8.3 of {{I-D.ietf-core-object-security}}, with the following modifications.
@@ -386,6 +388,8 @@ Upon receiving a secure response message, the client proceeds as described in Se
 * In step 3, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
 * In step 5, the client also verifies the counter signature using the public key of the server from the associated Recipient Context. In case of success, the client also records the received Recipient ID ('kid') as included in a successfully verified response to the request.
+
+* Additionally, if the Recipient Context was generated for the first time upon receiving this response and the message does not verify successfully, the client MAY discard the Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the client's storage and creating processing overhead on the client.
 
 TBD: kid list must be deleted when the token is discarded.
 
