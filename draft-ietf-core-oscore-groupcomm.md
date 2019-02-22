@@ -391,7 +391,7 @@ Upon receiving a secure response message, the client proceeds as described in Se
 
 * Additionally, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client MAY delete that Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the client's storage and creating processing overhead on the client.
 
-TBD: kid list must be deleted when the token is discarded.
+Upon freeing up the Token value of a secure group request for possible reuse {{RFC7390}}, the client MUST delete the list of recorded Recipient IDs associated to that request.
 
 # Responsibilities of the Group Manager # {#sec-group-manager}
 
