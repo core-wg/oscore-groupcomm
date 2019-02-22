@@ -390,6 +390,7 @@ A server that has received a secure group request may reply with a secure respon
 
 * In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}}. The encoding of the compressed COSE object is modified as described in {{compression}}.
 
+* In step 5, the counter signature is computed and the format of the OSCORE mesage is modified as described in {{oscore-payl}}. In particular, the payload of the OSCORE message includes also the counter signature.
 
 ## Verifying the Response ## {#ssec-verify-response}
 
