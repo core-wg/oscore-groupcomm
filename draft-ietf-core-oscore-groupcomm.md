@@ -192,9 +192,17 @@ The specific approach used to distribute the new Gid and Master Secret parameter
 
 ## Wrap-Around of Partial IVs {#ssec-wrap-around-partial-iv}
 
-A client can eventually experience a wrap-around of its own Sender Sequence Number, which is used as Partial IV in outgoing requests and incremented after each request. When this happens, the OSCORE Security Context MUST be renewed in the group, in order to avoid reusing nonces with the same keys.
+A client can eventually experience a wrap-around of its own Sender Sequence Number, which is used as Partial IV in outgoing requests and incremented after each request.
 
-Therefore, when experiencing a wrap-around of its own Sender Sequence Number, a group member MUST NOT transmit further group requests until a new OSCORE Security Context has been derived. In particular, the endpoint SHOULD inform the Group Manager of the occurred wrap-around, in order to trigger a prompt renewal of the OSCORE Security Context.
+When this happens, the endpoint MUST NOT transmit further group requests until it has derived a new Sender Context, in order to avoid reusing nonces with the same keys.
+
+Furthermore, the endpoint SHOULD inform the Group Manager, that can take one of the following actions:
+
+* The Group Manager renews the OSCORE Security Context in the group (see {{sec-group-key-management}}).
+
+* The Group Manager provides a new Sender ID value to the endpoint that has experienced the wrap-around. Then, the endpoint derives a new Sender Context using the new Sender ID, as described in Section 3.2 of {{I-D.ietf-core-object-security}}.
+
+Either case, same considerations from {{sec-group-key-management}} hold about possible retaining of stale Recipient Contexts.
 
 # The COSE Object # {#sec-cose-object}
 
