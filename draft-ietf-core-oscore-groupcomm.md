@@ -703,7 +703,33 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -03 to -04 ## {#sec-03-04}
 
-TBD
+* Added the new "Counter Signature Parameters" in the Security Common Context (see Section 2).
+
+* Added recommendation on using "deterministic ECDSA" if ECDSA is used as counter signature algorithm (see Section 2).
+
+* Clarified possible asynchronous retrieval of key material from the Group Manager, in order to process incoming messages (see Section 2).
+
+* Structured Section 3 into subsections.
+
+* Added the new 'par_countersign' to the aad_array of the external_aad (see Section 3.1).
+
+* Clarified non reliability of 'kid' as identity indicator for a group member (see Section 2.1).
+
+* Described possible provisioning of new Sender ID in case of Partial IV wrap-around (see Section 2.2).
+
+* The former signature bit in the Flag Byte of the OSCORE option value is reverted to reserved (see Section 4.1). 
+
+* Updated examples of compressed COSE object, now with the sixth less significant bit in the Flag Byte of the OSCORE option value set to 0 (see Section 4.3).
+
+* Relaxed statements on sending error messages (see Section 6).
+
+* Added explicit step on computing the counter signature for outgoing messages (see Setions 6.1 and 6.3).
+
+* Handling of just created Recipient Contexts in case of unsuccessful message verification (see Sections 6.2 and 6.4).
+
+* Handling of replied/repeated responses on the client (see Section 6.4).
+
+* New IANA Registry "Counter Signature Parameters" (see Section 9.1).
 
 ## Version -02 to -03 ## {#sec-02-03}
 
