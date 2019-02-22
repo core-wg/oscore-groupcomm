@@ -481,44 +481,76 @@ The columns of this table are:
 
 * Parameters: This indicates the CBOR encoding of the parameters for the counter signature algorithm indicated by the 'Value' field. Its value MUST be nihil in case of no parameters.
 
-* Description: A short description of the parameters encoded in the 'Parameters' field.
+* Description: A short description of the parameters encoded in the 'Parameters' field (if any).
 
-* Reference: This contains a pointer to the public specification for the field if one exists.
+* Reference: This contains a pointer to the public specification for the field, if one exists.
 
 Initial entries in the registry are as follows.
 
 ~~~~~~~~~~~
-+--------+-------+--------------------+-------------------+-----------+
-|  Name  | Value |     Parameters     |    Description    | Reference |
-+--------+-------+--------------------+-------------------+-----------+
-|        |       |                    |                   |           |
-| EdDSA  |   -8  | crv : int          | crv value taken   | [This     |
-|        |       |                    | from the COSE     | Document] |
-|        |       |                    | Elliptic Curve    |           |
-|        |       |                    | Registry          |           |
-|        |       |                    |                   |           |
-+--------+-------+--------------------+-------------------+-----------|
-|        |       |                    |                   |           |
-| ES256  |   -7  | crv : int          | crv value taken   | [This     |
-|        |       |                    | from the COSE     | Document] |
-|        |       |                    | Elliptic Curve    |           |
-|        |       |                    | Registry          |           |
-|        |       |                    |                   |           |
-+--------+-------+--------------------+-------------------+-----------|
-|        |       |                    |                   |           |
-| ES384  |  -35  | crv : int          | crv value taken   | [This     |
-|        |       |                    | from the COSE     | Document] |
-|        |       |                    | Elliptic Curve    |           |
-|        |       |                    | Registry          |           |
-|        |       |                    |                   |           |
-+--------+-------+--------------------+-------------------+-----------|
-|        |       |                    |                   |           |
-| ES512  |  -36  | crv : int          | crv value taken   | [This     |
-|        |       |                    | from the COSE     | Document] |
-|        |       |                    | Elliptic Curve    |           |
-|        |       |                    | Registry          |           |
-|        |       |                    |                   |           |
-+--------+-------+--------------------+-------------------+-----------+
++-------------+-------+-------------+-----------------+-----------+
+|    Name     | Value | Parameters  |   Description   | Reference |
++-------------+-------+-------------+-----------------+-----------+
+|             |       |             |                 |           |
+|    EdDSA    |  -8   |  crv : int  | crv value taken | [This     |
+|             |       |             | from the COSE   | Document] |
+|             |       |             | Elliptic Curve  |           |
+|             |       |             | Registry        |           |
+|             |       |             |                 |           |
++-------------+-------+-------------+-----------------+-----------+
+|             |       |             |                 |           |
+|    ES256    |  -7   |  crv : int  | crv value taken | [This     |
+|             |       |             | from the COSE   | Document] |
+|             |       |             | Elliptic Curve  |           |
+|             |       |             | Registry        |           |
+|             |       |             |                 |           |
++-------------+-------+-------------+-----------------+-----------+
+|             |       |             |                 |           |
+|    ES384    |  -35  |  crv : int  | crv value taken | [This     |
+|             |       |             | from the COSE   | Document] |
+|             |       |             | Elliptic Curve  |           |
+|             |       |             | Registry        |           |
+|             |       |             |                 |           |
++-------------+-------+-------------+-----------------+-----------+
+|             |       |             |                 |           |
+|    ES512    |  -36  |  crv : int  | crv value taken | [This     |
+|             |       |             | from the COSE   | Document] |
+|             |       |             | Elliptic Curve  |           |
+|             |       |             | Registry        |           |
+|             |       |             |                 |           |
++-------------+-------+-------------+-----------------+-----------+
+|             |       |             |                 |           |
+|    PS256    |  -37  |    nihil    |                 | [This     |
+|             |       |             |                 | Document] |
+|             |       |             |                 |           |
++-------------+-------+-------------+-----------------+-----------+
+|             |       |             |                 |           |
+|    PS384    |  -38  |    nihil    |                 | [This     |
+|             |       |             |                 | Document] |
+|             |       |             |                 |           |
++-------------+-------+-------------+-----------------+-----------+
+|             |       |             |                 |           |
+|    PS512    |  -39  |    nihil    |                 | [This     |
+|             |       |             |                 | Document] |
+|             |       |             |                 |           |
++-------------+-------+-------------+-----------------+-----------+
+|             |       |             |                 |           |
+| RSAES-OAEP  |  -40  |    nihil    |                 | [This     |
+| w/ RFC 8017 |       |             |                 | Document] |
+| default     |       |             |                 |           |
+| parameters  |       |             |                 |           |
+|             |       |             |                 |           |
++-------------+-------+-------------+-----------------+-----------+
+|             |       |             |                 |           |
+| RSAES-OAEP  |  -41  |    nihil    |                 | [This     |
+| w/ SHA-256  |       |             |                 | Document] |
+|             |       |             |                 |           |
++-------------+-------+-------------+-----------------+-----------+
+|             |       |             |                 |           |
+| RSAES-OAEP  |  -42  |    nihil    |                 | [This     |
+| w/ SHA-512  |       |             |                 | Document] |
+|             |       |             |                 |           |
++-------------+-------+-------------+-----------------+-----------+
 ~~~~~~~~~~~
 
 ## Expert Review Instructions {#review}
