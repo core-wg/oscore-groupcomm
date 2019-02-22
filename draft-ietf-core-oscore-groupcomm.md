@@ -172,7 +172,7 @@ It is RECOMMENDED that the Group Manager collects public keys and provides them 
 
 An endpoint receives its own Sender ID from the Group Manager upon joining the group. That Sender ID is valid only within that group, and is unique within the group. An endpoint uses its own Sender ID (together with other data) to generate unique AEAD nonces for outgoing messages, as in {{I-D.ietf-core-object-security}}. Endpoints which are configured only as silent servers do not have a Sender ID.
 
-The Sender/Recipient Keys and the Common IV are derived according to the same scheme defined in Sections 3.2 and 5.2 of {{I-D.ietf-core-object-security}}. The mandatory-to-implement HKDF and AEAD algorithms for Group OSCORE are the same as in {{I-D.ietf-core-object-security}}.
+The Sender/Recipient Keys and the Common IV are derived according to the same scheme defined in Section 3.2 of {{I-D.ietf-core-object-security}}. The mandatory-to-implement HKDF and AEAD algorithms for Group OSCORE are the same as in {{I-D.ietf-core-object-security}}.
 
 ## Management of Group Keying Material # {#sec-group-key-management}
 
@@ -184,9 +184,9 @@ After a new Gid has been distributed, a same Recipient ID ('kid') should not be 
 
 As a consequence, group members may end up retaining stale Recipient Contexts, that are no longer useful to verify incoming secure messages. Applications may define policies to delete (long-)unused Recipient Contexts and reduce the impact on storage space.
 
-Consistently with the security assumptions in {{ssec-sec-assumptions}}, it is RECOMMENDED to adopt a group key management scheme, and securely distribute a new value for the Gid and for the Master Secret parameter of the group's Security Context, before a new joining endpoint is added to the group or after a currently present endpoint leaves the group. This is necessary to preserve backward security and forward security in the group, if the application requires it.
+If the application requires so (see {{ssec-sec-assumptions}}), it is RECOMMENDED to adopt a group key management scheme, and securely distribute a new value for the Gid and for the Master Secret parameter of the group's Security Context, before a new joining endpoint is added to the group or after a currently present endpoint leaves the group. This is necessary to preserve backward security and forward security in the group, if the application requires it.
 
-<!-- Consider rephrasing the paragraph above: if application requires it, ... , it is RECOMMENDED -->
+<!-- +++ DONE +++ Consider rephrasing the paragraph above: if application requires it, ... , it is RECOMMENDED -->
 
 The specific approach used to distribute the new Gid and Master Secret parameter to the group is out of the scope of this document. However, it is RECOMMENDED that the Group Manager supports the distribution of the new Gid and Master Secret parameter to the group according to the Group Rekeying Process described in {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
