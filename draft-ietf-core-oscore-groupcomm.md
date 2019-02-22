@@ -164,9 +164,9 @@ The table in {{fig-additional-context-information}} overviews the new informatio
 
 Upon receiving a secure CoAP message, a recipient uses the sender's public key, in order to verify the counter signature of the COSE Object (see {{sec-cose-object}}).
 
-If not already stored in the Recipient Context associated to the sender, the recipient retrieves the public key from the Group Manager, which collects public keys upon endpoints' joining, acts as trusted key repository and ensures the correct association between the public key and the identifier of the sender, for instance by means of public key certificates.
+If not already stored in the Recipient Context associated to the sender, the recipient retrieves the sender's public key from the Group Manager, which collects public keys upon endpoints' joining the group, acts as trusted key repository and ensures the correct association between the public key and the identifier of the sender, for instance by means of public key certificates.
 
-Note that the retrieval of public keys from the Group Manager by a group membner, and the generation of a Recipient Context related to another group member can be done at any point in time, as long as it is done before message verification. For example, an application can configure a node to retrieve all information and generate the Recipient Context when receiving the first message from an unknown sender, or it can asynchronously retrieve the info and update its list of Recipient Contexts well before receiving any message, e.g. by Observing {{RFC7641}} the Group Manager on updates to the group membership. Such a configuration is application dependent.
+Note that a group member can retrieve public keys from the Group Manager and generate the Recipient Context associated to another group member at any point in time, as long as this is done before verifying a received secure CoAP message. The exact configuration is application dependent. For example, an application can configure a group member to retrieve all the required information and to create the Recipient Context exactly upon receiving a message from another group member for the first time. As an alternative, the application can configure a group member to asynchronously retrieve the required information and update its list of Recipient Contexts well before receiving any message, e.g. by Observing {{RFC7641}} the Group Manager to get updates on the group membership.
 
 It is RECOMMENDED that the Group Manager collects public keys and provides them to group members upon request as described in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. Further details about how public keys can be handled and retrieved in the group is out of the scope of this document.
 
@@ -368,7 +368,7 @@ Upon receiving a secure group request, a server proceeds as described in Section
 
 * In step 6, the server also verifies the counter signature using the public key of the client from the associated Recipient Context.
 
-* Additionally, if the Recipient Context was generated for the first time upon receiving this request and the message does not verify successfully, the server MAY discard the Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the server's storage and creating processing overhead on the server.
+* Additionally, if the used Recipient Context was created upon receiving this group request and the message is not verified successfully, the server MAY delete that Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the server's storage and creating processing overhead on the server.
 
 ## Protecting the Response ## {#ssec-protect-response}
 
@@ -389,7 +389,7 @@ Upon receiving a secure response message, the client proceeds as described in Se
 
 * In step 5, the client also verifies the counter signature using the public key of the server from the associated Recipient Context. In case of success, the client also records the received Recipient ID ('kid') as included in a successfully verified response to the request.
 
-* Additionally, if the Recipient Context was generated for the first time upon receiving this response and the message does not verify successfully, the client MAY discard the Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the client's storage and creating processing overhead on the client.
+* Additionally, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client MAY delete that Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the client's storage and creating processing overhead on the client.
 
 TBD: kid list must be deleted when the token is discarded.
 
