@@ -214,7 +214,7 @@ The external_aad in the Additional Authenticated Data (AAD) is extended with the
 
 * 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}). This parameter has the value specified in the "Value" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}) for this counter signature algorithm.
 
-* 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{sec-context}}). This parameter is a CBOR Byte String wrapping the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm.
+* 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{sec-context}}). This parameter is a CBOR Byte String wrapping the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm. Note that if the Counter Signature Parameters is empty, par_countersign takes the CBOR empty bytestring for value.
 
 This external_aad structure is used both for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) and for the signing process producing the counter signature, as defined below.
 
