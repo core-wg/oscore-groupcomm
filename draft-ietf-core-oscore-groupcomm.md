@@ -480,7 +480,7 @@ In fact, as long as the Master Secret is different for different groups and this
 
 # IANA Considerations # {#iana}
 
-Note to RFC Editor: Please replace all occurrences of "\[This Doocument\]" with the RFC number of this specification and delete this paragraph.
+Note to RFC Editor: Please replace all occurrences of "\[This Document\]" with the RFC number of this specification and delete this paragraph.
 
 This document has the following actions for IANA.
 
