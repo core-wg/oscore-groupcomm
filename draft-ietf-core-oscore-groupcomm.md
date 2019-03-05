@@ -216,7 +216,7 @@ The external_aad in the Additional Authenticated Data (AAD) is extended with the
 
 The 'algorithms' array in the aad_array MAY also include:
 
-* 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm. Note that if the Counter Signature Parameters is empty, par_countersign is not present.
+* 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm. Note that if the Counter Signature Parameters is empty, 'par_countersign' is not present.
 
 This external_aad structure is used both for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) and for the signing process producing the counter signature, as defined below.
 
@@ -494,7 +494,7 @@ The columns of this table are:
 
 * Value: The value to be used to identify this algorithm. Its content is taken from the 'Value' column of the COSE Algorithms registry. The value MUST be the same one used in the COSE Algorithm registry for the entry with the same 'Name' field.
 
-* Parameters: This indicates the CBOR encoding of the parameters for the counter signature algorithm indicated by the 'Value' field. Its value MUST be nihil in case of no parameters.
+* Parameters: This indicates the CBOR encoding of the parameters (if any) for the counter signature algorithm indicated by the 'Value' field.
 
 * Description: A short description of the parameters encoded in the 'Parameters' field (if any).
 
