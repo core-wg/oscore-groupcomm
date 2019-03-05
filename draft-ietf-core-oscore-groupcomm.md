@@ -214,7 +214,9 @@ The external_aad in the Additional Authenticated Data (AAD) is extended with the
 
 * 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}). This parameter has the value specified in the "Value" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}) for this counter signature algorithm.
 
-* 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{sec-context}}). This parameter is a CBOR Byte String wrapping the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm. Note that if the Counter Signature Parameters is empty, par_countersign takes the CBOR empty bytestring for value.
+The 'algorithms' array in the aad_array MAY also include:
+
+* 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm. Note that if the Counter Signature Parameters is empty, par_countersign is not present.
 
 This external_aad structure is used both for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) and for the signing process producing the counter signature, as defined below.
 
@@ -225,7 +227,7 @@ aad_array = [
    oscore_version : uint,
    algorithms : [alg_aead : int / tstr ,
                  alg_countersign : int / tstr ,
-                 par_countersign : bstr],
+                 ? par_countersign : any],
    request_kid : bstr,
    request_piv : bstr,
    options : bstr
@@ -533,35 +535,35 @@ Initial entries in the registry are as follows.
 |             |       |             |                 |           |
 +-------------+-------+-------------+-----------------+-----------+
 |             |       |             |                 |           |
-|    PS256    |  -37  |    nihil    |                 | [This     |
-|             |       |             |                 | Document] |
+|    PS256    |  -37  |             | Parameters not  | [This     |
+|             |       |             | present         | Document] |
 |             |       |             |                 |           |
 +-------------+-------+-------------+-----------------+-----------+
 |             |       |             |                 |           |
-|    PS384    |  -38  |    nihil    |                 | [This     |
-|             |       |             |                 | Document] |
+|    PS384    |  -38  |             | Parameters not  | [This     |
+|             |       |             | present         | Document] |
 |             |       |             |                 |           |
 +-------------+-------+-------------+-----------------+-----------+
 |             |       |             |                 |           |
-|    PS512    |  -39  |    nihil    |                 | [This     |
-|             |       |             |                 | Document] |
+|    PS512    |  -39  |             | Parameters not  | [This     |
+|             |       |             | present         | Document] |
 |             |       |             |                 |           |
 +-------------+-------+-------------+-----------------+-----------+
 |             |       |             |                 |           |
-| RSAES-OAEP  |  -40  |    nihil    |                 | [This     |
-| w/ RFC 8017 |       |             |                 | Document] |
+| RSAES-OAEP  |  -40  |             | Parameters not  | [This     |
+| w/ RFC 8017 |       |             | present         | Document] |
 | default     |       |             |                 |           |
 | parameters  |       |             |                 |           |
 |             |       |             |                 |           |
 +-------------+-------+-------------+-----------------+-----------+
 |             |       |             |                 |           |
-| RSAES-OAEP  |  -41  |    nihil    |                 | [This     |
-| w/ SHA-256  |       |             |                 | Document] |
+| RSAES-OAEP  |  -41  |             | Parameters not  | [This     |
+| w/ SHA-256  |       |             | present         | Document] |
 |             |       |             |                 |           |
 +-------------+-------+-------------+-----------------+-----------+
 |             |       |             |                 |           |
-| RSAES-OAEP  |  -42  |    nihil    |                 | [This     |
-| w/ SHA-512  |       |             |                 | Document] |
+| RSAES-OAEP  |  -42  |             | Parameters not  | [This     |
+| w/ SHA-512  |       |             | present         | Document] |
 |             |       |             |                 |           |
 +-------------+-------+-------------+-----------------+-----------+
 ~~~~~~~~~~~
