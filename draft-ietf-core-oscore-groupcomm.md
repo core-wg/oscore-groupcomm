@@ -134,7 +134,7 @@ To support group communication secured with OSCORE, each endpoint registered as 
 
    * The ID Context parameter contains the Gid of the group, which is used to retrieve the Security Context for processing messages intended to the endpoints of the group (see {{mess-processing}}). The choice of the Gid is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle possible collisions between Gids, see {{ssec-gid-collision}}.
 
-   * A new parameter Counter Signature Algorithm is included. Its value identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 4.5 of {{RFC8152}}) which provides source authentication within the group. Its value is immutable once the Common Context is established. The used Counter Signature Algorithm MUST be selected among the signing ones defined in COSE Algorithms Registry (see section 16.4 of {{RFC8152}}). The EdDSA signature algorithm ed25519 {{RFC8032}} is mandatory to implement. If Elliptic Curve Digital Signature Algorithm (ECDSA) is used, it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{RFC6979}}.
+   * A new parameter Counter Signature Algorithm is included. Its value identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 4.5 of {{RFC8152}}) which provides source authentication within the group. Its value is immutable once the Common Context is established. The used Counter Signature Algorithm MUST be selected among the signing ones defined in the COSE Algorithms Registry (see section 16.4 of {{RFC8152}}). The EdDSA signature algorithm ed25519 {{RFC8032}} is mandatory to implement. If Elliptic Curve Digital Signature Algorithm (ECDSA) is used, it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{RFC6979}}.
 
    * A new parameter Counter Signature Parameters is included. This parameter identifies the parameters associated to the digital signature algorithm specified in the Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined in the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), where each entry indicates a specified structure of the Counter Signature Parameters.
 
@@ -216,7 +216,7 @@ The external_aad in the Additional Authenticated Data (AAD) is extended with the
 
 The 'algorithms' array in the aad_array MAY also include:
 
-* 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm. Note that if the Counter Signature Parameters is empty, 'par_countersign' is not present.
+* 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm. Note that if the Counter Signature Parameters in the Common Context is empty, 'par_countersign' is not present.
 
 This external_aad structure is used both for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) and for the signing process producing the counter signature, as defined below.
 
@@ -279,7 +279,7 @@ The flag bits are registered in the OSCORE Flag Bits registry specified in Secti
 
 ## Encoding of the OSCORE Payload {#oscore-payl}
 
-The payload of the OSCORE message SHALL encode the ciphertext of the COSE object concatenated with the value of the CounterSignature0 of the COSE object, computed as in Appendix A.2 of {{RFC8152}} depending on the Counter Signature Algorithm in the Security Context.
+The payload of the OSCORE message SHALL encode the ciphertext of the COSE object concatenated with the value of the CounterSignature0 of the COSE object, computed as in Appendix A.2 of {{RFC8152}} according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context.
 
 ## Examples of Compressed COSE Objects
 
@@ -354,7 +354,7 @@ The exact way to address this issue is application specific, and depends on the 
 
 Each request message and response message is protected and processed as specified in {{I-D.ietf-core-object-security}}, with the modifications described in the following sections. The following security objectives are fulfilled, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication, message integrity.
 
-As per {{RFC7252}}{{RFC7390}}, group requests sent over multicast MUST be Non-Confirmable. Thus, senders should store their outgoing messages for an amount of time defined by the application and sufficient to correctly handle possible retransmissions. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments. Besides, according to Section 5.2.3 of {{RFC7252}}, responses to Non-Confirmable group requests SHOULD be also Non-Confirmable. However, endpoints MUST be prepared to receive Confirmable responses in reply to a non-Confirmable group request.
+As per {{RFC7252}}{{RFC7390}}, group requests sent over multicast MUST be Non-Confirmable. Thus, senders should store their outgoing messages for an amount of time defined by the application and sufficient to correctly handle possible retransmissions. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments. Besides, according to Section 5.2.3 of {{RFC7252}}, responses to Non-Confirmable group requests SHOULD be also Non-Confirmable. However, endpoints MUST be prepared to receive Confirmable responses in reply to a Non-Confirmable group request.
 
 Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{I-D.ietf-core-object-security}}. However, a recipient MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}}, or which is not cryptographically validated in a successful way. Either case, it is RECOMMENDED that the recipient does not send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the group.
 
@@ -406,7 +406,7 @@ Upon receiving a secure response message, the client proceeds as described in Se
 
 * Additionally, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client MAY delete that Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the client's storage and creating processing overhead on the client.
 
-Upon freeing up the Token value of a secure group request for possible reuse {{RFC7390}}, the client MUST delete the list of recorded Recipient IDs associated to that request.
+Upon freeing up the Token value of a secure group request for possible reuse {{RFC7390}}, the client MUST delete the list of recorded Recipient IDs associated to that request (see step 5 above).
 
 # Responsibilities of the Group Manager # {#sec-group-manager}
 
@@ -486,13 +486,13 @@ This document has the following actions for IANA.
 
 ## Counter Signature Parameters Registry {#iana-cons-cs-params}
 
-This specification establishes the IANA "Counter Signature Parameters" registry. The registry has been created to use the "Expert Review Required" registration procedure {{RFC8126}}. Expert review guidelines are provided in {{review}}.
+This specification establishes the IANA "Counter Signature Parameters" Registry. The Registry has been created to use the "Expert Review Required" registration procedure {{RFC8126}}. Expert review guidelines are provided in {{review}}.
 
 The columns of this table are:
 
-* Name: A value that can be used to identify an algorithm in documents for easier comprehension. Its value is taken from the 'Name' column of the COSE Algorithms registry.
+* Name: A value that can be used to identify an algorithm in documents for easier comprehension. Its value is taken from the 'Name' column of the "COSE Algorithms" Registry.
 
-* Value: The value to be used to identify this algorithm. Its content is taken from the 'Value' column of the COSE Algorithms registry. The value MUST be the same one used in the COSE Algorithm registry for the entry with the same 'Name' field.
+* Value: The value to be used to identify this algorithm. Its content is taken from the 'Value' column of the "COSE Algorithms" Registry. The value MUST be the same one used in the "COSE Algorithms" Registry for the entry with the same 'Name' field.
 
 * Parameters: This indicates the CBOR encoding of the parameters (if any) for the counter signature algorithm indicated by the 'Value' field.
 
@@ -570,7 +570,7 @@ Initial entries in the registry are as follows.
 
 ## Expert Review Instructions {#review}
 
-The IANA registry established in this document is defined as expert review.
+The IANA Registry established in this document is defined as expert review.
 This section gives some general guidelines for what the experts should be looking for, but they are being designated as experts for a reason so they should be given substantial latitude.
 
 Expert reviewers should take into consideration the following points:
