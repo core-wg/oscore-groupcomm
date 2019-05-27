@@ -213,7 +213,7 @@ Building on Section 5 of {{I-D.ietf-core-object-security}}, this section defines
 
 The external_aad in the Additional Authenticated Data (AAD) is extended as follows. In particular, it has one structure used for the encryption process producing the ciphertext, and one structure used for the signing process producing the counter signature.
 
-## Updated external_aad for Encryption ## {#sec-cose-object-ext-aad-enc}
+### Updated external_aad for Encryption ### {#sec-cose-object-ext-aad-enc}
 
 The first external_aad structure used for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) includes also the counter signature algorithm and related parameters used to sign messages. In particular, compared with Section 5.4 of {{I-D.ietf-core-object-security}}, the 'algorithms' array in the aad_array MUST also include:
 
@@ -239,7 +239,7 @@ aad_array = [
 ]
 ~~~~~~~~~~~
 
-## Updated external_aad for Signing ## {#sec-cose-object-ext-aad-sign}
+### Updated external_aad for Signing ### {#sec-cose-object-ext-aad-sign}
 
 The second external_aad structure used for the signing process producing the counter signature as defined below includes also:
 
