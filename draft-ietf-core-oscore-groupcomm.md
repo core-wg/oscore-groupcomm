@@ -211,7 +211,11 @@ Building on Section 5 of {{I-D.ietf-core-object-security}}, this section defines
 
 ## Updated external_aad # {#sec-cose-object-ext-aad}
 
-The external_aad in the Additional Authenticated Data (AAD) is extended with the counter signature algorithm and related parameters used to sign messages. In particular, compared with Section 5.4 of {{I-D.ietf-core-object-security}}, the 'algorithms' array in the aad_array MUST also include:
+The external_aad in the Additional Authenticated Data (AAD) is extended as follows. In particular, it has one structure used for the encryption process producing the ciphertext, and one structure used for the signing process producing the counter signature.
+
+## Updated external_aad for Encryption ## {#sec-cose-object-ext-aad-enc}
+
+The first external_aad structure used for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) includes also the counter signature algorithm and related parameters used to sign messages. In particular, compared with Section 5.4 of {{I-D.ietf-core-object-security}}, the 'algorithms' array in the aad_array MUST also include:
 
 * 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}). This parameter has the value specified in the "Value" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}) for this counter signature algorithm.
 
@@ -219,7 +223,7 @@ The 'algorithms' array in the aad_array MAY also include:
 
 * 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm. Note that if the Counter Signature Parameters in the Common Context is empty, 'par_countersign' is not present.
 
-This external_aad structure is used both for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) and for the signing process producing the counter signature, as defined below.
+Thus, the following external_aad structure is used for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}).
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
@@ -231,6 +235,31 @@ aad_array = [
                  ? par_countersign : any],
    request_kid : bstr,
    request_piv : bstr,
+   options : bstr
+]
+~~~~~~~~~~~
+
+## Updated external_aad for Signing ## {#sec-cose-object-ext-aad-sign}
+
+The second external_aad structure used for the signing process producing the counter signature as defined below includes also:
+
+* the counter signature algorithm and related parameters used to sign messages, encoded as in the external_aad structure defined in {{sec-cose-object-ext-aad-enc}};
+
+* the value of the OSCORE Option included in the OSCORE message, encoded as a binary string.
+
+Thus, the following external_aad structure is used for the signing process producing the counter signature, as defined below.
+
+~~~~~~~~~~~ CDDL
+external_aad = bstr .cbor aad_array
+
+aad_array = [
+   oscore_version : uint,
+   algorithms : [alg_aead : int / tstr ,
+                 alg_countersign : int / tstr ,
+                 ? par_countersign : any],
+   request_kid : bstr,
+   request_piv : bstr,
+   OSCORE:option: bstr,
    options : bstr
 ]
 ~~~~~~~~~~~
