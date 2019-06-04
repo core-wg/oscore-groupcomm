@@ -861,6 +861,22 @@ In this specification, it is NOT RECOMMENDED that endpoints do not verify the co
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
+## Version -04 to -05 ## {#sec-04-05}
+
+* Added references to draft-dijk-core-groupcomm-bis.
+
+* New parameter Counter Signature Key Parameters (Section 2).
+
+* Clarification about Recipient COntexts (Section 2).
+
+* Two different external_aad for encrypting and signing (Section 3.1).
+
+* Updated response verification to handle Observe notifications (Section 6.4).
+
+* Extended Security Considerations (Section 8).
+
+* New "Counter Signature Key Parameters" IANA Registry (Section 9.2).
+
 ## Version -03 to -04 ## {#sec-03-04}
 
 * Added the new "Counter Signature Parameters" in the Security Common Context (see Section 2).
