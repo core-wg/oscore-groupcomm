@@ -139,6 +139,8 @@ To support group communication secured with OSCORE, each endpoint registered as 
 
    * A new parameter Counter Signature Parameters is included. This parameter identifies the parameters associated to the digital signature algorithm specified in the Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined in the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), where each entry indicates a specified structure of the Counter Signature Parameters.
 
+   * A new parameter Counter Signature Key Parameters is included. This parameter identifies the parameters associated to the keys used with the digital signature algorithm specified in the Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined in the Counter Signature Key Parameters Registry (see {{iana-cons-cs-key-params}}), where each entry indicates a specified structure of the Counter Signature Key Parameters.
+
 2. one Sender Context, unless the endpoint is configured exclusively as silent server. The Sender Context is used to secure outgoing messages and is initialized according to Section 3 of {{I-D.ietf-core-object-security}}, once the endpoint has joined the group. The Sender Context of a given endpoint matches the corresponding Recipient Context in all the endpoints receiving a protected message from that endpoint. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, the Sender Context stores also the endpoint's private key.
 
 3. one Recipient Context for each distinct endpoint from which messages are received, used to process incoming messages. The recipient may generate the Recipient Context upon receiving an incoming message from another endpoint in the group for the first time (see {{ssec-verify-request}} and {{ssec-verify-response}}). Each Recipient Context matches the Sender Context of the endpoint from which protected messages are received. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, each Recipient Context stores also the public key of the associated other endpoint from which messages are received.
@@ -223,6 +225,8 @@ The 'algorithms' array in the aad_array MAY also include:
 
 * 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm. Note that if the Counter Signature Parameters in the Common Context is empty, 'par_countersign' is not present.
 
+* 'par_countersign_key', which contains the Counter Signature Key Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature key parameters encoded as specified in the "Parameters" field of the Counter Signature Key Parameters Registry (see {{iana-cons-cs-key-params}}), for the used counter signature algorithm. Note that if the Counter Signature Key Parameters in the Common Context is empty, 'par_countersign_key' is not present.
+
 Thus, the following external_aad structure is used for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}).
 
 ~~~~~~~~~~~ CDDL
@@ -232,7 +236,8 @@ aad_array = [
    oscore_version : uint,
    algorithms : [alg_aead : int / tstr ,
                  alg_countersign : int / tstr ,
-                 ? par_countersign : any],
+                 ? par_countersign : any ,
+                 ? par_countersign_key : any],
    request_kid : bstr,
    request_piv : bstr,
    options : bstr
@@ -256,7 +261,8 @@ aad_array = [
    oscore_version : uint,
    algorithms : [alg_aead : int / tstr ,
                  alg_countersign : int / tstr ,
-                 ? par_countersign : any],
+                 ? par_countersign : any ,
+                 ? par_countersign_key : any],
    request_kid : bstr,
    request_piv : bstr,
    OSCORE:option: bstr,
@@ -533,69 +539,185 @@ The columns of this table are:
 Initial entries in the registry are as follows.
 
 ~~~~~~~~~~~
-+-------------+-------+-------------+-----------------+-----------+
-|    Name     | Value | Parameters  |   Description   | Reference |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-|    EdDSA    |  -8   |  crv : int  | crv value taken | [This     |
-|             |       |             | from the COSE   | Document] |
-|             |       |             | Elliptic Curve  |           |
-|             |       |             | Registry        |           |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-|    ES256    |  -7   |  crv : int  | crv value taken | [This     |
-|             |       |             | from the COSE   | Document] |
-|             |       |             | Elliptic Curve  |           |
-|             |       |             | Registry        |           |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-|    ES384    |  -35  |  crv : int  | crv value taken | [This     |
-|             |       |             | from the COSE   | Document] |
-|             |       |             | Elliptic Curve  |           |
-|             |       |             | Registry        |           |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-|    ES512    |  -36  |  crv : int  | crv value taken | [This     |
-|             |       |             | from the COSE   | Document] |
-|             |       |             | Elliptic Curve  |           |
-|             |       |             | Registry        |           |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-|    PS256    |  -37  |             | Parameters not  | [This     |
-|             |       |             | present         | Document] |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-|    PS384    |  -38  |             | Parameters not  | [This     |
-|             |       |             | present         | Document] |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-|    PS512    |  -39  |             | Parameters not  | [This     |
-|             |       |             | present         | Document] |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-| RSAES-OAEP  |  -40  |             | Parameters not  | [This     |
-| w/ RFC 8017 |       |             | present         | Document] |
-| default     |       |             |                 |           |
-| parameters  |       |             |                 |           |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-| RSAES-OAEP  |  -41  |             | Parameters not  | [This     |
-| w/ SHA-256  |       |             | present         | Document] |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-| RSAES-OAEP  |  -42  |             | Parameters not  | [This     |
-| w/ SHA-512  |       |             | present         | Document] |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
++-------------+-------+--------------+-----------------+-----------+
+|    Name     | Value |  Parameters  |   Description   | Reference |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+|    EdDSA    |  -8   |  crv : int   | crv value taken | [This     |
+|             |       |              | from the COSE   | Document] |
+|             |       |              | Elliptic Curve  |           |
+|             |       |              | Registry        |           |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+|    ES256    |  -7   |  crv : int   | crv value taken | [This     |
+|             |       |              | from the COSE   | Document] |
+|             |       |              | Elliptic Curve  |           |
+|             |       |              | Registry        |           |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+|    ES384    |  -35  |  crv : int   | crv value taken | [This     |
+|             |       |              | from the COSE   | Document] |
+|             |       |              | Elliptic Curve  |           |
+|             |       |              | Registry        |           |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+|    ES512    |  -36  |  crv : int   | crv value taken | [This     |
+|             |       |              | from the COSE   | Document] |
+|             |       |              | Elliptic Curve  |           |
+|             |       |              | Registry        |           |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+|    PS256    |  -37  |              | Parameters not  | [This     |
+|             |       |              | present         | Document] |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+|    PS384    |  -38  |              | Parameters not  | [This     |
+|             |       |              | present         | Document] |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+|    PS512    |  -39  |              | Parameters not  | [This     |
+|             |       |              | present         | Document] |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+| RSAES-OAEP  |  -40  |              | Parameters not  | [This     |
+| w/ RFC 8017 |       |              | present         | Document] |
+| default     |       |              |                 |           |
+| parameters  |       |              |                 |           |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+| RSAES-OAEP  |  -41  |              | Parameters not  | [This     |
+| w/ SHA-256  |       |              | present         | Document] |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+| RSAES-OAEP  |  -42  |              | Parameters not  | [This     |
+| w/ SHA-512  |       |              | present         | Document] |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+~~~~~~~~~~~
+
+## Counter Signature Key Parameters Registry {#iana-cons-cs-key-params}
+
+This specification establishes the IANA "Counter Signature Key Parameters" Registry. The Registry has been created to use the "Expert Review Required" registration procedure {{RFC8126}}. Expert review guidelines are provided in {{review}}.
+
+The columns of this table are:
+
+* Name: A value that can be used to identify an algorithm in documents for easier comprehension. Its value is taken from the 'Name' column of the "COSE Algorithms" Registry.
+
+* Value: The value to be used to identify this algorithm. Its content is taken from the 'Value' column of the "COSE Algorithms" Registry. The value MUST be the same one used in the "COSE Algorithms" Registry for the entry with the same 'Name' field.
+
+* Parameters: This indicates the CBOR encoding of the key parameters (if any) for the counter signature algorithm indicated by the 'Value' field.
+
+* Description: A short description of the parameters encoded in the 'Parameters' field (if any).
+
+* Reference: This contains a pointer to the public specification for the field, if one exists.
+
+Initial entries in the registry are as follows.
+
+~~~~~~~~~~~
++-------------+-------+--------------+-------------------+-----------+
+|    Name     | Value |  Parameters  |   Description     | Reference |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+|    EdDSA    |  -8   |  kty : int   | kty value is 1,   | [This     |
+|             |       |              | as Key Type "OKP" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
+|             |       |              |                   |           |
+|             |       |  crv : int   | crv value taken   |           |
+|             |       |              | from the COSE     |           |
+|             |       |              | Elliptic Curve    |           |
+|             |       |              | Registry          |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+|    ES256    |  -7   |  kty : int   | kty value is 2,   | [This     |
+|             |       |              | as Key Type "EC2" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
+|             |       |              |                   |           |
+|             |       |  crv : int   | crv value taken   |           |
+|             |       |              | from the COSE     |           |
+|             |       |              | Elliptic Curve    |           |
+|             |       |              | Registry          |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+|    ES384    |  -35  |  kty : int   | kty value is 2,   | [This     |
+|             |       |              | as Key Type "EC2" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
+|             |       |  crv : int   | crv value taken   |           |
+|             |       |              | from the COSE     |           |
+|             |       |              | Elliptic Curve    |           |
+|             |       |              | Registry          |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+|    ES512    |  -36  |  kty : int   | kty value is 2,   | [This     |
+|             |       |              | as Key Type "EC2" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
+|             |       |  crv : int   | crv value taken   |           |
+|             |       |              | from the COSE     |           |
+|             |       |              | Elliptic Curve    |           |
+|             |       |              | Registry          |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+|    PS256    |  -37  |  kty : int   | kty value is 3,   | [This     |
+|             |       |              | as Key Type "RSA" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+|    PS384    |  -38  |  kty : int   | kty value is 3,   | [This     |
+|             |       |              | as Key Type "RSA" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+|    PS512    |  -39  |  kty : int   | kty value is 3,   | [This     |
+|             |       |              | as Key Type "RSA" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+| RSAES-OAEP  |  -40  |  kty : int   | kty value is 3,   | [This     |
+| w/ RFC 8017 |       |              | as Key Type "RSA" | Document] |
+| default     |       |              | from the COSE Key |           |
+| parameters  |       |              | Types Registry    |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+| RSAES-OAEP  |  -41  |  kty : int   | kty value is 3,   | [This     |
+| w/ SHA-256  |       |              | as Key Type "RSA" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+| RSAES-OAEP  |  -42  |  kty : int   | kty value is 3,   | [This     |
+| w/ SHA-512  |       |              | as Key Type "RSA" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
 ~~~~~~~~~~~
 
 ## Expert Review Instructions {#review}
