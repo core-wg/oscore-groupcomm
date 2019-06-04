@@ -472,7 +472,11 @@ The Group Manager is responsible for performing the following tasks:
 
 # Security Considerations  # {#sec-security-considerations}
 
-The same security considerations from OSCORE (Section 11 of {{I-D.ietf-core-object-security}}) apply to this specification. Additional security aspects to be taken into account are discussed below.
+The same security considerations from OSCORE (Section 11 of {{I-D.ietf-core-object-security}}) apply to this specification.
+
+As discussed in Section 6.2.3 of {{I-D.dijk-core-groupcomm-bis}}, Group OSCORE addresses security attacks against CoAP listed in Sections 11.2-11.6 of {{RFC7252}}, especially when mounted over IP multicast.
+
+Additional security aspects to be taken into account are discussed below.
 
 ## Group-level Security {#ssec-group-level-security}
 
