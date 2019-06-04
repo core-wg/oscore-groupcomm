@@ -270,6 +270,8 @@ aad_array = [
 ]
 ~~~~~~~~~~~
 
+Note for implementation: this requires the value of the OSCORE option to be fully ready, before starting the signing process.
+
 ## Use of the 'kid' Parameter # {#sec-cose-object-kid}
 
 The value of the 'kid' parameter in the 'unprotected' field of response messages MUST be set to the Sender ID of the endpoint transmitting the message. That is, unlike in {{I-D.ietf-core-object-security}}, the 'kid' parameter is always present in all messages, i.e. both requests and responses.
