@@ -265,7 +265,7 @@ aad_array = [
                  ? par_countersign_key : any],
    request_kid : bstr,
    request_piv : bstr,
-   OSCORE:option: bstr,
+   OSCORE_option: bstr,
    options : bstr
 ]
 ~~~~~~~~~~~
@@ -280,7 +280,7 @@ The value of the 'kid' parameter in the 'unprotected' field of response messages
 
 The 'unprotected' field MUST additionally include the following parameter:
 
-* CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the sender using its own private key as described in Appendix A.2 of {{RFC8152}}. In particular, the Sig_structure contains the external_aad as defined above and the ciphertext of the COSE_Encrypt0 object as payload. 
+* CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the sender using its own private key as described in Appendix A.2 of {{RFC8152}}. In particular, the Sig_structure contains the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE_Encrypt0 object as payload. 
 
 # OSCORE Header Compression {#compression}
 
@@ -472,7 +472,7 @@ The Group Manager is responsible for performing the following tasks:
 
 # Security Considerations  # {#sec-security-considerations}
 
-The same security considerations from OSCORE (Section 11 of {{I-D.ietf-core-object-security}}) apply to this specification.
+The same security considerations from OSCORE (Section 12 of {{I-D.ietf-core-object-security}}) apply to this specification.
 
 As discussed in Section 6.2.3 of {{I-D.dijk-core-groupcomm-bis}}, Group OSCORE addresses security attacks against CoAP listed in Sections 11.2-11.6 of {{RFC7252}}, especially when mounted over IP multicast.
 
@@ -490,13 +490,13 @@ Note that, even if an endpoint is authorized to be a group member and to take pa
 
 ## Uniqueness of (key, nonce) {#ssec-key-nonce-uniqueness}
 
-The proof for uniqueness of (key, nonce) pairs in Appendix D.3 of {{I-D.ietf-core-object-security}} is also valid in group communication scenarios. That is, given an OSCORE group:
+The proof for uniqueness of (key, nonce) pairs in Appendix D.4 of {{I-D.ietf-core-object-security}} is also valid in group communication scenarios. That is, given an OSCORE group:
 
 * Uniqueness of Sender IDs within the group is enforced by the Group Manager.
 
-* The case A in Appendix D.3 of {{I-D.ietf-core-object-security}} for messages including a Partial IV concerns only group requests, and same considerations from {{I-D.ietf-core-object-security}} apply here as well.
+* The case A in Appendix D.4 of {{I-D.ietf-core-object-security}} concerns all group requests and responses including a Partial IV (e.g. Observe notifications). In this case, same considerations from {{I-D.ietf-core-object-security}} apply here as well.
 
-* The case B in Appendix D.3 of {{I-D.ietf-core-object-security}} for messages not including a Partial IV concerns all group responses, and same considerations from {{I-D.ietf-core-object-security}} apply here as well.
+* The case B in Appendix D.4 of {{I-D.ietf-core-object-security}} concerns responses not including a Partial IV (e.g. single response to a group request). In this case, same considerations from {{I-D.ietf-core-object-security}} apply here as well.
 
 As a consequence, each message encrypted/decrypted with the same Sender Key is processed by using a different (ID_PIV, PIV) pair. This means that nonces used by any fixed encrypting endpoint are unique. Thus, each message is processed with a different (key, nonce) pair.
 
