@@ -472,11 +472,19 @@ The Group Manager is responsible for performing the following tasks:
 
 # Security Considerations  # {#sec-security-considerations}
 
-The same security considerations from OSCORE (Section 12 of {{I-D.ietf-core-object-security}}) apply to this specification.
+The same threat model discussed for OSCORE in Appendix D.1 of {{I-D.ietf-core-object-security}} holds for Group OSCORE. In addition, source authentication of messages is explicitly ensured by means of counter signatures, as further discussed in {{ssec-group-level-security}}.
+
+The same considerations on supporting Proxy operations discussed for OSCORE in Appendix D.2 of {{I-D.ietf-core-object-security}} hold for Group OSCORE.
+
+The same considerations on protected message fields for OSCORE discussed in Appendix D.3 of {{I-D.ietf-core-object-security}} hold for Group OSCORE.
+
+The same considerations on uniqueness of (key, nonce) pairs for OSCORE discussed in Appendix D.4 of {{I-D.ietf-core-object-security}} hold for Group OSCORE. This is further discussed in {{ssec-key-nonce-uniqueness}}.
+
+The same considerations on unprotected message fields for OSCORE discussed in Appendix D.5 of {{I-D.ietf-core-object-security}} hold for Group OSCORE, with the following difference. The countersignature included in a Group OSCORE message is computed also over the value of the OSCORE option, as part of the Additional Authenticated Data used in the signing process. This is further discussed in {{ssec-cross-group-injection}}.
 
 As discussed in Section 6.2.3 of {{I-D.dijk-core-groupcomm-bis}}, Group OSCORE addresses security attacks against CoAP listed in Sections 11.2-11.6 of {{RFC7252}}, especially when mounted over IP multicast.
 
-Additional security aspects to be taken into account are discussed below.
+The rest of this section first discusses how aspects covered in the security considerations of OSCORE (Section 12 of {{I-D.ietf-core-object-security}}) relate to Group OSCORE, and further discusses new additional security aspects to be taken into account.
 
 ## Group-level Security {#ssec-group-level-security}
 
@@ -519,6 +527,10 @@ In the second case, the sender protects a message using the new Security Context
 In case endpoints are deployed in multiple groups managed by different non-synchronized Group Managers, it is possible for Group Identifiers of different groups to coincide. That can also happen if the application can not guarantee unique Group Identifiers within a given Group Manager. However, this does not impair the security of the AEAD algorithm.
 
 In fact, as long as the Master Secret is different for different groups and this condition holds over time, and as long as the Sender IDs within a group are unique, AEAD keys are different among different groups.
+
+## Cross-group Message Injection {#ssec-cross-group-injection}
+
+TBD
 
 # IANA Considerations # {#iana}
 
