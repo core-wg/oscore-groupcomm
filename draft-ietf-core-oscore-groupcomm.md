@@ -484,7 +484,7 @@ The same considerations on unprotected message fields for OSCORE discussed in Ap
 
 As discussed in Section 6.2.3 of {{I-D.dijk-core-groupcomm-bis}}, Group OSCORE addresses security attacks against CoAP listed in Sections 11.2-11.6 of {{RFC7252}}, especially when mounted over IP multicast.
 
-The rest of this section first discusses how aspects covered in the security considerations of OSCORE (Section 12 of {{I-D.ietf-core-object-security}}) relate to Group OSCORE, and further discusses new additional security aspects to be taken into account.
+The rest of this section first discusses security aspects to be taken into account when using Group OSCORE. Then it goes through aspects covered in the security considerations of OSCORE (Section 12 of {{I-D.ietf-core-object-security}}), and discusses how they hold when Group OSCORE is used.
 
 ## Group-level Security {#ssec-group-level-security}
 
@@ -529,6 +529,38 @@ In case endpoints are deployed in multiple groups managed by different non-synch
 In fact, as long as the Master Secret is different for different groups and this condition holds over time, and as long as the Sender IDs within a group are unique, AEAD keys are different among different groups.
 
 ## Cross-group Message Injection {#ssec-cross-group-injection}
+
+TBD
+
+## End-to-end Protection {#ssec-e2e-protection}
+
+TBD
+
+## Security Context Establishment {#ssec-ctx-establishment}
+
+TBD
+
+## Master Secret {#ssec-master-secret}
+
+TBD
+
+## Replay Protection {#ssec-replay-protection}
+
+TBD
+
+## Client Aliveness {#ssec-client-aliveness}
+
+TBD
+
+## Cryptographic Considerations {#ssec-crypto-considerations}
+
+TBD
+
+## Message Segmentation {#ssec-message-segmentation}
+
+TBD
+
+## Privacy Considerations {#ssec-privacy}
 
 TBD
 
