@@ -556,7 +556,9 @@ Note that, by changing the Partial IV as discussed above, any member of G1 would
 
 ## End-to-end Protection {#ssec-e2e-protection}
 
-TBD
+The same considerations from Section 12.1 of {{I-D.ietf-core-object-security}} hold for Group OSCORE.
+
+Additionally, (D)TLS and Group OSCORE can be combined for protecting message exchanges occurring over unicast. Instead, it is not possible to combine DTLS and Group OSCORE for protecting message exchanges where messages are (also) sent over multicast.
 
 ## Security Context Establishment {#ssec-ctx-establishment}
 
