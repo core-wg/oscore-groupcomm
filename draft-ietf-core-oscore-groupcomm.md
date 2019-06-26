@@ -591,7 +591,7 @@ The processing of response messages described in {{ssec-verify-response}} also e
 
 ## Client Aliveness {#ssec-client-aliveness}
 
-TBD
+As discussed in Section 12.5 of {{I-D.ietf-core-object-security}}, a server may use the Echo option {{I-D.ietf-core-echo-request-tag}} to verify the aliveness of the client that originated a received request. This would also allow the server to (re-)synchronize with the client's sequence number, as well as to ensure that the request is fresh and has not been replayed or (purposely) delayed, if it is the first one received from that client after having joined the group or rebooted (see {{ssec-synch-challenge-response}}).
 
 ## Cryptographic Considerations {#ssec-crypto-considerations}
 
@@ -860,7 +860,6 @@ The approach described in this document aims at fulfilling the following securit
 
 * Message ordering: it must be possible to determine the ordering of messages coming from a single sender. In accordance with OSCORE {{I-D.ietf-core-object-security}}, this results in providing relative freshness of group requests and absolute freshness of responses. It is not required to determine ordering of messages from different senders.
 
-
 # List of Use Cases # {#sec-use-cases}
 
 Group Communication for CoAP {{RFC7390}}{{I-D.dijk-core-groupcomm-bis}} provides the necessary background for multicast-based CoAP communication, with particular reference to low-power and lossy networks (LLNs) and resource constrained environments. The interested reader is encouraged to first read {{RFC7390}}{{I-D.dijk-core-groupcomm-bis}} to understand the non-security related details. This section discusses a number of use cases that benefit from secure group communication. Specific security requirements for these use cases are discussed in {{sec-requirements}}.
@@ -902,7 +901,6 @@ The Group Manager must verify that the joining endpoint is authorized to join th
 In case of successful authorization check, the Group Manager generates a Sender ID assigned to the joining endpoint, before proceeding with the rest of the join process. That is, the Group Manager provides the joining endpoint with the keying material and parameters to initialize the OSCORE Security Context (see {{sec-context}}). The actual provisioning of keying material and parameters to the joining endpoint is out of the scope of this document.
 
 It is RECOMMENDED that the join process adopts the approach described in {{I-D.ietf-ace-key-groupcomm-oscore}} and based on the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. 
-
 
 # Examples of Synchronization Approaches {#synch-ex}
 
