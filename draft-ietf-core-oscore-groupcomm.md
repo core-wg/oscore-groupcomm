@@ -562,7 +562,15 @@ Additionally, (D)TLS and Group OSCORE can be combined for protecting message exc
 
 ## Security Context Establishment {#ssec-ctx-establishment}
 
-TBD
+The use of COSE_Encrypt0 and AEAD to protect messages as specified in this document requires an endpoint to be a member of an OSCORE group.
+
+That is, upon joining the group, the endpoint securely receives from the Group Manager the necessary input parameters, which are used to derive the Common Security Context and the Sender Context (see {{sec-context}}). The Group Manager ensures uniqueness of Sender IDs in the same group.
+
+Each different Recipient Context for decrypting messages from a particular sender can be derived at runtime, at the latest upon receiving a message from that sender for the first time.
+
+Countersignatures of group messages are verified by means of the public key of the respective sender endpoint. Upon nodes' joining, the Group Manager collects such public keys and MUST verify proof-of-possession of the respective private key. Later on, a group member can request from the Group Manager the public keys of other group members. 
+
+The joining process can occur, for instance, as defined in {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
 ## Master Secret {#ssec-master-secret}
 
