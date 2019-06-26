@@ -537,7 +537,7 @@ To this end, the countersignature of each message protected with Group OSCORE is
 
 Since the signing process takes as input also the ciphertext of the COSE_Encrypt0 object, the countersignature is bound not only to the intended OSCORE group, hence to the triplet (Master Secret, Master Salt, ID Context), but also to a specific Sender ID in that group and to its specific symmetric key used for AEAD encryption, hence to the quartet (Master Secret, Master Salt, ID Context, Sender ID).
 
-This makes it possible to prevent the attack described below, where a malicious group member can inject forged messages to a different OSCORE group than the originally intended one. Let us consider:
+This makes it practically infeasible to perform the attack described below, where a malicious group member can inject forged messages to a different OSCORE group than the originally intended one. Let us consider:
 
 * Two OSCORE groups G1 and G2, with ID Context (Group ID) Gid1 and Gid2, respectively. Both G1 and G2 use the AEAD cipher AES-CCM-16-64-128, i.e. the MAC of the ciphertext is 8 bytes in size.
 
@@ -581,7 +581,13 @@ With particular reference to the OSCORE Master Secret, it has to be kept secret 
 
 ## Replay Protection {#ssec-replay-protection}
 
-TBD
+As in OSCORE, also Group OSCORE relies on sender sequence numbers included in the COSE message field 'Partial IV' and used to build AEAD nonces.
+
+As discussed in {{sec-synch-seq-num}}, an endpoint that has just joined a group is exposed to replay attack, as it is not aware of the sender sequence numbers currently used by other group members. {{synch-ex}} describes how endpoints can synchronize with senders' sequence numbers.
+
+Unless exchanges in a group relies only on unicast messages, Group OSCORE cannot be used with reliable transport. Thus, other that in such unlikely case, it cannot be defined that only messages with sequence number which are equal to previous sequence number + 1 are accepted.
+
+The processing of response messages described in {{ssec-verify-response}} also ensures that a client accepts a single valid response to a given request from each replying server, unless CoAP observation is used.
 
 ## Client Aliveness {#ssec-client-aliveness}
 
