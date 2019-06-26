@@ -62,6 +62,7 @@ normative:
   I-D.dijk-core-groupcomm-bis:
   I-D.ietf-core-object-security:
   RFC2119:
+  RFC4086:
   RFC6979:
   RFC7252:
   RFC8032:
@@ -574,7 +575,9 @@ The joining process can occur, for instance, as defined in {{I-D.ietf-ace-key-gr
 
 ## Master Secret {#ssec-master-secret}
 
-TBD
+Group OSCORE derives the Security Context using the same construction of OSCORE, using the Group Identifier of a group as the related ID Context. Hence, the same required properties of the Security Context parameters discussed in Section 3.3 of {{I-D.ietf-core-object-security}} hold for this document.
+
+With particular reference to the OSCORE Master Secret, it has to be kept secret among the members of the respective OSCORE group and the Group Manager responsible for that group. Also, the Master Secret must have a good amount of randomness, and the Group Manager can generate it offline using a good random number generator. This includes the case where the Group Manager rekeys the group by generating and distributing a new Master Secret. Randomness requirements for security are described in {{RFC4086}}.
 
 ## Replay Protection {#ssec-replay-protection}
 
