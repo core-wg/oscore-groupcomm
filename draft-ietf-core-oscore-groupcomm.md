@@ -530,27 +530,27 @@ In fact, as long as the Master Secret is different for different groups and this
 
 ## Cross-group Message Injection {#ssec-cross-group-injection}
 
-A same endpoint is allowed to use the same signature key in multiple OSCORE groups, possibly administered by different Group Managers. Also, the same endpoint can also register several times in the same group, getting multiple unique Sender IDs. This requires that, when a sender endpoint sends a message to an OSCORE group using a Sender ID, the countersignature included in the message is explicitly bound also to that group and to the used Sender ID.
+A same endpoint is allowed to and would likely use the same signature key in multiple OSCORE groups, possibly administered by different Group Managers. Also, the same endpoint can register several times in the same group, getting multiple unique Sender IDs. This requires that, when a sender endpoint sends a message to an OSCORE group using a Sender ID, the countersignature included in the message is explicitly bound also to that group and to the used Sender ID.
 
 To this end, the countersignature of each message protected with Group OSCORE is computed also over the value of the OSCORE option, which is part of the Additional Authenticated Data used in the signing process (see {{sec-cose-object-ext-aad-sign}}). That is, the countersignature is computed also over: the ID Context (Group ID) and the Partial IV, which are always present in group requests; as well as the Sender ID of the message originator, which is always present in all group requests and responses.
 
-It follows that, since the signing process takes as input also the ciphertext of the COSE_Encrypt0 object, the countersignature is bound not only to the intended OSCORE group, hence to the triplet (Master Secret, Master Salt, ID Context), but also to a specific Sender ID in that group and to the specific symmetric key used for AEAD encryption, hence to the quartet (Master Secret, Master Salt, ID Context, Sender ID).
+Since the signing process takes as input also the ciphertext of the COSE_Encrypt0 object, the countersignature is bound not only to the intended OSCORE group, hence to the triplet (Master Secret, Master Salt, ID Context), but also to a specific Sender ID in that group and to its specific symmetric key used for AEAD encryption, hence to the quartet (Master Secret, Master Salt, ID Context, Sender ID).
 
-This makes it possible to prevent the attack described below, where a malicious group member can inject forged messages to a different OSCORE group than the intended one. Let us consider:
+This makes it possible to prevent the attack described below, where a malicious group member can inject forged messages to a different OSCORE group than the originally intended one. Let us consider:
 
-* Two OSCORE groups G1 and G2, with ID Context (Group ID) Gid1 and Gid2, respectively. Both groups G1 and G2 using the AEAD cipher AES-CCM-16-64-128, i.e. the MAC of each message is 8 bytes in size.
+* Two OSCORE groups G1 and G2, with ID Context (Group ID) Gid1 and Gid2, respectively. Both G1 and G2 use the AEAD cipher AES-CCM-16-64-128, i.e. the MAC of the ciphertext is 8 bytes in size.
 
-* A victim endpoint V which is member of both G1 and G2, and uses the same signature key in both groups. The endpoint V has Sender ID Sid1 in G1 and Sender ID Sid2 in G2. The pairs (Sid1, Gid1) and (Sid2, Gid2) identify the same public key of V in G1 and G2, respectively. For the sake of simplicity, the following assumes that Sid1 and Sid2 have the same value.
+* A victim endpoint V which is member of both G1 and G2, and uses the same signature key in both groups. The endpoint V has Sender ID Sid1 in G1 and Sender ID Sid2 in G2. The pairs (Sid1, Gid1) and (Sid2, Gid2) identify the same public key of V in G1 and G2, respectively.
 
-* A malicious endpoint Z is also member of both G1 and G2.
+* A malicious endpoint Z is also member of both G1 and G2. Hence, Z is able to derive the symmetric keys associated to V in G1 and G2.
 
-If countersignatures were not computed also over the value of the OSCORE option as discussed above, Z can intercept a group message M1 sent by V to G1, and forge a similar valid message M2 to be injected in G2. In particular, M2 would preserve the same valid countersignature of M1.
+If countersignatures were not computed also over the value of the OSCORE option as discussed above, Z can intercept a group message M1 sent by V to G1, and forge a valid signed message M2 to be injected in G2, making it appear as sent by V and valid to be accepted.
 
-More in detail, Z first intercepts a message M1 in G1, and creates a copy M2. Then, Z changes the 'kid context' value in the OSCORE option of M2 from G1 to G2.
+More in detail, Z first intercepts a message M1 sent by V in G1, and tries to forge a message M2, by changing the value of the OSCORE option from M1 as follows: the 'kid context' is changed from G1 to G2; and the 'kid' is changed from Sid1 to Sid2.
 
-If M2 is a CoAP request message, Z forges a new ciphertext to replace the current one in the message payload, such that: i) the new MAC is successfully verified by using the Recipient Key associated to V in G2; ii) the countersignature is also successfully verified. This requires 2^64 offline calculations, and Z can check offline if a performed forgery is actually valid before sending the forged message to G2. The probability that the MAC in the forged ciphertext is valid is equal to 2^-64.
+If M2 is used as a request message, there is a probability equal to 2^-64 that the same unchanged MAC is successfully verified by using Sid2 as 'request_kid' and the symmetric key associated to V in G2. In such a case, the same unchanged signature would be also valid. Note that Z can check offline if a performed forgery is actually valid before sending the forged message to G2. That is, this attack has a complexity of 2^64 offline calculations.
 
-If M2 is a CoAP response message, Z can proceed just as discussed above for the case of request messages. In addition, Z can also change the response partial IV, until: i) the MAC unchanged from the original ciphertext is also successfully verified by using the Recipient Key associated to V in G2; ii) the countersignature is also successfully verified. Note that, since the non-MAC part of the ciphertext is left unchanged, the plaintext resulting from decrypting the forged message would likely be non relevant. Since the Partial IV is 5 bytes in size, this requires 2^40 operations. Also, the probability that a single given message can be used to forge a response for a given request is 2^-24, since there are more MAC values (8 bytes) than Partial IV value (5 bytes).
+If M2 is used as a response, Z can also change the response Partial IV, until the same unchanged MAC is successfully verified by using Sid2 as 'request_kid' and the symmetric key associated to V in G2. In such a case, the same unchanged signature would be also valid. Since the Partial IV is 5 bytes in size, this requires 2^40 operations to test all the Partial IVs, which can be done in real-time. Also, the probability that a single given message M1 can be used to forge a response M2 for a given request is equal to 2^-24, since there are more MAC values (8 bytes in size) than Partial IV values (5 bytes in size).
 
 Note that, by changing the Partial IV as discussed above, any member of G1 would also be able to forge a valid signed response message M2 to be injected in G1.
 
