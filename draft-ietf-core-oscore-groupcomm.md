@@ -537,7 +537,7 @@ To this end, the countersignature of each message protected with Group OSCORE is
 
 Since the signing process takes as input also the ciphertext of the COSE_Encrypt0 object, the countersignature is bound not only to the intended OSCORE group, hence to the triplet (Master Secret, Master Salt, ID Context), but also to a specific Sender ID in that group and to its specific symmetric key used for AEAD encryption, hence to the quartet (Master Secret, Master Salt, ID Context, Sender ID).
 
-This makes it practically infeasible to perform the attack described below, where a malicious group member can inject forged messages to a different OSCORE group than the originally intended one. Let us consider:
+This makes it practically infeasible to perform the attack described below, where a malicious group member injects forged messages to a different OSCORE group than the originally intended one. Let us consider:
 
 * Two OSCORE groups G1 and G2, with ID Context (Group ID) Gid1 and Gid2, respectively. Both G1 and G2 use the AEAD cipher AES-CCM-16-64-128, i.e. the MAC of the ciphertext is 8 bytes in size.
 
@@ -595,7 +595,13 @@ As discussed in Section 12.5 of {{I-D.ietf-core-object-security}}, a server may 
 
 ## Cryptographic Considerations {#ssec-crypto-considerations}
 
-TBD
+Same considerations from Section 12.6 of {{I-D.ietf-core-object-security}} abuot the maximum Sender Sequence Number hold for Group OSCORE. 
+
+As discussed in {{ssec-wrap-around-partial-iv}}, an endpoint that experiences a wrap-around of its own Sender Sequence Number MUST NOT transmit further messages including a Partial IV, until it has derived a new Sender Context. This prevents the endpoint to reuse the same AEAD nonces with the same Sender key.
+
+In order to renew its own Sender Context, the endpoint SHOULD inform the Group Manager, which can either renew the whole OSCORE Security Context by means of group rekeying, or provide only that endpoint with a new Sender ID value. Either case, the endpoint derives a new Sender Context, and in particular a new Sender Key.
+
+Additionally same considerations from Section 12.6 of {{I-D.ietf-core-object-security}} hold for Group OSCORE, about building the AEAD nonce and the secrecy of the Security Context parameters.
 
 ## Message Segmentation {#ssec-message-segmentation}
 
