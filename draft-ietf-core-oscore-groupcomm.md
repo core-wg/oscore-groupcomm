@@ -595,21 +595,29 @@ As discussed in Section 12.5 of {{I-D.ietf-core-object-security}}, a server may 
 
 ## Cryptographic Considerations {#ssec-crypto-considerations}
 
-Same considerations from Section 12.6 of {{I-D.ietf-core-object-security}} abuot the maximum Sender Sequence Number hold for Group OSCORE. 
+The same considerations from Section 12.6 of {{I-D.ietf-core-object-security}} abuot the maximum Sender Sequence Number hold for Group OSCORE. 
 
 As discussed in {{ssec-wrap-around-partial-iv}}, an endpoint that experiences a wrap-around of its own Sender Sequence Number MUST NOT transmit further messages including a Partial IV, until it has derived a new Sender Context. This prevents the endpoint to reuse the same AEAD nonces with the same Sender key.
 
 In order to renew its own Sender Context, the endpoint SHOULD inform the Group Manager, which can either renew the whole OSCORE Security Context by means of group rekeying, or provide only that endpoint with a new Sender ID value. Either case, the endpoint derives a new Sender Context, and in particular a new Sender Key.
 
-Additionally same considerations from Section 12.6 of {{I-D.ietf-core-object-security}} hold for Group OSCORE, about building the AEAD nonce and the secrecy of the Security Context parameters.
+Additionally, the same considerations from Section 12.6 of {{I-D.ietf-core-object-security}} hold for Group OSCORE, about building the AEAD nonce and the secrecy of the Security Context parameters.
 
 ## Message Segmentation {#ssec-message-segmentation}
 
-TBD
+The same considerations from Section 12.7 of {{I-D.ietf-core-object-security}} hold for Group OSCORE.
 
 ## Privacy Considerations {#ssec-privacy}
 
-TBD
+Group OSCORE ensures end-to-end integrity protection and encryption of the message payload and all options that are not used for proxy operations. In particular, options are processed according to the same class U/I/E that they have for OSCORE. Therefore, the same privacy considerations from Section 12.8 of {{I-D.ietf-core-object-security}} hold for Group OSCORE.
+
+Furthermore, the following privacy considerations hold, about the OSCORE option that may reveal information on the communicating endpoints.
+
+* The 'kid' parameter, which is intended to help a recipient endpoint to find the right Recipient Context, may reveal information about the Sender Endpoint. Since both requests and responses always include the 'kid' parameter, this may reveal information about both a client sending a group request and all the possibly replying servers sending their own individual response.
+
+* The 'kid context' parameter, which is intended to help a recipient endpoint to find the right Recipient Context, reveals information about the sender endpoint. In particular, it reveals that the sender endpoint is a member of a particular OSCORE group, whose current Group ID is indicated in the 'kid context' parameter.  Moreover, this parameter explicitly relate two or more communicating endpoints, as members of the same OSCORE group.
+
+Also, using the mechanisms described in {{ssec-synch-challenge-response}} to achieve sequence number synchronization with a client may reveal when a server device goes through a reboot. This can be mitigated by the server device storing the precise state of the replay window of each known client on a clean shutdown.
 
 # IANA Considerations # {#iana}
 
