@@ -196,9 +196,9 @@ The specific approach used to distribute the new Gid and Master Secret parameter
 
 ## Wrap-Around of Partial IVs {#ssec-wrap-around-partial-iv}
 
-A client can eventually experience a wrap-around of its own Sender Sequence Number, which is used as Partial IV in outgoing requests and incremented after each request.
+An endpoint can eventually experience a wrap-around of its own Sender Sequence Number, which is incremented after sending each new message including a Partial IV. This is the case for all group requests, all Observe notifications {{RFC7641}} and, optionally, any other response.
 
-When this happens, the endpoint MUST NOT transmit further group requests until it has derived a new Sender Context, in order to avoid reusing nonces with the same keys.
+When a wrap-around happens, the endpoint MUST NOT transmit further further messages including a Partial IV until it has derived a new Sender Context, in order to avoid reusing nonces with the same keys.
 
 Furthermore, the endpoint SHOULD inform the Group Manager, that can take one of the following actions:
 
