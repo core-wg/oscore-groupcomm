@@ -827,12 +827,41 @@ Initial entries in the registry are as follows.
 
 ## Expert Review Instructions {#review}
 
-The IANA Registry established in this document is defined as expert review.
-This section gives some general guidelines for what the experts should be looking for, but they are being designated as experts for a reason so they should be given substantial latitude.
+The IANA Registry established in this document is defined as "Expert Review".
+This section gives some general guidelines for what the experts should be 
+looking for, but they are being designated as experts for a reason so they 
+should be given substantial latitude.
 
 Expert reviewers should take into consideration the following points:
 
-TBD
+* Clarity and correctness of registrations.
+Experts are expected to check the clarity of purpose and use of the requested
+entries. Experts should inspect the entry for the algorithm considered, to
+verify the conformity of the encoding proposed against the theoretical algorithm,
+including completeness of the 'Parameters' column.
+Expert needs to make sure values are taken from the right registry, 
+ when that's required.
+Expert should consider requesting an opinion on the correctness of registered 
+parameters from the CBOR Object Signing and Encryption Working Group (COSE).
+Encodings that do not meet these objective of clarity and completeness 
+should not be registered.
+
+* Duplicated registration and point squatting should be discouraged.
+ Reviewers are encouraged to get sufficient information for registration 
+ requests to ensure that the usage is not going to duplicate one that is 
+ already registered and that the point is likely to be used in deployments.
+
+* Experts should take into account the expected usage of fields when approving point assignment.
+The length of the 'Parameters' encoding should be weighed against the
+ usage of the entry, considering the size of device it will be used on.
+Additionally, the length of the encoded value should be weighed against 
+how many code points of that length are left, the size of device it will be
+used on, and the number of code points left that encode to that
+size.
+
+* Specifications are recommended.
+When specifications are not provided, the description provided needs to
+have sufficient information to verify the points above.
 
 --- back
 
