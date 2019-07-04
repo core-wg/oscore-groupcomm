@@ -198,7 +198,7 @@ The specific approach used to distribute the new Gid and Master Secret parameter
 
 An endpoint can eventually experience a wrap-around of its own Sender Sequence Number, which is incremented after sending each new message including a Partial IV. This is the case for all group requests, all Observe notifications {{RFC7641}} and, optionally, any other response.
 
-When a wrap-around happens, the endpoint MUST NOT transmit further further messages including a Partial IV until it has derived a new Sender Context, in order to avoid reusing nonces with the same keys.
+When a wrap-around happens, the endpoint MUST NOT transmit further messages including a Partial IV until it has derived a new Sender Context, in order to avoid reusing nonces with the same keys.
 
 Furthermore, the endpoint SHOULD inform the Group Manager, that can take one of the following actions:
 
@@ -575,7 +575,7 @@ The joining process can occur, for instance, as defined in {{I-D.ietf-ace-key-gr
 
 ## Master Secret {#ssec-master-secret}
 
-Group OSCORE derives the Security Context using the same construction of OSCORE, using the Group Identifier of a group as the related ID Context. Hence, the same required properties of the Security Context parameters discussed in Section 3.3 of {{I-D.ietf-core-object-security}} hold for this document.
+Group OSCORE derives the Security Context using the same construction of OSCORE, and by using the Group Identifier of a group as the related ID Context. Hence, the same required properties of the Security Context parameters discussed in Section 3.3 of {{I-D.ietf-core-object-security}} hold for this document.
 
 With particular reference to the OSCORE Master Secret, it has to be kept secret among the members of the respective OSCORE group and the Group Manager responsible for that group. Also, the Master Secret must have a good amount of randomness, and the Group Manager can generate it offline using a good random number generator. This includes the case where the Group Manager rekeys the group by generating and distributing a new Master Secret. Randomness requirements for security are described in {{RFC4086}}.
 
@@ -585,7 +585,7 @@ As in OSCORE, also Group OSCORE relies on sender sequence numbers included in th
 
 As discussed in {{sec-synch-seq-num}}, an endpoint that has just joined a group is exposed to replay attack, as it is not aware of the sender sequence numbers currently used by other group members. {{synch-ex}} describes how endpoints can synchronize with senders' sequence numbers.
 
-Unless exchanges in a group relies only on unicast messages, Group OSCORE cannot be used with reliable transport. Thus, other that in such unlikely case, it cannot be defined that only messages with sequence number which are equal to previous sequence number + 1 are accepted.
+Unless exchanges in a group rely only on unicast messages, Group OSCORE cannot be used with reliable transport. Thus, other that in such unlikely case, it cannot be defined that only messages with sequence number which are equal to previous sequence number + 1 are accepted.
 
 The processing of response messages described in {{ssec-verify-response}} also ensures that a client accepts a single valid response to a given request from each replying server, unless CoAP observation is used.
 
@@ -595,7 +595,7 @@ As discussed in Section 12.5 of {{I-D.ietf-core-object-security}}, a server may 
 
 ## Cryptographic Considerations {#ssec-crypto-considerations}
 
-The same considerations from Section 12.6 of {{I-D.ietf-core-object-security}} abuot the maximum Sender Sequence Number hold for Group OSCORE. 
+The same considerations from Section 12.6 of {{I-D.ietf-core-object-security}} about the maximum Sender Sequence Number hold for Group OSCORE. 
 
 As discussed in {{ssec-wrap-around-partial-iv}}, an endpoint that experiences a wrap-around of its own Sender Sequence Number MUST NOT transmit further messages including a Partial IV, until it has derived a new Sender Context. This prevents the endpoint to reuse the same AEAD nonces with the same Sender key.
 
