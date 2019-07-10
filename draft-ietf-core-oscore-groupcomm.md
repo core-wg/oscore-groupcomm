@@ -59,8 +59,10 @@ author:
 
 normative:
 
+  I-D.dijk-core-groupcomm-bis:
   I-D.ietf-core-object-security:
   RFC2119:
+  RFC4086:
   RFC6979:
   RFC7252:
   RFC8032:
@@ -91,19 +93,19 @@ This document describes a mode for protecting group communication over the Const
 
 The Constrained Application Protocol (CoAP) {{RFC7252}} is a web transfer protocol specifically designed for constrained devices and networks {{RFC7228}}.
 
-Group communication for CoAP {{RFC7390}} addresses use cases where deployed devices benefit from a group communication model, for example to reduce latencies, improve performance and reduce bandwidth utilisation. Use cases include lighting control, integrated building control, software and firmware updates, parameter and configuration updates, commissioning of constrained networks, and emergency multicast (see {{sec-use-cases}}). Furthermore, {{RFC7390}} recognizes the importance to introduce a secure mode for CoAP group communication. This specification defines such a mode.
+Group communication for CoAP {{RFC7390}}{{I-D.dijk-core-groupcomm-bis}} addresses use cases where deployed devices benefit from a group communication model, for example to reduce latencies, improve performance and reduce bandwidth utilisation. Use cases include lighting control, integrated building control, software and firmware updates, parameter and configuration updates, commissioning of constrained networks, and emergency multicast (see {{sec-use-cases}}). Furthermore, {{RFC7390}} recognizes the importance to introduce a secure mode for CoAP group communication. This specification defines such a mode.
 
 Object Security for Constrained RESTful Environments (OSCORE){{I-D.ietf-core-object-security}} describes a security protocol based on the exchange of protected CoAP messages. OSCORE builds on CBOR Object Signing and Encryption (COSE) {{RFC8152}} and provides end-to-end encryption, integrity, replay protection and binding of response to request between a sender and a receipient, also in the presence of intermediaries. To this end, a CoAP message is protected by including its payload (if any), certain options, and header fields in a COSE object, which replaces the authenticated and encrypted fields in the protected message.
 
 This document defines Group OSCORE, providing end-to-end security of CoAP messages exchanged between members of a group, and preserving independence of transport layer. In particular, the described approach defines how OSCORE should be used in a group communication setting, so that end-to-end security is assured in the same way as OSCORE for unicast communication. That is, end-to-end security is provided for CoAP multicast requests sent by a client to the group, and for related CoAP responses sent by multiple servers. Group OSCORE provides source authentication of all CoAP messages exchanged within the group, by means of digital signatures produced through private keys of sender devices and embedded in the protected CoAP messages.
 
-As in OSCORE, it is still possible to simultaneously rely on DTLS {{RFC6347}} to protect hop-by-hop communication between a sender and a proxy (and vice versa), and between a proxy and a recipient (and vice versa). Note that DTLS cannot be used to secure messages sent over multicast.
+As defined in the latest {{I-D.dijk-core-groupcomm-bis}}, Group OSCORE is the security protocol to use for applications that rely on CoAP group communication. As in OSCORE, it is still possible to simultaneously rely on DTLS {{RFC6347}} to protect hop-by-hop communication between a sender and a proxy (and vice versa), and between a proxy and a recipient (and vice versa). Note that DTLS cannot be used to secure messages sent over multicast.
 
 ## Terminology ## {#terminology}
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
 
-Readers are expected to be familiar with the terms and concepts described in CoAP {{RFC7252}} including "endpoint", "client", "server", "sender" and "recipient"; group communication for CoAP {{RFC7390}}; COSE and counter signatures {{RFC8152}}.
+Readers are expected to be familiar with the terms and concepts described in CoAP {{RFC7252}} including "endpoint", "client", "server", "sender" and "recipient"; group communication for CoAP {{RFC7390}}{{I-D.dijk-core-groupcomm-bis}}; COSE and counter signatures {{RFC8152}}.
 
 Readers are also expected to be familiar with the terms and concepts for protection and processing of CoAP messages through OSCORE, such as "Security Context" and "Master Secret", defined in {{I-D.ietf-core-object-security}}.
 
@@ -138,9 +140,11 @@ To support group communication secured with OSCORE, each endpoint registered as 
 
    * A new parameter Counter Signature Parameters is included. This parameter identifies the parameters associated to the digital signature algorithm specified in the Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined in the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), where each entry indicates a specified structure of the Counter Signature Parameters.
 
+   * A new parameter Counter Signature Key Parameters is included. This parameter identifies the parameters associated to the keys used with the digital signature algorithm specified in the Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined in the Counter Signature Key Parameters Registry (see {{iana-cons-cs-key-params}}), where each entry indicates a specified structure of the Counter Signature Key Parameters.
+
 2. one Sender Context, unless the endpoint is configured exclusively as silent server. The Sender Context is used to secure outgoing messages and is initialized according to Section 3 of {{I-D.ietf-core-object-security}}, once the endpoint has joined the group. The Sender Context of a given endpoint matches the corresponding Recipient Context in all the endpoints receiving a protected message from that endpoint. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, the Sender Context stores also the endpoint's private key.
 
-3. one Recipient Context for each distinct endpoint from which messages are received, used to process incoming messages. The recipient may generate the Recipient Context upon receiving an incoming message from another endpoint in the group for the first time (see {{ssec-verify-request}} and {{ssec-verify-response}}). Each Recipient Context matches the Sender Context of the endpoint from which protected messages are received. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, each Recipient Context stores also the public key of the associated other endpoint from which messages are received.
+3. one Recipient Context for each distinct endpoint from which messages are received, used to process incoming messages. The recipient may generate the Recipient Context upon receiving an incoming message from another endpoint in the group for the first time (see {{ssec-verify-request}} and {{ssec-verify-response}}). Each Recipient Context matches the Sender Context of the endpoint from which protected messages are received. Besides, in addition to what is defined in {{I-D.ietf-core-object-security}}, each Recipient Context stores also the public key of the associated other endpoint from which messages are received. Note that each Recipient Context includes a Replay Window, unless the recipient acts only as client and hence processes only responses as incoming messages.
 
 The table in {{fig-additional-context-information}} overviews the new information included in the OSCORE Security Context, with respect to what defined in Section 3 of {{I-D.ietf-core-object-security}}.
 
@@ -192,9 +196,9 @@ The specific approach used to distribute the new Gid and Master Secret parameter
 
 ## Wrap-Around of Partial IVs {#ssec-wrap-around-partial-iv}
 
-A client can eventually experience a wrap-around of its own Sender Sequence Number, which is used as Partial IV in outgoing requests and incremented after each request.
+An endpoint can eventually experience a wrap-around of its own Sender Sequence Number, which is incremented after sending each new message including a Partial IV. This is the case for all group requests, all Observe notifications {{RFC7641}} and, optionally, any other response.
 
-When this happens, the endpoint MUST NOT transmit further group requests until it has derived a new Sender Context, in order to avoid reusing nonces with the same keys.
+When a wrap-around happens, the endpoint MUST NOT transmit further messages including a Partial IV until it has derived a new Sender Context, in order to avoid reusing nonces with the same keys.
 
 Furthermore, the endpoint SHOULD inform the Group Manager, that can take one of the following actions:
 
@@ -210,7 +214,11 @@ Building on Section 5 of {{I-D.ietf-core-object-security}}, this section defines
 
 ## Updated external_aad # {#sec-cose-object-ext-aad}
 
-The external_aad in the Additional Authenticated Data (AAD) is extended with the counter signature algorithm and related parameters used to sign messages. In particular, compared with Section 5.4 of {{I-D.ietf-core-object-security}}, the 'algorithms' array in the aad_array MUST also include:
+The external_aad in the Additional Authenticated Data (AAD) is extended as follows. In particular, it has one structure used for the encryption process producing the ciphertext, and one structure used for the signing process producing the counter signature.
+
+### Updated external_aad for Encryption ### {#sec-cose-object-ext-aad-enc}
+
+The first external_aad structure used for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) includes also the counter signature algorithm and related parameters used to sign messages. In particular, compared with Section 5.4 of {{I-D.ietf-core-object-security}}, the 'algorithms' array in the aad_array MUST also include:
 
 * 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}). This parameter has the value specified in the "Value" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}) for this counter signature algorithm.
 
@@ -218,7 +226,9 @@ The 'algorithms' array in the aad_array MAY also include:
 
 * 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm. Note that if the Counter Signature Parameters in the Common Context is empty, 'par_countersign' is not present.
 
-This external_aad structure is used both for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) and for the signing process producing the counter signature, as defined below.
+* 'par_countersign_key', which contains the Counter Signature Key Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature key parameters encoded as specified in the "Parameters" field of the Counter Signature Key Parameters Registry (see {{iana-cons-cs-key-params}}), for the used counter signature algorithm. Note that if the Counter Signature Key Parameters in the Common Context is empty, 'par_countersign_key' is not present.
+
+Thus, the following external_aad structure is used for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}).
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
@@ -227,12 +237,41 @@ aad_array = [
    oscore_version : uint,
    algorithms : [alg_aead : int / tstr ,
                  alg_countersign : int / tstr ,
-                 ? par_countersign : any],
+                 ? par_countersign : any ,
+                 ? par_countersign_key : any],
    request_kid : bstr,
    request_piv : bstr,
    options : bstr
 ]
 ~~~~~~~~~~~
+
+### Updated external_aad for Signing ### {#sec-cose-object-ext-aad-sign}
+
+The second external_aad structure used for the signing process producing the counter signature as defined below includes also:
+
+* the counter signature algorithm and related parameters used to sign messages, encoded as in the external_aad structure defined in {{sec-cose-object-ext-aad-enc}};
+
+* the value of the OSCORE Option included in the OSCORE message, encoded as a binary string.
+
+Thus, the following external_aad structure is used for the signing process producing the counter signature, as defined below.
+
+~~~~~~~~~~~ CDDL
+external_aad = bstr .cbor aad_array
+
+aad_array = [
+   oscore_version : uint,
+   algorithms : [alg_aead : int / tstr ,
+                 alg_countersign : int / tstr ,
+                 ? par_countersign : any ,
+                 ? par_countersign_key : any],
+   request_kid : bstr,
+   request_piv : bstr,
+   OSCORE_option: bstr,
+   options : bstr
+]
+~~~~~~~~~~~
+
+Note for implementation: this requires the value of the OSCORE option to be fully ready, before starting the signing process.
 
 ## Use of the 'kid' Parameter # {#sec-cose-object-kid}
 
@@ -242,7 +281,7 @@ The value of the 'kid' parameter in the 'unprotected' field of response messages
 
 The 'unprotected' field MUST additionally include the following parameter:
 
-* CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the sender using its own private key as described in Appendix A.2 of {{RFC8152}}. In particular, the Sig_structure contains the external_aad as defined above and the ciphertext of the COSE_Encrypt0 object as payload. 
+* CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the sender using its own private key as described in Appendix A.2 of {{RFC8152}}. In particular, the Sig_structure contains the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE_Encrypt0 object as payload. 
 
 # OSCORE Header Compression {#compression}
 
@@ -354,7 +393,7 @@ The exact way to address this issue is application specific, and depends on the 
 
 Each request message and response message is protected and processed as specified in {{I-D.ietf-core-object-security}}, with the modifications described in the following sections. The following security objectives are fulfilled, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication, message integrity.
 
-As per {{RFC7252}}{{RFC7390}}, group requests sent over multicast MUST be Non-Confirmable. Thus, senders should store their outgoing messages for an amount of time defined by the application and sufficient to correctly handle possible retransmissions. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments. Besides, according to Section 5.2.3 of {{RFC7252}}, responses to Non-Confirmable group requests SHOULD be also Non-Confirmable. However, endpoints MUST be prepared to receive Confirmable responses in reply to a Non-Confirmable group request.
+As per {{RFC7252}}{{RFC7390}}{{I-D.dijk-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-Confirmable. Thus, senders should store their outgoing messages for an amount of time defined by the application and sufficient to correctly handle possible retransmissions. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments. Besides, according to Section 5.2.3 of {{RFC7252}}, responses to Non-Confirmable group requests SHOULD be also Non-Confirmable. However, endpoints MUST be prepared to receive Confirmable responses in reply to a Non-Confirmable group request.
 
 Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{I-D.ietf-core-object-security}}. However, a recipient MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}}, or which is not cryptographically validated in a successful way. Either case, it is RECOMMENDED that the recipient does not send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the group.
 
@@ -398,7 +437,7 @@ A server that has received a secure group request may reply with a secure respon
 
 Upon receiving a secure response message, the client proceeds as described in Section 8.4 of {{I-D.ietf-core-object-security}}, with the following modifications.
 
-* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}}. The client also checks whether it previously received a secure response to this request, such that it was successfully verified and included the same Recipient ID ('kid') of the just received response. In case of positive match the client SHALL stop processing the response. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client creates a new Recipient Context, initializes it according to Section 3 of {{I-D.ietf-core-object-security}}, also retrieving the server's public key.
+* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}}. The client also checks whether it previously received a secure response to this request, such that it was successfully verified and it included the same Recipient ID ('kid') of the just received response. If the check yields a positive match and the response is not an Observe notification {{RFC7641}} (i.e., it does not include an Observe Option), the client SHALL stop processing the response. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client creates a new Recipient Context, initializes it according to Section 3 of {{I-D.ietf-core-object-security}}, also retrieving the server's public key.
 
 * In step 3, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
@@ -406,7 +445,7 @@ Upon receiving a secure response message, the client proceeds as described in Se
 
 * Additionally, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client MAY delete that Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the client's storage and creating processing overhead on the client.
 
-Upon freeing up the Token value of a secure group request for possible reuse {{RFC7390}}, the client MUST delete the list of recorded Recipient IDs associated to that request (see step 5 above).
+Upon freeing up the Token value of a secure group request for possible reuse {{RFC7390}}{{I-D.dijk-core-groupcomm-bis}}, the client MUST delete the list of recorded Recipient IDs associated to that request (see step 5 above).
 
 # Responsibilities of the Group Manager # {#sec-group-manager}
 
@@ -434,7 +473,19 @@ The Group Manager is responsible for performing the following tasks:
 
 # Security Considerations  # {#sec-security-considerations}
 
-The same security considerations from OSCORE (Section 11 of {{I-D.ietf-core-object-security}}) apply to this specification. Additional security aspects to be taken into account are discussed below.
+The same threat model discussed for OSCORE in Appendix D.1 of {{I-D.ietf-core-object-security}} holds for Group OSCORE. In addition, source authentication of messages is explicitly ensured by means of counter signatures, as further discussed in {{ssec-group-level-security}}.
+
+The same considerations on supporting Proxy operations discussed for OSCORE in Appendix D.2 of {{I-D.ietf-core-object-security}} hold for Group OSCORE.
+
+The same considerations on protected message fields for OSCORE discussed in Appendix D.3 of {{I-D.ietf-core-object-security}} hold for Group OSCORE.
+
+The same considerations on uniqueness of (key, nonce) pairs for OSCORE discussed in Appendix D.4 of {{I-D.ietf-core-object-security}} hold for Group OSCORE. This is further discussed in {{ssec-key-nonce-uniqueness}}.
+
+The same considerations on unprotected message fields for OSCORE discussed in Appendix D.5 of {{I-D.ietf-core-object-security}} hold for Group OSCORE, with the following difference. The countersignature included in a Group OSCORE message is computed also over the value of the OSCORE option, which is part of the Additional Authenticated Data used in the signing process. This is further discussed in {{ssec-cross-group-injection}}.
+
+As discussed in Section 6.2.3 of {{I-D.dijk-core-groupcomm-bis}}, Group OSCORE addresses security attacks against CoAP listed in Sections 11.2-11.6 of {{RFC7252}}, especially when mounted over IP multicast.
+
+The rest of this section first discusses security aspects to be taken into account when using Group OSCORE. Then it goes through aspects covered in the security considerations of OSCORE (Section 12 of {{I-D.ietf-core-object-security}}), and discusses how they hold when Group OSCORE is used.
 
 ## Group-level Security {#ssec-group-level-security}
 
@@ -448,13 +499,13 @@ Note that, even if an endpoint is authorized to be a group member and to take pa
 
 ## Uniqueness of (key, nonce) {#ssec-key-nonce-uniqueness}
 
-The proof for uniqueness of (key, nonce) pairs in Appendix D.3 of {{I-D.ietf-core-object-security}} is also valid in group communication scenarios. That is, given an OSCORE group:
+The proof for uniqueness of (key, nonce) pairs in Appendix D.4 of {{I-D.ietf-core-object-security}} is also valid in group communication scenarios. That is, given an OSCORE group:
 
 * Uniqueness of Sender IDs within the group is enforced by the Group Manager.
 
-* The case A in Appendix D.3 of {{I-D.ietf-core-object-security}} for messages including a Partial IV concerns only group requests, and same considerations from {{I-D.ietf-core-object-security}} apply here as well.
+* The case A in Appendix D.4 of {{I-D.ietf-core-object-security}} concerns all group requests and responses including a Partial IV (e.g. Observe notifications). In this case, same considerations from {{I-D.ietf-core-object-security}} apply here as well.
 
-* The case B in Appendix D.3 of {{I-D.ietf-core-object-security}} for messages not including a Partial IV concerns all group responses, and same considerations from {{I-D.ietf-core-object-security}} apply here as well.
+* The case B in Appendix D.4 of {{I-D.ietf-core-object-security}} concerns responses not including a Partial IV (e.g. single response to a group request). In this case, same considerations from {{I-D.ietf-core-object-security}} apply here as well.
 
 As a consequence, each message encrypted/decrypted with the same Sender Key is processed by using a different (ID_PIV, PIV) pair. This means that nonces used by any fixed encrypting endpoint are unique. Thus, each message is processed with a different (key, nonce) pair.
 
@@ -477,6 +528,96 @@ In the second case, the sender protects a message using the new Security Context
 In case endpoints are deployed in multiple groups managed by different non-synchronized Group Managers, it is possible for Group Identifiers of different groups to coincide. That can also happen if the application can not guarantee unique Group Identifiers within a given Group Manager. However, this does not impair the security of the AEAD algorithm.
 
 In fact, as long as the Master Secret is different for different groups and this condition holds over time, and as long as the Sender IDs within a group are unique, AEAD keys are different among different groups.
+
+## Cross-group Message Injection {#ssec-cross-group-injection}
+
+A same endpoint is allowed to and would likely use the same signature key in multiple OSCORE groups, possibly administered by different Group Managers. Also, the same endpoint can register several times in the same group, getting multiple unique Sender IDs. This requires that, when a sender endpoint sends a message to an OSCORE group using a Sender ID, the countersignature included in the message is explicitly bound also to that group and to the used Sender ID.
+
+To this end, the countersignature of each message protected with Group OSCORE is computed also over the value of the OSCORE option, which is part of the Additional Authenticated Data used in the signing process (see {{sec-cose-object-ext-aad-sign}}). That is, the countersignature is computed also over: the ID Context (Group ID) and the Partial IV, which are always present in group requests; as well as the Sender ID of the message originator, which is always present in all group requests and responses.
+
+Since the signing process takes as input also the ciphertext of the COSE_Encrypt0 object, the countersignature is bound not only to the intended OSCORE group, hence to the triplet (Master Secret, Master Salt, ID Context), but also to a specific Sender ID in that group and to its specific symmetric key used for AEAD encryption, hence to the quartet (Master Secret, Master Salt, ID Context, Sender ID).
+
+This makes it practically infeasible to perform the attack described below, where a malicious group member injects forged messages to a different OSCORE group than the originally intended one. Let us consider:
+
+* Two OSCORE groups G1 and G2, with ID Context (Group ID) Gid1 and Gid2, respectively. Both G1 and G2 use the AEAD cipher AES-CCM-16-64-128, i.e. the MAC of the ciphertext is 8 bytes in size.
+
+* A victim endpoint V which is member of both G1 and G2, and uses the same signature key in both groups. The endpoint V has Sender ID Sid1 in G1 and Sender ID Sid2 in G2. The pairs (Sid1, Gid1) and (Sid2, Gid2) identify the same public key of V in G1 and G2, respectively.
+
+* A malicious endpoint Z is also member of both G1 and G2. Hence, Z is able to derive the symmetric keys associated to V in G1 and G2.
+
+If countersignatures were not computed also over the value of the OSCORE option as discussed above, Z can intercept a group message M1 sent by V to G1, and forge a valid signed message M2 to be injected in G2, making it appear as sent by V and valid to be accepted.
+
+More in detail, Z first intercepts a message M1 sent by V in G1, and tries to forge a message M2, by changing the value of the OSCORE option from M1 as follows: the 'kid context' is changed from G1 to G2; and the 'kid' is changed from Sid1 to Sid2.
+
+If M2 is used as a request message, there is a probability equal to 2^-64 that the same unchanged MAC is successfully verified by using Sid2 as 'request_kid' and the symmetric key associated to V in G2. In such a case, the same unchanged signature would be also valid. Note that Z can check offline if a performed forgery is actually valid before sending the forged message to G2. That is, this attack has a complexity of 2^64 offline calculations.
+
+If M2 is used as a response, Z can also change the response Partial IV, until the same unchanged MAC is successfully verified by using Sid2 as 'request_kid' and the symmetric key associated to V in G2. In such a case, the same unchanged signature would be also valid. Since the Partial IV is 5 bytes in size, this requires 2^40 operations to test all the Partial IVs, which can be done in real-time. Also, the probability that a single given message M1 can be used to forge a response M2 for a given request is equal to 2^-24, since there are more MAC values (8 bytes in size) than Partial IV values (5 bytes in size).
+
+Note that, by changing the Partial IV as discussed above, any member of G1 would also be able to forge a valid signed response message M2 to be injected in G1.
+
+## End-to-end Protection {#ssec-e2e-protection}
+
+The same considerations from Section 12.1 of {{I-D.ietf-core-object-security}} hold for Group OSCORE.
+
+Additionally, (D)TLS and Group OSCORE can be combined for protecting message exchanges occurring over unicast. Instead, it is not possible to combine DTLS and Group OSCORE for protecting message exchanges where messages are (also) sent over multicast.
+
+## Security Context Establishment {#ssec-ctx-establishment}
+
+The use of COSE_Encrypt0 and AEAD to protect messages as specified in this document requires an endpoint to be a member of an OSCORE group.
+
+That is, upon joining the group, the endpoint securely receives from the Group Manager the necessary input parameters, which are used to derive the Common Security Context and the Sender Context (see {{sec-context}}). The Group Manager ensures uniqueness of Sender IDs in the same group.
+
+Each different Recipient Context for decrypting messages from a particular sender can be derived at runtime, at the latest upon receiving a message from that sender for the first time.
+
+Countersignatures of group messages are verified by means of the public key of the respective sender endpoint. Upon nodes' joining, the Group Manager collects such public keys and MUST verify proof-of-possession of the respective private key. Later on, a group member can request from the Group Manager the public keys of other group members. 
+
+The joining process can occur, for instance, as defined in {{I-D.ietf-ace-key-groupcomm-oscore}}.
+
+## Master Secret {#ssec-master-secret}
+
+Group OSCORE derives the Security Context using the same construction of OSCORE, and by using the Group Identifier of a group as the related ID Context. Hence, the same required properties of the Security Context parameters discussed in Section 3.3 of {{I-D.ietf-core-object-security}} hold for this document.
+
+With particular reference to the OSCORE Master Secret, it has to be kept secret among the members of the respective OSCORE group and the Group Manager responsible for that group. Also, the Master Secret must have a good amount of randomness, and the Group Manager can generate it offline using a good random number generator. This includes the case where the Group Manager rekeys the group by generating and distributing a new Master Secret. Randomness requirements for security are described in {{RFC4086}}.
+
+## Replay Protection {#ssec-replay-protection}
+
+As in OSCORE, also Group OSCORE relies on sender sequence numbers included in the COSE message field 'Partial IV' and used to build AEAD nonces.
+
+As discussed in {{sec-synch-seq-num}}, an endpoint that has just joined a group is exposed to replay attack, as it is not aware of the sender sequence numbers currently used by other group members. {{synch-ex}} describes how endpoints can synchronize with senders' sequence numbers.
+
+Unless exchanges in a group rely only on unicast messages, Group OSCORE cannot be used with reliable transport. Thus, other that in such unlikely case, it cannot be defined that only messages with sequence number which are equal to previous sequence number + 1 are accepted.
+
+The processing of response messages described in {{ssec-verify-response}} also ensures that a client accepts a single valid response to a given request from each replying server, unless CoAP observation is used.
+
+## Client Aliveness {#ssec-client-aliveness}
+
+As discussed in Section 12.5 of {{I-D.ietf-core-object-security}}, a server may use the Echo option {{I-D.ietf-core-echo-request-tag}} to verify the aliveness of the client that originated a received request. This would also allow the server to (re-)synchronize with the client's sequence number, as well as to ensure that the request is fresh and has not been replayed or (purposely) delayed, if it is the first one received from that client after having joined the group or rebooted (see {{ssec-synch-challenge-response}}).
+
+## Cryptographic Considerations {#ssec-crypto-considerations}
+
+The same considerations from Section 12.6 of {{I-D.ietf-core-object-security}} about the maximum Sender Sequence Number hold for Group OSCORE. 
+
+As discussed in {{ssec-wrap-around-partial-iv}}, an endpoint that experiences a wrap-around of its own Sender Sequence Number MUST NOT transmit further messages including a Partial IV, until it has derived a new Sender Context. This prevents the endpoint to reuse the same AEAD nonces with the same Sender key.
+
+In order to renew its own Sender Context, the endpoint SHOULD inform the Group Manager, which can either renew the whole OSCORE Security Context by means of group rekeying, or provide only that endpoint with a new Sender ID value. Either case, the endpoint derives a new Sender Context, and in particular a new Sender Key.
+
+Additionally, the same considerations from Section 12.6 of {{I-D.ietf-core-object-security}} hold for Group OSCORE, about building the AEAD nonce and the secrecy of the Security Context parameters.
+
+## Message Segmentation {#ssec-message-segmentation}
+
+The same considerations from Section 12.7 of {{I-D.ietf-core-object-security}} hold for Group OSCORE.
+
+## Privacy Considerations {#ssec-privacy}
+
+Group OSCORE ensures end-to-end integrity protection and encryption of the message payload and all options that are not used for proxy operations. In particular, options are processed according to the same class U/I/E that they have for OSCORE. Therefore, the same privacy considerations from Section 12.8 of {{I-D.ietf-core-object-security}} hold for Group OSCORE.
+
+Furthermore, the following privacy considerations hold, about the OSCORE option that may reveal information on the communicating endpoints.
+
+* The 'kid' parameter, which is intended to help a recipient endpoint to find the right Recipient Context, may reveal information about the Sender Endpoint. Since both requests and responses always include the 'kid' parameter, this may reveal information about both a client sending a group request and all the possibly replying servers sending their own individual response.
+
+* The 'kid context' parameter, which is intended to help a recipient endpoint to find the right Recipient Context, reveals information about the sender endpoint. In particular, it reveals that the sender endpoint is a member of a particular OSCORE group, whose current Group ID is indicated in the 'kid context' parameter.  Moreover, this parameter explicitly relate two or more communicating endpoints, as members of the same OSCORE group.
+
+Also, using the mechanisms described in {{ssec-synch-challenge-response}} to achieve sequence number synchronization with a client may reveal when a server device goes through a reboot. This can be mitigated by the server device storing the precise state of the replay window of each known client on a clean shutdown.
 
 # IANA Considerations # {#iana}
 
@@ -503,79 +644,224 @@ The columns of this table are:
 Initial entries in the registry are as follows.
 
 ~~~~~~~~~~~
-+-------------+-------+-------------+-----------------+-----------+
-|    Name     | Value | Parameters  |   Description   | Reference |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-|    EdDSA    |  -8   |  crv : int  | crv value taken | [This     |
-|             |       |             | from the COSE   | Document] |
-|             |       |             | Elliptic Curve  |           |
-|             |       |             | Registry        |           |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-|    ES256    |  -7   |  crv : int  | crv value taken | [This     |
-|             |       |             | from the COSE   | Document] |
-|             |       |             | Elliptic Curve  |           |
-|             |       |             | Registry        |           |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-|    ES384    |  -35  |  crv : int  | crv value taken | [This     |
-|             |       |             | from the COSE   | Document] |
-|             |       |             | Elliptic Curve  |           |
-|             |       |             | Registry        |           |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-|    ES512    |  -36  |  crv : int  | crv value taken | [This     |
-|             |       |             | from the COSE   | Document] |
-|             |       |             | Elliptic Curve  |           |
-|             |       |             | Registry        |           |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-|    PS256    |  -37  |             | Parameters not  | [This     |
-|             |       |             | present         | Document] |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-|    PS384    |  -38  |             | Parameters not  | [This     |
-|             |       |             | present         | Document] |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-|    PS512    |  -39  |             | Parameters not  | [This     |
-|             |       |             | present         | Document] |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-| RSAES-OAEP  |  -40  |             | Parameters not  | [This     |
-| w/ RFC 8017 |       |             | present         | Document] |
-| default     |       |             |                 |           |
-| parameters  |       |             |                 |           |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-| RSAES-OAEP  |  -41  |             | Parameters not  | [This     |
-| w/ SHA-256  |       |             | present         | Document] |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
-|             |       |             |                 |           |
-| RSAES-OAEP  |  -42  |             | Parameters not  | [This     |
-| w/ SHA-512  |       |             | present         | Document] |
-|             |       |             |                 |           |
-+-------------+-------+-------------+-----------------+-----------+
++-------------+-------+--------------+-----------------+-----------+
+|    Name     | Value |  Parameters  |   Description   | Reference |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+|    EdDSA    |  -8   |  crv : int   | crv value taken | [This     |
+|             |       |              | from the COSE   | Document] |
+|             |       |              | Elliptic Curve  |           |
+|             |       |              | Registry        |           |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+|    ES256    |  -7   |  crv : int   | crv value taken | [This     |
+|             |       |              | from the COSE   | Document] |
+|             |       |              | Elliptic Curve  |           |
+|             |       |              | Registry        |           |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+|    ES384    |  -35  |  crv : int   | crv value taken | [This     |
+|             |       |              | from the COSE   | Document] |
+|             |       |              | Elliptic Curve  |           |
+|             |       |              | Registry        |           |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+|    ES512    |  -36  |  crv : int   | crv value taken | [This     |
+|             |       |              | from the COSE   | Document] |
+|             |       |              | Elliptic Curve  |           |
+|             |       |              | Registry        |           |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+|    PS256    |  -37  |              | Parameters not  | [This     |
+|             |       |              | present         | Document] |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+|    PS384    |  -38  |              | Parameters not  | [This     |
+|             |       |              | present         | Document] |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+|    PS512    |  -39  |              | Parameters not  | [This     |
+|             |       |              | present         | Document] |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+| RSAES-OAEP  |  -40  |              | Parameters not  | [This     |
+| w/ RFC 8017 |       |              | present         | Document] |
+| default     |       |              |                 |           |
+| parameters  |       |              |                 |           |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+| RSAES-OAEP  |  -41  |              | Parameters not  | [This     |
+| w/ SHA-256  |       |              | present         | Document] |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+|             |       |              |                 |           |
+| RSAES-OAEP  |  -42  |              | Parameters not  | [This     |
+| w/ SHA-512  |       |              | present         | Document] |
+|             |       |              |                 |           |
++-------------+-------+--------------+-----------------+-----------+
+~~~~~~~~~~~
+
+## Counter Signature Key Parameters Registry {#iana-cons-cs-key-params}
+
+This specification establishes the IANA "Counter Signature Key Parameters" Registry. The Registry has been created to use the "Expert Review Required" registration procedure {{RFC8126}}. Expert review guidelines are provided in {{review}}.
+
+The columns of this table are:
+
+* Name: A value that can be used to identify an algorithm in documents for easier comprehension. Its value is taken from the 'Name' column of the "COSE Algorithms" Registry.
+
+* Value: The value to be used to identify this algorithm. Its content is taken from the 'Value' column of the "COSE Algorithms" Registry. The value MUST be the same one used in the "COSE Algorithms" Registry for the entry with the same 'Name' field.
+
+* Parameters: This indicates the CBOR encoding of the key parameters (if any) for the counter signature algorithm indicated by the 'Value' field.
+
+* Description: A short description of the parameters encoded in the 'Parameters' field (if any).
+
+* Reference: This contains a pointer to the public specification for the field, if one exists.
+
+Initial entries in the registry are as follows.
+
+~~~~~~~~~~~
++-------------+-------+--------------+-------------------+-----------+
+|    Name     | Value |  Parameters  |   Description     | Reference |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+|    EdDSA    |  -8   |  kty : int   | kty value is 1,   | [This     |
+|             |       |              | as Key Type "OKP" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
+|             |       |              |                   |           |
+|             |       |  crv : int   | crv value taken   |           |
+|             |       |              | from the COSE     |           |
+|             |       |              | Elliptic Curve    |           |
+|             |       |              | Registry          |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+|    ES256    |  -7   |  kty : int   | kty value is 2,   | [This     |
+|             |       |              | as Key Type "EC2" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
+|             |       |              |                   |           |
+|             |       |  crv : int   | crv value taken   |           |
+|             |       |              | from the COSE     |           |
+|             |       |              | Elliptic Curve    |           |
+|             |       |              | Registry          |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+|    ES384    |  -35  |  kty : int   | kty value is 2,   | [This     |
+|             |       |              | as Key Type "EC2" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
+|             |       |  crv : int   | crv value taken   |           |
+|             |       |              | from the COSE     |           |
+|             |       |              | Elliptic Curve    |           |
+|             |       |              | Registry          |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+|    ES512    |  -36  |  kty : int   | kty value is 2,   | [This     |
+|             |       |              | as Key Type "EC2" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
+|             |       |  crv : int   | crv value taken   |           |
+|             |       |              | from the COSE     |           |
+|             |       |              | Elliptic Curve    |           |
+|             |       |              | Registry          |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+|    PS256    |  -37  |  kty : int   | kty value is 3,   | [This     |
+|             |       |              | as Key Type "RSA" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+|    PS384    |  -38  |  kty : int   | kty value is 3,   | [This     |
+|             |       |              | as Key Type "RSA" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+|    PS512    |  -39  |  kty : int   | kty value is 3,   | [This     |
+|             |       |              | as Key Type "RSA" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+| RSAES-OAEP  |  -40  |  kty : int   | kty value is 3,   | [This     |
+| w/ RFC 8017 |       |              | as Key Type "RSA" | Document] |
+| default     |       |              | from the COSE Key |           |
+| parameters  |       |              | Types Registry    |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+| RSAES-OAEP  |  -41  |  kty : int   | kty value is 3,   | [This     |
+| w/ SHA-256  |       |              | as Key Type "RSA" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
+|             |       |              |                   |           |
+| RSAES-OAEP  |  -42  |  kty : int   | kty value is 3,   | [This     |
+| w/ SHA-512  |       |              | as Key Type "RSA" | Document] |
+|             |       |              | from the COSE Key |           |
+|             |       |              | Types Registry    |           |
+|             |       |              |                   |           |
++-------------+-------+--------------+-------------------+-----------+
 ~~~~~~~~~~~
 
 ## Expert Review Instructions {#review}
 
-The IANA Registry established in this document is defined as expert review.
-This section gives some general guidelines for what the experts should be looking for, but they are being designated as experts for a reason so they should be given substantial latitude.
+The IANA Registry established in this document is defined as "Expert Review".
+This section gives some general guidelines for what the experts should be 
+looking for, but they are being designated as experts for a reason so they 
+should be given substantial latitude.
 
 Expert reviewers should take into consideration the following points:
 
-TBD
+* Clarity and correctness of registrations.
+Experts are expected to check the clarity of purpose and use of the requested
+entries. Experts should inspect the entry for the algorithm considered, to
+verify the conformity of the encoding proposed against the theoretical algorithm,
+including completeness of the 'Parameters' column.
+Expert needs to make sure values are taken from the right registry, 
+ when that's required.
+Expert should consider requesting an opinion on the correctness of registered 
+parameters from the CBOR Object Signing and Encryption Working Group (COSE).
+Encodings that do not meet these objective of clarity and completeness 
+should not be registered.
+
+* Duplicated registration and point squatting should be discouraged.
+ Reviewers are encouraged to get sufficient information for registration 
+ requests to ensure that the usage is not going to duplicate one that is 
+ already registered and that the point is likely to be used in deployments.
+
+* Experts should take into account the expected usage of fields when approving point assignment.
+The length of the 'Parameters' encoding should be weighed against the
+ usage of the entry, considering the size of device it will be used on.
+Additionally, the length of the encoded value should be weighed against 
+how many code points of that length are left, the size of device it will be
+used on, and the number of code points left that encode to that
+size.
+
+* Specifications are recommended.
+When specifications are not provided, the description provided needs to
+have sufficient information to verify the points above.
 
 --- back
 
@@ -617,10 +903,9 @@ The approach described in this document aims at fulfilling the following securit
 
 * Message ordering: it must be possible to determine the ordering of messages coming from a single sender. In accordance with OSCORE {{I-D.ietf-core-object-security}}, this results in providing relative freshness of group requests and absolute freshness of responses. It is not required to determine ordering of messages from different senders.
 
-
 # List of Use Cases # {#sec-use-cases}
 
-Group Communication for CoAP {{RFC7390}} provides the necessary background for multicast-based CoAP communication, with particular reference to low-power and lossy networks (LLNs) and resource constrained environments. The interested reader is encouraged to first read {{RFC7390}} to understand the non-security related details. This section discusses a number of use cases that benefit from secure group communication. Specific security requirements for these use cases are discussed in {{sec-requirements}}.
+Group Communication for CoAP {{RFC7390}}{{I-D.dijk-core-groupcomm-bis}} provides the necessary background for multicast-based CoAP communication, with particular reference to low-power and lossy networks (LLNs) and resource constrained environments. The interested reader is encouraged to first read {{RFC7390}}{{I-D.dijk-core-groupcomm-bis}} to understand the non-security related details. This section discusses a number of use cases that benefit from secure group communication. Specific security requirements for these use cases are discussed in {{sec-requirements}}.
 
 * Lighting control: consider a building equipped with IP-connected lighting devices, switches, and border routers. The devices are organized into groups according to their physical location in the building. For instance, lighting devices and switches in a room or corridor can be configured as members of a single group. Switches are then used to control the lighting devices by sending on/off/dimming commands to all lighting devices in a group, while border routers connected to an IP network backbone (which is also multicast-enabled) can be used to interconnect routers in the building. Consequently, this would also enable logical groups to be formed even if devices in the lighting group may be physically in different subnets (e.g. on wired and wireless networks). Connectivity between lighting devices may be realized, for instance, by means of IPv6 and (border) routers supporting 6LoWPAN {{RFC4944}}{{RFC6282}}. Group communication enables synchronous operation of a group of connected lights, ensuring that the light preset (e.g. dimming level or color) of a large group of luminaires are changed at the same perceived time. This is especially useful for providing a visual synchronicity of light effects to the user. As a practical guideline, events within a 200 ms interval are perceived as simultaneous by humans, which is necessary to ensure in many setups. Devices may reply back to the switches that issue on/off/dimming commands, in order to report about the execution of the requested operation (e.g. OK, failure, error) and their current operational status. In a typical lighting control scenario, a single switch is the only entity responsible for sending commands to a group of lighting devices. In more advanced lighting control use cases, a M-to-N communication topology would be required, for instance in case multiple sensors (presence or day-light) are responsible to trigger events to a group of lighting devices. Especially in professional lighting scenarios, the roles of client and server are configured by the lighting commissioner, and devices strictly follow those roles.
 
@@ -638,7 +923,7 @@ Group Communication for CoAP {{RFC7390}} provides the necessary background for m
 
 This section provides an example of how the Group Identifier (Gid) can be specifically formatted. That is, the Gid can be composed of two parts, namely a Group Prefix and a Group Epoch.
 
-The Group Prefix is constant over time and is uniquely defined in the set of all the groups associated to the same Group Manager. The choice of the Group Prefix for a given group's Security Context is application specific. The size of the Group Prefix directly impact on the maximum number of distinct groups under the same Group Manager.
+For each group, the Group Prefix is constant over time and is uniquely defined in the set of all the groups associated to the same Group Manager. The choice of the Group Prefix for a given group's Security Context is application specific. The size of the Group Prefix directly impact on the maximum number of distinct groups under the same Group Manager.
 
 The Group Epoch is set to 0 upon the group's initialization, and is incremented by 1 upon completing each renewal of the Security Context and keying material in the group (see {{sec-group-key-management}}). In particular, once a new Master Secret has been distributed to the group, all the group members increment by 1 the Group Epoch in the Group Identifier of that group.
 
@@ -659,7 +944,6 @@ The Group Manager must verify that the joining endpoint is authorized to join th
 In case of successful authorization check, the Group Manager generates a Sender ID assigned to the joining endpoint, before proceeding with the rest of the join process. That is, the Group Manager provides the joining endpoint with the keying material and parameters to initialize the OSCORE Security Context (see {{sec-context}}). The actual provisioning of keying material and parameters to the joining endpoint is out of the scope of this document.
 
 It is RECOMMENDED that the join process adopts the approach described in {{I-D.ietf-ace-key-groupcomm-oscore}} and based on the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. 
-
 
 # Examples of Synchronization Approaches {#synch-ex}
 
@@ -702,6 +986,22 @@ In this specification, it is NOT RECOMMENDED that endpoints do not verify the co
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
+
+## Version -04 to -05 ## {#sec-04-05}
+
+* Added references to draft-dijk-core-groupcomm-bis.
+
+* New parameter Counter Signature Key Parameters (Section 2).
+
+* Clarification about Recipient COntexts (Section 2).
+
+* Two different external_aad for encrypting and signing (Section 3.1).
+
+* Updated response verification to handle Observe notifications (Section 6.4).
+
+* Extended Security Considerations (Section 8).
+
+* New "Counter Signature Key Parameters" IANA Registry (Section 9.2).
 
 ## Version -03 to -04 ## {#sec-03-04}
 
