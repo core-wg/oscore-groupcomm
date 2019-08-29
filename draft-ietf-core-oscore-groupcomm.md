@@ -224,9 +224,9 @@ The first external_aad structure used for the encryption process producing the c
 
 The 'algorithms' array in the aad_array MAY also include:
 
-* 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm. Note that if the Counter Signature Parameters in the Common Context is empty, 'par_countersign' is not present.
+* 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm. If the Counter Signature Parameters in the Common Context is empty, 'par_countersign' MUST be encoding the CBOR simple value Null.
 
-* 'par_countersign_key', which contains the Counter Signature Key Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature key parameters encoded as specified in the "Parameters" field of the Counter Signature Key Parameters Registry (see {{iana-cons-cs-key-params}}), for the used counter signature algorithm. Note that if the Counter Signature Key Parameters in the Common Context is empty, 'par_countersign_key' is not present.
+* 'par_countersign_key', which contains the Counter Signature Key Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature key parameters encoded as specified in the "Parameters" field of the Counter Signature Key Parameters Registry (see {{iana-cons-cs-key-params}}), for the used counter signature algorithm. If the Counter Signature Key Parameters in the Common Context is empty, 'par_countersign_key' MUST be encoding the CBOR simple value Null.
 
 Thus, the following external_aad structure is used for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}).
 
@@ -235,10 +235,10 @@ external_aad = bstr .cbor aad_array
 
 aad_array = [
    oscore_version : uint,
-   algorithms : [alg_aead : int / tstr ,
-                 alg_countersign : int / tstr ,
-                 ? par_countersign : any ,
-                 ? par_countersign_key : any],
+   algorithms : [alg_aead : int / tstr,
+                 alg_countersign : int / tstr,
+                 par_countersign : any / nil,
+                 par_countersign_key : any / nil],
    request_kid : bstr,
    request_piv : bstr,
    options : bstr
@@ -260,14 +260,14 @@ external_aad = bstr .cbor aad_array
 
 aad_array = [
    oscore_version : uint,
-   algorithms : [alg_aead : int / tstr ,
-                 alg_countersign : int / tstr ,
-                 ? par_countersign : any ,
-                 ? par_countersign_key : any],
+   algorithms : [alg_aead : int / tstr,
+                 alg_countersign : int / tstr,
+                 par_countersign : any / nil,
+                 par_countersign_key : any / nil],
    request_kid : bstr,
    request_piv : bstr,
-   OSCORE_option: bstr,
-   options : bstr
+   options : bstr,
+   OSCORE_option: bstr
 ]
 ~~~~~~~~~~~
 
