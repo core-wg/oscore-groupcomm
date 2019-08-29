@@ -715,50 +715,50 @@ Initial entries in the registry are as follows.
 |    Name     | Value |  Parameters  |   Description     | Reference |
 +-------------+-------+--------------+-------------------+-----------+
 |             |       |              |                   |           |
-|    EdDSA    |  -8   |  kty : int   | kty value is 1,   | [This     |
+|    EdDSA    |  -8   | [kty : int , | kty value is 1,   | [This     |
 |             |       |              | as Key Type "OKP" | Document] |
 |             |       |              | from the COSE Key |           |
 |             |       |              | Types Registry    |           |
 |             |       |              |                   |           |
 |             |       |              |                   |           |
-|             |       |  crv : int   | crv value taken   |           |
+|             |       |  crv : int]  | crv value taken   |           |
 |             |       |              | from the COSE     |           |
 |             |       |              | Elliptic Curve    |           |
 |             |       |              | Registry          |           |
 |             |       |              |                   |           |
 +-------------+-------+--------------+-------------------+-----------+
 |             |       |              |                   |           |
-|    ES256    |  -7   |  kty : int   | kty value is 2,   | [This     |
+|    ES256    |  -7   | [kty : int , | kty value is 2,   | [This     |
 |             |       |              | as Key Type "EC2" | Document] |
 |             |       |              | from the COSE Key |           |
 |             |       |              | Types Registry    |           |
 |             |       |              |                   |           |
 |             |       |              |                   |           |
-|             |       |  crv : int   | crv value taken   |           |
+|             |       |  crv : int]  | crv value taken   |           |
 |             |       |              | from the COSE     |           |
 |             |       |              | Elliptic Curve    |           |
 |             |       |              | Registry          |           |
 |             |       |              |                   |           |
 +-------------+-------+--------------+-------------------+-----------+
 |             |       |              |                   |           |
-|    ES384    |  -35  |  kty : int   | kty value is 2,   | [This     |
+|    ES384    |  -35  | [kty : int , | kty value is 2,   | [This     |
 |             |       |              | as Key Type "EC2" | Document] |
 |             |       |              | from the COSE Key |           |
 |             |       |              | Types Registry    |           |
 |             |       |              |                   |           |
-|             |       |  crv : int   | crv value taken   |           |
+|             |       |  crv : int]  | crv value taken   |           |
 |             |       |              | from the COSE     |           |
 |             |       |              | Elliptic Curve    |           |
 |             |       |              | Registry          |           |
 |             |       |              |                   |           |
 +-------------+-------+--------------+-------------------+-----------+
 |             |       |              |                   |           |
-|    ES512    |  -36  |  kty : int   | kty value is 2,   | [This     |
+|    ES512    |  -36  | [kty : int , | kty value is 2,   | [This     |
 |             |       |              | as Key Type "EC2" | Document] |
 |             |       |              | from the COSE Key |           |
 |             |       |              | Types Registry    |           |
 |             |       |              |                   |           |
-|             |       |  crv : int   | crv value taken   |           |
+|             |       |  crv : int]  | crv value taken   |           |
 |             |       |              | from the COSE     |           |
 |             |       |              | Elliptic Curve    |           |
 |             |       |              | Registry          |           |
@@ -781,27 +781,6 @@ Initial entries in the registry are as follows.
 |             |       |              |                   |           |
 |    PS512    |  -39  |  kty : int   | kty value is 3,   | [This     |
 |             |       |              | as Key Type "RSA" | Document] |
-|             |       |              | from the COSE Key |           |
-|             |       |              | Types Registry    |           |
-|             |       |              |                   |           |
-+-------------+-------+--------------+-------------------+-----------+
-|             |       |              |                   |           |
-| RSAES-OAEP  |  -40  |  kty : int   | kty value is 3,   | [This     |
-| w/ RFC 8017 |       |              | as Key Type "RSA" | Document] |
-| default     |       |              | from the COSE Key |           |
-| parameters  |       |              | Types Registry    |           |
-|             |       |              |                   |           |
-+-------------+-------+--------------+-------------------+-----------+
-|             |       |              |                   |           |
-| RSAES-OAEP  |  -41  |  kty : int   | kty value is 3,   | [This     |
-| w/ SHA-256  |       |              | as Key Type "RSA" | Document] |
-|             |       |              | from the COSE Key |           |
-|             |       |              | Types Registry    |           |
-|             |       |              |                   |           |
-+-------------+-------+--------------+-------------------+-----------+
-|             |       |              |                   |           |
-| RSAES-OAEP  |  -42  |  kty : int   | kty value is 3,   | [This     |
-| w/ SHA-512  |       |              | as Key Type "RSA" | Document] |
 |             |       |              | from the COSE Key |           |
 |             |       |              | Types Registry    |           |
 |             |       |              |                   |           |
