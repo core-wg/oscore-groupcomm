@@ -621,6 +621,8 @@ This document has the following actions for IANA.
 
 This specification establishes the IANA "Counter Signature Parameters" Registry. The Registry has been created to use the "Expert Review Required" registration procedure {{RFC8126}}. Expert review guidelines are provided in {{review}}.
 
+This registry specifies the parameters of each admitted countersignature algorithm, as well as the possible structure they are organized into. This information is used to populate the parameter Counter Signature Parameters of the Common Context (see {{sec-context}}).
+
 The columns of this table are:
 
 * Name: A value that can be used to identify an algorithm in documents for easier comprehension. Its value is taken from the 'Name' column of the "COSE Algorithms" Registry.
@@ -687,6 +689,8 @@ Initial entries in the registry are as follows.
 ## Counter Signature Key Parameters Registry {#iana-cons-cs-key-params}
 
 This specification establishes the IANA "Counter Signature Key Parameters" Registry. The Registry has been created to use the "Expert Review Required" registration procedure {{RFC8126}}. Expert review guidelines are provided in {{review}}.
+
+This registry specifies the parameters of countersignature keys for each admitted countersignature algorithm, as well as the possible structure they are organized into. This information is used to populate the parameter Counter Signature Key Parameters of the Common Context (see {{sec-context}}).
 
 The columns of this table are:
 
