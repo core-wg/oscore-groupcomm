@@ -190,8 +190,6 @@ As a consequence, group members may end up retaining stale Recipient Contexts, t
 
 If the application requires so (see {{ssec-sec-assumptions}}), it is RECOMMENDED to adopt a group key management scheme, and securely distribute a new value for the Gid and for the Master Secret parameter of the group's Security Context, before a new joining endpoint is added to the group or after a currently present endpoint leaves the group. This is necessary to preserve backward security and forward security in the group, if the application requires it.
 
-<!-- +++ DONE +++ Consider rephrasing the paragraph above: if application requires it, ... , it is RECOMMENDED -->
-
 The specific approach used to distribute the new Gid and Master Secret parameter to the group is out of the scope of this document. However, it is RECOMMENDED that the Group Manager supports the distribution of the new Gid and Master Secret parameter to the group according to the Group Rekeying Process described in {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
 ## Wrap-Around of Partial IVs {#ssec-wrap-around-partial-iv}
