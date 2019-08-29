@@ -607,7 +607,7 @@ Furthermore, the following privacy considerations hold, about the OSCORE option 
 
 * The 'kid' parameter, which is intended to help a recipient endpoint to find the right Recipient Context, may reveal information about the Sender Endpoint. Since both requests and responses always include the 'kid' parameter, this may reveal information about both a client sending a group request and all the possibly replying servers sending their own individual response.
 
-* The 'kid context' parameter, which is intended to help a recipient endpoint to find the right Recipient Context, reveals information about the sender endpoint. In particular, it reveals that the sender endpoint is a member of a particular OSCORE group, whose current Group ID is indicated in the 'kid context' parameter.  Moreover, this parameter explicitly relate two or more communicating endpoints, as members of the same OSCORE group.
+* The 'kid context' parameter, which is intended to help a recipient endpoint to find the right Recipient Context, reveals information about the sender endpoint. In particular, it reveals that the sender endpoint is a member of a particular OSCORE group, whose current Group ID is indicated in the 'kid context' parameter.  Moreover, this parameter explicitly relates two or more communicating endpoints, as members of the same OSCORE group.
 
 Also, using the mechanisms described in {{ssec-synch-challenge-response}} to achieve sequence number synchronization with a client may reveal when a server device goes through a reboot. This can be mitigated by the server device storing the precise state of the replay window of each known client on a clean shutdown.
 
