@@ -210,7 +210,7 @@ Either case, same considerations from {{sec-group-key-management}} hold about po
 
 # The COSE Object # {#sec-cose-object}
 
-Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{RFC8152}} to wrap and protect data in the original message. OSCORE uses the untagged COSE_Encrypt0 structure with an Authenticated Encryption with Additional Data (AEAD) algorithm. For Group OSCORE, the following modifications apply.
+Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{RFC8152}} to wrap and protect data in the original message. OSCORE uses the untagged COSE_Encrypt0 structure with an Authenticated Encryption with Associated Data (AEAD) algorithm. For Group OSCORE, the following modifications apply.
 
 ## Updated external_aad # {#sec-cose-object-ext-aad}
 
