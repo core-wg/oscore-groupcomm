@@ -690,23 +690,6 @@ Initial entries in the registry are as follows.
 |             |       |              | present         | Document] |
 |             |       |              |                 |           |
 +-------------+-------+--------------+-----------------+-----------+
-|             |       |              |                 |           |
-| RSAES-OAEP  |  -40  |              | Parameters not  | [This     |
-| w/ RFC 8017 |       |              | present         | Document] |
-| default     |       |              |                 |           |
-| parameters  |       |              |                 |           |
-|             |       |              |                 |           |
-+-------------+-------+--------------+-----------------+-----------+
-|             |       |              |                 |           |
-| RSAES-OAEP  |  -41  |              | Parameters not  | [This     |
-| w/ SHA-256  |       |              | present         | Document] |
-|             |       |              |                 |           |
-+-------------+-------+--------------+-----------------+-----------+
-|             |       |              |                 |           |
-| RSAES-OAEP  |  -42  |              | Parameters not  | [This     |
-| w/ SHA-512  |       |              | present         | Document] |
-|             |       |              |                 |           |
-+-------------+-------+--------------+-----------------+-----------+
 ~~~~~~~~~~~
 
 ## Counter Signature Key Parameters Registry {#iana-cons-cs-key-params}
