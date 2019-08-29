@@ -471,6 +471,8 @@ The Group Manager is responsible for performing the following tasks:
 
 10. Acting as key repository, in order to handle the public keys of the members of its OSCORE groups, and providing such public keys to other members of the same group upon request. The actual storage of public keys may be entrusted to a separate secure storage device.
 
+11. Validating that the format and parameters of public keys of group members are consistent with the countersignature algorithm and related parameters used in the respective OSCORE group.
+
 # Security Considerations  # {#sec-security-considerations}
 
 The same threat model discussed for OSCORE in Appendix D.1 of {{I-D.ietf-core-object-security}} holds for Group OSCORE. In addition, source authentication of messages is explicitly ensured by means of counter signatures, as further discussed in {{ssec-group-level-security}}.
