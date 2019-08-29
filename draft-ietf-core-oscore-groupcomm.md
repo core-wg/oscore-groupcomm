@@ -445,7 +445,7 @@ The Group Manager is responsible for performing the following tasks:
 
 2. Defining policies for authorizing the joining of its OSCORE groups. Such policies can be enforced locally by the Group Manager, or by a third party in a trust relation with the Group Manager and entrusted to enforce join policies on behalf of the Group Manager.
 
-3. Driving the join process to add new endpoints as group members.
+3. Handling the join process to add new endpoints as group members.
 
 4. Establishing Security Common Contexts and providing them to authorized group members during the join process, together with a corresponding Security Sender Context.
 
