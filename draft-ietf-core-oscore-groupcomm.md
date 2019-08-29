@@ -377,10 +377,6 @@ Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b COUNTERSIGN
 
 The requirements and properties described in Section 7 of {{I-D.ietf-core-object-security}} also apply to OSCORE used in group communication. In particular, group OSCORE provides message binding of responses to requests, which provides relative freshness of responses, and replay protection of requests.
 
-Besides, group OSCORE provides additional assurances on the client side, upon receiving responses bound to a same request. That is, as long as the client retains the CoAP Token used in a request (see Section 2.5 of {{RFC7390}}), group OSCORE ensures that: any possible response sent to that request is not a replay; and at most one response to that request from a given server is accepted, if required by the application.
-
-More details about error processing for replay detection in group OSCORE are specified in {{mess-processing}} of this specification. The mechanisms describing replay protection and freshness of Observe notifications do not apply to group OSCORE, as Observe is not defined for group settings.
-
 ## Synchronization of Sender Sequence Numbers # {#sec-synch-seq-num}
 
 Upon joining the group, new servers are not aware of the Sender Sequence Number values currently used by different clients to transmit group requests. This means that, when such servers receive a secure group request from a given client for the first time, they are not able to verify if that request is fresh and has not been replayed or (purposely) delayed. The same holds when a server loses synchronization with Sender Sequence Numbers of clients, for instance after a device reboot.
@@ -391,15 +387,11 @@ The exact way to address this issue is application specific, and depends on the 
 
 # Message Processing # {#mess-processing}
 
-Each request message and response message is protected and processed as specified in {{I-D.ietf-core-object-security}}, with the modifications described in the following sections. The following security objectives are fulfilled, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication, message integrity.
+Each request message and response message is protected and processed as specified in {{I-D.ietf-core-object-security}}, with the modifications described in the following sections. The following security objectives are fulfilled, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication and message integrity.
 
 As per {{RFC7252}}{{RFC7390}}{{I-D.dijk-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-Confirmable. Thus, senders should store their outgoing messages for an amount of time defined by the application and sufficient to correctly handle possible retransmissions. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments. Besides, according to Section 5.2.3 of {{RFC7252}}, responses to Non-Confirmable group requests SHOULD be also Non-Confirmable. However, endpoints MUST be prepared to receive Confirmable responses in reply to a Non-Confirmable group request.
 
 Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{I-D.ietf-core-object-security}}. However, a recipient MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}}, or which is not cryptographically validated in a successful way. Either case, it is RECOMMENDED that the recipient does not send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the group.
-
-<!-- Comment from John: why MUST NOT? This should be application dependent, we should not mandate anything, rather have sec cons about this -->
-
-<!-- Now chaged into RECOMMENDED ... not -->
 
 ## Protecting the Request ## {#ssec-protect-request}
 
@@ -437,15 +429,13 @@ A server that has received a secure group request may reply with a secure respon
 
 Upon receiving a secure response message, the client proceeds as described in Section 8.4 of {{I-D.ietf-core-object-security}}, with the following modifications.
 
-* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}}. The client also checks whether it previously received a secure response to this request, such that it was successfully verified and it included the same Recipient ID ('kid') of the just received response. If the check yields a positive match and the response is not an Observe notification {{RFC7641}} (i.e., it does not include an Observe Option), the client SHALL stop processing the response. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client creates a new Recipient Context, initializes it according to Section 3 of {{I-D.ietf-core-object-security}}, also retrieving the server's public key.
+* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}}. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client creates a new Recipient Context and initializes it according to Section 3 of {{I-D.ietf-core-object-security}}, also retrieving the server's public key.
 
 * In step 3, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
-* In step 5, the client also verifies the counter signature using the public key of the server from the associated Recipient Context. In case of success, the client also records the received Recipient ID ('kid') as included in a successfully verified response to the request.
+* In step 5, the client also verifies the counter signature using the public key of the server from the associated Recipient Context.
 
 * Additionally, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client MAY delete that Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the client's storage and creating processing overhead on the client.
-
-Upon freeing up the Token value of a secure group request for possible reuse {{RFC7390}}{{I-D.dijk-core-groupcomm-bis}}, the client MUST delete the list of recorded Recipient IDs associated to that request (see step 5 above).
 
 # Responsibilities of the Group Manager # {#sec-group-manager}
 
