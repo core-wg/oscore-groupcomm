@@ -121,7 +121,7 @@ This document refers also to the following terminology.
 
 * Silent server: member of a group that never responds to requests. Note that a silent server can act as a client, the two roles are independent.
 
-* Group Identifier (Gid): identifier assigned to the group. Group Identifiers should be unique within the set of groups of a given Group Manager, in order to avoid collisions. In case they are not, the considerations in {{ssec-gid-collision}} apply.
+* Group Identifier (Gid): identifier assigned to the group. Group Identifiers must be unique within the set of groups of a given Group Manager.
 
 * Group request: CoAP request message sent by a client in the group to all servers in that group.
 
@@ -515,9 +515,9 @@ In the second case, the sender protects a message using the new Security Context
 
 ## Collision of Group Identifiers {#ssec-gid-collision}
 
-In case endpoints are deployed in multiple groups managed by different non-synchronized Group Managers, it is possible for Group Identifiers of different groups to coincide. That can also happen if the application can not guarantee unique Group Identifiers within a given Group Manager. However, this does not impair the security of the AEAD algorithm.
+In case endpoints are deployed in multiple groups managed by different non-synchronized Group Managers, it is possible for Group Identifiers of different groups to coincide.
 
-In fact, as long as the Master Secret is different for different groups and this condition holds over time, and as long as the Sender IDs within a group are unique, AEAD keys are different among different groups.
+However, this does not impair the security of the AEAD algorithm. In fact, as long as the Master Secret is different for different groups and this condition holds over time, AEAD keys are different among different groups.
 
 ## Cross-group Message Injection {#ssec-cross-group-injection}
 
