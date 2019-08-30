@@ -411,7 +411,7 @@ Upon receiving a secure group request, a server proceeds as described in Section
 
 * In step 4, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
-* In step 6, the server also verifies the counter signature using the public key of the client from the associated Recipient Context.
+* In step 6, the server also verifies the counter signature using the public key of the client from the associated Recipient Context. If the signature verification fails, the server MAY reply with a 4.00 (Bad Request) response.
 
 * Additionally, if the used Recipient Context was created upon receiving this group request and the message is not verified successfully, the server MAY delete that Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the server's storage and creating processing overhead on the server.
 
