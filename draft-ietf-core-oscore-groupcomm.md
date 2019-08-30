@@ -397,19 +397,19 @@ Furthermore, endpoints in the group locally perform error handling and processin
 
 A client transmits a secure group request as described in Section 8.1 of {{RFC8613}}, with the following modifications.
 
-* In step 2, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
+* In step 2, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this specification.
 
-* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}}. The encoding of the compressed COSE object is modified as described in {{compression}}.
+* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this specification. The encoding of the compressed COSE object is modified as described in {{compression}} of this specification.
 
-* In step 5, the counter signature is computed and the format of the OSCORE mesage is modified as described in {{oscore-payl}}. In particular, the payload of the OSCORE message includes also the counter signature.
+* In step 5, the counter signature is computed and the format of the OSCORE mesage is modified as described in {{oscore-payl}} of this specification. In particular, the payload of the OSCORE message includes also the counter signature.
 
 ## Verifying the Request ## {#ssec-verify-request}
 
 Upon receiving a secure group request, a server proceeds as described in Section 8.2 of {{RFC8613}}, with the following modifications.
 
-* In step 2, the decoding of the compressed COSE object follows {{compression}}. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the server creates a new Recipient Context, initializes it according to Section 3 of {{RFC8613}}, also retrieving the client's public key.
+* In step 2, the decoding of the compressed COSE object follows {{compression}} of this specification. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the server MAY create a new Recipient Context and initializes it according to Section 3 of {{RFC8613}}, also retrieving the client's public key. Such a configuration is application specific. If the application does not specify dynamic derivation of new Recipient Contexts, then the server SHALL stop processing the request.
 
-* In step 4, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
+* In step 4, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this specification.
 
 * In step 6, the server also verifies the counter signature using the public key of the client from the associated Recipient Context. If the signature verification fails, the server MAY reply with a 4.00 (Bad Request) response.
 
@@ -419,19 +419,19 @@ Upon receiving a secure group request, a server proceeds as described in Section
 
 A server that has received a secure group request may reply with a secure response, which is protected as described in Section 8.3 of {{RFC8613}}, with the following modifications.
 
-* In step 2, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
+* In step 2, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this specification.
 
-* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}}. The encoding of the compressed COSE object is modified as described in {{compression}}.
+* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this specification. The encoding of the compressed COSE object is modified as described in {{compression}} of this specification.
 
-* In step 5, the counter signature is computed and the format of the OSCORE mesage is modified as described in {{oscore-payl}}. In particular, the payload of the OSCORE message includes also the counter signature.
+* In step 5, the counter signature is computed and the format of the OSCORE mesage is modified as described in {{oscore-payl}} of this specification. In particular, the payload of the OSCORE message includes also the counter signature.
 
 ## Verifying the Response ## {#ssec-verify-response}
 
 Upon receiving a secure response message, the client proceeds as described in Section 8.4 of {{RFC8613}}, with the following modifications.
 
-* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}}. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client creates a new Recipient Context and initializes it according to Section 3 of {{RFC8613}}, also retrieving the server's public key.
+* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}} of this specification. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client MAY create a new Recipient Context and initializes it according to Section 3 of {{RFC8613}}, also retrieving the server's public key. If the application does not specify dynamic derivation of new Recipient Contexts, then the client SHALL stop processing the response.
 
-* In step 3, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
+* In step 3, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this specification.
 
 * In step 5, the client also verifies the counter signature using the public key of the server from the associated Recipient Context.
 
