@@ -443,7 +443,7 @@ The Group Manager is responsible for performing the following tasks:
 
 1. Creating and managing OSCORE groups. This includes the assignment of a Gid to every newly created group, as well as ensuring uniqueness of Gids within the set of its OSCORE groups.
 
-2. Defining policies for authorizing the joining of its OSCORE groups. Such policies can be enforced locally by the Group Manager, or by a third party in a trust relation with the Group Manager and entrusted to enforce join policies on behalf of the Group Manager.
+2. Defining policies for authorizing the joining of its OSCORE groups.
 
 3. Handling the join process to add new endpoints as group members.
 
