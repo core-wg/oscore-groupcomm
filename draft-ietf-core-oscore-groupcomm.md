@@ -949,6 +949,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Group IDs mandated to be unique under the same Group Manager.
 
+* Clarifications on parameter update upon group rekeying.
+
 * Updated external_aad structures.
 
 * Dynamic derivation of Recipient Contexts made optional and application specific.
