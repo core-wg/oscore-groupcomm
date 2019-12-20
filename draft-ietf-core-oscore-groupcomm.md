@@ -80,32 +80,31 @@ informative:
   RFC6282:
   RFC6347:
   RFC7228:
-  RFC7390:
   RFC7641:
 
 --- abstract
 
-This document describes a mode for protecting group communication over the Constrained Application Protocol (CoAP). The proposed mode relies on Object Security for Constrained RESTful Environments (OSCORE) and the CBOR Object Signing and Encryption (COSE) format. In particular, it defines how OSCORE is used in a group communication setting, while fulfilling the same security requirements for group requests and responses. Source authentication of all messages exchanged within the group is provided by means of digital signatures produced by the sender and embedded in the protected CoAP messages.
+This document defines Group OSCORE, providing end-to-end security of CoAP messages exchanged between members of a group, and preserving independence of transport layer. In particular, the described approach defines how OSCORE should be used in a group communication setting, so that end-to-end security is assured in the same way as OSCORE for unicast communication. That is, end-to-end security with source authentication is provided for CoAP group requests sent by a client to the group, and for related CoAP responses sent by multiple servers.
 
 --- middle
 
 # Introduction # {#intro}
 
-The Constrained Application Protocol (CoAP) {{RFC7252}} is a web transfer protocol specifically designed for constrained devices and networks {{RFC7228}}.
-
-Group communication for CoAP {{RFC7390}}{{I-D.dijk-core-groupcomm-bis}} addresses use cases where deployed devices benefit from a group communication model, for example to reduce latencies, improve performance and reduce bandwidth utilisation. Use cases include lighting control, integrated building control, software and firmware updates, parameter and configuration updates, commissioning of constrained networks, and emergency multicast (see {{sec-use-cases}}). Furthermore, {{RFC7390}} recognizes the importance to introduce a secure mode for CoAP group communication. This specification defines such a mode.
+The Constrained Application Protocol (CoAP) {{RFC7252}} is a web transfer protocol specifically designed for constrained devices and networks {{RFC7228}}. Group communication for CoAP {{I-D.dijk-core-groupcomm-bis}} addresses use cases where deployed devices benefit from a group communication model, for example to reduce latencies, improve performance and reduce bandwidth utilisation. Use cases include lighting control, integrated building control, software and firmware updates, parameter and configuration updates, commissioning of constrained networks, and emergency multicast (see {{sec-use-cases}}). This specification defines a security protocol for Group communication for CoAP {{I-D.dijk-core-groupcomm-bis}}.
 
 Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} describes a security protocol based on the exchange of protected CoAP messages. OSCORE builds on CBOR Object Signing and Encryption (COSE) {{RFC8152}} and provides end-to-end encryption, integrity, replay protection and binding of response to request between a sender and a receipient, also in the presence of intermediaries. To this end, a CoAP message is protected by including its payload (if any), certain options, and header fields in a COSE object, which replaces the authenticated and encrypted fields in the protected message.
 
-This document defines Group OSCORE, providing end-to-end security of CoAP messages exchanged between members of a group, and preserving independence of transport layer. In particular, the described approach defines how OSCORE should be used in a group communication setting, so that end-to-end security is assured in the same way as OSCORE for unicast communication. That is, end-to-end security is provided for CoAP multicast requests sent by a client to the group, and for related CoAP responses sent by multiple servers. Group OSCORE provides source authentication of all CoAP messages exchanged within the group, by means of digital signatures produced through private keys of sender devices and embedded in the protected CoAP messages.
+This document defines Group OSCORE, providing end-to-end security of CoAP messages exchanged between members of a group, and preserving independence of transport layer. In particular, the described approach defines how OSCORE should be used in a group communication setting, so that end-to-end security is assured in the same way as OSCORE for unicast communication. That is, end-to-end security is provided for CoAP group requests sent by a client to the group, and for related CoAP responses sent by multiple servers. Group OSCORE provides source authentication of all CoAP messages exchanged within the group, produced through private keys of sender devices and embedded in the protected CoAP messages. Just like OSCORE, Group OSCORE is independent of the transport layer and works over any layer that CoAP works over.
 
-As defined in the latest {{I-D.dijk-core-groupcomm-bis}}, Group OSCORE is the security protocol to use for applications that rely on CoAP group communication. As in OSCORE, it is still possible to simultaneously rely on DTLS {{RFC6347}} to protect hop-by-hop communication between a sender and a proxy (and vice versa), and between a proxy and a recipient (and vice versa). Note that DTLS cannot be used to secure messages sent over multicast.
+As defined in {{I-D.dijk-core-groupcomm-bis}}, Group OSCORE is the security protocol to use for applications that rely on CoAP group communication. As in OSCORE, it is still possible to simultaneously rely on DTLS {{RFC6347}} to protect hop-by-hop communication between a sender and a proxy (and vice versa), and between a proxy and a recipient (and vice versa). Note that DTLS cannot be used to secure messages sent over multicast.
+
+Group OSOCORE defines two modes of operation. The full mode supports all COSE algorithms and supports signature verifying intermediaries. The optimized mode only supports certain COSE algorithms and does not support signature verifying intermediaries.
 
 ## Terminology ## {#terminology}
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
 
-Readers are expected to be familiar with the terms and concepts described in CoAP {{RFC7252}} including "endpoint", "client", "server", "sender" and "recipient"; group communication for CoAP {{RFC7390}}{{I-D.dijk-core-groupcomm-bis}}; COSE and counter signatures {{RFC8152}}.
+Readers are expected to be familiar with the terms and concepts described in CoAP {{RFC7252}} including "endpoint", "client", "server", "sender" and "recipient"; group communication for CoAP {{I-D.dijk-core-groupcomm-bis}}; COSE and counter signatures {{RFC8152}}.
 
 Readers are also expected to be familiar with the terms and concepts for protection and processing of CoAP messages through OSCORE, such as "Security Context" and "Master Secret", defined in {{RFC8613}}.
 
@@ -144,7 +143,7 @@ To support group communication secured with OSCORE, each endpoint registered as 
 
 2. one Sender Context, unless the endpoint is configured exclusively as silent server. The Sender Context is used to secure outgoing messages and is initialized according to Section 3 of {{RFC8613}}, once the endpoint has joined the group. The Sender Context of a given endpoint matches the corresponding Recipient Context in all the endpoints receiving a protected message from that endpoint. Besides, in addition to what is defined in {{RFC8613}}, the Sender Context stores also the endpoint's private key.
 
-3. one Recipient Context for each distinct endpoint from which messages are received, used to process incoming messages. The recipient may generate a Recipient Context whenever in possession of all the required pieces of information on the corresponding endpoint, e.g. they may be provided to the recipient upon joining the group. Alternatively, the recipient may generate a Recipient Context upon receiving an incoming message from another endpoint in the group for the first time (see {{ssec-verify-request}} and {{ssec-verify-response}}). Each Recipient Context matches the Sender Context of the endpoint from which protected messages are received. Besides, in addition to what is defined in {{RFC8613}}, each Recipient Context stores also the public key of the associated other endpoint from which messages are received. Note that each Recipient Context includes a Replay Window, unless the recipient acts only as client and hence processes only responses as incoming messages.
+3. one Recipient Context for each distinct endpoint from which messages are received, used to process incoming messages. The recipient may generate the Recipient Context upon receiving an incoming message from another endpoint in the group for the first time (see {{ssec-verify-request}} and {{ssec-verify-response}}). Each Recipient Context matches the Sender Context of the endpoint from which protected messages are received. Besides, in addition to what is defined in {{RFC8613}}, each Recipient Context stores also the public key of the associated other endpoint from which messages are received. Note that each Recipient Context includes a Replay Window, unless the recipient acts only as client and hence processes only responses as incoming messages.
 
 The table in {{fig-additional-context-information}} overviews the new information included in the OSCORE Security Context, with respect to what defined in Section 3 of {{RFC8613}}.
 
@@ -182,7 +181,7 @@ The Sender/Recipient Keys and the Common IV are derived according to the same sc
 
 ## Management of Group Keying Material # {#sec-group-key-management}
 
-In order to establish a new Security Context in a group, a new Group Identifier (Gid) for that group and a new value for the Master Secret parameter MUST be distributed. When doing so, a new value for the Master Salt parameter MAY also be distributed, and the Group Manager SHOULD preserve the current value of the Sender ID of each group member. An example of Gid format supporting this operation is provided in {{gid-ex}}. Then, each group member re-derives the keying material stored in its own Sender Context and Recipient Contexts as described in {{sec-context}}, using the updated Gid.
+In order to establish a new Security Context in a group, a new Group Identifier (Gid) for that group and a new value for the Master Secret parameter MUST be distributed. An example of Gid format supporting this operation is provided in {{gid-ex}}. Then, each group member re-derives the keying material stored in its own Sender Context and Recipient Contexts as described in {{sec-context}}, using the updated Gid.
 
 <!-- Comment from John: what about the other parameters? salt, etc should be mentioned if it is MAY or MUST NOT and why -->
 
@@ -208,9 +207,31 @@ Furthermore, the endpoint SHOULD inform the Group Manager, that can take one of 
 
 Either case, same considerations from {{sec-group-key-management}} hold about possible retaining of stale Recipient Contexts.
 
+
+
+
+
+
+
+
+
+
+
 # The COSE Object # {#sec-cose-object}
 
 Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{RFC8152}} to wrap and protect data in the original message. OSCORE uses the untagged COSE_Encrypt0 structure with an Authenticated Encryption with Associated Data (AEAD) algorithm. For Group OSCORE, the following modifications apply.
+
+## Updated 'unprotected' Field # {#sec-cose-object-unprotected-field}
+
+The 'unprotected' field MUST additionally include the following parameter:
+
+* CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the sender using its own private key as described in Appendix A.2 of {{RFC8152}}. In particular, the Sig_structure contains the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE_Encrypt0 object as payload. 
+
+## Use of the 'kid' and 'kid context' parameters # {#sec-cose-object-kid}
+
+The value of the 'kid' parameter in the 'unprotected' field of response messages MUST be set to the Sender ID of the endpoint transmitting the message. That is, unlike in {{RFC8613}}, the 'kid' parameter is always present in all messages, i.e. both requests and responses.
+
+The value of the 'kid context' parameter in the 'unprotected' field of requests messages MUST be set to the ID Context. That is, unlike in {{RFC8613}}, the 'kid context' parameter is always present in requests.
 
 ## Updated external_aad # {#sec-cose-object-ext-aad}
 
@@ -273,52 +294,9 @@ aad_array = [
 
 Note for implementation: this requires the value of the OSCORE option to be fully ready, before starting the signing process.
 
-## Use of the 'kid' Parameter # {#sec-cose-object-kid}
-
-The value of the 'kid' parameter in the 'unprotected' field of response messages MUST be set to the Sender ID of the endpoint transmitting the message. That is, unlike in {{RFC8613}}, the 'kid' parameter is always present in all messages, i.e. both requests and responses.
-
-## Updated 'unprotected' Field # {#sec-cose-object-unprotected-field}
-
-The 'unprotected' field MUST additionally include the following parameter:
-
-* CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the sender using its own private key as described in Appendix A.2 of {{RFC8152}}. In particular, the Sig_structure contains the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE_Encrypt0 object as payload. 
-
 # OSCORE Header Compression {#compression}
 
-The OSCORE compression defined in Section 6 of {{RFC8613}} is used, with the following additions for the encoding of the OSCORE Option and the OSCORE Payload.
-
-## Encoding of the OSCORE Option Value {#obj-sec-value}
-
-Analogously to {{RFC8613}}, the value of the OSCORE option SHALL contain the OSCORE flag bits, the Partial IV parameter, the kid context parameter (length and value), and the kid parameter, with the following modifications:
-
-* The first byte, containing the OSCORE flag bits, has the following encoding modifications:
-
-    - The fourth least significant bit MUST be set to 1 in every message, to indicate the presence of the 'kid' parameter for all group requests and responses. That is, unlike in {{RFC8613}}, the 'kid' parameter is always present in all messages.
-
-    - The fifth least significant bit MUST be set to 1 for group requests, to indicate the presence of the 'kid context' parameter in the compressed COSE object. The 'kid context' MAY be present in responses if the application requires it. In such a case, the kid context flag MUST be set to 1.
-
-The flag bits are registered in the OSCORE Flag Bits registry specified in Section 13.7 of {{RFC8613}}.
-
-* The 'kid context' value encodes the Group Identifier value (Gid) of the group's Security Context.
-
-* The remaining bytes in the OSCORE Option value encode the value of the 'kid' parameter, which is always present both in group requests and in responses.
-
-~~~~~~~~~~~
- 0 1 2 3 4 5 6 7 <------------ n bytes ------------>
-+-+-+-+-+-+-+-+-+-----------------------------------+
-|0 0|0|h|1|  n  |       Partial IV (if any)         |
-+-+-+-+-+-+-+-+-+-----------------------------------+
-
- <-- 1 byte ---> <------ s bytes ------> 
-+---------------+-----------------------+-----------+
-|  s (if any)   |   kid context = Gid   |    kid    |
-+---------------+-----------------------+-----------+
-~~~~~~~~~~~
-{: #fig-option-value title="OSCORE Option Value" artwork-align="center"}
-
-## Encoding of the OSCORE Payload {#oscore-payl}
-
-The payload of the OSCORE message SHALL encode the ciphertext of the COSE object concatenated with the value of the CounterSignature0 of the COSE object, computed as in Appendix A.2 of {{RFC8152}} according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context.
+The OSCORE header compression defined in Section 6 of {{RFC8613}} is used with the change that the payload of the OSCORE message SHALL encode the ciphertext of the COSE object concatenated with the value of the CounterSignature0 (if present) of the COSE object.
 
 ## Examples of Compressed COSE Objects
 
@@ -389,7 +367,7 @@ The exact way to address this issue is application specific, and depends on the 
 
 Each request message and response message is protected and processed as specified in {{RFC8613}}, with the modifications described in the following sections. The following security objectives are fulfilled, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication and message integrity.
 
-As per {{RFC7252}}{{RFC7390}}{{I-D.dijk-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-Confirmable. Thus, senders should store their outgoing messages for an amount of time defined by the application and sufficient to correctly handle possible retransmissions. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments. Besides, according to Section 5.2.3 of {{RFC7252}}, responses to Non-Confirmable group requests SHOULD be also Non-Confirmable. However, endpoints MUST be prepared to receive Confirmable responses in reply to a Non-Confirmable group request.
+As per {{RFC7252}}{{I-D.dijk-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-Confirmable. Thus, senders should store their outgoing messages for an amount of time defined by the application and sufficient to correctly handle possible retransmissions. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments. Besides, according to Section 5.2.3 of {{RFC7252}}, responses to Non-Confirmable group requests SHOULD be also Non-Confirmable. However, endpoints MUST be prepared to receive Confirmable responses in reply to a Non-Confirmable group request.
 
 Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{RFC8613}}. However, a recipient MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}}, or which is not cryptographically validated in a successful way. Either case, it is RECOMMENDED that the recipient does not send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the group.
 
@@ -401,7 +379,7 @@ A client transmits a secure group request as described in Section 8.1 of {{RFC86
 
 * In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this specification. The encoding of the compressed COSE object is modified as described in {{compression}} of this specification.
 
-* In step 5, the counter signature is computed and the format of the OSCORE mesage is modified as described in {{oscore-payl}} of this specification. In particular, the payload of the OSCORE message includes also the counter signature.
+* In step 5, the counter signature is computed and the format of the OSCORE mesage is modified as described in {{compression}} of this specification. In particular, the payload of the OSCORE message includes also the counter signature.
 
 ## Verifying the Request ## {#ssec-verify-request}
 
@@ -423,7 +401,7 @@ A server that has received a secure group request may reply with a secure respon
 
 * In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this specification. The encoding of the compressed COSE object is modified as described in {{compression}} of this specification.
 
-* In step 5, the counter signature is computed and the format of the OSCORE mesage is modified as described in {{oscore-payl}} of this specification. In particular, the payload of the OSCORE message includes also the counter signature.
+* In step 5, the counter signature is computed and the format of the OSCORE mesage is modified as described in {{compression}} of this specification. In particular, the payload of the OSCORE message includes also the counter signature.
 
 ## Verifying the Response ## {#ssec-verify-response}
 
@@ -443,7 +421,7 @@ The Group Manager is responsible for performing the following tasks:
 
 1. Creating and managing OSCORE groups. This includes the assignment of a Gid to every newly created group, as well as ensuring uniqueness of Gids within the set of its OSCORE groups.
 
-2. Defining policies for authorizing the joining of its OSCORE groups.
+2. Defining policies for authorizing the joining of its OSCORE groups. Such policies can be enforced locally by the Group Manager, or by a third party in a trust relation with the Group Manager and entrusted to enforce join policies on behalf of the Group Manager.
 
 3. Handling the join process to add new endpoints as group members.
 
@@ -462,6 +440,39 @@ The Group Manager is responsible for performing the following tasks:
 10. Acting as key repository, in order to handle the public keys of the members of its OSCORE groups, and providing such public keys to other members of the same group upon request. The actual storage of public keys may be entrusted to a separate secure storage device.
 
 11. Validating that the format and parameters of public keys of group members are consistent with the countersignature algorithm and related parameters used in the respective OSCORE group.
+
+# Optimized Mode
+
+For use cases that does not require a signature verifying intermediary and that uses a compatible algorithms, the optimized mode defined in this section provides significant smaller message sizes and increases the security by making responses confidential to other group members.
+
+The amount of overhead reduction depends on the number of nodes in the system, for a request and repsonse betwen two nodes the overhead (number of bytes) is reduced with approximatly 40 %, and with ten or more nodes the reduction in overhead is approximatly 80 %.
+
+## Optimized Request
+
+No changes.
+
+### Optimized Compressed Request
+
+The OSCORE header compression defined in {{compression}} is used with the change that the payload of the OSCORE message SHALL encode the ciphertext without the tag concatenated with the value of the CounterSignature0 (if present) of the COSE object.
+
+The optimized compressed request is compatible with all AEAD algorithms defined in RCC 8152, but would not be compatible with AEAD algorithms that does not have a well-defined tag.
+
+## Optimized Response
+
+The optimized response does not contain a Counter Signature and the COSE_Encrypt0 object in the response is encrypted with a key derived from a static-static Diffe-Hellman shared secret and the Sender/Recipient Key. No changes are made to the AEAD nonce and AAD. Using the key derivation defined in Section 3.2.1 of {{RFC8613}} the Response Sender/Recipient Key are derived as:
+
+~~~~~~~~~~~
+   Response Sender/Recipient Key
+      = HKDF(Sender/Recipient Key, Shared Secret, info, L)
+~~~~~~~~~~~
+
+where info and L are defined as in Section 3.2.1 of {{RFC8613}} and the Shared Secret is calculated as a static-static Diffie-Hellan where the sender uses its own private key and the recipient's public key, and the recipient uses its own private key and the senders's public key. For EdDSA the Edward coordinates are mapped to Montgomery coordianates using the maps defined in Sections 4.1 and 4.2 of RFC 7748 before using the X25519 and X448 defined in Section 5 of RFC 7748.
+
+The optimized reponse is compatible with EdDSA and ECDSA but is not compatible with RSA. The security of using the same key pair for Diffie-Hellman and signing is proven in https://eprint.iacr.org/2011/615.
+
+### Optimized Compressed Response
+
+No changes.
 
 # Security Considerations  # {#sec-security-considerations}
 
@@ -833,7 +844,7 @@ The following assumptions are assumed to be already addressed and are out of the
 
 * Multicast communication topology: this document considers both 1-to-N (one sender and multiple recipients) and M-to-N (multiple senders and multiple recipients) communication topologies. The 1-to-N communication topology is the simplest group communication scenario that would serve the needs of a typical Low-power and Lossy Network (LLN). Examples of use cases that benefit from secure group communication are provided in {{sec-use-cases}}.
 
-    In a 1-to-N communication model, only a single client transmits data to the group, in the form of request messages; in an M-to-N communication model (where M and N do not necessarily have the same value), M group members are clients. According to {{RFC7390}}, any possible proxy entity is supposed to know about the clients in the group and to not perform aggregation of response messages from multiple servers. Also, every client expects and is able to handle multiple response messages associated to a same request sent to the group.
+    In a 1-to-N communication model, only a single client transmits data to the group, in the form of request messages; in an M-to-N communication model (where M and N do not necessarily have the same value), M group members are clients. According to {{I-D.dijk-core-groupcomm-bis}}, any possible proxy entity is supposed to know about the clients in the group and to not perform aggregation of response messages from multiple servers. Also, every client expects and is able to handle multiple response messages associated to a same request sent to the group.
 
 * Group size: security solutions for group communication should be able to adequately support different and possibly large groups. The group size is the current number of members in a group. In the use cases mentioned in this document, the number of clients (normally the controlling devices) is expected to be much smaller than the number of servers (i.e. the controlled devices). A security solution for group communication that supports 1 to 50 clients would be able to properly cover the group sizes required for most use cases that are relevant for this document. The maximum group size is expected to be in the range of 2 to 100 devices. Groups larger than that should be divided into smaller independent groups.
 
@@ -863,7 +874,7 @@ The approach described in this document aims at fulfilling the following securit
 
 # List of Use Cases # {#sec-use-cases}
 
-Group Communication for CoAP {{RFC7390}}{{I-D.dijk-core-groupcomm-bis}} provides the necessary background for multicast-based CoAP communication, with particular reference to low-power and lossy networks (LLNs) and resource constrained environments. The interested reader is encouraged to first read {{RFC7390}}{{I-D.dijk-core-groupcomm-bis}} to understand the non-security related details. This section discusses a number of use cases that benefit from secure group communication. Specific security requirements for these use cases are discussed in {{sec-requirements}}.
+Group Communication for CoAP {{I-D.dijk-core-groupcomm-bis}} provides the necessary background for multicast-based CoAP communication, with particular reference to low-power and lossy networks (LLNs) and resource constrained environments. The interested reader is encouraged to first read {{I-D.dijk-core-groupcomm-bis}} to understand the non-security related details. This section discusses a number of use cases that benefit from secure group communication. Specific security requirements for these use cases are discussed in {{sec-requirements}}.
 
 * Lighting control: consider a building equipped with IP-connected lighting devices, switches, and border routers. The devices are organized into groups according to their physical location in the building. For instance, lighting devices and switches in a room or corridor can be configured as members of a single group. Switches are then used to control the lighting devices by sending on/off/dimming commands to all lighting devices in a group, while border routers connected to an IP network backbone (which is also multicast-enabled) can be used to interconnect routers in the building. Consequently, this would also enable logical groups to be formed even if devices in the lighting group may be physically in different subnets (e.g. on wired and wireless networks). Connectivity between lighting devices may be realized, for instance, by means of IPv6 and (border) routers supporting 6LoWPAN {{RFC4944}}{{RFC6282}}. Group communication enables synchronous operation of a group of connected lights, ensuring that the light preset (e.g. dimming level or color) of a large group of luminaires are changed at the same perceived time. This is especially useful for providing a visual synchronicity of light effects to the user. As a practical guideline, events within a 200 ms interval are perceived as simultaneous by humans, which is necessary to ensure in many setups. Devices may reply back to the switches that issue on/off/dimming commands, in order to report about the execution of the requested operation (e.g. OK, failure, error) and their current operational status. In a typical lighting control scenario, a single switch is the only entity responsible for sending commands to a group of lighting devices. In more advanced lighting control use cases, a M-to-N communication topology would be required, for instance in case multiple sensors (presence or day-light) are responsible to trigger events to a group of lighting devices. Especially in professional lighting scenarios, the roles of client and server are configured by the lighting commissioner, and devices strictly follow those roles.
 
@@ -948,8 +959,6 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -05 to -06 ## {#sec-05-06}
 
 * Group IDs mandated to be unique under the same Group Manager.
-
-* Clarifications on parameter update upon group rekeying.
 
 * Updated external_aad structures.
 
