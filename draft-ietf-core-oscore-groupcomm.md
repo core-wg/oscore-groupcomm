@@ -181,7 +181,7 @@ The Sender/Recipient Keys and the Common IV are derived according to the same sc
 
 ## Management of Group Keying Material # {#sec-group-key-management}
 
-In order to establish a new Security Context in a group, a new Group Identifier (Gid) for that group and a new value for the Master Secret parameter MUST be distributed. An example of Gid format supporting this operation is provided in {{gid-ex}}. Then, each group member re-derives the keying material stored in its own Sender Context and Recipient Contexts as described in {{sec-context}}, using the updated Gid.
+In order to establish a new Security Context in a group, a new Group Identifier (Gid) for that group and a new value for the Master Secret parameter MUST be distributed. When doing so, a new value for the Master Salt parameter MAY also be distributed, and the Group Manager SHOULD preserve the current value of the Sender ID of each group member. An example of Gid format supporting this operation is provided in {{gid-ex}}. Then, each group member re-derives the keying material stored in its own Sender Context and Recipient Contexts as described in {{sec-context}}, using the updated Gid.
 
 <!-- Comment from John: what about the other parameters? salt, etc should be mentioned if it is MAY or MUST NOT and why -->
 
@@ -206,16 +206,6 @@ Furthermore, the endpoint SHOULD inform the Group Manager, that can take one of 
 * The Group Manager provides a new Sender ID value to the endpoint that has experienced the wrap-around. Then, the endpoint derives a new Sender Context using the new Sender ID, as described in Section 3.2 of {{RFC8613}}.
 
 Either case, same considerations from {{sec-group-key-management}} hold about possible retaining of stale Recipient Contexts.
-
-
-
-
-
-
-
-
-
-
 
 # The COSE Object # {#sec-cose-object}
 
