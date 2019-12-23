@@ -64,6 +64,7 @@ normative:
   RFC4086:
   RFC6979:
   RFC7252:
+  RFC7748:
   RFC8032:
   RFC8126:
   RFC8152:
@@ -81,6 +82,26 @@ informative:
   RFC6347:
   RFC7228:
   RFC7641:
+  Degabriele:
+    author:
+      -
+        ins: J. P. Degabriele
+        name: Jean Paul Degabriele
+      -
+        ins: A. Lehmann
+        name: Anja Lehmann
+      -
+        ins: K. G. Paterson
+        name: Kenneth G. Paterson
+      -
+        ins: N. P. Smart
+        name: Nigel P. Smart
+      -
+        ins: M. Strefler
+        name: Mario Strefler
+    title: On the Joint Security of Encryption and Signature in EMV
+    date: 2011-12
+    target: https://eprint.iacr.org/2011/615
 
 --- abstract
 
@@ -433,9 +454,9 @@ The Group Manager is responsible for performing the following tasks:
 
 # Optimized Mode
 
-For use cases that does not require a signature verifying intermediary and that uses a compatible algorithms, the optimized mode defined in this section provides significant smaller message sizes and increases the security by making responses confidential to other group members.
+For use cases that do not require an intermediary performing signature verification and that use a compatible algorithm, the optimized mode defined in this section provides significant smaller message sizes and increases the security by making responses confidential to other group members than the intended recipient.
 
-The amount of overhead reduction depends on the number of nodes in the system, for a request and repsonse betwen two nodes the overhead (number of bytes) is reduced with approximatly 40 %, and with ten or more nodes the reduction in overhead is approximatly 80 %.
+The amount of overhead reduction depends on the number of nodes in the system, for a request and response betwen two nodes the overhead (number of bytes) is reduced of approximately 40 %, and with ten or more nodes the reduction in overhead is approximately of 80 %.
 
 ## Optimized Request
 
@@ -443,22 +464,24 @@ No changes.
 
 ### Optimized Compressed Request
 
-The OSCORE header compression defined in {{compression}} is used with the change that the payload of the OSCORE message SHALL encode the ciphertext without the tag concatenated with the value of the CounterSignature0 (if present) of the COSE object.
+The OSCORE header compression defined in {{compression}} is used with the difference that the payload of the OSCORE message SHALL encode the ciphertext without the tag concatenated with the value of the CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
 
-The optimized compressed request is compatible with all AEAD algorithms defined in RCC 8152, but would not be compatible with AEAD algorithms that does not have a well-defined tag.
+The optimized compressed request is compatible with all AEAD algorithms defined in {{RFC8152}}, but would not be compatible with AEAD algorithms that do not have a well-defined tag.
 
 ## Optimized Response
 
-The optimized response does not contain a Counter Signature and the COSE_Encrypt0 object in the response is encrypted with a key derived from a static-static Diffe-Hellman shared secret and the Sender/Recipient Key. No changes are made to the AEAD nonce and AAD. Using the key derivation defined in Section 3.2.1 of {{RFC8613}} the Response Sender/Recipient Key are derived as:
+An optimized response does not contain a Counter Signature and the COSE_Encrypt0 object in the response is encrypted with a key derived from a static-static Diffe-Hellman shared secret and the Sender/Recipient Key. No changes are made to the AEAD nonce and AAD. The Response Sender/Recipient Key are derived as follows, by using the key derivation construction in Section 3.2.1 of {{RFC8613}}.
 
 ~~~~~~~~~~~
-   Response Sender/Recipient Key
-      = HKDF(Sender/Recipient Key, Shared Secret, info, L)
+Response Sender/Recipient Key
+               = HKDF(Sender/Recipient Key, Shared Secret, info, L)
 ~~~~~~~~~~~
 
-where info and L are defined as in Section 3.2.1 of {{RFC8613}} and the Shared Secret is calculated as a static-static Diffie-Hellan where the sender uses its own private key and the recipient's public key, and the recipient uses its own private key and the senders's public key. For EdDSA the Edward coordinates are mapped to Montgomery coordianates using the maps defined in Sections 4.1 and 4.2 of RFC 7748 before using the X25519 and X448 defined in Section 5 of RFC 7748.
+where info and L are defined as in Section 3.2.1 of {{RFC8613}}; and the Shared Secret is computed as a static-static Diffie-Hellman shared secret, where the sender uses its own private key and the recipient's public key, while the recipient uses its own private key and the senders's public key.
 
-The optimized reponse is compatible with EdDSA and ECDSA but is not compatible with RSA. The security of using the same key pair for Diffie-Hellman and signing is proven in https://eprint.iacr.org/2011/615.
+For EdDSA, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}} before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}.
+
+An optimized response is compatible with EdDSA and ECDSA, but is not compatible with RSA. The security of using the same key pair for Diffie-Hellman and for signing is proven in {{Degabriele}}.
 
 ### Optimized Compressed Response
 
