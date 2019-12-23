@@ -215,13 +215,13 @@ Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{RFC
 
 The 'unprotected' field MUST additionally include the following parameter:
 
-* CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the sender using its own private key as described in Appendix A.2 of {{RFC8152}}. In particular, the Sig_structure contains the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE_Encrypt0 object as payload. 
+* CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the sender as described in Appendix A.2 of {{RFC8152}}, by using its own private key and according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context. In particular, the Sig_structure contains the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE_Encrypt0 object as payload.
 
 ## Use of the 'kid' and 'kid context' parameters # {#sec-cose-object-kid}
 
 The value of the 'kid' parameter in the 'unprotected' field of response messages MUST be set to the Sender ID of the endpoint transmitting the message. That is, unlike in {{RFC8613}}, the 'kid' parameter is always present in all messages, i.e. both requests and responses.
 
-The value of the 'kid context' parameter in the 'unprotected' field of requests messages MUST be set to the ID Context. That is, unlike in {{RFC8613}}, the 'kid context' parameter is always present in requests.
+The value of the 'kid context' parameter in the 'unprotected' field of requests messages MUST be set to the ID Context, i.e. the Group Identifier value (Gid) of the group's Security Context. That is, unlike in {{RFC8613}}, the 'kid context' parameter is always present in requests.
 
 ## Updated external_aad # {#sec-cose-object-ext-aad}
 
@@ -286,7 +286,7 @@ Note for implementation: this requires the value of the OSCORE option to be full
 
 # OSCORE Header Compression {#compression}
 
-The OSCORE header compression defined in Section 6 of {{RFC8613}} is used with the change that the payload of the OSCORE message SHALL encode the ciphertext of the COSE object concatenated with the value of the CounterSignature0 (if present) of the COSE object.
+The OSCORE header compression defined in Section 6 of {{RFC8613}} is used with the difference that the payload of the OSCORE message SHALL encode the ciphertext of the COSE object concatenated with the value of the CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
 
 ## Examples of Compressed COSE Objects
 
