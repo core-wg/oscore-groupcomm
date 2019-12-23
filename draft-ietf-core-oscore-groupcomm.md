@@ -84,7 +84,7 @@ informative:
 
 --- abstract
 
-This document defines Group OSCORE, providing end-to-end security of CoAP messages exchanged between members of a group, and preserving independence of transport layer. In particular, the described approach defines how OSCORE should be used in a group communication setting, so that end-to-end security is assured in the same way as OSCORE for unicast communication. That is, end-to-end security with source authentication is provided for CoAP group requests sent by a client to the group, and for related CoAP responses sent by multiple servers.
+This document defines Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of CoAP messages exchanged between members of a group, and preserving independence from the transport layer. In particular, the described approach defines how OSCORE should be used in a group communication setting, so that end-to-end security is assured as in unicast communications using OSCORE. That is, end-to-end security with source authentication is provided for CoAP group requests sent by a client to the group, and for related CoAP responses sent by multiple servers.
 
 --- middle
 
