@@ -969,6 +969,10 @@ In this specification, it is NOT RECOMMENDED that endpoints do not verify the co
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
+## Version -06 to -07 ## {#sec-06-07}
+
+TBD
+
 ## Version -05 to -06 ## {#sec-05-06}
 
 * Group IDs mandated to be unique under the same Group Manager.
