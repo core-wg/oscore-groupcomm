@@ -653,6 +653,8 @@ With particular reference to the OSCORE Master Secret, it has to be kept secret 
 
 As in OSCORE, also Group OSCORE relies on sender sequence numbers included in the COSE message field 'Partial IV' and used to build AEAD nonces.
 
+Note that the Partial IV of an endpoint does not necessarily grow monotonically. For instance, upon wrap-around of the endpoint Sender Sequence Number, the Partial IV also wraps-around, since 0 becomes the next Sender Sequence Number used as Partial IV. As discussed in {{ssec-wrap-around-partial-iv}}, this results either in the endpoint being individually rekeyed and getting a new Sender ID, or in the establishment of a new Security Context in the group. Therefore, uniqueness of (key, nonce) pairs (see {{ssec-key-nonce-uniqueness}}) is preserved also when a new Security Context is established.
+
 As discussed in {{sec-synch-seq-num}}, an endpoint that has just joined a group is exposed to replay attack, as it is not aware of the sender sequence numbers currently used by other group members. {{synch-ex}} describes how endpoints can synchronize with senders' sequence numbers.
 
 Unless exchanges in a group rely only on unicast messages, Group OSCORE cannot be used with reliable transport. Thus, unless only unicast messages are sent in the group, it cannot be defined that only messages with sequence numbers that are equal to the previous sequence number + 1 are accepted.
