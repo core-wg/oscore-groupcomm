@@ -571,6 +571,18 @@ If M2 is used as a response, Z can also change the response Partial IV, until th
 
 Note that, by changing the Partial IV as discussed above, any member of G1 would also be able to forge a valid signed response message M2 to be injected in G1.
 
+## Group OSCORE for Unicast Requests {#ssec-unicast-requests}
+
+It is NOT RECOMMENDED for a client to use Group OSCORE for securing a request sent to a single group member over unicast.
+
+If Group OSCORE is used to protect a unicast request to a group member, an on-path adversary can, right then or later on, redirect that request to one/many different group member(s) over unicast, or to the whole OSCORE group over multicast. By doing so, the adversary can induce the target group member(s) to perform actions intended to one group member only. Note that the adversary can be external, i.e. (s)he does not need to also be a member of the OSCORE group.
+
+This is due to the fact that the client is not able to indicate the single intended recipient in a way which is secure and possible to process for Group OSCORE on the server side. In particular, Group OSCORE does not protect network addressing information such as the IP address of the intended recipient server. It follows that the server(s) receiving the redirected request cannot assert whether that was the original intention of the client, and would thus simply assume so.
+
+The impact of such an attack depends especially on the REST method of the request, i.e. the Inner CoAP Code of the OSCORE request message. In particular, safe methods such as GET and FETCH would trigger (several) unintended responses from the targeted server(s), while not resulting in destructive behavior. On the other hand, non safe methods such as PUT, POST and PATCH/iPATCH would result in the target server(s) taking active actions on their resources and possible cyber-physical environment, with the risk of destructive consequences and possible implications for safety.
+
+Additional considerations are discussed in {{ssec-synch-challenge-response}}, with respect to unicast requests including an Echo Option {{I-D.ietf-core-echo-request-tag}}, as a challenge-response method for servers to achieve synchronization of client Sender Sequence Numbers.
+
 ## End-to-end Protection {#ssec-e2e-protection}
 
 The same considerations from Section 12.1 of {{RFC8613}} hold for Group OSCORE.
@@ -956,6 +968,8 @@ In case it does not receive a valid unicast request including the Echo Option wi
 A server should not deliver group requests from a given client to the application until one valid request from that same client has been verified as fresh, as conveying an echoed Echo Option {{I-D.ietf-core-echo-request-tag}}. Also, a server may perform the challenge-response described above at any time, if synchronization with sender sequence numbers of clients is (believed to be) lost, for instance after a device reboot. It is the role of the application to define under what circumstances sender sequence numbers lose synchronization. This can include a minimum gap between the sender sequence number of the latest accepted group request from a client and the sender sequence number of a group request just received from the same client. A client has to be always ready to perform the challenge-response based on the Echo Option in case a server starts it.
 
 Note that endpoints configured as silent servers are not able to perform the challenge-response described above, as they do not store a Sender Context to secure the 4.01 (Unauthorized) response to the client. Therefore, silent servers should adopt alternative approaches to achieve and maintain synchronization with sender sequence numbers of clients.
+
+If this approach is used, it is important that all the group members acting as non-silent servers understand the elective Echo Option. This will ensure that those servers cannot be victim of the attack discussed in {{ssec-unicast-requests}}, in spite of the fact that the requests including the Echo Option are sent over unicast and secured with Group OSCORE. On the other hand, an internal on-path adversary would not be able to mix up the Echo Option value of two different unicast requests, sent by a same client to any two different servers in the group. In fact, this would require the adversary to forge the client's counter signature in both such requests. As a consequence, each of the two servers remains able to selectively accept a request with the Echo Option only if it is waiting for that exact integrity-protected Echo Option value, and is thus the intended recipient.
 
 This approach provides an assurance of absolute message freshness. However, it can result in an impact on performance which is undesirable or unbearable, especially in large groups where many endpoints at the same time might join as new members or lose synchronization.
 
