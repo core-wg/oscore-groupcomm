@@ -204,7 +204,7 @@ The Sender/Recipient Keys and the Common IV are derived according to the same sc
 
 In order to establish a new Security Context in a group, a new Group Identifier (Gid) for that group and a new value for the Master Secret parameter MUST be distributed. An example of Gid format supporting this operation is provided in {{gid-ex}}. When distributing the new Gid and Master Secret, the Group Manager MAY distribute also a new value for the Master Salt parameter, and SHOULD preserve the current value of the Sender ID of each group member.
 
-Then, each group member re-derives the keying material stored in its own Sender Context and Recipient Contexts as described in {{sec-context}}, using the updated Gid and Master Secret parameter. The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise.
+Then, each group member re-derives the keying material stored in its own Sender Context and Recipient Contexts as described in {{sec-context}}, using the updated Gid and Master Secret parameter. The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise. From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
 
 After a new Gid has been distributed, a same Recipient ID ('kid') should not be considered as a persistent and reliable indicator of the same group member. Such an indication can be actually achieved only by verifying countersignatures of received messages. As a consequence, group members may end up retaining stale Recipient Contexts, that are no longer useful to verify incoming secure messages. Applications may define policies to delete (long-)unused Recipient Contexts and reduce the impact on storage space.
 
@@ -412,6 +412,26 @@ A server that has received a secure group request may reply with a secure respon
 
 * In step 5, the counter signature is computed and the format of the OSCORE mesage is modified as described in {{compression}} of this specification. In particular, the payload of the OSCORE message includes also the counter signature.
 
+Note that the server MUST always protect a response by using its own Sender Context from the latest owned Security Context.
+
+Consistently, upon the establishment of a new Security Context, the server may end up protecting a response by using a Security Context different from the one used to protect the group request (see {{ssec-key-rotation}}). In such a case, the server SHOULD also:
+
+* Encode the Partial IV (Sender Sequence Number in network byte order), which is set to the Sender Sequence Number of the server; increment the Sender Sequence Number by one; compute the AEAD nonce from the Sender ID, Common IV, and Partial IV.
+
+* Include in the respose the 'Partial IV' parameter, which is set to the encoded Partial IV value above.
+
+* Include in the response the 'kid context' parameter, which is set to the ID Context of the new Security Context, i.e. the new Group Identifier (Gid).
+
+### Supporting Observe ###
+
+If Observe {{RFC7641}} is supported, the server may have ongoing observations, started by Observe requests protected with an old Security Context.
+
+After completing the establishment of a new Security Context, the server MUST protect the following notifications with its own Sender Context from the new Security Context.
+
+For each ongoing observation, the server SHOULD include in the first notification protected with the new Security Context also the 'kid context' parameter, which is set to the ID Context of the new Security Context, i.e. the new Group Identifier (Gid).
+
+It is OPTIONAL for the server to include the 'kid context' parameter, as set to the new Gid, also in further following notifications for those observations.
+
 ## Verifying the Response ## {#ssec-verify-response}
 
 Upon receiving a secure response message, the client proceeds as described in Section 8.4 of {{RFC8613}}, with the following modifications.
@@ -423,6 +443,8 @@ Upon receiving a secure response message, the client proceeds as described in Se
 * In step 5, the client also verifies the counter signature using the public key of the server from the associated Recipient Context.
 
 * Additionally, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client MAY delete that Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the client's storage and creating processing overhead on the client.
+
+Note that, as discussed in {{ssec-key-rotation}}, a client may receive a response protected with a Security Context different from the one used to protect the corresponding group request.
 
 # Responsibilities of the Group Manager # {#sec-group-manager}
 
@@ -531,17 +553,23 @@ Especially in dynamic, large-scale, groups where endpoints can join and leave at
 
 ## Update of Security Context and Key Rotation {#ssec-key-rotation}
 
-A group member can receive a message shortly after the group has been rekeyed, and new security parameters and keying material have been distributed by the Group Manager. As described below, this may result in misaligned Security Contexts between the sender and the recipient.
+A group member can receive a message shortly after the group has been rekeyed, and new security parameters and keying material have been distributed by the Group Manager.
 
-### Late Update on the Sender
+This may result in a client using an old Security Context to protect a group request, and a server using a different new Security Context to protect a corresponding response. That is, clients may receive a response protected with a Security Context different from the one used to protect the corresponding group request.
+
+In particular, a server may first get a group request protected with the old Security Context, then install the new Security Context, and only after that produce a response to send back to the client. Since a sender always protects an outgoing message using the latest owned Security Context, the server discussed above protects the possible response using the new Security Context. Then, the client will process that response using the new Security Context, provided that it has installed the new security parameters and keying material before the message reception.
+
+Furthermore, as described below, this may result in misaligned Security Contexts between the sender and recipient of a same message.
+
+### Late Update on the Sender {#ssec-key-rotation-late-sender}
 
 In this case, the sender protects a message using the old Security Context, i.e. before having installed the new Security Context. However, the recipient receives the message after having installed the new Security Context, hence not being able to correctly process it.
 
-A possible way to ameliorate this issue is to preserve the old, recent, Security Context for a maximum amount of time defined by the application. By doing so, the recipient can still try to process the received message using the old retained Security Context as second attempt. This makes particular sense when the recipient is a client, that would hence be able to process incoming responses protected with the old, recent, Security Context used to protect the associated request. Instead, a recipient server would better and more simply discard an incoming request which is not successfully processed using the new Security Context.
+A possible way to ameliorate this issue is to preserve the old, recent, Security Context for a maximum amount of time defined by the application. By doing so, the recipient can still try to process the received message using the old retained Security Context as second attempt. This makes particular sense when the recipient is a client, that would hence be able to process incoming responses protected with the old, recent, Security Context used to protect the associated group request. Instead, a recipient server would better and more simply discard an incoming group request which is not successfully processed with the new Security Context.
 
 This tolerance preserves the processing of secure messages throughout a long-lasting key rotation, as group rekeying processes may likely take a long time to complete, especially in large scale groups. On the other hand, a former (compromised) group member can abusively take advantage of this, and send messages protected with the old retained Security Context. Therefore, a conservative application policy should not admit the retention of old Security Contexts.
 
-### Late Update on the Recipient
+### Late Update on the Recipient {#ssec-key-rotation-late-recipient}
 
 In this case, the sender protects a message using the new Security Context, but the recipient receives that message before having installed the new Security Context. Therefore, the recipient would not be able to correctly process the message and hence discards it.
 
