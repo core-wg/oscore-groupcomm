@@ -72,6 +72,7 @@ normative:
   RFC8613:
 
 informative:
+  I-D.ietf-ace-key-groupcomm:
   I-D.ietf-ace-key-groupcomm-oscore:
   I-D.ietf-ace-oauth-authz:
   I-D.ietf-core-echo-request-tag:
@@ -82,6 +83,7 @@ informative:
   RFC6347:
   RFC7228:
   RFC7641:
+  RFC7959:
   Degabriele:
     author:
       -
@@ -559,7 +561,9 @@ This may result in a client using an old Security Context to protect a group req
 
 In particular, a server may first get a group request protected with the old Security Context, then install the new Security Context, and only after that produce a response to send back to the client. Since a sender always protects an outgoing message using the latest owned Security Context, the server discussed above protects the possible response using the new Security Context. Then, the client will process that response using the new Security Context, provided that it has installed the new security parameters and keying material before the message reception.
 
-Furthermore, as described below, this may result in misaligned Security Contexts between the sender and recipient of a same message.
+In case block-wire transfer {{RFC7959}} is used, the same considerations from Section 7.2 of {{I-D.ietf-ace-key-groupcomm}} hold.
+
+Furthermore, as described below, a group rekeying may temporarily result in misaligned Security Contexts between the sender and recipient of a same message.
 
 ### Late Update on the Sender {#ssec-key-rotation-late-sender}
 
