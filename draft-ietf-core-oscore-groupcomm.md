@@ -246,7 +246,7 @@ The value of the 'kid context' parameter in the 'unprotected' field of requests 
 
 ## Updated external_aad # {#sec-cose-object-ext-aad}
 
-The external_aad of the Additional Authenticated Data (AAD) is extended as follows. In particular, it has one structure used for the encryption process producing the ciphertext, and one structure used for the signing process producing the counter signature.
+The external_aad of the Additional Authenticated Data (AAD) is built differently. In particular, it has one structure used for the encryption process producing the ciphertext, and one structure used for the signing process producing the counter signature.
 
 ### Updated external_aad for Encryption ### {#sec-cose-object-ext-aad-enc}
 
