@@ -499,6 +499,24 @@ The Group Manager is responsible for performing the following tasks:
 
 11. Validating that the format and parameters of public keys of group members are consistent with the countersignature algorithm and related parameters used in the respective OSCORE group.
 
+# Derivation of Pairwise Keying Material # {#sec-derivation-pairwise}
+
+Two group members can derive a symmetric pairwise key, from their Sender/Recipient Key and a static-static Diffe-Hellman shared secret. The key derivation is as follows, and uses the same construction used in Section 3.2.1 of {{RFC8613}}.
+
+~~~~~~~~~~~
+Pairwise key = HKDF(Sender/Recipient Key, Shared Secret, info, L)
+~~~~~~~~~~~
+
+where:
+
+* The Sender/Recipient key is the Sender Key of the sender, i.e. the Recipient Key that the receiver stores in its own Recipient Context corresponding to the sender.
+
+* The Shared Secret is computed as a static-static Diffie-Hellman shared secret, where the sender uses its own private key and the recipient's public key, while the recipient uses its own private key and the senders's public key.
+
+* info and L are defined as in Section 3.2.1 of {{RFC8613}}.
+
+If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}.
+
 # Optimized Mode # {#sec-optimized-mode}
 
 For use cases that do not require an intermediary performing signature verification and that use a compatible signature algorithm, the optimized mode defined in this section provides significant smaller message sizes and increases the security by making responses confidential to other group members than the intended recipient.
