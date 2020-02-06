@@ -308,7 +308,11 @@ Note for implementation: this requires the value of the OSCORE option to be full
 
 # OSCORE Header Compression {#compression}
 
-The OSCORE header compression defined in Section 6 of {{RFC8613}} is used with the difference that the payload of the OSCORE message SHALL encode the ciphertext of the COSE object concatenated with the value of the CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
+The OSCORE header compression defined in Section 6 of {{RFC8613}} is used, with the following differences.
+
+* The payload of the OSCORE message SHALL encode the ciphertext of the COSE object concatenated with the value of the CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
+
+* In the first byte containing the OSCORE flag bits, the sixth least significant bit is set to 1 if the OSCORE message is protected using pairwise key material shared with a single group member as intended recipient. This is used, for instance, by the optimized mode defined in {{sec-optimized-mode}}. In any other case, and especially when the OSCORE message is protected as per {{ssec-protect-request}} and {{ssec-protect-response}}, this bit MUST be set to 0. This bit is registered in {{iana-cons-flag-bits}} of this specification.
 
 ## Examples of Compressed COSE Objects
 
@@ -495,7 +499,7 @@ The Group Manager is responsible for performing the following tasks:
 
 11. Validating that the format and parameters of public keys of group members are consistent with the countersignature algorithm and related parameters used in the respective OSCORE group.
 
-# Optimized Mode
+# Optimized Mode # {#sec-optimized-mode}
 
 For use cases that do not require an intermediary performing signature verification and that use a compatible signature algorithm, the optimized mode defined in this section provides significant smaller message sizes and increases the security by making responses confidential to other group members than the intended recipient.
 
@@ -889,6 +893,20 @@ Initial entries in the registry are as follows.
 |             |       |              | Types Registry    |           |
 |             |       |              |                   |           |
 +-------------+-------+--------------+-------------------+-----------+
+~~~~~~~~~~~
+
+## OSCORE Flag Bits Registry {#iana-cons-flag-bits}
+
+IANA is asked to add the following value entry to the "OSCORE Flag Bits" subregistry defined in Section 13.7 of {{RFC8613}} as part of the "CoRE Parameters" registry.
+
+~~~~~~~~~~~
++--------------+-------------+-------------------------+-----------+
+| Bit Position |     Name    |       Description       | Reference |
++--------------+-------------+-------------------------+-----------+
+|       2      | Pairwise    | Set to 1 if the message | [This     |
+|              | Protection  | is protected with       | Document] |
+|              | Flag        | pairwise key material   |           |
++--------------+-------------+-------------------------+-----------+
 ~~~~~~~~~~~
 
 ## Expert Review Instructions {#review}
