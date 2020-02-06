@@ -531,6 +531,20 @@ The security of using the same key pair for Diffie-Hellman and for signing is pr
 
 If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}.
 
+## Note for Implementation ##
+
+In order to optimize performance, an endpoint A may derive a pairwise key used with an endpoint B in the OSCORE group only once, and then store it in its own Security Context for future retrieval. This can work as follows.
+
+Endpoint A can have a Pairwise Sender Context associated to B, within its own Sender Context. This Pairwise Sender Context includes:
+
+* The Recipient ID of B for A, i.e. the Sender ID of B.
+
+* The Pairwise Key derived as defined in {{sec-derivation-pairwise}}, with A acting as sender and B acting as recipient.
+
+More generally, A has one of such Paiwise Sender Contexts within its own Sender Context, for each different intended recipient.
+
+Furthermore, A can additionally store in its own Recipient Context associated to B the Pairwise Key to use for incoming traffic from B. That is, this Pairwise Key is derived as defined in {{sec-derivation-pairwise}}, with A acting as recipient and B acting as sender.
+
 # Optimized Mode # {#sec-optimized-mode}
 
 For use cases that do not require an intermediary performing signature verification and that use a compatible signature algorithm, the optimized mode defined in this section provides significant smaller message sizes and increases the security by making responses confidential to other group members than the intended recipient.
