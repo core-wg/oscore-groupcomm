@@ -312,7 +312,7 @@ The OSCORE header compression defined in Section 6 of {{RFC8613}} is used, with 
 
 * The payload of the OSCORE message SHALL encode the ciphertext of the COSE object concatenated with the value of the CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
 
-* In the first byte containing the OSCORE flag bits, the sixth least significant bit is set to 1 if the OSCORE message is protected using pairwise key material shared with a single group member as intended recipient. This is used, for instance, by the optimized mode defined in {{sec-optimized-mode}}. In any other case, and especially when the OSCORE message is protected as per {{ssec-protect-request}} and {{ssec-protect-response}}, this bit MUST be set to 0. This bit is registered in {{iana-cons-flag-bits}} of this specification.
+* In the first byte containing the OSCORE flag bits, the sixth least significant bit is set to 1 if the OSCORE message is protected using pairwise keying material shared with a single group member as intended recipient. This is used, for instance, by the optimized mode defined in {{sec-optimized-mode}}. In any other case, and especially when the OSCORE message is protected as per {{ssec-protect-request}} and {{ssec-protect-response}}, this bit MUST be set to 0. This bit is registered in {{iana-cons-flag-bits}} of this specification.
 
 ## Examples of Compressed COSE Objects
 
@@ -900,13 +900,13 @@ Initial entries in the registry are as follows.
 IANA is asked to add the following value entry to the "OSCORE Flag Bits" subregistry defined in Section 13.7 of {{RFC8613}} as part of the "CoRE Parameters" registry.
 
 ~~~~~~~~~~~
-+--------------+-------------+-------------------------+-----------+
-| Bit Position |     Name    |       Description       | Reference |
-+--------------+-------------+-------------------------+-----------+
-|       2      | Pairwise    | Set to 1 if the message | [This     |
-|              | Protection  | is protected with       | Document] |
-|              | Flag        | pairwise key material   |           |
-+--------------+-------------+-------------------------+-----------+
++--------------+-------------+--------------------------+-----------+
+| Bit Position |     Name    |        Description       | Reference |
++--------------+-------------+--------------------------+-----------+
+|       2      | Pairwise    | Set to 1 if the message  | [This     |
+|              | Protection  | is protected with        | Document] |
+|              | Flag        | pairwise keying material |           |
++--------------+-------------+--------------------------+-----------+
 ~~~~~~~~~~~
 
 ## Expert Review Instructions {#review}
@@ -1129,7 +1129,7 @@ TBD
 
 * Added recommendation on using "deterministic ECDSA" if ECDSA is used as counter signature algorithm (see Section 2).
 
-* Clarified possible asynchronous retrieval of key material from the Group Manager, in order to process incoming messages (see Section 2).
+* Clarified possible asynchronous retrieval of keying material from the Group Manager, in order to process incoming messages (see Section 2).
 
 * Structured Section 3 into subsections.
 
