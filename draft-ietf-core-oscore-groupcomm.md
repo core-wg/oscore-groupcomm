@@ -312,8 +312,16 @@ The OSCORE header compression defined in Section 6 of {{RFC8613}} is used, with 
 
 * The payload of the OSCORE message SHALL encode the ciphertext of the COSE object concatenated with the value of the CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
 
-* In the first byte containing the OSCORE flag bits, the sixth least significant bit is set to 1 if the OSCORE message is protected using pairwise keying material shared with a single group member as intended recipient. This is used, for instance, by the optimized mode defined in {{sec-optimized-mode}}. In any other case, and especially when the OSCORE message is protected as per {{ssec-protect-request}} and {{ssec-protect-response}}, this bit MUST be set to 0. This bit is registered in {{iana-cons-flag-bits}} of this specification.
+* This specification defines the usage of the sixth least significant bit, namely the Pairwise Protection Flag bit, in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is registered in {{iana-cons-flag-bits}} of this specification.
 
+* The Pairwise Protection Flag bit is set to 1 if the OSCORE message is protected using pairwise keying material, which is shared with a single group member as single intended recipient and derived as defined in {{sec-derivation-pairwise}}. This is used, for instance, to send responses with the optimized mode defined in {{sec-optimized-mode}}. In any other case, especially when the OSCORE message is protected as per {{ssec-protect-request}} and {{ssec-protect-response}}, this bit MUST be set to 0.
+
+   If any of the following conditions holds, a recipient MUST discard an incoming OSCORE message with the Pairwise Protection Flag bit set to 1:
+    
+    - The recipient does not support this feature, i.e. it is not capable or willing to process OSCORE messages protected using pairwise keying material.
+    
+    - The recipient can not retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group.
+    
 ## Examples of Compressed COSE Objects
 
 This section covers a list of OSCORE Header Compression examples for group requests and responses. The examples assume that the COSE_Encrypt0 object is set (which means the CoAP message and cryptographic material is known). Note that the examples do not include the full CoAP unprotected message or the full Security Context, but only the input necessary to the compression mechanism, i.e. the COSE_Encrypt0 object. The output is the compressed COSE object as defined in {{compression}} and divided into two parts, since the object is transported in two CoAP fields: OSCORE option and payload.
@@ -407,14 +415,18 @@ The client MUST NOT update the stored value, even in case it is individually rek
 
 Upon receiving a secure group request, a server proceeds as described in Section 8.2 of {{RFC8613}}, with the following modifications.
 
-* In step 2, the decoding of the compressed COSE object follows {{compression}} of this specification. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the server MAY create a new Recipient Context and initializes it according to Section 3 of {{RFC8613}}, also retrieving the client's public key. Such a configuration is application specific. If the application does not specify dynamic derivation of new Recipient Contexts, then the server SHALL stop processing the request.
+* In step 2, the decoding of the compressed COSE object follows {{compression}} of this specification. In particular:
+
+   - If the Pairwise Protection Flag bit is set to 1, and the server discards the request due to not supporting this feature or not retrieving a Security Context associated to the OSCORE group, the server  MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
+
+   - If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the server MAY create a new Recipient Context and initializes it according to Section 3 of {{RFC8613}}, also retrieving the client's public key. Such a configuration is application specific. If the application does not specify dynamic derivation of new Recipient Contexts, then the server SHALL stop processing the request.
 
 * In step 4, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this specification.
 
 * In step 6, the server also verifies the counter signature using the public key of the client from the associated Recipient Context. If the signature verification fails, the server MAY reply with a 4.00 (Bad Request) response.
 
 * Additionally, if the used Recipient Context was created upon receiving this group request and the message is not verified successfully, the server MAY delete that Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the server's storage and creating processing overhead on the server.
-
+    
 A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context.
 
 ### Supporting Observe ###
@@ -509,7 +521,7 @@ Pairwise key = HKDF(Sender/Recipient Key, Shared Secret, info, L)
 
 where:
 
-* The Sender/Recipient key is the Sender Key of the sender, i.e. the Recipient Key that the receiver stores in its own Recipient Context corresponding to the sender.
+* The Sender/Recipient key is the Sender Key of the sender, i.e. the Recipient Key that the recipient stores in its own Recipient Context corresponding to the sender.
 
 * The Shared Secret is computed as a static-static Diffie-Hellman shared secret, where the sender uses its own private key and the recipient's public key, while the recipient uses its own private key and the senders's public key.
 
