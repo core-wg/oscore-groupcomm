@@ -515,6 +515,8 @@ where:
 
 * info and L are defined as in Section 3.2.1 of {{RFC8613}}.
 
+The security of using the same key pair for Diffie-Hellman and for signing is proven in {{Degabriele}}. The derivation of pairwise keys defined above is compatible with ECDSA and EdDSA asymmetric keys, but is not compatible with RSA asymmetric keys.
+
 If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}.
 
 # Optimized Mode # {#sec-optimized-mode}
@@ -536,24 +538,21 @@ The optimized compressed request is compatible with all AEAD algorithms defined 
 
 ## Optimized Response
 
-An optimized response does not contain a Counter Signature. Also, the COSE_Encrypt0 object included in the optimized response is encrypted using a key derived from a static-static Diffe-Hellman shared secret and the Sender/Recipient Key. No changes are made to the AEAD nonce and AAD. The Response Sender/Recipient Key are derived as follows, by using the key derivation construction in Section 3.2.1 of {{RFC8613}}.
+An optimized response is protected as defined in {{ssec-protect-response}}, with the following differences.
 
-~~~~~~~~~~~
-Response Sender/Recipient Key
-               = HKDF(Sender/Recipient Key, Shared Secret, info, L)
-~~~~~~~~~~~
+* The server MUST set to 1 the sixth least significant bit of the OSCORE flag bits in the OSCORE option, i.e. the Pairwise Protection Flag.
 
-where:
+* The COSE_Encrypt0 object included in the optimized response is encrypted using a symmetric pairwise key K, that the server derives as defined in {{sec-derivation-pairwise}}. In particular, the Sender/Recipient Key is the Sender Key of the server from its own Sender Context, i.e. the Recipient Key that the client stores in its own Recipient Context corresponding to the server.
 
-* The Sender/Recipient key is the Sender Key of the sender, i.e. the Recipient Key that the receiver stores in its own Recipient Context corresponding to the sender.
+* The Counter Signature is not computed. That is, unlike defined in {{compression}}, the payload of the OSCORE message terminates with the encoded ciphertext of the COSE object.
 
-* The Shared Secret is computed as a static-static Diffie-Hellman shared secret, where the sender uses its own private key and the recipient's public key, while the recipient uses its own private key and the senders's public key.
+Note that no changes are made to the AEAD nonce and AAD.
 
-* info and L are defined as in Section 3.2.1 of {{RFC8613}}.
+Upon receiving a response with the Pairwise Protection Flag set to 1, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
 
-For EdDSA, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}.
+* No countersignature to varify is included.
 
-An optimized response is compatible with ECDSA and EdDSA, but is not compatible with RSA. The security of using the same key pair for Diffie-Hellman and for signing is proven in {{Degabriele}}.
+* The COSE_Encrypt0 object included in the optimized response is decrypted using the same symmetric pairwise key K, that the client derives as described above for the server side and as defined in {{sec-derivation-pairwise}}.
 
 ### Optimized Compressed Response
 
