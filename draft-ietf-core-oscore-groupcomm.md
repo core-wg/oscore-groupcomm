@@ -499,7 +499,8 @@ The Group Manager is responsible for performing the following tasks:
 
 For use cases that do not require an intermediary performing signature verification and that use a compatible signature algorithm, the optimized mode defined in this section provides significant smaller message sizes and increases the security by making responses confidential to other group members than the intended recipient.
 
-The amount of overhead reduction depends on the number of nodes in the system. For a request and response between two nodes, the overhead (number of bytes) is reduced of approximately 40 %, and with ten or more nodes the reduction in overhead is of approximately 80 %.
+<!--
+The amount of overhead reduction depends on the number of nodes in the system. For a request and response between two nodes, the overhead (number of bytes) is reduced of approximately 40 %, and with ten or more nodes the reduction in overhead is of approximately 80 %.-->
 
 ## Optimized Request
 
