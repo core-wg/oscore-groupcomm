@@ -123,6 +123,8 @@ As defined in {{I-D.dijk-core-groupcomm-bis}}, Group OSCORE is the security prot
 
 Group OSOCORE defines two modes of operation. The full mode supports all COSE algorithms as well as signature verification from intermediaries. The optimized mode supports only certain COSE algorithms and does not support signature verification from intermediaries.
 
+Furthermore, {{sec-pairwise-protection}} describes a third mode of operation, which allows two group members to exchange both requests and responses protected with pairwise keying material. This pairwise protection mode builds on the responses of the optimized mode.
+
 ## Terminology ## {#terminology}
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
@@ -556,13 +558,13 @@ The amount of overhead reduction depends on the number of nodes in the system. F
 
 No changes.
 
-### Optimized Compressed Request
+### Optimized Compressed Request {#ssec-optimized-request}
 
 The OSCORE header compression defined in {{compression}} is used, with the following difference: the payload of the OSCORE message SHALL encode the ciphertext without the tag, concatenated with the value of the CounterSignature0 of the COSE object computed as described in {{sec-cose-object-unprotected-field}}.
 
 The optimized compressed request is compatible with all AEAD algorithms defined in {{RFC8152}}, but would not be compatible with AEAD algorithms that do not have a well-defined tag.
 
-## Optimized Response
+## Optimized Response ## {#ssec-optimized-response}
 
 An optimized response is protected as defined in {{ssec-protect-response}}, with the following differences.
 
@@ -576,9 +578,9 @@ Note that no changes are made to the AEAD nonce and AAD.
 
 Upon receiving a response with the Pairwise Protection Flag set to 1, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
 
-* No countersignature to varify is included.
+* No countersignature to verify is included.
 
-* The COSE_Encrypt0 object included in the optimized response is decrypted using the same symmetric pairwise key K, that the client derives as described above for the server side and as defined in {{sec-derivation-pairwise}}.
+* The COSE_Encrypt0 object included in the optimized response is decrypted and verified using the same symmetric pairwise key K, that the client derives as described above for the server side and as defined in {{sec-derivation-pairwise}}.
 
 ### Optimized Compressed Response
 
@@ -1117,6 +1119,50 @@ This approach provides an assurance of absolute message freshness. However, it c
 There are some application scenarios using group communication that have particularly strict requirements. One example of this is the requirement of low message latency in non-emergency lighting applications {{I-D.somaraju-ace-multicast}}. For those applications which have tight performance constraints and relaxed security requirements, it can be inconvenient for some endpoints to verify digital signatures in order to assert source authenticity of received messages. In other cases, the signature verification can be deferred or only checked for specific actions. For instance, a command to turn a bulb on where the bulb is already on does not need the signature to be checked. In such situations, the counter signature needs to be included anyway as part of the message, so that an endpoint that needs to validate the signature for any reason has the ability to do so.
 
 In this specification, it is NOT RECOMMENDED that endpoints do not verify the counter signature of received messages. However, it is recognized that there may be situations where it is not always required. The consequence of not doing the signature validation is that security in the group is based only on the group-authenticity of the shared keying material used for encryption. That is, endpoints in the group have evidence that a received message has been originated by a group member, although not specifically identifiable in a secure way. This can violate a number of security requirements, as the compromise of any element in the group means that the attacker has the ability to control the entire group. Even worse, the group may not be limited in scope, and hence the same keying material might be used not only for light bulbs but for locks as well. Therefore, extreme care must be taken in situations where the security requirements are relaxed, so that deployment of the system will always be done safely.
+
+# Pairwise Mode # {#sec-pairwise-protection}
+
+For use cases that do not require an intermediary performing signature verification and that use a compatible signature algorithm, the pairwise mode defined in this section can be used.
+
+This mode uses the derivation process defined in {{sec-derivation-pairwise}}, and allows two group members to protect requests and responses exchanged with each other using pairwise keying material. Senders MUST NOT use the pairwise mode to protect a message addressed to multiple recipients or to the whole group.
+
+The pairwise mode results in the same performance and security improvements displayed by optimized responses (see {{ssec-optimized-response}}).
+
+## Pre-Requirements
+
+In order to protect an outgoing message in pairwise mode, a sender needs to know the public key and the Recipient ID for the message recipient, as stored in its own Recipient Context associated to that recipient.
+
+Furthermore, the sender needs to know the individual address of the message recipient. This information may not be known at any given point in time. For instance, right after having joined the group, a client may know the public key and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.
+
+To make this information available, servers supporting the pairwise mode MAY provide the following service, enabling the discovery of their own addressing information to the clients in the group.
+
+* The servers host a well-known address-discovery resource with a common URI path, which can be pre-configured or provided to new group members by the Group Manager during the joining process.
+
+* A client can send a POST request to the whole group, hence protected as in {{ssec-protect-request}} or {{ssec-optimized-request}}, and addressed to the address-discovery resource. The request payload includes a CBOR map, specifying one Recipient ID for every specific server, from which the client wishes to retrieve individual addressing information.
+
+* Each server recognizing its own Sender ID within the request payload replies to the client. The response is protected as in {{ssec-protect-response}} or {{ssec-optimized-response}}, and its payload includes a CBOR map specifying the individual addressing information of that server.
+
+## Pairwise Protected Request
+
+A request in pairwise mode is protected as defined in {{ssec-protect-request}}, with the following differences.
+
+* The client MUST set to 1 the sixth least significant bit of the OSCORE flag bits in the OSCORE option, i.e. the Pairwise Protection Flag.
+
+* The COSE_Encrypt0 object included in the request is encrypted using a symmetric pairwise key K, that the client derives as defined in {{sec-derivation-pairwise}}. In particular, the Sender/Recipient Key is the Sender Key of the client from its own Sender Context, i.e. the Recipient Key that the server stores in its own Recipient Context corresponding to the client.
+
+* The Counter Signature is not computed. That is, unlike defined in {{compression}}, the payload of the OSCORE message terminates with the encoded ciphertext of the COSE object.
+
+Note that no changes are made to the AEAD nonce and AAD.
+
+Upon receiving a request with the Pairwise Protection Flag set to 1, the server MUST process it as defined in {{ssec-verify-request}}, with the following differences.
+
+* No countersignature to verify is included.
+
+* The COSE_Encrypt0 object included in the request is decrypted and verified using the same symmetric pairwise key K, that the server derives as described above for the client side and as defined in {{sec-derivation-pairwise}}.
+
+## Pairwise Protected Response
+
+When using the pairwise mode, the processing of a response occurs as described in {{ssec-optimized-response}} for an optimized response.
 
 # Document Updates # {#sec-document-updates}
 
