@@ -692,15 +692,17 @@ Note that, by changing the Partial IV as discussed above, any member of G1 would
 
 ## Group OSCORE for Unicast Requests {#ssec-unicast-requests}
 
-It is NOT RECOMMENDED for a client to use Group OSCORE for securing a request sent to a single group member over unicast.
+With reference to the processing defined in {{ssec-protect-request}} and {{ssec-optimized-request}}, it is NOT RECOMMENDED for a client to use Group OSCORE for securing a request sent to a single group member over unicast.
 
-If Group OSCORE is used to protect a unicast request to a group member, an on-path adversary can, right then or later on, redirect that request to one/many different group member(s) over unicast, or to the whole OSCORE group over multicast. By doing so, the adversary can induce the target group member(s) to perform actions intended to one group member only. Note that the adversary can be external, i.e. (s)he does not need to also be a member of the OSCORE group.
+If the client uses its own Sender Key to protect a unicast request to a group member, an on-path adversary can, right then or later on, redirect that request to one/many different group member(s) over unicast, or to the whole OSCORE group over multicast. By doing so, the adversary can induce the target group member(s) to perform actions intended to one group member only. Note that the adversary can be external, i.e. (s)he does not need to also be a member of the OSCORE group.
 
 This is due to the fact that the client is not able to indicate the single intended recipient in a way which is secure and possible to process for Group OSCORE on the server side. In particular, Group OSCORE does not protect network addressing information such as the IP address of the intended recipient server. It follows that the server(s) receiving the redirected request cannot assert whether that was the original intention of the client, and would thus simply assume so.
 
 The impact of such an attack depends especially on the REST method of the request, i.e. the Inner CoAP Code of the OSCORE request message. In particular, safe methods such as GET and FETCH would trigger (several) unintended responses from the targeted server(s), while not resulting in destructive behavior. On the other hand, non safe methods such as PUT, POST and PATCH/iPATCH would result in the target server(s) taking active actions on their resources and possible cyber-physical environment, with the risk of destructive consequences and possible implications for safety.
 
 Additional considerations are discussed in {{ssec-synch-challenge-response}}, with respect to unicast requests including an Echo Option {{I-D.ietf-core-echo-request-tag}}, as a challenge-response method for servers to achieve synchronization of client Sender Sequence Numbers.
+
+A client may instead use the pairwise mode defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member using pairwise keying material. This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request.
 
 ## End-to-end Protection {#ssec-e2e-protection}
 
@@ -1142,7 +1144,7 @@ To make this information available, servers supporting the pairwise mode MAY pro
 
 * Each server recognizing its own Sender ID within the request payload replies to the client. The response is protected as in {{ssec-protect-response}} or {{ssec-optimized-response}}, and its payload includes a CBOR map specifying the individual addressing information of that server.
 
-## Pairwise Protected Request
+## Pairwise Protected Request {#sec-pairwise-protection-req}
 
 A request in pairwise mode is protected as defined in {{ssec-protect-request}}, with the following differences.
 
