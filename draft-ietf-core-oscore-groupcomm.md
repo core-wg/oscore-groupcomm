@@ -598,7 +598,7 @@ The same considerations on uniqueness of (key, nonce) pairs for OSCORE discussed
 
 The same considerations on unprotected message fields for OSCORE discussed in Appendix D.5 of {{RFC8613}} hold for Group OSCORE, with the following difference. The countersignature included in a Group OSCORE message is computed also over the value of the OSCORE option, which is part of the Additional Authenticated Data used in the signing process. This is further discussed in {{ssec-cross-group-injection}}.
 
-As discussed in Section 6.2.3 of {{I-D.dijk-core-groupcomm-bis}}, Group OSCORE addresses security attacks against CoAP listed in Sections 11.2-11.6 of {{RFC7252}}, especially when mounted over IP multicast.
+As discussed in Section 5.2.3 of {{I-D.dijk-core-groupcomm-bis}}, Group OSCORE addresses security attacks against CoAP listed in Sections 11.2-11.6 of {{RFC7252}}, especially when mounted over IP multicast.
 
 The rest of this section first discusses security aspects to be taken into account when using Group OSCORE. Then it goes through aspects covered in the security considerations of OSCORE (Section 12 of {{RFC8613}}), and discusses how they hold when Group OSCORE is used.
 
@@ -738,7 +738,7 @@ As discussed in {{sec-synch-seq-num}}, an endpoint that has just joined a group 
 
 Unless exchanges in a group rely only on unicast messages, Group OSCORE cannot be used with reliable transport. Thus, unless only unicast messages are sent in the group, it cannot be defined that only messages with sequence numbers that are equal to the previous sequence number + 1 are accepted.
 
-The processing of response messages described in {{ssec-verify-response}} also ensures that a client accepts a single valid response to a given request from each replying server, unless CoAP observation is used.
+Consistently with what defined in Section 2.2.1 of {{I-D.dijk-core-groupcomm-bis}}, the processing of response messages described in {{ssec-verify-response}} of this specification also ensures that a client accepts a single valid response to a given request from each replying server, unless CoAP observation is used.
 
 ## Client Aliveness {#ssec-client-aliveness}
 
