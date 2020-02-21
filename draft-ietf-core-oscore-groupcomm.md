@@ -1172,7 +1172,29 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -06 to -07 ## {#sec-06-07}
 
-TBD
+* Updated abstract and introduction.
+
+* Clarifications of what pertains a group rekeying.
+
+* Content re-organization for COSE Object and OSCORE header compression.
+
+* Defined the Pairwise Protection Flag bit for the OSCORE option.
+
+* Supporting CoAP Observe for group requests and responses.
+
+* Considerations on message protections across switching to new keying material.
+
+* Derivation of pairwise keying material.
+
+* New optimized mode based on pairwise keying material.
+
+* More considerations on replay protection and Security Contexts upon key renewal.
+
+* Security considerations on Group OSCORE for unicast requests, also as affecting the usage of the Echo option.
+
+* Clarification on different types of groups considered (application/security/CoAP).
+
+* New pairwise mode, using pairwise keying material for both requests and responses.
 
 ## Version -05 to -06 ## {#sec-05-06}
 
