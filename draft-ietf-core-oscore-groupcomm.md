@@ -107,23 +107,33 @@ informative:
 
 --- abstract
 
-This document defines Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of CoAP messages exchanged between members of a group, and preserving independence from the transport layer. In particular, the described approach defines how OSCORE should be used in a group communication setting, so that end-to-end security is assured as in unicast communications using OSCORE. That is, end-to-end security with source authentication is provided for CoAP group requests sent by a client to the group, and for related CoAP responses sent by multiple servers.
+This document defines Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of CoAP messages exchanged between members of a group, e.g. using IP multicast. In particular, the described approach defines how OSCORE should be used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and the corresponding CoAP responses.
 
 --- middle
 
 # Introduction # {#intro}
 
-The Constrained Application Protocol (CoAP) {{RFC7252}} is a web transfer protocol specifically designed for constrained devices and networks {{RFC7228}}. Group communication for CoAP {{I-D.dijk-core-groupcomm-bis}} addresses use cases where deployed devices benefit from a group communication model, for example to reduce latencies, improve performance and reduce bandwidth utilization. Use cases include lighting control, integrated building control, software and firmware updates, parameter and configuration updates, commissioning of constrained networks, and emergency multicast (see {{sec-use-cases}}). This specification defines a security protocol for Group communication for CoAP {{I-D.dijk-core-groupcomm-bis}}.
+The Constrained Application Protocol (CoAP) {{RFC7252}} is a web transfer protocol specifically designed for constrained devices and networks {{RFC7228}}. Group communication for CoAP {{I-D.dijk-core-groupcomm-bis}} addresses use cases where deployed devices benefit from a group communication model, for example to reduce latencies, improve performance and reduce bandwidth utilization. Use cases include lighting control, integrated building control, software and firmware updates, parameter and configuration updates, commissioning of constrained networks, and emergency multicast (see {{sec-use-cases}}). This specification defines the security protocol for Group communication for CoAP {{I-D.dijk-core-groupcomm-bis}}.
 
-Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} describes a security protocol based on the exchange of protected CoAP messages. OSCORE builds on CBOR Object Signing and Encryption (COSE) {{RFC8152}} and provides end-to-end encryption, integrity, replay protection and binding of response to request between a sender and a receipient, also in the presence of intermediaries. To this end, a CoAP message is protected by including its payload (if any), certain options, and header fields in a COSE object, which replaces the authenticated and encrypted fields in the protected message.
+Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} describes a security protocol based on the exchange of protected CoAP messages. OSCORE builds on CBOR Object Signing and Encryption (COSE) {{RFC8152}} and provides end-to-end encryption, integrity, replay protection and binding of response to request between a sender and a recipient, independent of transport also in the presence of intermediaries. To this end, a CoAP message is protected by including its payload (if any), certain options, and header fields in a COSE object, which replaces the authenticated and encrypted fields in the protected message.
 
-This document defines Group OSCORE, providing end-to-end security of CoAP messages exchanged between members of a group, and preserving independence from the transport layer. In particular, the described approach defines how OSCORE should be used in a group communication setting, so that end-to-end security is assured as in unicast communications using OSCORE. That is, end-to-end security is provided for CoAP group requests sent by a client to the group, and for related CoAP responses sent by multiple servers. Group OSCORE provides source authentication of all CoAP messages exchanged within the group, by means of digital signatures produced through private keys of sender devices and embedded in the protected CoAP messages. Just like OSCORE, Group OSCORE is independent from the transport layer and works over any layer over which CoAP works.
+This document defines Group OSCORE, providing the same end-to-end security properties as OSCORE in the case where CoAP requests have multiple recipients. In particular, the described approach defines how OSCORE should be used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and the corresponding CoAP responses.
 
-As defined in {{I-D.dijk-core-groupcomm-bis}}, Group OSCORE is the security protocol to use for applications that rely on CoAP group communication using UDP/IP multicast as the underlying data transport. As in OSCORE, it is still possible to simultaneously rely on DTLS {{RFC6347}} to protect hop-by-hop communication between a sender and a proxy (and vice versa), and between a proxy and a recipient (and vice versa), e.g. in order to protect the routing information of packets from observers. Note that DTLS cannot be used to secure messages sent over IP multicast.
+Group OSCORE provides source authentication of CoAP requests by means of digital signatures produced with the private key of the client and embedded in the protected CoAP messages. CoAP responses from the server may be digitally signed by the private key of the server or integrity protected with a symmetric key derived from a pairwise security context derived from client and server asymmetric keys. 
 
-Group OSOCORE defines two modes of operation. The full mode supports all COSE algorithms as well as signature verification from intermediaries. The optimized mode supports only certain COSE algorithms and does not support signature verification from intermediaries.
+Just like OSCORE, Group OSCORE is independent of transport layer and works wherever CoAP does. Group communication for CoAP {{I-D.dijk-core-groupcomm-bis}} uses UDP/IP multicast as the underlying data transport.
 
-Furthermore, {{sec-pairwise-protection}} describes a third mode of operation, which allows two group members to exchange both requests and responses protected with pairwise keying material. This pairwise protection mode builds on the responses of the optimized mode.
+As with OSCORE, it is possible to combine Group OSCORE with communication security on other layers. One example is the use of transport layer security, such as DTLS {{RFC6347}}, between one client and one proxy (and vice versa), or between one proxy and one server (and vice versa), in order to protect the routing information of packets from observers. Note that DTLS cannot be used to secure messages sent over IP multicast.
+
+Group OSCORE defines different modes of operation:
+
+* In the signature mode, Group OSCORE requests and responses are digitally signed. The signature mode supports all COSE algorithms as well as signature verification by intermediaries. 
+
+* The pairwise mode allows two group members to exchange (unicast) OSCORE requests and responses protected with symmetric keys. These symmetric keys are derived from Diffie-Hellman shared secrets, calculated with the asymmetric keys of the two group members. This allows for shorter integrity tags and therefore lower message overhead.
+
+* In the (hybrid) optimized mode, the CoAP requests are digitally signed as in the signature mode, and the CoAP responses are integrity protected with the symmetric key of the pairwise mode.
+
+The signature and optimized modes are detailed in the body of this document. The pairwise mode is detailed in {{sec-pairwise-protection}}. Unless otherwise stated, this specification refers to the signature mode.
 
 ## Terminology ## {#terminology}
 
@@ -143,7 +153,7 @@ This document refers also to the following terminology.
 
 * Group Manager: entity responsible for a group. Each endpoint in a group communicates securely with the respective Group Manager, which is neither required to be an actual group member nor to take part in the group communication. The full list of responsibilities of the Group Manager is provided in {{sec-group-manager}}.
 
-* Silent server: member of a group that never responds to requests. Note that a silent server can act as a client, the two roles are independent.
+* Silent server: member of a group that never responds to requests. Note that an endpoint can implement both a silent server and a client, the two roles are independent.
 
 * Group Identifier (Gid): identifier assigned to the group. Group Identifiers must be unique within the set of groups of a given Group Manager.
 
@@ -152,58 +162,67 @@ This document refers also to the following terminology.
 * Source authentication: evidence that a received message in the group originated from a specific identified group member. This also provides assurance that the message was not tampered with by anyone, be it a different legitimate group member or an endpoint which is not a group member.
 
 
-# OSCORE Security Context # {#sec-context}
+# Security Context # {#sec-context}
 
-To support group communication secured with OSCORE, each endpoint registered as member of a group maintains a Security Context as defined in Section 3 of {{RFC8613}}, extended as defined below. Each endpoint in a group makes use of:
+Each endpoint registered as member of a group maintains a Security Context as defined in Section 3 of {{RFC8613}}, extended as follows (see {{fig-additional-context-information}}):
 
-1. one Common Context, shared by all the endpoints in a given group. In particular:
+* One Common Context, shared by all the endpoints in the group. Three new parameters are included in the Common Context: Counter Signature Algorithm, Counter Signature Parameters and Counter Signature Key Parameters.
 
-   * The ID Context parameter contains the Gid of the group, which is used to retrieve the Security Context for processing messages intended to the endpoints of the group (see {{mess-processing}}). The choice of the Gid is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle possible collisions between Gids, see {{ssec-gid-collision}}.
+* One Sender Context, extended with the endpoint's private key. The Sender Context is omitted if the endpoint is configured exclusively as silent server.
 
-   * A new parameter Counter Signature Algorithm is included. Its value identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 4.5 of {{RFC8152}}) which provides source authentication within the group. Its value is immutable once the Common Context is established. The used Counter Signature Algorithm MUST be selected among the signing ones defined in the COSE Algorithms Registry (see section 16.4 of {{RFC8152}}). The EdDSA signature algorithm ed25519 {{RFC8032}} is mandatory to implement. If Elliptic Curve Digital Signature Algorithm (ECDSA) is used, it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{RFC6979}}.
-
-   * A new parameter Counter Signature Parameters is included. This parameter identifies the parameters associated to the digital signature algorithm specified in the Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined in the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), where each entry indicates a specified structure of the Counter Signature Parameters.
-
-   * A new parameter Counter Signature Key Parameters is included. This parameter identifies the parameters associated to the keys used with the digital signature algorithm specified in the Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined in the Counter Signature Key Parameters Registry (see {{iana-cons-cs-key-params}}), where each entry indicates a specified structure of the Counter Signature Key Parameters.
-
-2. one Sender Context, unless the endpoint is configured exclusively as silent server. The Sender Context is used to secure outgoing messages and is initialized according to Section 3 of {{RFC8613}}, once the endpoint has joined the group. The Sender Context of a given endpoint matches the corresponding Recipient Context in all the endpoints receiving a protected message from that endpoint. Besides, in addition to what is defined in {{RFC8613}}, the Sender Context stores also the endpoint's private key.
-
-3. one Recipient Context for each distinct endpoint from which messages are received, used to process incoming messages. The recipient may generate a Recipient Context whenever in possession of all the required pieces of information on the corresponding endpoint, e.g. they may be provided to the recipient upon joining the group. Alternatively, the recipient may generate a Recipient Context upon receiving an incoming message from another endpoint in the group for the first time (see {{ssec-verify-request}} and {{ssec-verify-response}}). Each Recipient Context matches the Sender Context of the endpoint from which protected messages are received. Besides, in addition to what is defined in {{RFC8613}}, each Recipient Context stores also the public key of the associated other endpoint from which messages are received. Note that each Recipient Context includes a Replay Window, unless the recipient acts only as client and hence processes only responses as incoming messages.
-<!--A recipient MUST NOT generate or store a Recipient Context with the Recipient ID equal to its own Sender ID in its own Sender Context.-->
-
-The table in {{fig-additional-context-information}} overviews the new information included in the OSCORE Security Context, with respect to what defined in Section 3 of {{RFC8613}}.
+* One Recipient Context for each endpoint from which messages are received. The Recipient Context is extended with the public key of the associated endpoint.
 
 ~~~~~~~~~~~
-   +---------------------------+------------------------------+
-   |      Context portion      |       New information        |
-   +---------------------------+------------------------------+
-   |                           |                              |
-   |      Common Context       | Counter signature algorithm  |
-   |                           |                              |
-   |      Common Context       | Counter signature parameters |
-   |                           |                              |
-   |      Sender Context       | Endpoint's own private key   |
-   |                           |                              |
-   |  Each Recipient Context   | Public key of the            |
-   |                           | associated other endpoint    |
-   |                           |                              |
-   +---------------------------+------------------------------+
+   +---------------------------+----------------------------------+
+   | Context Component         | New Information Elements         |
+   +---------------------------+----------------------------------+
+   |                           | Counter Signature Algorithm      |
+   | Common Context            | Counter Signature Parameters     |
+   |                           | Counter Signature Key Parameters |
+   +---------------------------+----------------------------------+
+   | Sender Context            | Endpoint's own private key       |
+   +---------------------------+----------------------------------+
+   | Each Recipient Context    | Public key of the other endpoint |
+   +---------------------------+----------------------------------+
 ~~~~~~~~~~~
 {: #fig-additional-context-information title="Additions to the OSCORE Security Context" artwork-align="center"}
 
-Upon receiving a secure CoAP message, a recipient uses the sender's public key, in order to verify the counter signature of the COSE Object (see {{sec-cose-object}}).
+## Common Context ##
 
-If not already stored in the Recipient Context associated to the sender, the recipient retrieves the sender's public key from the Group Manager, which collects public keys upon endpoints' joining the group, acts as trusted key repository and ensures the correct association between the public key and the identifier of the sender, for instance by means of public key certificates.
+The ID Context parameter (see Sections 3.3 and 5.1 of {{RFC8613}}) in the Common Context SHALL contain the Group Identifier (Gid) of the group. The choice of the Gid is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle possible collisions between Gids, see {{ssec-gid-collision}}.
 
-For very constrained devices, it may be not feasible to simultaneously handle the ongoing processing of a just received message and the parallel retrieval of the sender's public key. Such devices can be configured to drop that received message altogether, switch to the retrieval of the sender's public key, and thus have it available to verify following messages from that sender.
+The Counter Signature Algorithm identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 4.5 of {{RFC8152}}). Its value is immutable once the Common Context is established. The used Counter Signature Algorithm MUST be selected among the signing ones defined in the COSE Algorithms Registry (see section 16.4 of {{RFC8152}}). The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. If Elliptic Curve Digital Signature Algorithm (ECDSA) is used, it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{RFC6979}}.
 
-Note that a group member can retrieve public keys from the Group Manager and generate the Recipient Context associated to another group member at any point in time, as long as this is done before verifying a received secure CoAP message. The exact configuration is application dependent. For example, an application can configure a group member to retrieve all the required information and to create the Recipient Context exactly upon receiving a message from another group member for the first time. As an alternative, the application can configure a group member to asynchronously retrieve the required information and update its list of Recipient Contexts well before receiving any message, e.g. by Observing {{RFC7641}} the Group Manager to get updates on the group membership.
+The Counter Signature Parameters identifies the parameters associated to the digital signature algorithm specified in the Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined in the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), where each entry indicates a specified structure of the Counter Signature Parameters.
 
-It is RECOMMENDED that the Group Manager collects public keys and provides them to group members upon request as described in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. Further details about how public keys can be handled and retrieved in the group is out of the scope of this document.
+The Counter Signature Key Parameters identifies the parameters associated to the keys used with the digital signature algorithm specified in the Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined in the Counter Signature Key Parameters Registry (see {{iana-cons-cs-key-params}}), where each entry indicates a specified structure of the Counter Signature Key Parameters.
 
-An endpoint receives its own Sender ID from the Group Manager upon joining the group. That Sender ID is valid only within that group, and is unique within the group. An endpoint uses its own Sender ID (together with other data) to generate unique AEAD nonces for outgoing messages, as in {{RFC8613}}. Endpoints which are configured only as silent servers do not have a Sender ID.
+## Sender Context and Recipient Context ##
 
-The Sender/Recipient Keys and the Common IV are derived according to the same scheme defined in Section 3.2 of {{RFC8613}}. The mandatory-to-implement HKDF and AEAD algorithms for Group OSCORE are the same as in {{RFC8613}}.
+OSCORE specifies the derivation of Sender Context and Recipient Context, specifically Sender/Recipient Keys and Common IV, from a set of input parameters (see Section 3.2 of {{RFC8613}}). This derivation applies also to Group OSCORE, and the mandatory-to-implement HKDF and AEAD algorithms are the same as in {{RFC8613}}. However, for Group OSCORE the Sender Context and Recipient Context additionally contain asymmetric keys.
+
+The Sender Context needs to be configured with the private key of the endpoint. The private key is used to generate a signature (see {{sec-cose-object}}) included in the sent OSCORE message. How the private key is established is out of scope for this specification. 
+
+Each Recipient Context needs to be configured with the public key of the associated endpoint. The public key is used to verify a signature (see {{sec-cose-object}}) included in the received OSCORE message. 
+
+The input parameters for deriving the Recipient Context parameters and the public key of the associated endpoint may be provided to the recipient endpoint upon joining the group. These parameters may alternatively be acquired at a later time, for example the first time a message is received from this particular endpoint in the group (see {{ssec-verify-request}} and {{ssec-verify-response}}). The received message together with the Common Context contains the necessary information to derive a security context for verifying a message, except for the public key of the associated endpoint.
+
+For severely constrained devices, it may be not feasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the associated endpoint's public key. Such devices can be configured to drop a received message for which there is no Recipient Context, and instead retrieve the public key in order to have it available to verify subsequent messages from that endpoint.
+
+Note that each Recipient Context includes a Replay Window, unless the recipient acts only as client and hence processes only responses as incoming messages.
+<!--A recipient MUST NOT generate or store a Recipient Context with the Recipient ID equal to its own Sender ID in its own Sender Context.-->
+
+## The Group Manager ##
+
+Endpoints communicating with Group OSCORE need, in addition to the OSCORE input parameters, also to be provisioned with information about the group(s) and other endpoints in the group(s).
+
+The Group Manager is an entity responsible for the group, including the Group Identifier (Gid), as well as Sender ID and Recipient ID of the group members (see {{sec-group-manager}}). The Group Manager records the public keys of endpoints joining the group and provides information about the group and its members to other members.
+
+An endpoint receives the Group Identifier and OSCORE input parameters, including its own Sender ID, from the Group Manager upon joining the group. That Sender ID is valid only within that group, and is unique within the group. Endpoints which are configured only as silent servers do not have a Sender ID.
+
+A group member can retrieve public keys and other information associated to another group member from the Group Manager, from which it can generate the Recipient Context. An application can configure a group member to asynchronously retrieve information about Recipient Contexts, e.g. by Observing {{RFC7641}} the Group Manager to get updates on the group membership.
+
+According to this specification, it is RECOMMENDED to use a Group Manager as described in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for authentication and authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. Further details about how public keys can be handled and retrieved in the group is out of the scope of this document.
 
 ## Management of Group Keying Material # {#sec-group-key-management}
 
@@ -227,33 +246,73 @@ When a wrap-around happens, the endpoint MUST NOT transmit further messages for 
 
 Furthermore, the endpoint SHOULD inform the Group Manager, that can take one of the following actions:
 
-* The Group Manager renews the OSCORE Security Context in the group (see {{sec-group-key-management}}).
+* The Group Manager renews the Security Context in the group (see {{sec-group-key-management}}).
 
 * The Group Manager provides a new Sender ID value to the endpoint that has experienced the wrap-around. Then, the endpoint derives a new Sender Context using the new Sender ID, as described in Section 3.2 of {{RFC8613}}.
 
-Either case, same considerations from {{sec-group-key-management}} hold about possible retaining of stale Recipient Contexts.
+In either case, same considerations from {{sec-group-key-management}} hold about possible retaining of stale Recipient Contexts.
+
+# Pairwise Keys # {#sec-derivation-pairwise}
+
+Certain signature schemes, such as EdDSA and ECDSA, support a secure combined signature and encryption scheme. This section specifies the derivation of pairwise encryption keys for use in the pairwise and optimized modes of Group OSCORE.
+
+Two group members can derive a symmetric pairwise key, from their Sender/Recipient Key and a static-static Diffe-Hellman shared secret. The key derivation is as follows, and uses the same construction used in Section 3.2.1 of {{RFC8613}}.
+
+~~~~~~~~~~~
+Pairwise key = HKDF(Sender/Recipient Key, Shared Secret, info, L)
+~~~~~~~~~~~
+
+where:
+
+* The Sender/Recipient key is the Sender Key of the sender, i.e. the Recipient Key that the recipient stores in its own Recipient Context corresponding to the sender.
+
+* The Shared Secret is computed as a static-static Diffie-Hellman shared secret, where the sender uses its own private key and the recipient's public key, while the recipient uses its own private key and the senders's public key.
+
+* info and L are defined as in Section 3.2.1 of {{RFC8613}}.
+
+The security of using the same key pair for Diffie-Hellman and for signing is proven in {{Degabriele}}. The derivation of pairwise keys defined above is compatible with ECDSA and EdDSA asymmetric keys, but is not compatible with RSA asymmetric keys.
+
+If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}.
+
+## Note on Implementation ##
+
+In order to optimize performance, an endpoint A may derive a pairwise key used with an endpoint B in the OSCORE group only once, and then store it in its own Security Context for future retrieval. This can work as follows.
+
+Endpoint A can have a Pairwise Sender Context associated to B, within its own Sender Context. This Pairwise Sender Context includes:
+
+* The Recipient ID of B for A, i.e. the Sender ID of B.
+
+* The Pairwise Key derived as defined in {{sec-derivation-pairwise}}, with A acting as sender and B acting as recipient.
+
+More generally, A has one of such Paiwise Sender Contexts within its own Sender Context, for each different intended recipient.
+
+Furthermore, A can additionally store in its own Recipient Context associated to B the Pairwise Key to use for incoming traffic from B. That is, this Pairwise Key is derived as defined in {{sec-derivation-pairwise}}, with A acting as recipient and B acting as sender.
+
+
 
 # The COSE Object # {#sec-cose-object}
 
-Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{RFC8152}} to wrap and protect data in the original message. OSCORE uses the untagged COSE_Encrypt0 structure with an Authenticated Encryption with Associated Data (AEAD) algorithm. For Group OSCORE, the following modifications apply.
+Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{RFC8152}} to wrap and protect data in the original message. OSCORE uses the untagged COSE_Encrypt0 structure with an Authenticated Encryption with Associated Data (AEAD) algorithm. For the signature mode of Group OSCORE the following modifications apply.
 
-## Updated 'unprotected' Field # {#sec-cose-object-unprotected-field}
+
+
+## Counter Signature # {#sec-cose-object-unprotected-field}
 
 The 'unprotected' field MUST additionally include the following parameter:
 
 * CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the sender as described in Appendix A.2 of {{RFC8152}}, by using its own private key and according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context. In particular, the Sig_structure contains the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE_Encrypt0 object as payload.
 
-## Use of the 'kid' and 'kid context' parameters # {#sec-cose-object-kid}
+## The 'kid' and 'kid context' parameters # {#sec-cose-object-kid}
 
 The value of the 'kid' parameter in the 'unprotected' field of response messages MUST be set to the Sender ID of the endpoint transmitting the message. That is, unlike in {{RFC8613}}, the 'kid' parameter is always present in all messages, i.e. both requests and responses.
 
 The value of the 'kid context' parameter in the 'unprotected' field of requests messages MUST be set to the ID Context, i.e. the Group Identifier value (Gid) of the group's Security Context. That is, unlike in {{RFC8613}}, the 'kid context' parameter is always present in requests.
 
-## Updated external_aad # {#sec-cose-object-ext-aad}
+## external_aad # {#sec-cose-object-ext-aad}
 
 The external_aad of the Additional Authenticated Data (AAD) is built differently. In particular, it has one structure used for the encryption process producing the ciphertext, and one structure used for the signing process producing the counter signature.
 
-### Updated external_aad for Encryption ### {#sec-cose-object-ext-aad-enc}
+### external_aad for Encryption ### {#sec-cose-object-ext-aad-enc}
 
 The first external_aad structure used for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) includes also the counter signature algorithm and related parameters used to sign messages. In particular, compared with Section 5.4 of {{RFC8613}}, the 'algorithms' array in the aad_array MUST also include:
 
@@ -280,7 +339,7 @@ aad_array = [
 ]
 ~~~~~~~~~~~
 
-### Updated external_aad for Signing ### {#sec-cose-object-ext-aad-sign}
+### external_aad for Signing ### {#sec-cose-object-ext-aad-sign}
 
 The second external_aad structure used for the signing process producing the counter signature as defined below includes also:
 
@@ -314,11 +373,11 @@ The OSCORE header compression defined in Section 6 of {{RFC8613}} is used, with 
 
 * The payload of the OSCORE message SHALL encode the ciphertext of the COSE object concatenated with the value of the CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
 
-* This specification defines the usage of the sixth least significant bit, namely the Pairwise Protection Flag bit, in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is registered in {{iana-cons-flag-bits}} of this specification.
+* This specification defines the usage of the sixth least significant bit, namely the Pairwise Flag bit, in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is registered in {{iana-cons-flag-bits}} of this specification.
 
-* The Pairwise Protection Flag bit is set to 1 if the OSCORE message is protected using pairwise keying material, which is shared with a single group member as single intended recipient and derived as defined in {{sec-derivation-pairwise}}. This is used, for instance, to send responses with the optimized mode defined in {{sec-optimized-mode}}. In any other case, especially when the OSCORE message is protected as per {{ssec-protect-request}} and {{ssec-protect-response}}, this bit MUST be set to 0.
+* The Pairwise Flag bit is set to 1 if the OSCORE message is protected using pairwise keying material, which is shared with a single group member as single intended recipient and derived as defined in {{sec-derivation-pairwise}}. This is used, for instance, to send responses with the optimized mode defined in {{sec-optimized-mode}}. In any other case, especially when the OSCORE message is protected as per {{ssec-protect-request}} and {{ssec-protect-response}}, this bit MUST be set to 0.
 
-   If any of the following conditions holds, a recipient MUST discard an incoming OSCORE message with the Pairwise Protection Flag bit set to 1:
+   If any of the following conditions holds, a recipient MUST discard an incoming OSCORE message with the Pairwise Flag bit set to 1:
     
     - The recipient does not support this feature, i.e. it is not capable or willing to process OSCORE messages protected using pairwise keying material.
     
@@ -419,7 +478,7 @@ Upon receiving a secure group request, a server proceeds as described in Section
 
 * In step 2, the decoding of the compressed COSE object follows {{compression}} of this specification. In particular:
 
-   - If the Pairwise Protection Flag bit is set to 1, and the server discards the request due to not supporting this feature or not retrieving a Security Context associated to the OSCORE group, the server  MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
+   - If the Pairwise Flag bit is set to 1, and the server discards the request due to not supporting this feature or not retrieving a Security Context associated to the OSCORE group, the server  MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
 
    - If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the server MAY create a new Recipient Context and initializes it according to Section 3 of {{RFC8613}}, also retrieving the client's public key. Such a configuration is application specific. If the application does not specify dynamic derivation of new Recipient Contexts, then the server SHALL stop processing the request.
 
@@ -513,40 +572,6 @@ The Group Manager is responsible for performing the following tasks:
 
 11. Validating that the format and parameters of public keys of group members are consistent with the countersignature algorithm and related parameters used in the respective OSCORE group.
 
-# Derivation of Pairwise Keying Material # {#sec-derivation-pairwise}
-
-Two group members can derive a symmetric pairwise key, from their Sender/Recipient Key and a static-static Diffe-Hellman shared secret. The key derivation is as follows, and uses the same construction used in Section 3.2.1 of {{RFC8613}}.
-
-~~~~~~~~~~~
-Pairwise key = HKDF(Sender/Recipient Key, Shared Secret, info, L)
-~~~~~~~~~~~
-
-where:
-
-* The Sender/Recipient key is the Sender Key of the sender, i.e. the Recipient Key that the recipient stores in its own Recipient Context corresponding to the sender.
-
-* The Shared Secret is computed as a static-static Diffie-Hellman shared secret, where the sender uses its own private key and the recipient's public key, while the recipient uses its own private key and the senders's public key.
-
-* info and L are defined as in Section 3.2.1 of {{RFC8613}}.
-
-The security of using the same key pair for Diffie-Hellman and for signing is proven in {{Degabriele}}. The derivation of pairwise keys defined above is compatible with ECDSA and EdDSA asymmetric keys, but is not compatible with RSA asymmetric keys.
-
-If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}.
-
-## Note for Implementation ##
-
-In order to optimize performance, an endpoint A may derive a pairwise key used with an endpoint B in the OSCORE group only once, and then store it in its own Security Context for future retrieval. This can work as follows.
-
-Endpoint A can have a Pairwise Sender Context associated to B, within its own Sender Context. This Pairwise Sender Context includes:
-
-* The Recipient ID of B for A, i.e. the Sender ID of B.
-
-* The Pairwise Key derived as defined in {{sec-derivation-pairwise}}, with A acting as sender and B acting as recipient.
-
-More generally, A has one of such Paiwise Sender Contexts within its own Sender Context, for each different intended recipient.
-
-Furthermore, A can additionally store in its own Recipient Context associated to B the Pairwise Key to use for incoming traffic from B. That is, this Pairwise Key is derived as defined in {{sec-derivation-pairwise}}, with A acting as recipient and B acting as sender.
-
 # Optimized Mode # {#sec-optimized-mode}
 
 For use cases that do not require an intermediary performing signature verification and that use a compatible signature algorithm, the optimized mode defined in this section provides significant smaller message sizes and increases the security by making responses confidential to other group members than the intended recipient.
@@ -568,7 +593,7 @@ The optimized compressed request is compatible with all AEAD algorithms defined 
 
 An optimized response is protected as defined in {{ssec-protect-response}}, with the following differences.
 
-* The server MUST set to 1 the sixth least significant bit of the OSCORE flag bits in the OSCORE option, i.e. the Pairwise Protection Flag.
+* The server MUST set to 1 the sixth least significant bit of the OSCORE flag bits in the OSCORE option, i.e. the Pairwise Flag.
 
 * The COSE_Encrypt0 object included in the optimized response is encrypted using a symmetric pairwise key K, that the server derives as defined in {{sec-derivation-pairwise}}. In particular, the Sender/Recipient Key is the Sender Key of the server from its own Sender Context, i.e. the Recipient Key that the client stores in its own Recipient Context corresponding to the server.
 
@@ -576,7 +601,7 @@ An optimized response is protected as defined in {{ssec-protect-response}}, with
 
 Note that no changes are made to the AEAD nonce and AAD.
 
-Upon receiving a response with the Pairwise Protection Flag set to 1, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
+Upon receiving a response with the Pairwise Flag set to 1, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
 
 * No countersignature to verify is included.
 
@@ -598,7 +623,7 @@ The same considerations on uniqueness of (key, nonce) pairs for OSCORE discussed
 
 The same considerations on unprotected message fields for OSCORE discussed in Appendix D.5 of {{RFC8613}} hold for Group OSCORE, with the following difference. The countersignature included in a Group OSCORE message is computed also over the value of the OSCORE option, which is part of the Additional Authenticated Data used in the signing process. This is further discussed in {{ssec-cross-group-injection}}.
 
-As discussed in Section 5.2.3 of {{I-D.dijk-core-groupcomm-bis}}, Group OSCORE addresses security attacks against CoAP listed in Sections 11.2-11.6 of {{RFC7252}}, especially when mounted over IP multicast.
+As discussed in Section 6.2.3 of {{I-D.dijk-core-groupcomm-bis}}, Group OSCORE addresses security attacks against CoAP listed in Sections 11.2-11.6 of {{RFC7252}}, especially when mounted over IP multicast.
 
 The rest of this section first discusses security aspects to be taken into account when using Group OSCORE. Then it goes through aspects covered in the security considerations of OSCORE (Section 12 of {{RFC8613}}), and discusses how they hold when Group OSCORE is used.
 
@@ -738,7 +763,7 @@ As discussed in {{sec-synch-seq-num}}, an endpoint that has just joined a group 
 
 Unless exchanges in a group rely only on unicast messages, Group OSCORE cannot be used with reliable transport. Thus, unless only unicast messages are sent in the group, it cannot be defined that only messages with sequence numbers that are equal to the previous sequence number + 1 are accepted.
 
-Consistently with what defined in Section 2.2.1 of {{I-D.dijk-core-groupcomm-bis}}, the processing of response messages described in {{ssec-verify-response}} of this specification also ensures that a client accepts a single valid response to a given request from each replying server, unless CoAP observation is used.
+The processing of response messages described in {{ssec-verify-response}} also ensures that a client accepts a single valid response to a given request from each replying server, unless CoAP observation is used.
 
 ## Client Aliveness {#ssec-client-aliveness}
 
@@ -1018,7 +1043,7 @@ The following assumptions are assumed to be already addressed and are out of the
 
 * Communication with the Group Manager: an endpoint must use a secure dedicated channel when communicating with the Group Manager, also when not registered as a member of the security group.
 
-* Provisioning and management of Security Contexts: an OSCORE Security Context must be established among the members of the security group. A secure mechanism must be used to generate, revoke and (re-)distribute keying material, multicast security policies and security parameters in the security group. The actual provisioning and management of the Security Context is out of the scope of this document.
+* Provisioning and management of Security Contexts: a Security Context must be established among the members of the security group. A secure mechanism must be used to generate, revoke and (re-)distribute keying material, multicast security policies and security parameters in the security group. The actual provisioning and management of the Security Context is out of the scope of this document.
 
 * Multicast data security ciphersuite: all members of a security group must agree on a ciphersuite to provide authenticity, integrity and confidentiality of messages in the group. The ciphersuite is specified as part of the Security Context.
 
@@ -1112,9 +1137,11 @@ A server should not deliver group requests from a given client to the applicatio
 
 Note that endpoints configured as silent servers are not able to perform the challenge-response described above, as they do not store a Sender Context to secure the 4.01 (Unauthorized) response to the client. Therefore, silent servers should adopt alternative approaches to achieve and maintain synchronization with sender sequence numbers of clients.
 
-If this approach is used, it is important that all the group members acting as (silent) server understand the elective Echo Option. This will ensure that those servers cannot be victim of the attack discussed in {{ssec-unicast-requests}}, in spite of the fact that the requests including the Echo Option are sent over unicast and secured with Group OSCORE. On the other hand, an internal on-path adversary would not be able to mix up the Echo Option value of two different unicast requests, sent by a same client to any two different servers in the group. In fact, this would require the adversary to forge the client's counter signature in both such requests. As a consequence, each of the two servers remains able to selectively accept a request with the Echo Option only if it is waiting for that exact integrity-protected Echo Option value, and is thus the intended recipient.
+If this approach is used, it is important that all the group members acting as non-silent servers understand the elective Echo Option. This will ensure that those servers cannot be victim of the attack discussed in {{ssec-unicast-requests}}, in spite of the fact that the requests including the Echo Option are sent over unicast and secured with Group OSCORE. On the other hand, an internal on-path adversary would not be able to mix up the Echo Option value of two different unicast requests, sent by a same client to any two different servers in the group. In fact, this would require the adversary to forge the client's counter signature in both such requests. As a consequence, each of the two servers remains able to selectively accept a request with the Echo Option only if it is waiting for that exact integrity-protected Echo Option value, and is thus the intended recipient.
 
 This approach provides an assurance of absolute message freshness. However, it can result in an impact on performance which is undesirable or unbearable, especially in large groups where many endpoints at the same time might join as new members or lose synchronization.
+
+The use of pairwise keys (see {{sec-pairwise-protection}}) for the unicast Echo messages reduces the message overhead.
 
 # No Verification of Signatures # {#sec-no-source-auth}
 
@@ -1124,7 +1151,7 @@ In this specification, it is NOT RECOMMENDED that endpoints do not verify the co
 
 # Pairwise Mode # {#sec-pairwise-protection}
 
-For use cases that do not require an intermediary performing signature verification and that use a compatible signature algorithm, the pairwise mode defined in this section can be used.
+For use cases that do not require an intermediary performing signature verification and that use a compatible signature algorithm, the pairwise mode defined in this section can be used for unicast communication.
 
 This mode uses the derivation process defined in {{sec-derivation-pairwise}}, and allows two group members to protect requests and responses exchanged with each other using pairwise keying material. Senders MUST NOT use the pairwise mode to protect a message addressed to multiple recipients or to the whole group.
 
@@ -1148,7 +1175,7 @@ To make this information available, servers supporting the pairwise mode MAY pro
 
 A request in pairwise mode is protected as defined in {{ssec-protect-request}}, with the following differences.
 
-* The client MUST set to 1 the sixth least significant bit of the OSCORE flag bits in the OSCORE option, i.e. the Pairwise Protection Flag.
+* The client MUST set to 1 the sixth least significant bit of the OSCORE flag bits in the OSCORE option, i.e. the Pairwise Flag.
 
 * The COSE_Encrypt0 object included in the request is encrypted using a symmetric pairwise key K, that the client derives as defined in {{sec-derivation-pairwise}}. In particular, the Sender/Recipient Key is the Sender Key of the client from its own Sender Context, i.e. the Recipient Key that the server stores in its own Recipient Context corresponding to the client.
 
@@ -1156,7 +1183,7 @@ A request in pairwise mode is protected as defined in {{ssec-protect-request}}, 
 
 Note that no changes are made to the AEAD nonce and AAD.
 
-Upon receiving a request with the Pairwise Protection Flag set to 1, the server MUST process it as defined in {{ssec-verify-request}}, with the following differences.
+Upon receiving a request with the Pairwise Flag set to 1, the server MUST process it as defined in {{ssec-verify-request}}, with the following differences.
 
 * No countersignature to verify is included.
 
@@ -1176,15 +1203,15 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Clarifications of what pertains a group rekeying.
 
+* Derivation of pairwise keying material.
+
 * Content re-organization for COSE Object and OSCORE header compression.
 
-* Defined the Pairwise Protection Flag bit for the OSCORE option.
+* Defined the Pairwise Flag bit for the OSCORE option.
 
 * Supporting CoAP Observe for group requests and responses.
 
-* Considerations on message protections across switching to new keying material.
-
-* Derivation of pairwise keying material.
+* Considerations on message protection across switching to new keying material.
 
 * New optimized mode based on pairwise keying material.
 
