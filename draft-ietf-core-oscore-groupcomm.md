@@ -1227,6 +1227,10 @@ When using the pairwise mode, the processing of a response occurs as described i
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
+## Version -07 to -08 ## {#sec-07-08}
+
+TBD
+
 ## Version -06 to -07 ## {#sec-06-07}
 
 * Updated abstract and introduction.
