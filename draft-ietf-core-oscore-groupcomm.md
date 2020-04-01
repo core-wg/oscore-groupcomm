@@ -206,7 +206,7 @@ The Counter Signature Parameters identifies the parameters associated to the dig
 
 The Counter Signature Key Parameters identifies the parameters associated to the keys used with the digital signature algorithm specified in the Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined in the Counter Signature Key Parameters Registry (see {{iana-cons-cs-key-params}}), where each entry indicates a specified structure of the Counter Signature Key Parameters.
 
-## Sender Context and Recipient Context ##
+## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
 OSCORE specifies the derivation of Sender Context and Recipient Context, specifically Sender/Recipient Keys and Common IV, from a set of input parameters (see Section 3.2 of {{RFC8613}}). This derivation applies also to Group OSCORE, and the mandatory-to-implement HKDF and AEAD algorithms are the same as in {{RFC8613}}. However, for Group OSCORE the Sender Context and Recipient Context additionally contain asymmetric keys.
 
@@ -274,13 +274,17 @@ where:
 
 * The Sender/Recipient key is the Sender Key of the sender, i.e. the Recipient Key that the recipient stores in its own Recipient Context corresponding to the sender.
 
-* The Shared Secret is computed as a static-static Diffie-Hellman shared secret, where the sender uses its own private key and the recipient's public key, while the recipient uses its own private key and the senders's public key.
+* The Shared Secret is computed as a static-static Diffie-Hellman shared secret, where the sender uses its own private key and the recipient's public key, while the recipient uses its own private key and the senders's public key. The Shared Secret may be stored in memory, rather than recomputed each time it is needed.
 
 * info and L are defined as in Section 3.2.1 of {{RFC8613}}.
 
 The security of using the same key pair for Diffie-Hellman and for signing is proven in {{Degabriele}}. The derivation of pairwise keys defined above is compatible with ECDSA and EdDSA asymmetric keys, but is not compatible with RSA asymmetric keys.
 
 If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}.
+
+After new group keying material has been distributed (see {{sec-group-key-management}}), every group member MUST delete all its pairwise keys. Since new Sender/Recipient keys are derived from the new group keying material (see {{ssec-sender-recipient-context}}), every group member MUST use such new Sender/Recipient keys when possibly deriving new pairwise keys.
+
+As long as any two group members preserve the same asymmetric keys, the Diffie-Hellman shared secret does not change across updates of the group keying material.
 
 ## Note on Implementation ##
 
