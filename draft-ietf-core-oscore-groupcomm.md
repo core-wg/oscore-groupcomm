@@ -284,7 +284,7 @@ The security of using the same key pair for Diffie-Hellman and for signing is pr
 
 If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}.
 
-After new group keying material has been distributed (see {{sec-group-key-management}}), every group member MUST delete all its pairwise keys. Since new Sender/Recipient keys are derived from the new group keying material (see {{ssec-sender-recipient-context}}), every group member MUST use such new Sender/Recipient keys when possibly deriving new pairwise keys.
+After completing the establishment of a new Security Context (see {{sec-group-key-management}}), every group member MUST delete all its pairwise keys. Since new Sender/Recipient keys are derived from the new group keying material (see {{ssec-sender-recipient-context}}), every group member MUST use such new Sender/Recipient keys when possibly deriving new pairwise keys.
 
 As long as any two group members preserve the same asymmetric keys, the Diffie-Hellman shared secret does not change across updates of the group keying material.
 
