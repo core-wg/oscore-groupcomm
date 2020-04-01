@@ -121,7 +121,7 @@ This document defines Group OSCORE, providing the same end-to-end security prope
 
 Group OSCORE provides source authentication of CoAP messages, by means of two possible methods. The first method relies on a digital signature produced with the private key of the sender and embedded in the protected CoAP message. The second method relies on a symmetric key, which is derived from a pairwise shared secred computed from the asymmetric keys of the message sender and recipient.
 
-The second method is intended for one-to-one messages sent in the group. These include all responses, as individually sent by servers, as well as requests addressed to an individual server. For instance, such requests are sent as part of an exchange using the CoAP Echo option {{I-D.ietf-core-echo-request-tag}}, or as part of a blockwise transfer {{RFC7959}} in the group, after the first blockwise request possibly targeting all servers in the group and including the CoAP Block2 option (see Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}}).
+The second method is intended for one-to-one messages sent in the group. These include all responses, as individually sent by servers, as well as requests addressed to an individual server. For instance, such requests are sent as part of an exchange using the CoAP Echo option {{I-D.ietf-core-echo-request-tag}}, or as part of a block-wise transfer {{RFC7959}} in the group, after the first block-wise request possibly targeting all servers in the group and including the CoAP Block2 option (see Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}}).
 
 <!--
 OLD TEXT
@@ -743,17 +743,19 @@ Note that, by changing the Partial IV as discussed above, any member of G1 would
 
 ## Group OSCORE for Unicast Requests {#ssec-unicast-requests}
 
-With reference to the processing defined in {{ssec-protect-request}} and {{ssec-optimized-request}}, it is NOT RECOMMENDED for a client to use Group OSCORE for securing a request sent to a single group member over unicast.
+With reference to the processing defined in {{ssec-protect-request}} for the signature mode and in {{ssec-optimized-request}} for the optimized mode, it is NOT RECOMMENDED for a client to use Group OSCORE for securing a request sent to a single group member over unicast.
 
 If the client uses its own Sender Key to protect a unicast request to a group member, an on-path adversary can, right then or later on, redirect that request to one/many different group member(s) over unicast, or to the whole OSCORE group over multicast. By doing so, the adversary can induce the target group member(s) to perform actions intended to one group member only. Note that the adversary can be external, i.e. (s)he does not need to also be a member of the OSCORE group.
 
 This is due to the fact that the client is not able to indicate the single intended recipient in a way which is secure and possible to process for Group OSCORE on the server side. In particular, Group OSCORE does not protect network addressing information such as the IP address of the intended recipient server. It follows that the server(s) receiving the redirected request cannot assert whether that was the original intention of the client, and would thus simply assume so.
 
+With particular reference to block-wise transfers {{RFC7959}}, Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}} points out that, while an initial request including the CoAP Block2 option can be sent over multicast, any other request in a transfer has to occur over unicast, individually addressing the servers in the group.
+
+Additional considerations are discussed in {{ssec-synch-challenge-response}}, with respect to requests including an Echo Option {{I-D.ietf-core-echo-request-tag}} that has to be sent over unicast, as a challenge-response method for servers to achieve synchronization of client Sender Sequence Numbers.
+
 The impact of such an attack depends especially on the REST method of the request, i.e. the Inner CoAP Code of the OSCORE request message. In particular, safe methods such as GET and FETCH would trigger (several) unintended responses from the targeted server(s), while not resulting in destructive behavior. On the other hand, non safe methods such as PUT, POST and PATCH/iPATCH would result in the target server(s) taking active actions on their resources and possible cyber-physical environment, with the risk of destructive consequences and possible implications for safety.
 
-Additional considerations are discussed in {{ssec-synch-challenge-response}}, with respect to unicast requests including an Echo Option {{I-D.ietf-core-echo-request-tag}}, as a challenge-response method for servers to achieve synchronization of client Sender Sequence Numbers.
-
-A client may instead use the pairwise mode defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member using pairwise keying material. This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request.
+A client may instead use the pairwise mode defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. A client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast, instead of using the signature mode.
 
 ## End-to-end Protection {#ssec-e2e-protection}
 
