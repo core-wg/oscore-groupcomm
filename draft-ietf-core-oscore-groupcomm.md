@@ -218,9 +218,6 @@ The input parameters for deriving the Recipient Context parameters and the publi
 
 For severely constrained devices, it may be not feasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the associated endpoint's public key. Such devices can be configured to drop a received message for which there is no Recipient Context, and retrieve the public key in order to have it available to verify subsequent messages from that endpoint.
 
-Note that each Recipient Context includes a Replay Window, unless the recipient acts only as client and hence processes only responses as incoming messages.
-<!--A recipient MUST NOT generate or store a Recipient Context with the Recipient ID equal to its own Sender ID in its own Sender Context.-->
-
 ## The Group Manager ##
 
 Endpoints communicating with Group OSCORE need, in addition to the OSCORE input parameters, also to be provisioned with information about the group(s) and other endpoints in the group(s).
