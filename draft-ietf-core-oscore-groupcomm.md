@@ -264,6 +264,8 @@ In either case, same considerations from {{sec-group-key-management}} hold about
 
 Certain signature schemes, such as EdDSA and ECDSA, support a secure combined signature and encryption scheme. This section specifies the derivation of pairwise encryption keys for use in the pairwise and optimized modes of Group OSCORE.
 
+## Key Derivation ##
+
 Two group members can derive a symmetric pairwise key, from their Sender/Recipient Key and a static-static Diffe-Hellman shared secret. The key derivation is as follows, and uses the same construction used in Section 3.2.1 of {{RFC8613}}.
 
 ~~~~~~~~~~~
@@ -285,6 +287,14 @@ If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgome
 After new group keying material has been distributed (see {{sec-group-key-management}}), every group member MUST delete all its pairwise keys. Since new Sender/Recipient keys are derived from the new group keying material (see {{ssec-sender-recipient-context}}), every group member MUST use such new Sender/Recipient keys when possibly deriving new pairwise keys.
 
 As long as any two group members preserve the same asymmetric keys, the Diffie-Hellman shared secret does not change across updates of the group keying material.
+
+## Usage of Sequence Numbers ##
+
+When using any of its pairwise keys, a sender endpoint MUST use the current fresh value of its own Sender Sequence Number, from its own Sender Context (see {{ssec-sender-recipient-context}}). That is, the same Sender Sequence Number space is used for all outgoing messages sent to the group and protected with Group OSCORE, thus limiting both storage and complexity.
+
+On the other hand, when combining one-to-many and one-to-one communication in the group, this may result in the Partial IV values moving forward more often. Fundamentally, this is due to the fact that not all the recipients receive all messages from a given sender. For instance, requests sent over multicast (in signature mode) are addressed to the whole group, while requests sent over unicast (in signature mode or pairwise mode) are not.
+
+As a consequence, replay checks may be invoked more often on the recipient side, where larger replay windows should be considered.
 
 ## Note on Implementation ##
 
