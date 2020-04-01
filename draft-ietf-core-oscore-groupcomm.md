@@ -472,7 +472,9 @@ The exact way to address this issue is application specific, and depends on the 
 
 # Message Processing # {#mess-processing}
 
-Each request message and response message is protected and processed as specified in {{RFC8613}}, with the modifications described in the following sections. The following security objectives are fulfilled, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication and message integrity.
+Each request message and response message is protected and processed as specified in {{RFC8613}}, with the modifications described in the following sections. In particular, the following sections refer to the signature mode of Group OSCORE, while the optimized mode and the pairwise mode are described in {{sec-optimized-mode}} and {{sec-pairwise-protection}}, respectively.
+
+The following security objectives are fulfilled, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication and message integrity.
 
 As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-Confirmable, and thus cannot be retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a pre-defined, sufficient amount of time, in order to correctly perform possible retransmissions at the application layer. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments. Besides, according to Section 5.2.3 of {{RFC7252}}, responses to Non-Confirmable group requests SHOULD be also Non-Confirmable. However, endpoints MUST be prepared to receive Confirmable responses in reply to a Non-Confirmable group request.
 
