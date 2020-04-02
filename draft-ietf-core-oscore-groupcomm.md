@@ -1238,13 +1238,7 @@ In order to protect an outgoing message in pairwise mode, a sender needs to know
 
 Furthermore, the sender needs to know the individual address of the message recipient. This information may not be known at any given point in time. For instance, right after having joined the group, a client may know the public key and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.
 
-To make this information available, servers supporting the pairwise mode MAY provide the following service, enabling the discovery of their own addressing information to the clients in the group.
-
-* The servers host a well-known address-discovery resource with a common URI path, which can be pre-configured or provided to new group members by the Group Manager during the joining process.
-
-* A client can send a POST request to the whole group, hence protected as in {{ssec-protect-request}} or {{ssec-optimized-request}}, and addressed to the address-discovery resource. The request payload includes a CBOR map, specifying one Recipient ID for every specific server, from which the client wishes to retrieve individual addressing information.
-
-* Each server recognizing its own Sender ID within the request payload replies to the client. The response is protected as in {{ssec-protect-response}} or {{ssec-optimized-response}}, and its payload includes a CBOR map specifying the individual addressing information of that server.
+To make this information available, servers MAY provide a resource to which a client can send a request for a server identified by its 'kid' value, or a set thereof. Details of such an interface are out of scope for this document.
 
 ## Pairwise Protected Request {#sec-pairwise-protection-req}
 
