@@ -164,8 +164,6 @@ This document refers also to the following terminology.
 * Silent server: member of a group that never responds to requests. Given that, for CoAP group communications, messages are normally
 sent without requesting a confirmation, the idea of a server silently acting on a message is not unreasonable. Note that an endpoint can implement both a silent server and a client, the two roles are independent. An endpoint implementing only a silent server processes only incoming requests, and, in case it supports only the signature mode, it maintains less keying material and especially does not have a Sender Context for the group.
 
-does not have a sender context (at least in signature mode) and expects to process only incoming requests
-
 * Group Identifier (Gid): identifier assigned to the group. Group Identifiers must be unique within the set of groups of a given Group Manager.
 
 * Group request: CoAP request message sent by a client in the group to all servers in that group.
