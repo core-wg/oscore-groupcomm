@@ -413,7 +413,7 @@ aad_array = [
 ]
 ~~~~~~~~~~~
 
-Note for implementation: this requires the value of the OSCORE option to be fully ready, before starting the signing process.
+Note for implementation: this requires the value of the OSCORE option to be fully ready, before starting the signing process. Also, this requires that the aad_array is long enough to contain the longest possible OSCORE option.
 
 # OSCORE Header Compression {#compression}
 
