@@ -1177,11 +1177,19 @@ This section describes three possible approaches that can be considered by serve
 
 Upon receiving a group request from a client, a server does not take any action to synchonize with the sender sequence number of that client. This provides no assurance at all as to message freshness, which can be acceptable in non-critical use cases.
 
+With the notable exception of Observe notifications and responses following a group rekeying, it is optional for the server to use its own Sender Sequence Number as Partial IV. Instead, for efficiency reasons, the server may rather use the request's Partial IV when protecting a response.
+
+Since it provides no assurance as to freshness of requests, it is thus RECOMMENDED that a server using this synchronization approach always uses its own Sender Sequence Number as Partial IV when protecting a response.
+
 ## Baseline Synchronization ## {#ssec-synch-baseline}
 
 Upon receiving a group request from a given client for the first time, a server initializes its last-seen sender sequence number in its Recipient Context associated to that client. This provides a reference point to identify if future group requests from the same client are fresher than the last one received.
 
 A replay time interval exists, between when a possibly replayed or delayed message is originally transmitted by a given client and the first authentic fresh message from that same client is received. This can be acceptable for use cases where servers admit such a trade-off between performance and assurance of message freshness.
+
+With the notable exception of Observe notifications and responses following a group rekeying, it is optional for the server to use its own Sender Sequence Number as Partial IV. Instead, for efficiency reasons, the server may rather use the request's Partial IV when protecting a response.
+
+In case the baseline synchronization state related to a client is lost, it is RECOMMENDED that the server uses its own Sender Sequence Number as Partial IV when protecting a response to that client, until a new baseline synchronization state for that client is established.
 
 ## Challenge-Response Synchronization ## {#ssec-synch-challenge-response}
 
