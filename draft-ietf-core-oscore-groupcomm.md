@@ -70,7 +70,27 @@ normative:
   RFC8152:
   RFC8174:
   RFC8613:
-
+  NIST-800-56A:
+    author:
+      -
+        ins: E. Barker
+        name: Elaine Barker
+      -
+        ins: L. Chen
+        name: Lily Chen
+      -
+        ins: A. Roginsky
+        name: Allen Roginsky
+      -
+        ins: A. Vassilev
+        name: Apostol Vassilev
+      -
+        ins: R. Davis
+        name: Richard Davis
+    title: Recommendation for Pair-Wise Key-Establishment Schemes Using Discrete Logarithm Cryptography - NIST Special Publication 800-56A, Revision 3
+    date: 2018-04
+    target: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-56Ar3.pdf
+    
 informative:
   I-D.ietf-ace-key-groupcomm:
   I-D.ietf-ace-key-groupcomm-oscore:
@@ -270,7 +290,7 @@ Certain signature schemes, such as EdDSA and ECDSA, support a secure combined si
 
 ## Key Derivation ##
 
-Two group members can derive a symmetric pairwise key, from their Sender/Recipient Key and a static-static Diffe-Hellman shared secret. The key derivation is as follows, and uses the same construction used in Section 3.2.1 of {{RFC8613}}.
+Two group members can derive a symmetric pairwise key, from their Sender/Recipient Key and a static-static Diffe-Hellman shared secret {{NIST-800-56A}}. The key derivation is as follows, and uses the same construction used in Section 3.2.1 of {{RFC8613}}.
 
 ~~~~~~~~~~~
 Pairwise key = HKDF(Sender/Recipient Key, Shared Secret, info, L)
@@ -280,7 +300,7 @@ where:
 
 * The Sender/Recipient key is the Sender Key of the sender, i.e. the Recipient Key that the recipient stores in its own Recipient Context corresponding to the sender.
 
-* The Shared Secret is computed as a static-static Diffie-Hellman shared secret, where the sender uses its own private key and the recipient's public key, while the recipient uses its own private key and the senders's public key. The Shared Secret may be stored in memory, rather than recomputed each time it is needed.
+* The Shared Secret is computed as a static-static Diffie-Hellman shared secret {{NIST-800-56A}}, where the sender uses its own private key and the recipient's public key, while the recipient uses its own private key and the senders's public key. The Shared Secret may be stored in memory, rather than recomputed each time it is needed.
 
 * info and L are defined as in Section 3.2.1 of {{RFC8613}}.
 
