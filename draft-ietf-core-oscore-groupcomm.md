@@ -162,7 +162,9 @@ This document refers also to the following terminology.
 * Group Manager: entity responsible for a group. Each endpoint in a group communicates securely with the respective Group Manager, which is neither required to be an actual group member nor to take part in the group communication. The full list of responsibilities of the Group Manager is provided in {{sec-group-manager}}.
 
 * Silent server: member of a group that never responds to requests. Given that, for CoAP group communications, messages are normally
-sent without requesting a confirmation, the idea of a server silently acting on a message is not unreasonable. Note that an endpoint can implement both a silent server and a client, the two roles are independent.
+sent without requesting a confirmation, the idea of a server silently acting on a message is not unreasonable. Note that an endpoint can implement both a silent server and a client, the two roles are independent. An endpoint implementing only a silent server processes only incoming requests, and, in case it supports only the signature mode, it maintains less keying material and especially does not have a Sender Context for the group.
+
+does not have a sender context (at least in signature mode) and expects to process only incoming requests
 
 * Group Identifier (Gid): identifier assigned to the group. Group Identifiers must be unique within the set of groups of a given Group Manager.
 
