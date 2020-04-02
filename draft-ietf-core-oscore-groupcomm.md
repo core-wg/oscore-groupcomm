@@ -1226,7 +1226,9 @@ In this specification, it is NOT RECOMMENDED that endpoints do not verify the co
 
 For use cases that do not require an intermediary performing signature verification and that use a compatible signature algorithm, the pairwise mode defined in this section can be used for unicast communication.
 
-This mode uses the derivation process defined in {{sec-derivation-pairwise}}, and allows two group members to protect requests and responses exchanged with each other using pairwise keying material. Senders MUST NOT use the pairwise mode to protect a message addressed to multiple recipients or to the whole group.
+This mode uses the derivation process defined in {{sec-derivation-pairwise}}, and allows two group members to protect requests and responses exchanged with each other using pairwise keying material.
+
+Senders MUST NOT use the pairwise mode to protect a message addressed to multiple recipients or to the whole group. This prevents a client that wants to address one specific server from protecting a request with the pairwise key associated to that server, and then send the request over multicast.
 
 The pairwise mode results in the same performance and security improvements displayed by optimized responses (see {{ssec-optimized-response}}).
 
