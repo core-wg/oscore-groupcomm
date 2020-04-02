@@ -433,9 +433,11 @@ The OSCORE header compression defined in Section 6 of {{RFC8613}} is used, with 
     
 ## Examples of Compressed COSE Objects
 
-This section covers a list of OSCORE Header Compression examples for group requests and responses. The examples assume that the COSE_Encrypt0 object is set (which means the CoAP message and cryptographic material is known). Note that the examples do not include the full CoAP unprotected message or the full Security Context, but only the input necessary to the compression mechanism, i.e. the COSE_Encrypt0 object. The output is the compressed COSE object as defined in {{compression}} and divided into two parts, since the object is transported in two CoAP fields: OSCORE option and payload.
+This section covers a list of OSCORE Header Compression examples for group requests and responses, with Group OSCORE used in signature mode.
 
-The examples assume that the label for the new kid context defined in {{RFC8613}} has value 10. COUNTERSIGN is the CounterSignature0 byte string as described in {{sec-cose-object}} and is 64 bytes long.
+The examples assume that the COSE_Encrypt0 object is set (which means the CoAP message and cryptographic material is known). Note that the examples do not include the full CoAP unprotected message or the full Security Context, but only the input necessary to the compression mechanism, i.e. the COSE_Encrypt0 object. The output is the compressed COSE object as defined in {{compression}} and divided into two parts, since the object is transported in two CoAP fields: OSCORE option and payload.
+
+The examples assume that the label for the new kid context defined in {{RFC8613}} has value 10. The examples also assume that the plaintext (see Section 5.3 of {{RFC8613}}) is 6 bytes long, and that the AEAD tag is 8 bytes long, hence resulting in a ciphertext which is 14 bytes long. Finally, COUNTERSIGN is the CounterSignature0 byte string as described in {{sec-cose-object}} and is 64 bytes long.
 
 1. Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25, Partial IV = 5 and kid context = 0x44616c
 
@@ -461,7 +463,7 @@ Payload: ae a0 15 56 67 92 4d ff 8a 24 e4 cb 35 b9 COUNTERSIGN
 ~~~~~~~~~~~
 
 
-2. Response with ciphertext = 60b035059d9ef5667c5a0710823b, kid = 0x52 and no Partial IV.
+2. Response with ciphertext = 0x60b035059d9ef5667c5a0710823b, kid = 0x52 and no Partial IV.
 
 ~~~~~~~~~~~
 Before compression (88 bytes):
