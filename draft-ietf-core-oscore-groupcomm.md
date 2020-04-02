@@ -248,11 +248,13 @@ If required by the application (see {{ssec-sec-assumptions}}), it is RECOMMENDED
 
 The specific approach used to distribute the new Gid and Master Secret parameter to the group is out of the scope of this document. However, it is RECOMMENDED that the Group Manager supports the distribution of the new Gid and Master Secret parameter to the group according to the Group Rekeying Process described in {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
-## Wrap-Around of Partial IVs {#ssec-wrap-around-partial-iv}
+## Exhaustion of Partial IV Values {#ssec-wrap-around-partial-iv}
 
-An endpoint can eventually experience a wrap-around of its own Sender Sequence Number, which is incremented after sending each new message including a Partial IV. This is the case for all group requests, all Observe notifications {{RFC7641}} and, optionally, any other response.
+An endpoint can eventually exhaust its own Sender Sequence Number, which is incremented after sending each new message including a Partial IV. This is the case for all group requests, all Observe notifications {{RFC7641}} and, optionally, any other response.
 
-When a wrap-around happens, the endpoint MUST NOT transmit further messages for that group until it has derived a new Sender Context, in order to avoid reusing nonces with the same keys.
+If an implementation's integers only support wrapping addition, the implementation MUST detect a wrap-around of the Sender Sequence Number value and treat that as exhausted instead.
+
+Upon exhausting its own Sender Sequence Number, the endpoint MUST NOT transmit further messages for that group until it has derived a new Sender Context, in order to avoid reusing nonces with the same keys.
 
 Furthermore, the endpoint SHOULD inform the Group Manager, that can take one of the following actions:
 
