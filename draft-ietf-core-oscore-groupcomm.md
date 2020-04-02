@@ -242,7 +242,9 @@ For severely constrained devices, it may be not feasible to simultaneously handl
 
 Endpoints communicating with Group OSCORE need, in addition to the OSCORE input parameters, also to be provisioned with information about the group(s) and other endpoints in the group(s).
 
-The Group Manager is an entity responsible for the group, including the Group Identifier (Gid) used as ID Context, as well as the Sender ID and Recipient ID of the group members (see {{sec-group-manager}}). The Group Manager records the public keys of endpoints joining the group and provides information about the group and its members to other members.
+The Group Manager is an entity responsible for the group, including the Group Identifier (Gid) used as ID Context, as well as the Sender ID and Recipient ID of the group members (see {{sec-group-manager}}).
+
+The Group Manager is exclusively in control of the Gid values uniquely assigned to the different groups under its control, as well as of the Sender ID and Recipient ID values uniquely assigned to the members of each of those groups. According to a hierarchical approach, the Gid value assigned to a group is associated to a dedicated space for the values of Sender ID and Recipient ID of the members of that group. In addition, the Group Manager records the public keys of endpoints joining a group, and provides information about the group and its members to other members.
 
 An endpoint receives the Group Identifier and OSCORE input parameters, including its own Sender ID, from the Group Manager upon joining the group. That Sender ID is valid only within that group, and is unique within the group. Endpoints which are configured only as silent servers do not have a Sender ID.
 
