@@ -179,7 +179,7 @@ Each endpoint registered as member of a group maintains a Security Context as de
 
 * One Sender Context, extended with the endpoint's private key. The Sender Context is omitted if the endpoint is configured exclusively as silent server.
 
-* One Recipient Context for each endpoint from which messages are received. The Recipient Context is extended with the public key of the associated endpoint.
+* One Recipient Context for each endpoint from which messages are received. No Recipient Contexts are maintained as associated to endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the public key of the associated endpoint.
 
 ~~~~~~~~~~~
    +---------------------------+----------------------------------+
