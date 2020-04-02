@@ -560,13 +560,13 @@ A server that has received a secure group request may reply with a secure respon
 
 Note that the server MUST always protect a response by using its own Sender Context from the latest owned Security Context.
 
-Consistently, upon the establishment of a new Security Context, the server may end up protecting a response by using a Security Context different from the one used to protect the group request (see {{ssec-key-rotation}}). In such a case, the server SHOULD also:
+Consistently, upon the establishment of a new Security Context, the server may end up protecting a response by using a Security Context different from the one used to protect the group request (see {{ssec-key-rotation}}). In such a case:
 
-* Encode the Partial IV (Sender Sequence Number in network byte order), which is set to the Sender Sequence Number of the server; increment the Sender Sequence Number by one; compute the AEAD nonce from the Sender ID, Common IV, and Partial IV.
+* The server MUST encode the Partial IV (Sender Sequence Number in network byte order), which is set to the Sender Sequence Number of the server; increment the Sender Sequence Number by one; compute the AEAD nonce from the Sender ID, Common IV, and Partial IV.
 
-* Include in the respose the 'Partial IV' parameter, which is set to the encoded Partial IV value above.
+* The server MUST include in the response the 'Partial IV' parameter, which is set to the encoded Partial IV value above.
 
-* Include in the response the 'kid context' parameter, which is set to the ID Context of the new Security Context, i.e. the new Group Identifier (Gid).
+* The server SHOULD Include in the response the 'kid context' parameter, which is set to the ID Context of the new Security Context, i.e. the new Group Identifier (Gid).
 
 ### Supporting Observe ###
 
