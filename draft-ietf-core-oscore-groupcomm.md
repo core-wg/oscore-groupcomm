@@ -1238,7 +1238,7 @@ In order to protect an outgoing message in pairwise mode, a sender needs to know
 
 Furthermore, the sender needs to know the individual address of the message recipient. This information may not be known at any given point in time. For instance, right after having joined the group, a client may know the public key and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.
 
-To make this information available, servers MAY provide a resource to which a client can send a request for a server identified by its 'kid' value, or a set thereof. Details of such an interface are out of scope for this document.
+To make this information available, servers MAY provide a resource to which a client can send a request for a server identified by its 'kid' value, or a set thereof. The specified set may be empty, hence identifying all the servers in the group. Further details of such an interface are out of scope for this document.
 
 ## Pairwise Protected Request {#sec-pairwise-protection-req}
 
