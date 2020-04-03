@@ -566,7 +566,7 @@ Consistently, upon the establishment of a new Security Context, the server may e
 
 * The server MUST include in the response the 'Partial IV' parameter, which is set to the encoded Partial IV value above.
 
-* The server SHOULD Include in the response the 'kid context' parameter, which is set to the ID Context of the new Security Context, i.e. the new Group Identifier (Gid).
+* The server SHOULD include in the response the 'kid context' parameter, which is set to the ID Context of the new Security Context, i.e. the new Group Identifier (Gid).
 
 ### Supporting Observe ###
 
@@ -1268,7 +1268,45 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -07 to -08 ## {#sec-07-08}
 
-TBD
+* Clarified relation between pairwise mode and group communication (Section 1).
+
+* Improved definition of "silent server" (Section 1.1).
+
+* Clarified when a Recipient Context is needed (Section 2).
+
+* Signature checkers as entities supported by the Group Manager (Section 2.3).
+
+* Clarified that the Group Manager is under exclusive control of Gid and Sender ID values in a group, with Sender ID values under each Gid value (Section 2.3).
+
+* Mitigation policies in case of recycled 'kid' values (Section 2.4).
+
+* More generic exhaustion (not necessarily wrap-around) of sender sequence numbers (Sections 2.5 and 10.11).
+
+* Pairwise key considerations, as to group rekeying and Sender Sequence Numbers (Section 3).
+
+* Added reference to static-static Diffie-Hellman shared secret (Section 3).
+
+* Note for implementation about the external_aad for signing (Sectino 4.3.2).
+
+* Retransmission by the application for group requests over multicast as Non-Confirmable (Section 7).
+
+* A server MUST use its own Partial IV in a response, if protecting it with a different context than the one used for the request (Section 7.3).
+
+* Security considerations: encryption of pairwise mode as alternative to group-level security (Section 10.1).
+
+* Security considerations: added approach to reduce the change of global collisions of Gid values from different Group Managers (Section 10.5).
+
+* Security considerations: added implications for block-wise transfers when using the signature mode for requests over unicast (Section 10.7).
+
+* Security considerations: (multiple) supported signature algorithms (Section 10.13).
+
+* Security considerations: added privacy considerations on the approach for reducing global collisions of Gid values (Section 10.15).
+
+* Updates to the methods for synchronizing with clients' sequence number (Appendix E).
+
+* Simplified text on discovery services supporting the pairwise mode (Appendix G.1).
+
+* Editorial improvements.
 
 ## Version -06 to -07 ## {#sec-06-07}
 
