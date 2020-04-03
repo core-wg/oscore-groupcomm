@@ -1294,7 +1294,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Security considerations: encryption of pairwise mode as alternative to group-level security (Section 10.1).
 
-* Security considerations: added approach to reduce the change of global collisions of Gid values from different Group Managers (Section 10.5).
+* Security considerations: added approach to reduce the chance of global collisions of Gid values from different Group Managers (Section 10.5).
 
 * Security considerations: added implications for block-wise transfers when using the signature mode for requests over unicast (Section 10.7).
 
