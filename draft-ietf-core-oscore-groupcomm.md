@@ -258,7 +258,7 @@ The Group Manager may serve additional entities acting as signature checkers, e.
 
 In order to establish a new Security Context in a group, a new Group Identifier (Gid) for that group and a new value for the Master Secret parameter MUST be distributed. An example of Gid format supporting this operation is provided in {{gid-ex}}. When distributing the new Gid and Master Secret, the Group Manager MAY distribute also a new value for the Master Salt parameter, and SHOULD preserve the current value of the Sender ID of each group member.
 
-Then, each group member re-derives the keying material stored in its own Sender Context and Recipient Contexts as described in {{sec-context}}, using the updated Gid and Master Secret parameter. The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise. From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
+Then, each group member re-derives the keying material stored in its own Sender Context and Recipient Contexts as described in {{sec-context}}, using the updated Gid and Master Secret parameter. The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise. Also, each group member MUST NOT reset its own Sender Sequence Number in its Sender Context, and MUST NOT reset its own replay windows in its Recipient Contexts. From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
 
 After a new Gid has been distributed, a same Recipient ID ('kid') should not be considered as a persistent and reliable indicator of the same group member. Such an indication can be actually achieved only by using that members's public key. This occurs when verifying countersignatures of received messages (in signature mode), or when verifying messages integrity-protected with pairwise keying material derived from asymmetric keys (in pairwise mode). As a consequence, group members may end up retaining stale Recipient Contexts, that are no longer useful to verify incoming secure messages.
 
@@ -566,7 +566,7 @@ Note that the server MUST always protect a response by using its own Sender Cont
 
 Consistently, upon the establishment of a new Security Context, the server may end up protecting a response by using a Security Context different from the one used to protect the group request (see {{ssec-key-rotation}}). In such a case:
 
-* The server MUST encode the Partial IV (Sender Sequence Number in network byte order), which is set to the Sender Sequence Number of the server; increment the Sender Sequence Number by one; compute the AEAD nonce from the Sender ID, Common IV, and Partial IV.
+* The server MUST encode the Partial IV (Sender Sequence Number in network byte order), which is set to the Sender Sequence Number of the server; increment the Sender Sequence Number by one; compute the AEAD nonce from the Sender ID, Common IV, and Partial IV. As specified in {{sec-group-key-management}}, upon the establishment of a new Security Context, the server MUST NOT reset its own Sender Sequence Number.
 
 * The server MUST include in the response the 'Partial IV' parameter, which is set to the encoded Partial IV value above.
 
@@ -595,6 +595,8 @@ Upon receiving a secure response message, the client proceeds as described in Se
 * Additionally, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client MAY delete that Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the client's storage and creating processing overhead on the client.
 
 Note that, as discussed in {{ssec-key-rotation}}, a client may receive a response protected with a Security Context different from the one used to protect the corresponding group request.
+
+As specified in {{sec-group-key-management}}, upon the establishment of a new Security Context, the client MUST NOT reset its own replay windows in its Recipient Contexts.
 
 ### Supporting Observe ###
 
