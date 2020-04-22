@@ -1185,7 +1185,7 @@ Since it provides no assurance as to freshness of requests, it is thus RECOMMEND
 
 ## Baseline Synchronization ## {#ssec-synch-baseline}
 
-Upon receiving a group request from a given client for the first time, a server initializes its last-seen sender sequence number in its Recipient Context associated to that client. This provides a reference point to identify if future group requests from the same client are fresher than the last one received.
+Upon receiving a group request from a given client for the first time, a server initializes its last-seen sender sequence number in its Recipient Context associated to that client. The server may also drop the group request without delivering it to the application. This method provides a reference point to identify if future group requests from the same client are fresher than the last one received.
 
 A replay time interval exists, between when a possibly replayed or delayed message is originally transmitted by a given client and the first authentic fresh message from that same client is received. This can be acceptable for use cases where servers admit such a trade-off between performance and assurance of message freshness.
 
