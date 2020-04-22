@@ -1285,6 +1285,16 @@ When using the pairwise mode, the processing of a response occurs as described i
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
+## Version -08 to -09 ## {#sec-08-09}
+
+* Pairwise keys are discarded after group rekeying.
+
+* By default, sender sequence numbers and replay windows are not reset upon group rekeying.
+
+* Revised methods for synchronization with clients' sender sequence number.
+
+* Clarifications and editorial improvements.
+
 ## Version -07 to -08 ## {#sec-07-08}
 
 * Clarified relation between pairwise mode and group communication (Section 1).
