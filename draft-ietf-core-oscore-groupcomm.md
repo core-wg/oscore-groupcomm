@@ -318,7 +318,11 @@ As long as any two group members preserve the same asymmetric keys, the Diffie-H
 
 When using any of its pairwise keys, a sender endpoint MUST use the current fresh value of its own Sender Sequence Number, from its own Sender Context (see {{ssec-sender-recipient-context}}). That is, the same Sender Sequence Number space is used for all outgoing messages sent to the group and protected with Group OSCORE, thus limiting both storage and complexity.
 
+On the other hand, when combining one-to-many and one-to-one communication in the group, this may result in the Partial IV values moving forward more often. This can happen when a client engages in frequent, long sequences of one-to-one exchanges with servers in the group, by sending requests over unicast, which is NOT RECOMMENDED to protect using the signature mode (see {{ssec-unicast-requests}}).
+
+<!-- OLD TEXT
 On the other hand, when combining one-to-many and one-to-one communication in the group, this may result in the Partial IV values moving forward more often. Fundamentally, this is due to the fact that not all the recipients receive all messages from a given sender. For instance, requests sent over multicast (in signature mode) are addressed to the whole group, while requests sent over unicast (in signature mode or pairwise mode) are not.
+-->
 
 As a consequence, replay checks may be invoked more often on the recipient side, where larger replay windows should be considered.
 
