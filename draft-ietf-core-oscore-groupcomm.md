@@ -155,7 +155,7 @@ As with OSCORE, it is possible to combine Group OSCORE with communication securi
 
 Group OSCORE defines two modes of operation:
 
-* In the signature mode, Group OSCORE requests and responses are digitally signed. The signature mode supports all COSE algorithms as well as signature verification by intermediaries. This mode is defined in {{mess-processing}} and MUST be supported.
+* In the group mode, Group OSCORE requests and responses are digitally signed. The group mode supports all COSE algorithms as well as signature verification by intermediaries. This mode is defined in {{mess-processing}} and MUST be supported.
 
 * In the pairwise mode, two group members exchange Group OSCORE requests and responses over unicast, protected with symmetric keys. These symmetric keys are derived from Diffie-Hellman shared secrets, calculated with the asymmetric keys of the two group members. This allows for shorter integrity tags and therefore lower message overhead. This mode is defined in {{sec-pairwise-protection}} and MAY be supported. However, it MUST be supported by endpoints that support the Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}.
 
@@ -180,7 +180,7 @@ This document refers also to the following terminology.
 * Group Manager: entity responsible for a group. Each endpoint in a group communicates securely with the respective Group Manager, which is neither required to be an actual group member nor to take part in the group communication. The full list of responsibilities of the Group Manager is provided in {{sec-group-manager}}.
 
 * Silent server: member of a group that never responds to requests. Given that, for CoAP group communications, messages are normally
-sent without requesting a confirmation, the idea of a server silently acting on a message is not unreasonable. Note that an endpoint can implement both a silent server and a client, the two roles are independent. An endpoint implementing only a silent server processes only incoming requests, and, in case it supports only the signature mode, it maintains less keying material and especially does not have a Sender Context for the group.
+sent without requesting a confirmation, the idea of a server silently acting on a message is not unreasonable. Note that an endpoint can implement both a silent server and a client, the two roles are independent. An endpoint implementing only a silent server processes only incoming requests, and, in case it supports only the group mode, it maintains less keying material and especially does not have a Sender Context for the group.
 
 * Group Identifier (Gid): identifier assigned to the group. Group Identifiers must be unique within the set of groups of a given Group Manager.
 
@@ -258,7 +258,7 @@ In order to establish a new Security Context in a group, a new Group Identifier 
 
 Then, each group member re-derives the keying material stored in its own Sender Context and Recipient Contexts as described in {{sec-context}}, using the updated Gid and Master Secret parameter. The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise. Unless otherwise specified by the application, each group member does not reset its own Sender Sequence Number in its Sender Context, and does not reset its own replay windows in its Recipient Contexts. From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
 
-After a new Gid has been distributed, a same Recipient ID ('kid') should not be considered as a persistent and reliable indicator of the same group member. Such an indication can be actually achieved only by using that members's public key. This occurs when verifying countersignatures of received messages (in signature mode), or when verifying messages integrity-protected with pairwise keying material derived from asymmetric keys (in pairwise mode). As a consequence, group members may end up retaining stale Recipient Contexts, that are no longer useful to verify incoming secure messages.
+After a new Gid has been distributed, a same Recipient ID ('kid') should not be considered as a persistent and reliable indicator of the same group member. Such an indication can be actually achieved only by using that members's public key. This occurs when verifying countersignatures of received messages (in group mode), or when verifying messages integrity-protected with pairwise keying material derived from asymmetric keys (in pairwise mode). As a consequence, group members may end up retaining stale Recipient Contexts, that are no longer useful to verify incoming secure messages.
 
 In order to alleviate this issue, the Group Manager SHOULD NOT recycle 'kid' values within a same group, especially in the short term. Furthermore, applications may define policies to: i) delete (long-)unused Recipient Contexts and reduce the impact on storage space; as well as ii) check with the Group Manager that an owned public key is currently the one associated to a 'kid' value, after a number of consecutive failed verifications.
 
@@ -316,10 +316,10 @@ As long as any two group members preserve the same asymmetric keys, the Diffie-H
 
 When using any of its pairwise keys, a sender endpoint MUST use the current fresh value of its own Sender Sequence Number, from its own Sender Context (see {{ssec-sender-recipient-context}}). That is, the same Sender Sequence Number space is used for all outgoing messages sent to the group and protected with Group OSCORE, thus limiting both storage and complexity.
 
-On the other hand, when combining one-to-many and one-to-one communication in the group, this may result in the Partial IV values moving forward more often. This can happen when a client engages in frequent, long sequences of one-to-one exchanges with servers in the group, by sending requests over unicast, which is NOT RECOMMENDED to protect using the signature mode (see {{ssec-unicast-requests}}).
+On the other hand, when combining one-to-many and one-to-one communication in the group, this may result in the Partial IV values moving forward more often. This can happen when a client engages in frequent, long sequences of one-to-one exchanges with servers in the group, by sending requests over unicast, which is NOT RECOMMENDED to protect using the group mode (see {{ssec-unicast-requests}}).
 
 <!-- OLD TEXT
-On the other hand, when combining one-to-many and one-to-one communication in the group, this may result in the Partial IV values moving forward more often. Fundamentally, this is due to the fact that not all the recipients receive all messages from a given sender. For instance, requests sent over multicast (in signature mode) are addressed to the whole group, while requests sent over unicast (in signature mode or pairwise mode) are not.
+On the other hand, when combining one-to-many and one-to-one communication in the group, this may result in the Partial IV values moving forward more often. Fundamentally, this is due to the fact that not all the recipients receive all messages from a given sender. For instance, requests sent over multicast (in group mode) are addressed to the whole group, while requests sent over unicast (in group mode or pairwise mode) are not.
 -->
 
 As a consequence, replay checks may be invoked more often on the recipient side, where larger replay windows should be considered.
@@ -338,13 +338,9 @@ More generally, A has one of such Paiwise Sender Contexts within its own Sender 
 
 Furthermore, A can additionally store in its own Recipient Context associated to B the Pairwise Key to use for incoming traffic from B. That is, this Pairwise Key is derived as defined in {{sec-derivation-pairwise}}, with A acting as recipient and B acting as sender.
 
-
-
 # The COSE Object # {#sec-cose-object}
 
-Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{RFC8152}} to wrap and protect data in the original message. OSCORE uses the untagged COSE_Encrypt0 structure with an Authenticated Encryption with Associated Data (AEAD) algorithm. For the signature mode of Group OSCORE the following modifications apply.
-
-
+Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{RFC8152}} to wrap and protect data in the original message. OSCORE uses the untagged COSE_Encrypt0 structure with an Authenticated Encryption with Associated Data (AEAD) algorithm. For the group mode of Group OSCORE, the following modifications apply.
 
 ## Counter Signature # {#sec-cose-object-unprotected-field}
 
@@ -421,21 +417,21 @@ Note for implementation: this requires the value of the OSCORE option to be full
 
 The OSCORE header compression defined in Section 6 of {{RFC8613}} is used, with the following differences.
 
-* The payload of the OSCORE message SHALL encode the ciphertext of the COSE object. In the signature mode, the ciphertext above is concatenated with the value of the CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
+* The payload of the OSCORE message SHALL encode the ciphertext of the COSE object. In the group mode, the ciphertext above is concatenated with the value of the CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
 
-* This specification defines the usage of the sixth least significant bit, namely the Signing Flag bit, in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is registered in {{iana-cons-flag-bits}} of this specification.
+* This specification defines the usage of the sixth least significant bit, namely the Group Protection Flag bit, in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is registered in {{iana-cons-flag-bits}} of this specification.
 
-* The Signing Flag bit MUST be set to 1 if the OSCORE message is protected using the signature mode, as per {{ssec-protect-request}} and {{ssec-protect-response}}. Instead, the Signing Flag bit MUST be set to 0 if the OSCORE message is protected using the pairwise mode, as per {{sec-pairwise-protection-req}} and {{sec-pairwise-protection-resp}}.
+* The Group Protection Flag bit MUST be set to 1 if the OSCORE message is protected using the group mode, as per {{ssec-protect-request}} and {{ssec-protect-response}}. Instead, the Group Protection Flag bit MUST be set to 0 if the OSCORE message is protected using the pairwise mode, as per {{sec-pairwise-protection-req}} and {{sec-pairwise-protection-resp}}.
 
-   If any of the following conditions holds, a recipient MUST discard an incoming OSCORE message with the Signing Flag bit set to 0:
+   If any of the following conditions holds, a recipient MUST discard an incoming OSCORE message with the Group Protection Flag bit set to 0:
    
-   - The Signing Flag bit is set to 1, and the recipient can not retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group.
+   - The Group Protection Flag bit is set to 1, and the recipient can not retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group.
    
-   - The Signing Flag bit is set to 0, and the recipient can retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group, but the recipient does not support the pairwise mode.
+   - The Group Protection Flag bit is set to 0, and the recipient can retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group, but the recipient does not support the pairwise mode.
     
 ## Examples of Compressed COSE Objects
 
-This section covers a list of OSCORE Header Compression examples for group requests and responses, with Group OSCORE used in signature mode.
+This section covers a list of OSCORE Header Compression examples for group requests and responses, with Group OSCORE used in group mode.
 
 The examples assume that the COSE_Encrypt0 object is set (which means the CoAP message and cryptographic material is known). Note that the examples do not include the full CoAP unprotected message or the full Security Context, but only the input necessary to the compression mechanism, i.e. the COSE_Encrypt0 object. The output is the compressed COSE object as defined in {{compression}} and divided into two parts, since the object is transported in two CoAP fields: OSCORE option and payload.
 
@@ -501,11 +497,11 @@ The exact way to address this issue is application specific, and depends on the 
 
 {{synch-ex}} describes three possible approaches that can be considered for synchronization of sequence numbers.
 
-# Message Processing in Signature Mode # {#mess-processing}
+# Message Processing in Group Mode # {#mess-processing}
 
-When using the signature mode, messages are protected and processed as specified in {{RFC8613}}, with the modifications described in the following sections.
+When using the group mode, messages are protected and processed as specified in {{RFC8613}}, with the modifications described in the following sections.
 
-The signature mode MUST be supported, and fulfills the following security objectives, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication and message integrity.
+The group mode MUST be supported, and fulfills the following security objectives, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication and message integrity.
 
 As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-Confirmable, and thus cannot be retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a pre-defined, sufficient amount of time, in order to correctly perform possible retransmissions at the application layer. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments. Besides, according to Section 5.2.3 of {{RFC7252}}, responses to Non-Confirmable group requests SHOULD be also Non-Confirmable. However, endpoints MUST be prepared to receive Confirmable responses in reply to a Non-Confirmable group request.
 
@@ -533,7 +529,7 @@ Upon receiving a secure group request, a server proceeds as described in Section
 
 * In step 2, the decoding of the compressed COSE object follows {{compression}} of this specification. In particular:
 
-   - If the Signing Flag bit is set to 0, and the server discards the request due to not retrieving a Security Context associated to the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
+   - If the Group Protection Flag bit is set to 0, and the server discards the request due to not retrieving a Security Context associated to the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
 
    - If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the server MAY create a new Recipient Context and initializes it according to Section 3 of {{RFC8613}}, also retrieving the client's public key. Such a configuration is application specific. If the application does not specify dynamic derivation of new Recipient Contexts, then the server SHALL stop processing the request.
 
@@ -637,7 +633,7 @@ Note that no changes are made to the AEAD nonce and AAD.
 
 ## Verifying the Request {#sec-pairwise-verify-req}
 
-Upon receiving a request with the Signing Flag bit set to 0, the server MUST process it as defined in {{ssec-verify-request}}, with the following differences.
+Upon receiving a request with the Group Protection Flag bit set to 0, the server MUST process it as defined in {{ssec-verify-request}}, with the following differences.
 
 * No countersignature to verify is included.
 
@@ -655,7 +651,7 @@ Note that no changes are made to the AEAD nonce and AAD.
 
 ## Verifying the Response {#sec-pairwise-verify-resp}
 
-Upon receiving a response with the Signing Flag bit set to 0, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
+Upon receiving a response with the Group Protection Flag bit set to 0, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
 
 * No countersignature to verify is included.
 
@@ -705,7 +701,7 @@ The rest of this section first discusses security aspects to be taken into accou
 
 ## Group-level Security {#ssec-group-level-security}
 
-The signature mode described in {{mess-processing}} relies on commonly shared group keying material to protect communication within a group. This has the following implications.
+The group mode described in {{mess-processing}} relies on commonly shared group keying material to protect communication within a group. This has the following implications.
 
 * Messages are encrypted at a group level (group-level data confidentiality), i.e. they can be decrypted by any member of the group, but not by an external adversary or other external entities.
 
@@ -801,7 +797,7 @@ Note that, by changing the Partial IV as discussed above, any member of G1 would
 
 ## Group OSCORE for Unicast Requests {#ssec-unicast-requests}
 
-With reference to the processing defined in {{ssec-protect-request}} for the signature mode and in {{sec-optimized-request}} for the optimized request, it is NOT RECOMMENDED for a client to use Group OSCORE for securing a request sent to a single group member over unicast.
+With reference to the processing defined in {{ssec-protect-request}} for the group mode and in {{sec-optimized-request}} for the optimized request, it is NOT RECOMMENDED for a client to use Group OSCORE for securing a request sent to a single group member over unicast.
 
 If the client uses its own Sender Key to protect a unicast request to a group member, an on-path adversary can, right then or later on, redirect that request to one/many different group member(s) over unicast, or to the whole OSCORE group over multicast. By doing so, the adversary can induce the target group member(s) to perform actions intended to one group member only. Note that the adversary can be external, i.e. (s)he does not need to also be a member of the OSCORE group.
 
@@ -813,7 +809,7 @@ Additional considerations are discussed in {{ssec-synch-challenge-response}}, wi
 
 The impact of such an attack depends especially on the REST method of the request, i.e. the Inner CoAP Code of the OSCORE request message. In particular, safe methods such as GET and FETCH would trigger (several) unintended responses from the targeted server(s), while not resulting in destructive behavior. On the other hand, non safe methods such as PUT, POST and PATCH/iPATCH would result in the target server(s) taking active actions on their resources and possible cyber-physical environment, with the risk of destructive consequences and possible implications for safety.
 
-A client may instead use the pairwise mode defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. A client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast, instead of using the signature mode.
+A client may instead use the pairwise mode defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. A client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast, instead of using the group mode.
 
 ## End-to-end Protection {#ssec-e2e-protection}
 
@@ -1062,13 +1058,13 @@ Initial entries in the registry are as follows.
 IANA is asked to add the following value entry to the "OSCORE Flag Bits" subregistry defined in Section 13.7 of {{RFC8613}} as part of the "CoRE Parameters" registry.
 
 ~~~~~~~~~~~
-+--------------+---------+------------------------------+-----------+
-| Bit Position |  Name   |         Description          | Reference |
-+--------------+---------+------------------------------+-----------+
-|       2      | Signing | Set to 1 if the message is   | [This     |
-|              | Flag    | protected with the signature | Document] |
-|              |         | mode of Group OSCORE         |           |
-+--------------+---------+------------------------------+-----------+
++--------------+------------+-------------------------------+-----------+
+| Bit Position |    Name    |         Description           | Reference |
++--------------+------------+-------------------------------+-----------+
+|       2      | Group      | Set to 1 if the message is    | [This     |
+|              | Protection | protected with the group mode | Document] |
+|              | Flag       | mode of Group OSCORE          |           |
++--------------+------------+-------------------------------+-----------+
 ~~~~~~~~~~~
 
 ## Expert Review Instructions {#review}
@@ -1247,7 +1243,7 @@ The challenge-response approach described in this appendix provides an assurance
 
 Note that endpoints configured as silent servers are not able to perform the challenge-response described above, as they do not store a Sender Context to secure the 4.01 (Unauthorized) response to the client. Therefore, silent servers should adopt alternative approaches to achieve and maintain synchronization with sender sequence numbers of clients.
 
-Since requests including the Echo Option are sent over unicast, a server can be a victim of the attack discussed in {{ssec-unicast-requests}}, when such requests are protected with the signature mode of Group OSCORE, as described in {{ssec-protect-request}}.
+Since requests including the Echo Option are sent over unicast, a server can be a victim of the attack discussed in {{ssec-unicast-requests}}, when such requests are protected with the group mode of Group OSCORE, as described in {{ssec-protect-request}}.
 
 Instead, protecting requests with the Echo Option by using the pairwise mode of Group OSCORE as described in {{sec-pairwise-protection-req}} prevents the attack in {{ssec-unicast-requests}}. In fact, only the exact server involved in the Echo exchange is able to derive the correct pairwise key used by the client to protect the request including the Echo Option.
 
@@ -1261,7 +1257,7 @@ In this specification, it is NOT RECOMMENDED that endpoints do not verify the co
 
 # Optimized Request # {#sec-optimized-request}
 
-An optimized request is processed as a request in signature mode ({{ssec-protect-request}}) and uses the OSCORE header compression defined in {{compression}} for the signature mode, with the following difference: the payload of the OSCORE message SHALL encode the ciphertext without the tag, concatenated with the value of the CounterSignature0 of the COSE object computed as described in {{sec-cose-object-unprotected-field}}.
+An optimized request is processed as a request in group mode ({{ssec-protect-request}}) and uses the OSCORE header compression defined in {{compression}} for the group mode, with the following difference: the payload of the OSCORE message SHALL encode the ciphertext without the tag, concatenated with the value of the CounterSignature0 of the COSE object computed as described in {{sec-cose-object-unprotected-field}}.
 
 The optimized request is compatible with all AEAD algorithms defined in {{RFC8152}}, but would not be compatible with AEAD algorithms that do not have a well-defined tag.
 
@@ -1273,7 +1269,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Pairwise keys are discarded after group rekeying.
 
-* Pairwise Flag bit renamed as Signing Flag bit, set to 1 in signature mode, set to 0 in pairwise mode.
+* Pairwise Flag bit renamed as Group Protection Flag bit, set to 1 in group mode, set to 0 in pairwise mode.
 
 * By default, sender sequence numbers and replay windows are not reset upon group rekeying.
 
