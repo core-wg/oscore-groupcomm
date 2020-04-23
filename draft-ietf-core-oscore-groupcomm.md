@@ -139,9 +139,9 @@ Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} descri
 
 This document defines Group OSCORE, providing the same end-to-end security properties as OSCORE in the case where CoAP requests have multiple recipients. In particular, the described approach defines how OSCORE should be used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and the corresponding CoAP responses.
 
-Group OSCORE provides source authentication of CoAP messages, by means of two possible methods. The first method relies on a digital signature produced with the private key of the sender and embedded in the protected CoAP message. The second method relies on a symmetric key, which is derived from a pairwise shared secred computed from the asymmetric keys of the message sender and recipient.
+Group OSCORE provides source authentication of CoAP messages, by means of two possible methods. The first method relies on a digital signature produced with the private key of the sender and embedded in the protected CoAP message. The second method relies on a symmetric key, which is derived from a pairwise shared secret computed from the asymmetric keys of the message sender and recipient.
 
-The second method is intended for one-to-one messages sent in the group. These include all responses, as individually sent by servers, as well as requests addressed to an individual server. For instance, such requests are sent as part of an exchange using the CoAP Echo option {{I-D.ietf-core-echo-request-tag}}, or as part of a block-wise transfer {{RFC7959}} in the group, after the first block-wise request possibly targeting all servers in the group and including the CoAP Block2 option (see Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}}).
+The second method is intended for one-to-one messages sent in the group. These include all responses, as individually sent by servers, as well as requests addressed to an individual server. For instance, such requests are sent as part of an exchange using the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}}, or as part of a block-wise transfer {{RFC7959}} in the group, after the first block-wise request possibly targeting all servers in the group and including the CoAP Block2 option (see Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}}).
 
 <!--
 OLD TEXT
@@ -153,15 +153,11 @@ Just like OSCORE, Group OSCORE is independent of transport layer and works where
 
 As with OSCORE, it is possible to combine Group OSCORE with communication security on other layers. One example is the use of transport layer security, such as DTLS {{RFC6347}}, between one client and one proxy (and vice versa), or between one proxy and one server (and vice versa), in order to protect the routing information of packets from observers. Note that DTLS cannot be used to secure messages sent over IP multicast.
 
-Group OSCORE defines different modes of operation:
+Group OSCORE defines two modes of operation:
 
-* In the signature mode, Group OSCORE requests and responses are digitally signed. The signature mode supports all COSE algorithms as well as signature verification by intermediaries. 
+* In the signature mode, Group OSCORE requests and responses are digitally signed. The signature mode supports all COSE algorithms as well as signature verification by intermediaries. This mode is defined in {{mess-processing}} and MUST be supported.
 
-* The pairwise mode allows two group members to exchange unicast OSCORE requests and responses protected with symmetric keys. These symmetric keys are derived from Diffie-Hellman shared secrets, calculated with the asymmetric keys of the two group members. This allows for shorter integrity tags and therefore lower message overhead.
-
-* In the (hybrid) optimized mode, the CoAP requests are digitally signed as in the signature mode, and the CoAP responses are integrity protected with the symmetric key of the pairwise mode.
-
-The signature and optimized modes are detailed in the body of this document. The pairwise mode is detailed in {{sec-pairwise-protection}}. Unless otherwise stated, this specification refers to the signature mode.
+* In the pairwise mode, two group members exchange Group OSCORE requests and responses over unicast, protected with symmetric keys. These symmetric keys are derived from Diffie-Hellman shared secrets, calculated with the asymmetric keys of the two group members. This allows for shorter integrity tags and therefore lower message overhead. This mode is defined in {{sec-pairwise-protection}} and MAY be supported. However, it MUST be supported by endpoints that support the Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}. 
 
 ## Terminology ## {#terminology}
 
@@ -423,11 +419,11 @@ Note for implementation: this requires the value of the OSCORE option to be full
 
 The OSCORE header compression defined in Section 6 of {{RFC8613}} is used, with the following differences.
 
-* The payload of the OSCORE message SHALL encode the ciphertext of the COSE object. In the signature mode as well as in the optimized compressed requests of the optimized mode (see {{ssec-optimized-request}}), the ciphertext above is concatenated with the value of the CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
+* The payload of the OSCORE message SHALL encode the ciphertext of the COSE object. In the signature mode, the ciphertext above is concatenated with the value of the CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
 
 * This specification defines the usage of the sixth least significant bit, namely the Pairwise Flag bit, in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is registered in {{iana-cons-flag-bits}} of this specification.
 
-* The Pairwise Flag bit is set to 1 if the OSCORE message is protected using pairwise keying material, which is shared with a single group member as single intended recipient and derived as defined in {{sec-derivation-pairwise}}. This is used, for instance, to send responses with the optimized mode defined in {{sec-optimized-mode}}. In any other case, especially when the OSCORE message is protected as per {{ssec-protect-request}} and {{ssec-protect-response}}, this bit MUST be set to 0.
+* The Pairwise Flag bit is set to 1 if the OSCORE message is protected using pairwise keying material, which is shared with a single group member as single intended recipient and derived as defined in {{sec-derivation-pairwise}}. This is used, for instance, to send request and responses with the pairwise mode defined {{sec-pairwise-protection}}, or optimized requests as defined in {{sec-optimized-request}}. In any other case, especially when the OSCORE message is protected as per {{ssec-protect-request}} and {{ssec-protect-response}}, this bit MUST be set to 0.
 
    If any of the following conditions holds, a recipient MUST discard an incoming OSCORE message with the Pairwise Flag bit set to 1:
     
@@ -502,11 +498,11 @@ The exact way to address this issue is application specific, and depends on the 
 
 {{synch-ex}} describes three possible approaches that can be considered for synchronization of sequence numbers.
 
-# Message Processing # {#mess-processing}
+# Message Processing in Signature Mode # {#mess-processing}
 
-Each request message and response message is protected and processed as specified in {{RFC8613}}, with the modifications described in the following sections. In particular, the following sections refer to the signature mode of Group OSCORE, while the optimized mode and the pairwise mode are described in {{sec-optimized-mode}} and {{sec-pairwise-protection}}, respectively.
+When using the signature mode, messages are protected and processed as specified in {{RFC8613}}, with the modifications described in the following sections.
 
-The following security objectives are fulfilled, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication and message integrity.
+The signature mode MUST be supported, and fulfills the following security objectives, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication and message integrity.
 
 As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-Confirmable, and thus cannot be retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a pre-defined, sufficient amount of time, in order to correctly perform possible retransmissions at the application layer. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments. Besides, according to Section 5.2.3 of {{RFC7252}}, responses to Non-Confirmable group requests SHOULD be also Non-Confirmable. However, endpoints MUST be prepared to receive Confirmable responses in reply to a Non-Confirmable group request.
 
@@ -604,6 +600,68 @@ If Observe {{RFC7641}} is supported, for each ongoing observation, the client MU
 
 This ensures that the client can correctly verify notifications, even in case it is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{ssec-wrap-around-partial-iv}}).
 
+# Message Processing in Pairwise Mode # {#sec-pairwise-protection}
+
+For use cases that do not require an intermediary performing signature verification and that use a compatible signature algorithm, the pairwise mode defined in this section can be used for unicast communication.
+
+This mode provides significant smaller message sizes, by relying on shorter integrity tags instead of digital signatures. Thus, it results in a lower message overhead, while still providing source authentication of messages.
+
+Furthermore, this mode increases the security by making messages not only source-authenticated, but also confidential and accessible only to the sender and the single intended recipient.
+
+To this end, this mode uses the derivation process defined in {{sec-derivation-pairwise}}, and allows two group members to protect requests and responses exchanged with each other using pairwise keying material.
+
+Senders MUST NOT use the pairwise mode to protect a message addressed to multiple recipients or to the whole group. This prevents a client that wants to address one specific server from protecting a request with the pairwise key associated to that server, and then send the request over multicast.
+
+The pairwise mode MAY be supported. However, it MUST be supported by endpoints that support the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}.
+
+## Pre-Requirements
+
+In order to protect an outgoing message in pairwise mode, a sender needs to know the public key and the Recipient ID for the message recipient, as stored in its own Recipient Context associated to that recipient.
+
+Furthermore, the sender needs to know the individual address of the message recipient. This information may not be known at any given point in time. For instance, right after having joined the group, a client may know the public key and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.
+
+To make this information available, servers MAY provide a resource to which a client can send a request for a server identified by its 'kid' value, or a set thereof. The specified set may be empty, hence identifying all the servers in the group. Further details of such an interface are out of scope for this document.
+
+## Protecting the Request {#sec-pairwise-protection-req}
+
+When using the pairwise mode, a request is protected as defined in {{ssec-protect-request}}, with the following differences.
+
+* The client MUST set to 1 the sixth least significant bit of the OSCORE flag bits in the OSCORE option, i.e. the Pairwise Flag.
+
+* The COSE_Encrypt0 object included in the request is encrypted using a symmetric pairwise key K, that the client derives as defined in {{sec-derivation-pairwise}}. In particular, the Sender/Recipient Key is the Sender Key of the client from its own Sender Context, i.e. the Recipient Key that the server stores in its own Recipient Context corresponding to the client.
+
+* The Counter Signature is not computed. That is, unlike defined in {{compression}}, the payload of the OSCORE message terminates with the encoded ciphertext of the COSE object.
+
+Note that no changes are made to the AEAD nonce and AAD.
+
+## Verifying the Request {#sec-pairwise-verify-req}
+
+Upon receiving a request with the Pairwise Flag set to 1, the server MUST process it as defined in {{ssec-verify-request}}, with the following differences.
+
+* No countersignature to verify is included.
+
+* The COSE_Encrypt0 object included in the request is decrypted and verified using the same symmetric pairwise key K, that the server derives as described above for the client side and as defined in {{sec-derivation-pairwise}}.
+
+## Protecting the Response {#sec-pairwise-protection-resp}
+
+When using the pairwise mode, a response is protected as defined in {{ssec-protect-response}}, with the following differences.
+
+* The server MUST set to 1 the sixth least significant bit of the OSCORE flag bits in the OSCORE option, i.e. the Pairwise Flag.
+
+* The COSE_Encrypt0 object included in the optimized response is encrypted using a symmetric pairwise key K, that the server derives as defined in {{sec-derivation-pairwise}}. In particular, the Sender/Recipient Key is the Sender Key of the server from its own Sender Context, i.e. the Recipient Key that the client stores in its own Recipient Context corresponding to the server.
+
+* The Counter Signature is not computed. That is, unlike defined in {{compression}}, the payload of the OSCORE message terminates with the encoded ciphertext of the COSE object.
+
+Note that no changes are made to the AEAD nonce and AAD.
+
+## Verifying the Response {#sec-pairwise-verify-resp}
+
+Upon receiving a response with the Pairwise Flag set to 1, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
+
+* No countersignature to verify is included.
+
+* The COSE_Encrypt0 object included in the optimized response is decrypted and verified using the same symmetric pairwise key K, that the client derives as described above for the server side and as defined in {{sec-derivation-pairwise}}.
+
 # Responsibilities of the Group Manager # {#sec-group-manager}
 
 The Group Manager is responsible for performing the following tasks:
@@ -629,45 +687,6 @@ The Group Manager is responsible for performing the following tasks:
 10. Acting as key repository, in order to handle the public keys of the members of its OSCORE groups, and providing such public keys to other members of the same group upon request. The actual storage of public keys may be entrusted to a separate secure storage device.
 
 11. Validating that the format and parameters of public keys of group members are consistent with the countersignature algorithm and related parameters used in the respective OSCORE group.
-
-# Optimized Mode # {#sec-optimized-mode}
-
-For use cases that do not require an intermediary performing signature verification and that use a compatible signature algorithm, the optimized mode defined in this section provides significant smaller message sizes and increases the security by making responses confidential to other group members than the intended recipient.
-
-<!--
-The amount of overhead reduction depends on the number of nodes in the system. For a request and response between two nodes, the overhead (number of bytes) is reduced of approximately 40 %, and with ten or more nodes the reduction in overhead is of approximately 80 %.-->
-
-## Optimized Request
-
-No changes.
-
-### Optimized Compressed Request {#ssec-optimized-request}
-
-The OSCORE header compression defined in {{compression}} is used, with the following difference: the payload of the OSCORE message SHALL encode the ciphertext without the tag, concatenated with the value of the CounterSignature0 of the COSE object computed as described in {{sec-cose-object-unprotected-field}}.
-
-The optimized compressed request is compatible with all AEAD algorithms defined in {{RFC8152}}, but would not be compatible with AEAD algorithms that do not have a well-defined tag.
-
-## Optimized Response ## {#ssec-optimized-response}
-
-An optimized response is protected as defined in {{ssec-protect-response}}, with the following differences.
-
-* The server MUST set to 1 the sixth least significant bit of the OSCORE flag bits in the OSCORE option, i.e. the Pairwise Flag.
-
-* The COSE_Encrypt0 object included in the optimized response is encrypted using a symmetric pairwise key K, that the server derives as defined in {{sec-derivation-pairwise}}. In particular, the Sender/Recipient Key is the Sender Key of the server from its own Sender Context, i.e. the Recipient Key that the client stores in its own Recipient Context corresponding to the server.
-
-* The Counter Signature is not computed. That is, unlike defined in {{compression}}, the payload of the OSCORE message terminates with the encoded ciphertext of the COSE object.
-
-Note that no changes are made to the AEAD nonce and AAD.
-
-Upon receiving a response with the Pairwise Flag set to 1, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
-
-* No countersignature to verify is included.
-
-* The COSE_Encrypt0 object included in the optimized response is decrypted and verified using the same symmetric pairwise key K, that the client derives as described above for the server side and as defined in {{sec-derivation-pairwise}}.
-
-### Optimized Compressed Response
-
-No changes.
 
 # Security Considerations  # {#sec-security-considerations}
 
@@ -783,7 +802,7 @@ Note that, by changing the Partial IV as discussed above, any member of G1 would
 
 ## Group OSCORE for Unicast Requests {#ssec-unicast-requests}
 
-With reference to the processing defined in {{ssec-protect-request}} for the signature mode and in {{ssec-optimized-request}} for the optimized mode, it is NOT RECOMMENDED for a client to use Group OSCORE for securing a request sent to a single group member over unicast.
+With reference to the processing defined in {{ssec-protect-request}} for the signature mode and in {{sec-optimized-request}} for the optimized request, it is NOT RECOMMENDED for a client to use Group OSCORE for securing a request sent to a single group member over unicast.
 
 If the client uses its own Sender Key to protect a unicast request to a group member, an on-path adversary can, right then or later on, redirect that request to one/many different group member(s) over unicast, or to the whole OSCORE group over multicast. By doing so, the adversary can induce the target group member(s) to perform actions intended to one group member only. Note that the adversary can be external, i.e. (s)he does not need to also be a member of the OSCORE group.
 
@@ -791,7 +810,7 @@ This is due to the fact that the client is not able to indicate the single inten
 
 With particular reference to block-wise transfers {{RFC7959}}, Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}} points out that, while an initial request including the CoAP Block2 option can be sent over multicast, any other request in a transfer has to occur over unicast, individually addressing the servers in the group.
 
-Additional considerations are discussed in {{ssec-synch-challenge-response}}, with respect to requests including an Echo Option {{I-D.ietf-core-echo-request-tag}} that has to be sent over unicast, as a challenge-response method for servers to achieve synchronization of client Sender Sequence Numbers.
+Additional considerations are discussed in {{ssec-synch-challenge-response}}, with respect to requests including an CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} that has to be sent over unicast, as a challenge-response method for servers to achieve synchronization of client Sender Sequence Numbers.
 
 The impact of such an attack depends especially on the REST method of the request, i.e. the Inner CoAP Code of the OSCORE request message. In particular, safe methods such as GET and FETCH would trigger (several) unintended responses from the targeted server(s), while not resulting in destructive behavior. On the other hand, non safe methods such as PUT, POST and PATCH/iPATCH would result in the target server(s) taking active actions on their resources and possible cyber-physical environment, with the risk of destructive consequences and possible implications for safety.
 
@@ -835,7 +854,7 @@ The processing of response messages described in {{ssec-verify-response}} also e
 
 ## Client Aliveness {#ssec-client-aliveness}
 
-As discussed in Section 12.5 of {{RFC8613}}, a server may use the Echo option {{I-D.ietf-core-echo-request-tag}} to verify the aliveness of the client that originated a received request. This would also allow the server to (re-)synchronize with the client's sequence number, as well as to ensure that the request is fresh and has not been replayed or (purposely) delayed, if it is the first one received from that client after having joined the group or rebooted (see {{ssec-synch-challenge-response}}).
+As discussed in Section 12.5 of {{RFC8613}}, a server may use the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} to verify the aliveness of the client that originated a received request. This would also allow the server to (re-)synchronize with the client's sequence number, as well as to ensure that the request is fresh and has not been replayed or (purposely) delayed, if it is the first one received from that client after having joined the group or rebooted (see {{ssec-synch-challenge-response}}).
 
 ## Cryptographic Considerations {#ssec-crypto-considerations}
 
@@ -1241,45 +1260,13 @@ There are some application scenarios using group communication that have particu
 
 In this specification, it is NOT RECOMMENDED that endpoints do not verify the counter signature of received messages. However, it is recognized that there may be situations where it is not always required. The consequence of not doing the signature validation is that security in the group is based only on the group-authenticity of the shared keying material used for encryption. That is, endpoints in the group have evidence that a received message has been originated by a group member, although not specifically identifiable in a secure way. This can violate a number of security requirements, as the compromise of any element in the group means that the attacker has the ability to control the entire group. Even worse, the group may not be limited in scope, and hence the same keying material might be used not only for light bulbs but for locks as well. Therefore, extreme care must be taken in situations where the security requirements are relaxed, so that deployment of the system will always be done safely.
 
-# Pairwise Mode # {#sec-pairwise-protection}
+# Optimized Request # {#sec-optimized-request}
 
-For use cases that do not require an intermediary performing signature verification and that use a compatible signature algorithm, the pairwise mode defined in this section can be used for unicast communication.
+Two group members supporting the pairwise mode defined in {{sec-pairwise-protection}} may exchange one-to-one, optimized requests over unicast.
 
-This mode uses the derivation process defined in {{sec-derivation-pairwise}}, and allows two group members to protect requests and responses exchanged with each other using pairwise keying material.
+In particular, the OSCORE header compression defined in {{compression}} for the signature mode is used, with the following difference: the payload of the OSCORE message SHALL encode the ciphertext without the tag, concatenated with the value of the CounterSignature0 of the COSE object computed as described in {{sec-cose-object-unprotected-field}}.
 
-Senders MUST NOT use the pairwise mode to protect a message addressed to multiple recipients or to the whole group. This prevents a client that wants to address one specific server from protecting a request with the pairwise key associated to that server, and then send the request over multicast.
-
-The pairwise mode results in the same performance and security improvements displayed by optimized responses (see {{ssec-optimized-response}}).
-
-## Pre-Requirements
-
-In order to protect an outgoing message in pairwise mode, a sender needs to know the public key and the Recipient ID for the message recipient, as stored in its own Recipient Context associated to that recipient.
-
-Furthermore, the sender needs to know the individual address of the message recipient. This information may not be known at any given point in time. For instance, right after having joined the group, a client may know the public key and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.
-
-To make this information available, servers MAY provide a resource to which a client can send a request for a server identified by its 'kid' value, or a set thereof. The specified set may be empty, hence identifying all the servers in the group. Further details of such an interface are out of scope for this document.
-
-## Pairwise Protected Request {#sec-pairwise-protection-req}
-
-A request in pairwise mode is protected as defined in {{ssec-protect-request}}, with the following differences.
-
-* The client MUST set to 1 the sixth least significant bit of the OSCORE flag bits in the OSCORE option, i.e. the Pairwise Flag.
-
-* The COSE_Encrypt0 object included in the request is encrypted using a symmetric pairwise key K, that the client derives as defined in {{sec-derivation-pairwise}}. In particular, the Sender/Recipient Key is the Sender Key of the client from its own Sender Context, i.e. the Recipient Key that the server stores in its own Recipient Context corresponding to the client.
-
-* The Counter Signature is not computed. That is, unlike defined in {{compression}}, the payload of the OSCORE message terminates with the encoded ciphertext of the COSE object.
-
-Note that no changes are made to the AEAD nonce and AAD.
-
-Upon receiving a request with the Pairwise Flag set to 1, the server MUST process it as defined in {{ssec-verify-request}}, with the following differences.
-
-* No countersignature to verify is included.
-
-* The COSE_Encrypt0 object included in the request is decrypted and verified using the same symmetric pairwise key K, that the server derives as described above for the client side and as defined in {{sec-derivation-pairwise}}.
-
-## Pairwise Protected Response
-
-When using the pairwise mode, the processing of a response occurs as described in {{ssec-optimized-response}} for an optimized response.
+The optimized request is compatible with all AEAD algorithms defined in {{RFC8152}}, but would not be compatible with AEAD algorithms that do not have a well-defined tag.
 
 # Document Updates # {#sec-document-updates}
 
@@ -1290,6 +1277,10 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Pairwise keys are discarded after group rekeying.
 
 * By default, sender sequence numbers and replay windows are not reset upon group rekeying.
+
+* Pairwise mode moved to the document body.
+
+* Optimized requests are moved as an appendix.
 
 * Revised methods for synchronization with clients' sender sequence number.
 
