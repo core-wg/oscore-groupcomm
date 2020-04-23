@@ -179,8 +179,7 @@ This document refers also to the following terminology.
 
 * Group Manager: entity responsible for a group. Each endpoint in a group communicates securely with the respective Group Manager, which is neither required to be an actual group member nor to take part in the group communication. The full list of responsibilities of the Group Manager is provided in {{sec-group-manager}}.
 
-* Silent server: member of a group that never responds to requests. Given that, for CoAP group communications, messages are normally
-sent without requesting a confirmation, the idea of a server silently acting on a message is not unreasonable. Note that an endpoint can implement both a silent server and a client, the two roles are independent. An endpoint implementing only a silent server processes only incoming requests, and, in case it supports only the group mode, it maintains less keying material and especially does not have a Sender Context for the group.
+* Silent server: member of a group that never sends protected responses in reply to requests. A silent server may however send unprotected responses, as error responses reporting an OSCORE error. Given that, for CoAP group communications, messages are normally sent without requesting a confirmation, the idea of a server silently acting on a message is not unreasonable. Note that an endpoint can implement both a silent server and a client, i.e. the two roles are independent. An endpoint implementing only a silent server performs Group OSCORE processing only on incoming requests, and does not support the pairwise mode. As a consequence, it maintains less keying material and especially does not have a Sender Context for the group.
 
 * Group Identifier (Gid): identifier assigned to the group. Group Identifiers must be unique within the set of groups of a given Group Manager.
 
@@ -611,7 +610,7 @@ To this end, this mode uses the derivation process defined in {{sec-derivation-p
 
 Senders MUST NOT use the pairwise mode to protect a message addressed to multiple recipients or to the whole group. This prevents a client that wants to address one specific server from protecting a request with the pairwise key associated to that server, and then send the request over multicast.
 
-The pairwise mode MAY be supported. However, it MUST be supported by endpoints that support the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}.
+The pairwise mode MAY be supported. However, it MUST be supported by endpoints that support the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}. An endpoint implementing only a silent server does not support the pairwise mode.
 
 ## Pre-Requirements
 
@@ -1269,9 +1268,13 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Pairwise keys are discarded after group rekeying.
 
+* Signature mode renamed to group mode.
+
 * Pairwise Flag bit renamed as Group Protection Flag bit, set to 1 in group mode, set to 0 in pairwise mode.
 
 * By default, sender sequence numbers and replay windows are not reset upon group rekeying.
+
+* An endpoint implementing only a silent server does not support the pairwise mode.
 
 * Pairwise mode moved to the document body.
 
