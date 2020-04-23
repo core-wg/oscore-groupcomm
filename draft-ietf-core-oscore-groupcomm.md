@@ -157,7 +157,9 @@ Group OSCORE defines two modes of operation:
 
 * In the signature mode, Group OSCORE requests and responses are digitally signed. The signature mode supports all COSE algorithms as well as signature verification by intermediaries. This mode is defined in {{mess-processing}} and MUST be supported.
 
-* In the pairwise mode, two group members exchange Group OSCORE requests and responses over unicast, protected with symmetric keys. These symmetric keys are derived from Diffie-Hellman shared secrets, calculated with the asymmetric keys of the two group members. This allows for shorter integrity tags and therefore lower message overhead. This mode is defined in {{sec-pairwise-protection}} and MAY be supported. However, it MUST be supported by endpoints that support the Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}. 
+* In the pairwise mode, two group members exchange Group OSCORE requests and responses over unicast, protected with symmetric keys. These symmetric keys are derived from Diffie-Hellman shared secrets, calculated with the asymmetric keys of the two group members. This allows for shorter integrity tags and therefore lower message overhead. This mode is defined in {{sec-pairwise-protection}} and MAY be supported. However, it MUST be supported by endpoints that support the Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}.
+
+It is up to the application to decide in which mode a message has to be protected, possibly on a per-message basis. Such decision can be based, for instance, on pre-configured policies or dynamic assessing of the target recipient and/or resource, among other things. In particular, different messages can be protected in different modes, even within the same request-response exchange.
 
 ## Terminology ## {#terminology}
 
