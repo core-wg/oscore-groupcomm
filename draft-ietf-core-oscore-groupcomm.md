@@ -286,7 +286,7 @@ In either case, same considerations from {{sec-group-key-management}} hold about
 
 # Pairwise Keys # {#sec-derivation-pairwise}
 
-Certain signature schemes, such as EdDSA and ECDSA, support a secure combined signature and encryption scheme. This section specifies the derivation of pairwise encryption keys for use in the pairwise and optimized modes of Group OSCORE.
+Certain signature schemes, such as EdDSA and ECDSA, support a secure combined signature and encryption scheme. This section specifies the derivation of pairwise encryption keys, for use in the pairwise mode of Group OSCORE defined in {{sec-pairwise-protection}}.
 
 ## Key Derivation ##
 
@@ -423,15 +423,15 @@ The OSCORE header compression defined in Section 6 of {{RFC8613}} is used, with 
 
 * The payload of the OSCORE message SHALL encode the ciphertext of the COSE object. In the signature mode, the ciphertext above is concatenated with the value of the CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
 
-* This specification defines the usage of the sixth least significant bit, namely the Pairwise Flag bit, in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is registered in {{iana-cons-flag-bits}} of this specification.
+* This specification defines the usage of the sixth least significant bit, namely the Signing Flag bit, in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is registered in {{iana-cons-flag-bits}} of this specification.
 
-* The Pairwise Flag bit is set to 1 if the OSCORE message is protected using pairwise keying material, which is shared with a single group member as single intended recipient and derived as defined in {{sec-derivation-pairwise}}. This is used, for instance, to send request and responses with the pairwise mode defined {{sec-pairwise-protection}}, or optimized requests as defined in {{sec-optimized-request}}. In any other case, especially when the OSCORE message is protected as per {{ssec-protect-request}} and {{ssec-protect-response}}, this bit MUST be set to 0.
+* The Signing Flag bit MUST be set to 1 if the OSCORE message is protected using the signature mode, as per {{ssec-protect-request}} and {{ssec-protect-response}}. Instead, the Signing Flag bit MUST be set to 0 if the OSCORE message is protected using the pairwise mode, as per {{sec-pairwise-protection-req}} and {{sec-pairwise-protection-resp}}.
 
-   If any of the following conditions holds, a recipient MUST discard an incoming OSCORE message with the Pairwise Flag bit set to 1:
-    
-    - The recipient does not support this feature, i.e. it is not capable or willing to process OSCORE messages protected using pairwise keying material.
-    
-    - The recipient can not retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group.
+   If any of the following conditions holds, a recipient MUST discard an incoming OSCORE message with the Signing Flag bit set to 0:
+   
+   - The Signing Flag bit is set to 1, and the recipient can not retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group.
+   
+   - The Signing Flag bit is set to 0, and the recipient can retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group, but the recipient does not support the pairwise mode.
     
 ## Examples of Compressed COSE Objects
 
@@ -441,7 +441,7 @@ The examples assume that the COSE_Encrypt0 object is set (which means the CoAP m
 
 The examples assume that the label for the new kid context defined in {{RFC8613}} has value 10. The examples also assume that the plaintext (see Section 5.3 of {{RFC8613}}) is 6 bytes long, and that the AEAD tag is 8 bytes long, hence resulting in a ciphertext which is 14 bytes long. Finally, COUNTERSIGN is the CounterSignature0 byte string as described in {{sec-cose-object}} and is 64 bytes long.
 
-1. Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25, Partial IV = 5 and kid context = 0x44616c
+* Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25, Partial IV = 5 and kid context = 0x44616c
 
 ~~~~~~~~~~~
 Before compression (96 bytes):
@@ -456,16 +456,17 @@ h'aea0155667924dff8a24e4cb35b9'
 ~~~~~~~~~~~
 After compression (85 bytes):
 
-Flag byte: 0b00011001 = 0x19
+Flag byte: 0b00111001 = 0x39
 
-Option Value: 19 05 03 44 61 6c 25 (7 bytes)
+Option Value: 39 05 03 44 61 6c 25 (7 bytes)
 
 Payload: ae a0 15 56 67 92 4d ff 8a 24 e4 cb 35 b9 COUNTERSIGN
 (14 bytes + size of COUNTERSIGN)
+
 ~~~~~~~~~~~
 
 
-2. Response with ciphertext = 0x60b035059d9ef5667c5a0710823b, kid = 0x52 and no Partial IV.
+* Response with ciphertext = 0x60b035059d9ef5667c5a0710823b, kid = 0x52 and no Partial IV.
 
 ~~~~~~~~~~~
 Before compression (88 bytes):
@@ -480,9 +481,9 @@ h'60b035059d9ef5667c5a0710823b'
 ~~~~~~~~~~~
 After compression (80 bytes):
 
-Flag byte: 0b00001000 = 0x08
+Flag byte: 0b00101000 = 0x28
 
-Option Value: 08 52 (2 bytes)
+Option Value: 28 52 (2 bytes)
 
 Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b COUNTERSIGN
 (14 bytes + size of COUNTERSIGN)
@@ -532,7 +533,7 @@ Upon receiving a secure group request, a server proceeds as described in Section
 
 * In step 2, the decoding of the compressed COSE object follows {{compression}} of this specification. In particular:
 
-   - If the Pairwise Flag bit is set to 1, and the server discards the request due to not supporting this feature or not retrieving a Security Context associated to the OSCORE group, the server  MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
+   - If the Signing Flag bit is set to 0, and the server discards the request due to not retrieving a Security Context associated to the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
 
    - If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the server MAY create a new Recipient Context and initializes it according to Section 3 of {{RFC8613}}, also retrieving the client's public key. Such a configuration is application specific. If the application does not specify dynamic derivation of new Recipient Contexts, then the server SHALL stop processing the request.
 
@@ -584,7 +585,7 @@ Furthermore, for each ongoing observation, the server MUST use the stored value 
 
 Upon receiving a secure response message, the client proceeds as described in Section 8.4 of {{RFC8613}}, with the following modifications.
 
-* In step 2, the decoding of the compressed COSE object is modified as described in {{sec-cose-object}} of this specification. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client MAY create a new Recipient Context and initializes it according to Section 3 of {{RFC8613}}, also retrieving the server's public key. If the application does not specify dynamic derivation of new Recipient Contexts, then the client SHALL stop processing the response.
+* In step 2, the decoding of the compressed COSE object is modified as described in {{compression}} of this specification. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client MAY create a new Recipient Context and initializes it according to Section 3 of {{RFC8613}}, also retrieving the server's public key. If the application does not specify dynamic derivation of new Recipient Contexts, then the client SHALL stop processing the response.
 
 * In step 3, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this specification.
 
@@ -628,8 +629,6 @@ To make this information available, servers MAY provide a resource to which a cl
 
 When using the pairwise mode, a request is protected as defined in {{ssec-protect-request}}, with the following differences.
 
-* The client MUST set to 1 the sixth least significant bit of the OSCORE flag bits in the OSCORE option, i.e. the Pairwise Flag.
-
 * The COSE_Encrypt0 object included in the request is encrypted using a symmetric pairwise key K, that the client derives as defined in {{sec-derivation-pairwise}}. In particular, the Sender/Recipient Key is the Sender Key of the client from its own Sender Context, i.e. the Recipient Key that the server stores in its own Recipient Context corresponding to the client.
 
 * The Counter Signature is not computed. That is, unlike defined in {{compression}}, the payload of the OSCORE message terminates with the encoded ciphertext of the COSE object.
@@ -638,7 +637,7 @@ Note that no changes are made to the AEAD nonce and AAD.
 
 ## Verifying the Request {#sec-pairwise-verify-req}
 
-Upon receiving a request with the Pairwise Flag set to 1, the server MUST process it as defined in {{ssec-verify-request}}, with the following differences.
+Upon receiving a request with the Signing Flag bit set to 0, the server MUST process it as defined in {{ssec-verify-request}}, with the following differences.
 
 * No countersignature to verify is included.
 
@@ -648,9 +647,7 @@ Upon receiving a request with the Pairwise Flag set to 1, the server MUST proces
 
 When using the pairwise mode, a response is protected as defined in {{ssec-protect-response}}, with the following differences.
 
-* The server MUST set to 1 the sixth least significant bit of the OSCORE flag bits in the OSCORE option, i.e. the Pairwise Flag.
-
-* The COSE_Encrypt0 object included in the optimized response is encrypted using a symmetric pairwise key K, that the server derives as defined in {{sec-derivation-pairwise}}. In particular, the Sender/Recipient Key is the Sender Key of the server from its own Sender Context, i.e. the Recipient Key that the client stores in its own Recipient Context corresponding to the server.
+* The COSE_Encrypt0 object is encrypted using a symmetric pairwise key K, that the server derives as defined in {{sec-derivation-pairwise}}. In particular, the Sender/Recipient Key is the Sender Key of the server from its own Sender Context, i.e. the Recipient Key that the client stores in its own Recipient Context corresponding to the server.
 
 * The Counter Signature is not computed. That is, unlike defined in {{compression}}, the payload of the OSCORE message terminates with the encoded ciphertext of the COSE object.
 
@@ -658,11 +655,11 @@ Note that no changes are made to the AEAD nonce and AAD.
 
 ## Verifying the Response {#sec-pairwise-verify-resp}
 
-Upon receiving a response with the Pairwise Flag set to 1, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
+Upon receiving a response with the Signing Flag bit set to 0, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
 
 * No countersignature to verify is included.
 
-* The COSE_Encrypt0 object included in the optimized response is decrypted and verified using the same symmetric pairwise key K, that the client derives as described above for the server side and as defined in {{sec-derivation-pairwise}}.
+* The COSE_Encrypt0 object included in the response is decrypted and verified using the same symmetric pairwise key K, that the client derives as described above for the server side and as defined in {{sec-derivation-pairwise}}.
 
 # Responsibilities of the Group Manager # {#sec-group-manager}
 
@@ -1065,13 +1062,13 @@ Initial entries in the registry are as follows.
 IANA is asked to add the following value entry to the "OSCORE Flag Bits" subregistry defined in Section 13.7 of {{RFC8613}} as part of the "CoRE Parameters" registry.
 
 ~~~~~~~~~~~
-+--------------+-------------+--------------------------+-----------+
-| Bit Position |     Name    |        Description       | Reference |
-+--------------+-------------+--------------------------+-----------+
-|       2      | Pairwise    | Set to 1 if the message  | [This     |
-|              | Protection  | is protected with        | Document] |
-|              | Flag        | pairwise keying material |           |
-+--------------+-------------+--------------------------+-----------+
++--------------+---------+------------------------------+-----------+
+| Bit Position |  Name   |         Description          | Reference |
++--------------+---------+------------------------------+-----------+
+|       2      | Signing | Set to 1 if the message is   | [This     |
+|              | Flag    | protected with the signature | Document] |
+|              |         | mode of Group OSCORE         |           |
++--------------+---------+------------------------------+-----------+
 ~~~~~~~~~~~
 
 ## Expert Review Instructions {#review}
@@ -1264,9 +1261,7 @@ In this specification, it is NOT RECOMMENDED that endpoints do not verify the co
 
 # Optimized Request # {#sec-optimized-request}
 
-Two group members supporting the pairwise mode defined in {{sec-pairwise-protection}} may exchange one-to-one, optimized requests over unicast.
-
-In particular, the OSCORE header compression defined in {{compression}} for the signature mode is used, with the following difference: the payload of the OSCORE message SHALL encode the ciphertext without the tag, concatenated with the value of the CounterSignature0 of the COSE object computed as described in {{sec-cose-object-unprotected-field}}.
+An optimized request is processed as a request in signature mode ({{ssec-protect-request}}) and uses the OSCORE header compression defined in {{compression}} for the signature mode, with the following difference: the payload of the OSCORE message SHALL encode the ciphertext without the tag, concatenated with the value of the CounterSignature0 of the COSE object computed as described in {{sec-cose-object-unprotected-field}}.
 
 The optimized request is compatible with all AEAD algorithms defined in {{RFC8152}}, but would not be compatible with AEAD algorithms that do not have a well-defined tag.
 
@@ -1277,6 +1272,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -08 to -09 ## {#sec-08-09}
 
 * Pairwise keys are discarded after group rekeying.
+
+* Pairwise Flag bit renamed as Signing Flag bit, set to 1 in signature mode, set to 0 in pairwise mode.
 
 * By default, sender sequence numbers and replay windows are not reset upon group rekeying.
 
