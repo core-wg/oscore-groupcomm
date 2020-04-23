@@ -340,11 +340,11 @@ Furthermore, A can additionally store in its own Recipient Context associated to
 
 # The COSE Object # {#sec-cose-object}
 
-Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{RFC8152}} to wrap and protect data in the original message. OSCORE uses the untagged COSE_Encrypt0 structure with an Authenticated Encryption with Associated Data (AEAD) algorithm. For the group mode of Group OSCORE, the following modifications apply.
+Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{RFC8152}} to wrap and protect data in the original message. OSCORE uses the untagged COSE_Encrypt0 structure with an Authenticated Encryption with Associated Data (AEAD) algorithm. Unless otherwise specified, the following modifications apply for both the group mode and the pairwise mode of Group OSCORE.
 
 ## Counter Signature # {#sec-cose-object-unprotected-field}
 
-The 'unprotected' field MUST additionally include the following parameter:
+For the group mode only, the 'unprotected' field MUST additionally include the following parameter:
 
 * CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the sender as described in Appendix A.2 of {{RFC8152}}, by using its own private key and according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context. In particular, the Sig_structure contains the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE_Encrypt0 object as payload.
 
@@ -356,7 +356,7 @@ The value of the 'kid context' parameter in the 'unprotected' field of requests 
 
 ## external_aad # {#sec-cose-object-ext-aad}
 
-The external_aad of the Additional Authenticated Data (AAD) is built differently. In particular, it has one structure used for the encryption process producing the ciphertext, and a second structure used for the signing process producing the counter signature.
+The external_aad of the Additional Authenticated Data (AAD) is built differently. In particular, it has one structure used for the encryption process producing the ciphertext (both in group mode and pairwise mode), and a second structure used for the signing process producing the counter signature (only in group mode).
 
 ### external_aad for Encryption ### {#sec-cose-object-ext-aad-enc}
 
@@ -387,7 +387,7 @@ aad_array = [
 
 ### external_aad for Signing ### {#sec-cose-object-ext-aad-sign}
 
-The second external_aad structure used for the signing process producing the counter signature as defined below includes also:
+For the group mode only, the second external_aad structure used for the signing process producing the counter signature as defined below includes also:
 
 * the counter signature algorithm and related parameters used to sign messages, encoded as in the external_aad structure defined in {{sec-cose-object-ext-aad-enc}};
 
