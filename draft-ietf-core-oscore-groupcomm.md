@@ -612,6 +612,8 @@ Senders MUST NOT use the pairwise mode to protect a message addressed to multipl
 
 The pairwise mode MAY be supported. However, it MUST be supported by endpoints that support the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}. An endpoint implementing only a silent server does not support the pairwise mode.
 
+The Group Manager MAY indicate that the group uses also the pairwise mode, as part of the group communication policies signalled to candidate group members upon their group joining.
+
 ## Pre-Requirements
 
 In order to protect an outgoing message in pairwise mode, a sender needs to know the public key and the Recipient ID for the message recipient, as stored in its own Recipient Context associated to that recipient.
@@ -670,7 +672,7 @@ The Group Manager is responsible for performing the following tasks:
 
 5. Generating and managing Sender IDs within its OSCORE groups, as well as assigning and providing them to new endpoints during the join process. This includes ensuring uniqueness of Sender IDs within each of its OSCORE groups.
 
-6. Defining a communication policy for each of its OSCORE groups, and signalling it to new endpoints during the join process.
+6. Defining communication policies for each of its OSCORE groups, and signalling them to new endpoints during the join process.
 
 7. Renewing the Security Context of an OSCORE group upon membership change, by revoking and renewing common security parameters and keying material (rekeying).
 
@@ -1195,6 +1197,8 @@ It is RECOMMENDED that the join process adopts the approach described in {{I-D.i
 # Examples of Synchronization Approaches {#synch-ex}
 
 This section describes three possible approaches that can be considered by server endpoints to synchronize with sender sequence numbers of client endpoints sending group requests.
+
+The Group Manager MAY indicate which of such approaches are used in the group, as part of the group communication policies signalled to candidate group members upon their group joining.
 
 ## Best-Effort Synchronization ## {#ssec-synch-best-effort}
 
