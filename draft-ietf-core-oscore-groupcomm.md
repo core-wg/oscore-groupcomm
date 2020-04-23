@@ -1284,6 +1284,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Optimized requests are moved as an appendix.
 
+* Normative support for the signature and pairwise mode.
+
 * Revised methods for synchronization with clients' sender sequence number.
 
 * Clarifications and editorial improvements.
