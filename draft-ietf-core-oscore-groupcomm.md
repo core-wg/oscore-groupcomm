@@ -658,6 +658,18 @@ Upon receiving a response with the Group Protection Flag bit set to 0, the clien
 
 * The COSE_Encrypt0 object included in the response is decrypted and verified using the same symmetric pairwise key K, that the client derives as described above for the server side and as defined in {{sec-derivation-pairwise}}.
 
+## Usage in Non-Multicast Settings {#sec-pairwise-non-multicast-setups}
+
+Some network deployments may comprise a large number of CoAP endpoints as engaging only in one-to-one communication, i.e. never recurring to one-to-many message delivery, e.g. over IP Multicast.
+
+In this case, the natural choice to provide end-to-end security at the application layer would be using OSCORE {{RFC8613}}, between each pair of communicating endpoints. However, unless the necessary keying material is pre-installed on the deployed devices, this requires each pair of CoAP endpoints to separately establish a pairwise OSCORE Security Context, with a number of exchanges on the wire.
+
+Especially in large-scale deployments, the communication overhead due to such key establishment exchanges can be drastically reduced, by rather using Group OSCORE in pairwise mode. That is, assuming it is acceptable to additionally deploy a Group OSCORE infrastructure, and especially a Group Manager, the CoAP endpoints would not need to perform any key establishment with each other on the wire.
+
+Instead, each CoAP endpoint can join a same common OSCORE group associated to the whole network scenario, by interacting with the Group Manager. When doing so, the endpoint performs on the wire a single key establishment exchange with the Group Manager, in order to establish the Security Context to operate in the OSCORE group.
+
+After that, a CoAP endpoint locally establishes any further keying material when needing to, in order to process secure messages to/from another CoAP endpoint in the group. This especially includes the derivation of pairwise keying material (see {{sec-derivation-pairwise}}), which is used to process messages exchanged in a one-to-one fashion, and protected with the pairwise mode of Group OSCORE defined in this section.
+
 # Responsibilities of the Group Manager # {#sec-group-manager}
 
 The Group Manager is responsible for performing the following tasks:
