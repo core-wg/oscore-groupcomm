@@ -1294,6 +1294,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Pairwise mode moved to the document body.
 
+* Considerations on using the pairwise mode in non-multicast settings.
+
 * Optimized requests are moved as an appendix.
 
 * Normative support for the signature and pairwise mode.
