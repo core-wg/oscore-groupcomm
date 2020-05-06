@@ -127,7 +127,7 @@ informative:
 
 --- abstract
 
-This document defines Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of CoAP messages exchanged between members of a group, e.g. using IP multicast. In particular, the described approach defines how OSCORE should be used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and the corresponding CoAP responses.
+This document defines Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of CoAP messages exchanged between members of a group, e.g. using IP multicast. In particular, the described approach defines how OSCORE should be used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses.
 
 --- middle
 
@@ -137,11 +137,7 @@ The Constrained Application Protocol (CoAP) {{RFC7252}} is a web transfer protoc
 
 Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} describes a security protocol based on the exchange of protected CoAP messages. OSCORE builds on CBOR Object Signing and Encryption (COSE) {{RFC8152}} and provides end-to-end encryption, integrity, replay protection and binding of response to request between a sender and a recipient, independent of transport also in the presence of intermediaries. To this end, a CoAP message is protected by including its payload (if any), certain options, and header fields in a COSE object, which replaces the authenticated and encrypted fields in the protected message.
 
-This document defines Group OSCORE, providing the same end-to-end security properties as OSCORE in the case where CoAP requests have multiple recipients. In particular, the described approach defines how OSCORE should be used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and the corresponding CoAP responses.
-
-Group OSCORE provides source authentication of CoAP messages, by means of two possible methods. The first method relies on a digital signature produced with the private key of the sender and embedded in the protected CoAP message. The second method relies on a symmetric key, which is derived from a pairwise shared secret computed from the asymmetric keys of the message sender and recipient.
-
-The second method is intended for one-to-one messages sent in the group. These include all responses, as individually sent by servers, as well as requests addressed to an individual server. For instance, such requests are sent as part of an exchange using the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}}, or as part of a block-wise transfer {{RFC7959}} in the group, after the first block-wise request possibly targeting all servers in the group and including the CoAP Block2 option (see Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}}).
+This document defines Group OSCORE, providing the same end-to-end security properties as OSCORE in the case where CoAP requests have multiple recipients. In particular, the described approach defines how OSCORE should be used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses.
 
 <!--
 OLD TEXT
@@ -155,11 +151,12 @@ As with OSCORE, it is possible to combine Group OSCORE with communication securi
 
 Group OSCORE defines two modes of operation:
 
-* In the group mode, Group OSCORE requests and responses are digitally signed. The group mode supports all COSE algorithms as well as signature verification by intermediaries. This mode is defined in {{mess-processing}} and MUST be supported.
+* In the group mode, Group OSCORE requests and responses are digitally signed with the private key of the sender and embedded in the protected CoAP message. The group mode supports all COSE algorithms as well as signature verification by intermediaries. This mode is defined in {{mess-processing}} and MUST be supported.
 
-* In the pairwise mode, two group members exchange Group OSCORE requests and responses over unicast, protected with symmetric keys. These symmetric keys are derived from Diffie-Hellman shared secrets, calculated with the asymmetric keys of the two group members. This allows for shorter integrity tags and therefore lower message overhead. This mode is defined in {{sec-pairwise-protection}} and MAY be supported. However, it MUST be supported by endpoints that support the Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}.
+* In the pairwise mode, two group members exchange Group OSCORE requests and responses over unicast, protected with symmetric keys. These symmetric keys are derived from Diffie-Hellman shared secrets, calculated with the asymmetric keys of the sender and recipient. This allows for shorter integrity tags and therefore lower message overhead. This mode is defined in {{sec-pairwise-protection}} and MAY be supported. However, it MUST be supported by endpoints that support the Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}, for instance, for responses after the first block-wise request possibly targeting all servers in the group and including the CoAP Block2 option (see Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}}).
 
-It is up to the application to decide in which mode a message has to be protected, possibly on a per-message basis. Such decision can be based, for instance, on pre-configured policies or dynamic assessing of the target recipient and/or resource, among other things. In particular, different messages can be protected in different modes, even within the same request-response exchange.
+Both modes provide source authentication of CoAP messages. It is up to the application to decide in which mode a message has to be protected, potentially on a per-message basis. Such decision can be based, for instance, on pre-configured policies or dynamic assessing of the target recipient and/or resource, among other things. One important case is when requests are protected with group mode, and responses with pairwise mode, since this significantly reduces the overhead in case of many responses.
+
 
 ## Terminology ## {#terminology}
 
@@ -181,7 +178,7 @@ This document refers also to the following terminology.
 
 * Silent server: member of a group that never sends protected responses in reply to requests. A silent server may however send unprotected responses, as error responses reporting an OSCORE error. Given that, for CoAP group communications, messages are normally sent without requesting a confirmation, the idea of a server silently acting on a message is not unreasonable. Note that an endpoint can implement both a silent server and a client, i.e. the two roles are independent. An endpoint implementing only a silent server performs Group OSCORE processing only on incoming requests, and does not support the pairwise mode. As a consequence, it maintains less keying material and especially does not have a Sender Context for the group.
 
-* Group Identifier (Gid): identifier assigned to the group. Group Identifiers must be unique within the set of groups of a given Group Manager.
+* Group Identifier (Gid): identifier assigned to the group, unique within the set of groups of a given Group Manager.
 
 * Group request: CoAP request message sent by a client in the group to all servers in that group.
 
