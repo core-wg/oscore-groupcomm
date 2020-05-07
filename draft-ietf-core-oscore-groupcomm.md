@@ -512,7 +512,7 @@ A client transmits a secure group request as described in Section 8.1 of {{RFC86
 
 * In step 2, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this specification.
 
-* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this specification. The encoding of the compressed COSE object is modified as described in {{compression}} of this specification.
+* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this specification. The encoding of the compressed COSE object is modified as described in {{compression}} of this specification. In particular, the Group Protection Flag bit MUST be set to 1.
 
 * In step 5, the counter signature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this specification. In particular, the payload of the OSCORE message includes also the counter signature.
 
@@ -524,11 +524,11 @@ The client MUST NOT update the stored value, even in case it is individually rek
 
 ## Verifying the Request ## {#ssec-verify-request}
 
-Upon receiving a secure group request, a server proceeds as described in Section 8.2 of {{RFC8613}}, with the following modifications.
+Upon receiving a secure group request with the Group Protection Flag bit set to 1, a server proceeds as described in Section 8.2 of {{RFC8613}}, with the following modifications.
 
 * In step 2, the decoding of the compressed COSE object follows {{compression}} of this specification. In particular:
 
-   - If the Group Protection Flag bit is set to 0, and the server discards the request due to not retrieving a Security Context associated to the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
+   - If the server discards the request due to not retrieving a Security Context associated to the OSCORE group, the server MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
 
    - If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the server MAY create a new Recipient Context and initializes it according to Section 3 of {{RFC8613}}, also retrieving the client's public key. Such a configuration is application specific. If the application does not specify dynamic derivation of new Recipient Contexts, then the server SHALL stop processing the request.
 
@@ -552,7 +552,7 @@ A server that has received a secure group request may reply with a secure respon
 
 * In step 2, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this specification.
 
-* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this specification. The encoding of the compressed COSE object is modified as described in {{compression}} of this specification.
+* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this specification. The encoding of the compressed COSE object is modified as described in {{compression}} of this specification. In particular, the Group Protection Flag bit MUST be set to 1.
 
 * In step 5, the counter signature is computed and the format of the OSCORE mesage is modified as described in {{compression}} of this specification. In particular, the payload of the OSCORE message includes also the counter signature.
 
@@ -578,7 +578,7 @@ Furthermore, for each ongoing observation, the server MUST use the stored value 
 
 ## Verifying the Response ## {#ssec-verify-response}
 
-Upon receiving a secure response message, the client proceeds as described in Section 8.4 of {{RFC8613}}, with the following modifications.
+Upon receiving a secure response message with the Group Protection Flag bit set to 1, the client proceeds as described in Section 8.4 of {{RFC8613}}, with the following modifications.
 
 * In step 2, the decoding of the compressed COSE object is modified as described in {{compression}} of this specification. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client MAY create a new Recipient Context and initializes it according to Section 3 of {{RFC8613}}, also retrieving the server's public key. If the application does not specify dynamic derivation of new Recipient Contexts, then the client SHALL stop processing the response.
 
@@ -626,6 +626,8 @@ To make this information available, servers MAY provide a resource to which a cl
 
 When using the pairwise mode, a request is protected as defined in {{ssec-protect-request}}, with the following differences.
 
+* The Group Protection Flag bit MUST be set to 0.
+
 * The COSE_Encrypt0 object included in the request is encrypted using a symmetric pairwise key K, that the client derives as defined in {{sec-derivation-pairwise}}. In particular, the Sender/Recipient Key is the Sender Key of the client from its own Sender Context, i.e. the Recipient Key that the server stores in its own Recipient Context corresponding to the client.
 
 * The Counter Signature is not computed. That is, unlike defined in {{compression}}, the payload of the OSCORE message terminates with the encoded ciphertext of the COSE object.
@@ -636,13 +638,17 @@ Note that no changes are made to the AEAD nonce and AAD.
 
 Upon receiving a request with the Group Protection Flag bit set to 0, the server MUST process it as defined in {{ssec-verify-request}}, with the following differences.
 
+* If the server discards the request due to not retrieving a Security Context associated to the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
+
 * No countersignature to verify is included.
 
-* The COSE_Encrypt0 object included in the request is decrypted and verified using the same symmetric pairwise key K, that the server derives as described above for the client side and as defined in {{sec-derivation-pairwise}}.
+* The COSE_Encrypt0 object included in the request is decrypted and verified using the same symmetric pairwise key K in {{sec-pairwise-protection-req}}, that the server derives as described above for the client side and as defined in {{sec-derivation-pairwise}}.
 
 ## Protecting the Response {#sec-pairwise-protection-resp}
 
 When using the pairwise mode, a response is protected as defined in {{ssec-protect-response}}, with the following differences.
+
+* The Group Protection Flag bit MUST be set to 0.
 
 * The COSE_Encrypt0 object is encrypted using a symmetric pairwise key K, that the server derives as defined in {{sec-derivation-pairwise}}. In particular, the Sender/Recipient Key is the Sender Key of the server from its own Sender Context, i.e. the Recipient Key that the client stores in its own Recipient Context corresponding to the server.
 
@@ -656,7 +662,7 @@ Upon receiving a response with the Group Protection Flag bit set to 0, the clien
 
 * No countersignature to verify is included.
 
-* The COSE_Encrypt0 object included in the response is decrypted and verified using the same symmetric pairwise key K, that the client derives as described above for the server side and as defined in {{sec-derivation-pairwise}}.
+* The COSE_Encrypt0 object included in the response is decrypted and verified using the same symmetric pairwise key K in {{sec-pairwise-protection-resp}}, that the client derives as described above for the server side and as defined in {{sec-derivation-pairwise}}.
 
 ## Usage in Non-Multicast Settings {#sec-pairwise-non-multicast-setups}
 
