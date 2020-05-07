@@ -422,7 +422,7 @@ The OSCORE header compression defined in Section 6 of {{RFC8613}} is used, with 
 
 * The Group Protection Flag bit MUST be set to 1 if the OSCORE message is protected using the group mode, as per {{ssec-protect-request}} and {{ssec-protect-response}}. Instead, the Group Protection Flag bit MUST be set to 0 if the OSCORE message is protected using the pairwise mode, as per {{sec-pairwise-protection-req}} and {{sec-pairwise-protection-resp}}.
 
-   If any of the following conditions holds, a recipient MUST discard an incoming OSCORE message with the Group Protection Flag bit set to 0:
+   If any of the following conditions holds, a recipient MUST discard an incoming OSCORE message:
    
    - The Group Protection Flag bit is set to 1, and the recipient can not retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group.
    
@@ -668,7 +668,7 @@ Especially in large-scale deployments, the communication overhead due to such ke
 
 Instead, each CoAP endpoint can join a same common OSCORE group associated to the whole network scenario, by interacting with the Group Manager. When doing so, the endpoint performs on the wire a single key establishment exchange with the Group Manager, in order to establish the Security Context to operate in the OSCORE group.
 
-After that, a CoAP endpoint locally establishes any further keying material when needing to, in order to process secure messages to/from another CoAP endpoint in the group. This especially includes the derivation of pairwise keying material (see {{sec-derivation-pairwise}}), which is used to process messages exchanged in a one-to-one fashion, and protected with the pairwise mode of Group OSCORE defined in this section.
+After that, a CoAP endpoint locally derives any further keying material when needing to, in order to process secure messages to/from another CoAP endpoint in the group. This especially includes the derivation of pairwise keying material (see {{sec-derivation-pairwise}}), which is used to process messages exchanged in a one-to-one fashion, and protected with the pairwise mode of Group OSCORE defined in this section.
 
 # Responsibilities of the Group Manager # {#sec-group-manager}
 
