@@ -318,7 +318,7 @@ As long as any two group members preserve the same asymmetric keys, the Diffie-H
 
 ## Usage of Sequence Numbers ##
 
-When using any of its pairwise keys, a sender endpoint including the 'Partial IV' parameter in the protected message MUST use the current fresh value of its own Sender Sequence Number, from its Sender Context (see {{ssec-sender-recipient-context}}). That is, the same Sender Sequence Number space is used for all outgoing messages sent to the group and protected with Group OSCORE, thus limiting both storage and complexity.
+When using any of its Pairwise Sender Keys, a sender endpoint including the 'Partial IV' parameter in the protected message MUST use the current fresh value of its own Sender Sequence Number, from its Sender Context (see {{ssec-sender-recipient-context}}). That is, the same Sender Sequence Number space is used for all outgoing messages sent to the group and protected with Group OSCORE, thus limiting both storage and complexity.
 
 On the other hand, when combining one-to-many and one-to-one communication in the group, this may result in the Partial IV values moving forward more often. This can happen when a client engages in frequent, long sequences of one-to-one exchanges with servers in the group, by sending requests over unicast.
 
