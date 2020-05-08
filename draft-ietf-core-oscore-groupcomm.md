@@ -610,6 +610,14 @@ Furthermore, this mode increases the security by making messages not only source
 
 To this end, this mode uses the derivation process defined in {{sec-derivation-pairwise}}, and allows two group members to protect requests and responses exchanged with each other using pairwise keying material.
 
+The pairwise mode processes messages very similarly to {{RFC8613}}, with the following notable differences:
+
+* The 'kid' and 'kid context' parameters of the COSE object are used as defined in {{sec-cose-object-kid}}.
+
+* The external_aad defined in {{sec-cose-object-ext-aad-enc}} is used for the encryption process.
+
+* The encryption/decryption key is a pairwise key derived as defined in {{sec-derivation-pairwise}}.
+
 Senders MUST NOT use the pairwise mode to protect a message intended for multiple recipients or for the whole group. This prevents a client from protecting a request with the pairwise key associated to one specific server, and then send the request to multiple recipients, e.g. over multicast, making it impossible to decrypt for any of the other servers in the group.
 
 The pairwise mode MAY be supported. However, it MUST be supported by endpoints that support the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}. An endpoint implementing only a silent server does not support the pairwise mode.
