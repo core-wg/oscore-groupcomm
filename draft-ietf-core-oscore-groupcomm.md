@@ -196,17 +196,17 @@ This specification defines a group concept (see {{terminology}}) in which endpoi
 * One Recipient Context for each endpoint from which messages are received. No Recipient Contexts are maintained as associated to endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the public key of the associated endpoint, used to verify the signature in group mode and for calculating the pairwise key in pairwise mode.
 
 ~~~~~~~~~~~
-   +---------------------------+----------------------------------+
-   | Context Component         | New Information Elements         |
-   +---------------------------+----------------------------------+
-   |                           | Counter Signature Algorithm      |
-   | Common Context            | Counter Signature Parameters     |
-   |                           | Counter Signature Key Parameters |
-   +---------------------------+----------------------------------+
-   | Sender Context            | Endpoint's own private key       |
-   +---------------------------+----------------------------------+
-   | Each Recipient Context    | Public key of the other endpoint |
-   +---------------------------+----------------------------------+
++---------------------------+----------------------------------+
+| Context Component         | New Information Elements         |
++---------------------------+----------------------------------+
+|                           | Counter Signature Algorithm      |
+| Common Context            | Counter Signature Parameters     |
+|                           | Counter Signature Key Parameters |
++---------------------------+----------------------------------+
+| Sender Context            | Endpoint's own private key       |
++---------------------------+----------------------------------+
+| Each Recipient Context    | Public key of the other endpoint |
++---------------------------+----------------------------------+
 ~~~~~~~~~~~
 {: #fig-additional-context-information title="Additions to the OSCORE Security Context" artwork-align="center"}
 
@@ -253,7 +253,7 @@ The Group Manager may serve additional entities acting as signature checkers, e.
 
 In order to establish a new Security Context for a group, a new Group Identifier (Gid) for that group and a new value for the Master Secret parameter MUST be generated. An example of Gid format supporting this operation is provided in {{gid-ex}}. When distributing the new Gid and Master Secret, the Group Manager MAY distribute also a new value for the Master Salt parameter, and SHOULD preserve the current value of the Sender ID of each group member.
 
-Having acquired new group data as described above, each member can re-derive the keying material stored in its Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). Unless otherwise specified by the application, each group member does not reset its own Sender Sequence Number in its Sender Context, and does not reset its own replay windows in its Recipient Contexts. From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
+Having acquired new group data as described above, each member can re-derive the keying material stored in its Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise. Unless otherwise specified by the application, each group member does not reset its own Sender Sequence Number in its Sender Context, and does not reset its own replay windows in its Recipient Contexts. From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
 
 The Recipient ID ('kid') SHOULD NOT be considered as a persistent and reliable indicator of a group member. Such an indication can be achieved only by using that members's public key, when verifying countersignatures of received messages (in group mode), or when verifying messages integrity-protected with pairwise keying material derived from asymmetric keys (in pairwise mode). As a consequence, group members may end up retaining stale Recipient Contexts, that are no longer useful to verify incoming secure messages.
 
@@ -269,7 +269,7 @@ The specific approach used to distribute new group data is out of the scope of t
 
 An endpoint can eventually exhaust its own Sender Sequence Number, which is incremented for each new message including a Partial IV. This is the case for group requests, Observe notifications {{RFC7641}} and, optionally, any other response.
 
-If an implementation's integers supports wrapping addition, the implementation MUST detect a wrap-around of the Sender Sequence Number value and treat those as exhausted.
+If an implementation's integers support wrapping addition, the implementation MUST detect a wrap-around of the Sender Sequence Number value and treat those as exhausted.
 
 Upon exhausting its own Sender Sequence Number, the endpoint MUST NOT transmit further messages for that group until it has derived a new Sender Context, to avoid reusing nonces with the same keys.
 
@@ -279,7 +279,7 @@ Furthermore, the endpoint SHOULD inform the Group Manager, that can take one of 
 
 * The Group Manager provides a new unused Sender ID value to the endpoint that has experienced the exhaustion. Then, the endpoint derives a new Sender Context using the new Sender ID (see {{ssec-sender-recipient-context}}).
 
-In either case, the same considerations from {{sec-group-key-management}} holgit add d about stale Recipient Contexts.
+In either case, the same considerations from {{sec-group-key-management}} hold about stale Recipient Contexts.
 
 # Pairwise Keys # {#sec-derivation-pairwise}
 
@@ -287,22 +287,22 @@ Certain signature schemes, such as EdDSA and ECDSA, support a secure combined si
 
 ## Key Derivation of Pairwise Keys ## {#key-derivation-pairwise}
 
-Group members can derive AEAD keys from the Group OSCORE security context ({{sec-context}}) to protect point-to-point communication between itself and any other endpoint in the group. The same AEAD algorithm is used as in the group mode. The key derivation of these so-called pairwise keys follow the same construction as in Section 3.2.1 of {{RFC8613}}: 
+A group member can derive AEAD keys from the Group OSCORE security context ({{sec-context}}) to protect point-to-point communication between itself and any other endpoint in the group. The same AEAD algorithm is used as in the group mode. The key derivation of these so-called pairwise keys follow the same construction as in Section 3.2.1 of {{RFC8613}}: 
 
 ~~~~~~~~~~~
 Pairwise Recipient Key = HKDF(Recipient Key, Shared Secret, info, L)
-Pairwise Sender Key = HKDF(Sender Key, Shared Secret, info, L)
+Pairwise Sender Key    = HKDF(Sender Key, Shared Secret, info, L)
 ~~~~~~~~~~~
 
 where:
 
-* The Pairwise Recipient Key is the AEAD key for receiving from endpoint X
+* The Pairwise Recipient Key is the AEAD key for receiving from endpoint X.
 
-* The Pairwise Sender Key is the AEAD key for sending to endpoint X 
+* The Pairwise Sender Key is the AEAD key for sending to endpoint X. 
 
 * The Shared Secret is computed as a static-static Diffie-Hellman shared secret {{NIST-800-56A}}, where the endpoint uses its own private key and the public key of the other endpoint X. 
 
-* The Recipient Key and the public key are from the Recipient Context of endpoint X. 
+* The Recipient Key and the public key are from the Recipient Context associated to endpoint X. 
 
 * The Sender Key and private key are from the Sender Context.
  
@@ -318,13 +318,9 @@ As long as any two group members preserve the same asymmetric keys, the Diffie-H
 
 ## Usage of Sequence Numbers ##
 
-When using any of its Pairwise Sender Keys, the sender MUST use the current fresh value of its Sender Sequence Number, from its Sender Context (see {{ssec-sender-recipient-context}}). That is, the same Sender Sequence Number space is used for all outgoing messages sent to the group and protected with Group OSCORE, thus limiting both storage and complexity.
+When using any of its pairwise keys, a sender endpoint including the 'Partial IV' parameter in the protected message MUST use the current fresh value of its own Sender Sequence Number, from its Sender Context (see {{ssec-sender-recipient-context}}). That is, the same Sender Sequence Number space is used for all outgoing messages sent to the group and protected with Group OSCORE, thus limiting both storage and complexity.
 
 On the other hand, when combining one-to-many and one-to-one communication in the group, this may result in the Partial IV values moving forward more often. This can happen when a client engages in frequent, long sequences of one-to-one exchanges with servers in the group, by sending requests over unicast.
-
-<!-- OLD TEXT
-On the other hand, when combining one-to-many and one-to-one communication in the group, this may result in the Partial IV values moving forward more often. Fundamentally, this is due to the fact that not all the recipients receive all messages from a given sender. For instance, requests sent over multicast (in group mode) are addressed to the whole group, while requests sent over unicast (in group mode or pairwise mode) are not.
--->
 
 As a consequence, replay checks may be invoked more often on the recipient side, where larger replay windows should be considered.
 
@@ -334,12 +330,11 @@ The shared secrets used in the key derivation of the pairwise keys ({{key-deriva
 
 For each other endpoint X with which the endpoint has pairwise keys:
 
-* The endpoint stores in its Recipient Context the Pairwise Recipient Key for endpoint X.
+* The endpoint stores the Pairwise Recipient Key for endpoint X in its own Recipient Context associated to X.
 
-* The endpoint stores in its Sender Context a Pairwise Sender Context for endpoint X. The Pairwise Sender Context consists of:
-   * The Recipient ID of X, as defined in its Recipient Context (i.e. the Sender ID according to endpoint X).
-   * The Pairwise Sender Key derived as defined in {{key-derivation-pairwise}}.
- 
+* The endpoint stores a Pairwise Sender Context associated to endpoint X in its own Sender Context. The Pairwise Sender Context consists of:
+   * The Recipient ID of X, as defined in the associated Recipient Context (i.e. the Sender ID according to endpoint X).
+   * The Pairwise Sender Key to use with X, derived as defined in {{key-derivation-pairwise}}.
 
 {{fig-pairwise-context-information}} shows the new information elements in comparison with the OSCORE security context.
 
@@ -661,7 +656,7 @@ When using the pairwise mode, a request is protected as defined in {{ssec-protec
 
 * The Group Protection Flag bit MUST be set to 0.
 
-* The COSE_Encrypt0 object included in the request is encrypted using a symmetric pairwise key K, that the client derives as defined in {{sec-derivation-pairwise}}. In particular, the Sender/Recipient Key is the Sender Key of the client from its own Sender Context, i.e. the Recipient Key that the server stores in its own Recipient Context corresponding to the client.
+* The COSE_Encrypt0 object included in the request is encrypted using a symmetric key K, that the client derives as Pairwise Sender Key for the server (see {{sec-derivation-pairwise}}).
 
 * The Counter Signature is not computed. That is, unlike defined in {{compression}}, the payload of the OSCORE message terminates with the encoded ciphertext of the COSE object.
 
@@ -675,7 +670,7 @@ Upon receiving a request with the Group Protection Flag bit set to 0, the server
 
 * No countersignature to verify is included.
 
-* The COSE_Encrypt0 object included in the request is decrypted and verified using the same symmetric pairwise key K in {{sec-pairwise-protection-req}}, that the server derives as described above for the client side and as defined in {{sec-derivation-pairwise}}.
+* The COSE_Encrypt0 object included in the request is decrypted and verified using the same symmetric key K in {{sec-pairwise-protection-req}}, that the server derives as Pairwise Recipient Key for the client (see {{sec-derivation-pairwise}}).
 
 ## Protecting the Response {#sec-pairwise-protection-resp}
 
@@ -683,7 +678,7 @@ When using the pairwise mode, a response is protected as defined in {{ssec-prote
 
 * The Group Protection Flag bit MUST be set to 0.
 
-* The COSE_Encrypt0 object is encrypted using a symmetric pairwise key K, that the server derives as defined in {{sec-derivation-pairwise}}. In particular, the Sender/Recipient Key is the Sender Key of the server from its own Sender Context, i.e. the Recipient Key that the client stores in its own Recipient Context corresponding to the server.
+* The COSE_Encrypt0 object is encrypted using a symmetric pairwise key K, that the server derives as Pairwise Sender Key for the client (see {{sec-derivation-pairwise}}).
 
 * The Counter Signature is not computed. That is, unlike defined in {{compression}}, the payload of the OSCORE message terminates with the encoded ciphertext of the COSE object.
 
@@ -695,7 +690,7 @@ Upon receiving a response with the Group Protection Flag bit set to 0, the clien
 
 * No countersignature to verify is included.
 
-* The COSE_Encrypt0 object included in the response is decrypted and verified using the same symmetric pairwise key K in {{sec-pairwise-protection-resp}}, that the client derives as described above for the server side and as defined in {{sec-derivation-pairwise}}.
+* The COSE_Encrypt0 object included in the response is decrypted and verified using the same symmetric pairwise key K in {{sec-pairwise-protection-resp}}, that the client derives as Pairwise Recipient Key for the server (see {{sec-derivation-pairwise}}).
 
 ## Usage in Non-Multicast Settings {#sec-pairwise-non-multicast-setups}
 
