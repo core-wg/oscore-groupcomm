@@ -212,7 +212,7 @@ This specification defines a group concept (see {{terminology}}) in which endpoi
 
 Further details about the security context of Group OSCORE are provided in the remainder of this section. How the security context is established by the members is out of scope for this specification, but sufficient functionality to manage information about the group is described in terms of a Group Manager, see {{group-manager}}. 
 
-## Common Context ##
+## Common Context ## {#ssec-common-context}
 
 The ID Context parameter (see Sections 3.3 and 5.1 of {{RFC8613}}) in the Common Context SHALL contain the Group Identifier (Gid) of the group. The choice of the Gid is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle potential collisions between Gids, see {{ssec-gid-collision}}.
 
@@ -363,29 +363,21 @@ Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{RFC
 
 For the group mode only, the 'unprotected' field MUST additionally include the following parameter:
 
-* CounterSignature0 : its value is set to the counter signature of the COSE object, computed by the sender as described in Appendix A.2 of {{RFC8152}}, by using its own private key and according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context. In particular, the Sig_structure contains the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE_Encrypt0 object as payload.
+* CounterSignature0: its value is set to the counter signature of the COSE object, computed by the sender as described in Appendix A.2 of {{RFC8152}}, by using the private key and according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context. In particular, the Sig_structure contains the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE_Encrypt0 object as payload.
 
 ## The 'kid' and 'kid context' parameters # {#sec-cose-object-kid}
 
-The value of the 'kid' parameter in the 'unprotected' field of response messages MUST be set to the Sender ID of the endpoint transmitting the message. That is, unlike in {{RFC8613}}, the 'kid' parameter is always present in all messages, i.e. both requests and responses.
+The value of the 'kid' parameter in the 'unprotected' field of response messages MUST be set to the Sender ID of the endpoint transmitting the message. That is, unlike in {{RFC8613}}, the 'kid' parameter is always present in all messages, both requests and responses.
 
-The value of the 'kid context' parameter in the 'unprotected' field of requests messages MUST be set to the ID Context, i.e. the Group Identifier value (Gid) of the group's Security Context. That is, unlike in {{RFC8613}}, the 'kid context' parameter is always present in requests.
+The value of the 'kid context' parameter in the 'unprotected' field of requests messages MUST be set to the ID Context, i.e. the Group Identifier value (Gid) of the group. That is, unlike in {{RFC8613}}, the 'kid context' parameter is always present in requests.
 
 ## external_aad # {#sec-cose-object-ext-aad}
 
-The external_aad of the Additional Authenticated Data (AAD) is built differently. In particular, it has one structure used for the encryption process producing the ciphertext (both in group mode and pairwise mode), and a second structure used for the signing process producing the counter signature (only in group mode).
+The external_aad of the Additional Authenticated Data (AAD) is different compared to OSCORE. In particular, there is one external_aad used for encryption (both in group mode and pairwise mode), and another external_aad used for signing (only in group mode).
 
 ### external_aad for Encryption ### {#sec-cose-object-ext-aad-enc}
 
-The first external_aad structure used for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}) includes also the counter signature algorithm and related parameters used to sign messages. In particular, compared with Section 5.4 of {{RFC8613}}, the 'algorithms' array in the aad_array MUST also include:
-
-* 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{sec-context}}). This parameter has the value specified in the "Value" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}) for this counter signature algorithm.
-
-* 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm. If the Counter Signature Parameters in the Common Context is empty, 'par_countersign' MUST be encoding the CBOR simple value Null.
-
-* 'par_countersign_key', which contains the Counter Signature Key Parameters from the Common Context (see {{sec-context}}). This parameter contains the counter signature key parameters encoded as specified in the "Parameters" field of the Counter Signature Key Parameters Registry (see {{iana-cons-cs-key-params}}), for the used counter signature algorithm. If the Counter Signature Key Parameters in the Common Context is empty, 'par_countersign_key' MUST be encoding the CBOR simple value Null.
-
-Thus, the following external_aad structure is used for the encryption process producing the ciphertext (see Section 5.3 of {{RFC8152}}).
+The external_aad for encryption (see Section 5.3 of {{RFC8152}}), used both in group mode and pairwise mode, includes the counter signature algorithm and related signature parameters, see {{fig-ext-aad-encryption}}. 
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
@@ -401,16 +393,21 @@ aad_array = [
    options : bstr
 ]
 ~~~~~~~~~~~
+{: #fig-ext-aad-encryption title="external_aad for Encryption" artwork-align="center"}
+
+Compared with Section 5.4 of {{RFC8613}}, the 'algorithms' array in the aad_array additionally includes:
+
+* 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{ssec-common-context}}). This parameter has the value specified in the "Value" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}) for this counter signature algorithm.
+
+* 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{ssec-common-context}}). This parameter contains the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm. If the Counter Signature Parameters in the Common Context is empty, 'par_countersign' MUST be encoding the CBOR simple value Null.
+
+* 'par_countersign_key', which contains the Counter Signature Key Parameters from the Common Context (see {{ssec-common-context}}). This parameter contains the counter signature key parameters encoded as specified in the "Parameters" field of the Counter Signature Key Parameters Registry (see {{iana-cons-cs-key-params}}), for the used counter signature algorithm. If the Counter Signature Key Parameters in the Common Context is empty, 'par_countersign_key' MUST be encoding the CBOR simple value Null.
+
 
 ### external_aad for Signing ### {#sec-cose-object-ext-aad-sign}
 
-For the group mode only, the second external_aad structure used for the signing process producing the counter signature as defined below includes also:
+The external_aad for signing (see Section 4.4 of {{RFC8152}}) used in group mode is identical to the external_aad for encryption (see {{sec-cose-object-ext-aad-enc}}) with the addition of the OSCORE option, see {{fig-ext-aad-signing}}.
 
-* the counter signature algorithm and related parameters used to sign messages, encoded as in the external_aad structure defined in {{sec-cose-object-ext-aad-enc}};
-
-* the value of the OSCORE Option included in the OSCORE message, encoded as a binary string.
-
-Thus, the following external_aad structure is used for the signing process producing the counter signature, as defined below.
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
@@ -427,8 +424,16 @@ aad_array = [
    OSCORE_option: bstr
 ]
 ~~~~~~~~~~~
+{: #fig-ext-aad-signing title="external_aad for Signing" artwork-align="center"}
 
-Note for implementation: this requires the value of the OSCORE option to be fully ready, before starting the signing process. Also, this requires that the aad_array is long enough to contain the longest possible OSCORE option.
+Compared with Section 5.4 of {{RFC8613}} the aad_array additionally includes:
+
+* the 'algorithms' array as defined in the external_aad for encryption, see {{sec-cose-object-ext-aad-enc}};
+
+* the value of the OSCORE Option encoded as a binary string.
+
+Note for implementation: this construction requires the OSCORE option of the message to be sent to be generated before calculating the signature. Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
+
 
 # OSCORE Header Compression {#compression}
 
