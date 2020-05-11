@@ -253,7 +253,7 @@ The Group Manager may serve additional entities acting as signature checkers, e.
 
 In order to establish a new Security Context for a group, a new Group Identifier (Gid) for that group and a new value for the Master Secret parameter MUST be generated. An example of Gid format supporting this operation is provided in {{gid-ex}}. When distributing the new Gid and Master Secret, the Group Manager MAY distribute also a new value for the Master Salt parameter, and SHOULD preserve the current value of the Sender ID of each group member.
 
-Having acquired new group data as described above, each member can re-derive the keying material stored in its Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise. Unless otherwise specified by the application, each group member does not reset its own Sender Sequence Number in its Sender Context, and does not reset its own replay windows in its Recipient Contexts. From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
+Having acquired new group data as described above, each member can re-derive the keying material stored in its Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise. Unless otherwise specified by the application, a group member does not reset the Sender Sequence Number in its Sender Context, and does not reset the replay windows in its Recipient Contexts. From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
 
 The Recipient ID ('kid') SHOULD NOT be considered as a persistent and reliable indicator of a group member. Such an indication can be achieved only by using that members's public key, when verifying countersignatures of received messages (in group mode), or when verifying messages integrity-protected with pairwise keying material derived from asymmetric keys (in pairwise mode). As a consequence, group members may end up retaining stale Recipient Contexts, that are no longer useful to verify incoming secure messages.
 
@@ -267,11 +267,11 @@ The specific approach used to distribute new group data is out of the scope of t
 
 ## Exhaustion of Partial IV Values {#ssec-wrap-around-partial-iv}
 
-An endpoint can eventually exhaust its own Sender Sequence Number, which is incremented for each new message including a Partial IV. This is the case for group requests, Observe notifications {{RFC7641}} and, optionally, any other response.
+An endpoint can eventually exhaust the Sender Sequence Numbers, which are incremented for each new message including a Partial IV. This is the case for group requests, Observe notifications {{RFC7641}} and, optionally, any other response.
 
 If an implementation's integers support wrapping addition, the implementation MUST detect a wrap-around of the Sender Sequence Number value and treat those as exhausted.
 
-Upon exhausting its own Sender Sequence Number, the endpoint MUST NOT transmit further messages for that group until it has derived a new Sender Context, to avoid reusing nonces with the same keys.
+Upon exhausting the Sender Sequence Numbers, the endpoint MUST NOT transmit further messages for that group until it has derived a new Sender Context, to avoid reusing nonces with the same keys.
 
 Furthermore, the endpoint SHOULD inform the Group Manager, that can take one of the following actions:
 
@@ -300,7 +300,7 @@ where:
 
 * The Pairwise Sender Key is the AEAD key for sending to endpoint X. 
 
-* The Shared Secret is computed as a static-static Diffie-Hellman shared secret {{NIST-800-56A}}, where the endpoint uses its own private key and the public key of the other endpoint X. 
+* The Shared Secret is computed as a static-static Diffie-Hellman shared secret {{NIST-800-56A}}, where the endpoint uses its private key and the public key of the other endpoint X. 
 
 * The Recipient Key and the public key are from the Recipient Context associated to endpoint X. 
 
@@ -318,7 +318,7 @@ As long as any two group members preserve the same asymmetric keys, the Diffie-H
 
 ## Usage of Sequence Numbers ##
 
-When using any of its Pairwise Sender Keys, a sender endpoint including the 'Partial IV' parameter in the protected message MUST use the current fresh value of its own Sender Sequence Number, from its Sender Context (see {{ssec-sender-recipient-context}}). That is, the same Sender Sequence Number space is used for all outgoing messages protected with Group OSCORE, thus limiting both storage and complexity.
+When using any of its Pairwise Sender Keys, a sender endpoint including the 'Partial IV' parameter in the protected message MUST use the current fresh value of the Sender Sequence Number from its Sender Context (see {{ssec-sender-recipient-context}}). That is, the same Sender Sequence Number space is used for all outgoing messages protected with Group OSCORE, thus limiting both storage and complexity.
 
 On the other hand, when combining one-to-many and one-to-one communication in the group, this may result in the Partial IV values moving forward more often. This can happen when a client engages in frequent, long sequences of one-to-one exchanges with servers in the group, by sending requests over unicast.
 
@@ -330,9 +330,9 @@ The shared secrets used in the key derivation of the pairwise keys ({{key-deriva
 
 For each other endpoint X with which the endpoint has pairwise keys:
 
-* The endpoint stores the Pairwise Recipient Key for endpoint X in its own Recipient Context associated to X.
+* The endpoint stores the Pairwise Recipient Key for endpoint X in the Recipient Context associated to X.
 
-* The endpoint stores a Pairwise Sender Context associated to endpoint X in its own Sender Context. The Pairwise Sender Context consists of:
+* The endpoint stores a Pairwise Sender Context associated to endpoint X in the Sender Context. The Pairwise Sender Context consists of:
    * The Recipient ID of X, as defined in the associated Recipient Context (i.e. the Sender ID according to endpoint X).
    * The Pairwise Sender Key to use with X, derived as defined in {{key-derivation-pairwise}}.
 
