@@ -153,7 +153,7 @@ Group OSCORE defines two modes of operation:
 
 * In the group mode, Group OSCORE requests and responses are digitally signed with the private key of the sender and embedded in the protected CoAP message. The group mode supports all COSE algorithms as well as signature verification by intermediaries. This mode is defined in {{mess-processing}} and MUST be supported.
 
-* In the pairwise mode, two group members exchange Group OSCORE requests and responses over unicast, protected with symmetric keys. These symmetric keys are derived from Diffie-Hellman shared secrets, calculated with the asymmetric keys of the sender and recipient. This allows for shorter integrity tags and therefore lower message overhead. This mode is defined in {{sec-pairwise-protection}} and MAY be supported. However, it MUST be supported by endpoints that support the Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}, for instance, for responses after the first block-wise request possibly targeting all servers in the group and including the CoAP Block2 option (see Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}}).
+* In the pairwise mode, two group members exchange Group OSCORE requests and responses over unicast, protected with symmetric keys. These symmetric keys are derived from Diffie-Hellman shared secrets, calculated with the asymmetric keys of the sender and recipient. This allows for shorter integrity tags and therefore lower message overhead. This mode is defined in {{sec-pairwise-protection}} and MAY be supported. The pairwise mode MUST be supported by endpoints that support the Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}, for instance, for responses after the first block-wise request possibly targeting all servers in the group and including the CoAP Block2 option (see Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}}).
 
 Both modes provide source authentication of CoAP messages. It is up to the application to decide in which mode a message has to be protected, potentially on a per-message basis. Such decision can be based, for instance, on pre-configured policies or dynamic assessing of the target recipient and/or resource, among other things. One important case is when requests are protected with group mode, and responses with pairwise mode, since this significantly reduces the overhead in case of many responses to one request.
 
@@ -191,9 +191,9 @@ This specification defines a group concept (see {{terminology}}) in which endpoi
 
 * One Common Context, shared by all the endpoints in the group. Three new parameters are included in the Common Context: Counter Signature Algorithm, Counter Signature Parameters and Counter Signature Key Parameters, which all relate to the  signature of the message included in group mode (see {{mess-processing}}).
 
-* One Sender Context, extended with the endpoint's private key. The private key is used to sign the message in group mode, and for calculating the pairwise key in pairwise mode ({{sec-derivation-pairwise}}). The Sender Context is omitted if the endpoint is configured exclusively as silent server.
+* One Sender Context, extended with the endpoint's private key. The private key is used to sign the message in group mode, and for calculating the pairwise keys in pairwise mode ({{sec-derivation-pairwise}}). The Sender Context is omitted if the endpoint is configured exclusively as silent server.
 
-* One Recipient Context for each endpoint from which messages are received. No Recipient Contexts are maintained as associated to endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the public key of the associated endpoint, used to verify the signature in group mode and for calculating the pairwise key in pairwise mode.
+* One Recipient Context for each endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated to endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the public key of the associated endpoint, used to verify the signature in group mode and for calculating the pairwise keys in pairwise mode ({{sec-derivation-pairwise}}).
 
 ~~~~~~~~~~~
 +---------------------------+----------------------------------+
@@ -226,9 +226,9 @@ The Common Context may be acquired from the Group Manager (see {{group-manager}}
 
 ## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
-OSCORE specifies the derivation of Sender Context and Recipient Context, specifically Sender/Recipient Keys and Common IV, from a set of input parameters (see Section 3.2 of {{RFC8613}}). This derivation applies also to Group OSCORE, and the mandatory-to-implement HKDF and AEAD algorithms are the same as in {{RFC8613}}. 
+OSCORE specifies the derivation of Sender Context and Recipient Context, specifically Sender/Recipient Keys and Common IV, from a set of input parameters (see Section 3.2 of {{RFC8613}}). This derivation applies also to Group OSCORE, and the mandatory-to-implement HKDF and AEAD algorithms are the same as in {{RFC8613}}. The Sender ID SHALL be unique for each endpoint in a group with a fixed Master Secret, Master Salt and Group Identifier (see Section 3.3 of {{RFC8613}}).
 
-For Group OSCORE the Sender Context and Recipient Context additionally contain asymmetric keys, as described previously in {{sec-context}}. The private/public key pair of the sender may be generated by the endpoint or provisioned during manufacturing. 
+For Group OSCORE the Sender Context and Recipient Context additionally contain asymmetric keys, as described previously in {{sec-context}}. The private/public key pair of the sender may, for example, be generated by the endpoint or provisioned during manufacturing. 
 
 A received Group OSCORE message together with the Common Context contains the necessary information to derive a security context for verifying the message, except for the public key of the associated endpoint. The public keys in the Recipient Contexts may be accessed from the Group Manager (see {{group-manager}}) upon joining the group. A public key may alternatively be acquired from the Group Manager at a later time, for example the first time a message is received from a particular endpoint in the group (see {{ssec-verify-request}} and {{ssec-verify-response}}). 
 
@@ -239,15 +239,15 @@ For severely constrained devices, it may be not feasible to simultaneously handl
 
 As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant security context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s). This specification is based on the existence of an entity called a Group Manager which is responsible for the group, but does not mandate how the Group Manager interacts with the members. The responsibilities of the Group Manager are compiled in {{sec-group-manager}}.
 
-The Group Manager assigns unique Group Identifiers (Gids) to different groups under its control, as well as unique Sender IDs (and thereby Recipient IDs) to the members of those groups. According to a hierarchical approach, the Gid value assigned to a group is associated to a dedicated space for the values of Sender ID and Recipient ID of the members of that group. In addition, the Group Manager records the public keys of endpoints joining a group, and provides information about the group and its members to other members and selected roles.
+The Group Manager assigns unique Group Identifiers (Gids) to different groups under its control, as well as unique Sender IDs (and thereby Recipient IDs) to the members of those groups. According to a hierarchical approach, the Gid value assigned to a group is associated to a dedicated space for the values of Sender ID and Recipient ID of the members of that group. In addition, the Group Manager maintains records of the public keys of endpoints in a group, and provides information about the group and its members to other members and selected roles.
 
-An endpoint receives group data such as the Gid and OSCORE input parameters, including its own Sender ID, from the Group Manager upon joining the group. Endpoints which are configured only as silent servers do not have a Sender ID.
+An endpoint acquires group data such as the Gid and OSCORE input parameters including its own Sender ID from the Group Manager, and provides information about its public key to the Group Manager, for example upon joining the group. Endpoints which are configured only as silent servers do not have a Sender ID.
 
 A group member can retrieve from the Group Manager the public key and other information associated to another group member, with which it can generate the corresponding Recipient Context. An application can configure a group member to asynchronously retrieve information about Recipient Contexts, e.g. by Observing {{RFC7641}} the Group Manager to get updates on the group membership.
 
 According to this specification, it is RECOMMENDED to use a Group Manager as described in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for authentication and authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. 
 
-The Group Manager may serve additional entities acting as signature checkers, e.g. intermediary gateways. These entities do not join a group as members, but can retrieve public keys of group members from the Group Manager, in order to verify counter signatures of group messages. A signature checker is required to be authorized for retrieving public keys of members in a specific group from the Group Manager. To this end, the same method mentioned above and based on the ACE framework can be used.
+The Group Manager may serve additional entities acting as signature checkers, e.g. intermediary gateways. These entities do not join a group as members, but can retrieve public keys of group members from the Group Manager, in order to verify counter signatures of group messages. A signature checker is required to be authorized for retrieving public keys of members in a specific group from the Group Manager. To this end, the same method mentioned above based on the ACE framework can be used.
 
 ## Management of Group Keying Material # {#sec-group-key-management}
 
@@ -287,7 +287,7 @@ Certain signature schemes, such as EdDSA and ECDSA, support a secure combined si
 
 ## Key Derivation of Pairwise Keys ## {#key-derivation-pairwise}
 
-A group member can derive AEAD keys from the Group OSCORE security context ({{sec-context}}) to protect point-to-point communication between itself and any other endpoint in the group. The same AEAD algorithm is used as in the group mode. The key derivation of these so-called pairwise keys follow the same construction as in Section 3.2.1 of {{RFC8613}}: 
+Using the Group OSCORE security context ({{sec-context}}), a group member can derive AEAD keys to protect point-to-point communication between itself and any other endpoint in the group. The same AEAD algorithm is used as in the group mode. The key derivation of these so-called pairwise keys follow the same construction as in Section 3.2.1 of {{RFC8613}}: 
 
 ~~~~~~~~~~~
 Pairwise Recipient Key = HKDF(Recipient Key, Shared Secret, info, L)
@@ -308,17 +308,17 @@ where:
  
 * info and L are defined as in Section 3.2.1 of {{RFC8613}}. 
 
-The security of using the same key pair for Diffie-Hellman and for signing is proven in {{Degabriele}}. The derivation of pairwise keys defined above is compatible with ECDSA and EdDSA asymmetric keys, but is not compatible with RSA asymmetric keys.
+The derivation of pairwise keys defined above is compatible with ECDSA and EdDSA asymmetric keys, but is not compatible with RSA asymmetric keys. The security of using the same key pair for Diffie-Hellman and for signing is demonstrated in {{Degabriele}}. 
 
 If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}.
 
-After completing the establishment of a new Security Context for the group (see {{sec-group-key-management}}), the old pairwise keys MUST be deleted. Since new Sender/Recipient Keys are derived from the new group keying material (see {{ssec-sender-recipient-context}}), every group member MUST use the new Sender/Recipient keys when deriving new pairwise keys.
+After completing the establishment of a new Security Context for the group (see {{sec-group-key-management}}), the old pairwise keys MUST be deleted. Since new Sender/Recipient Keys are derived from the new group keying material (see {{ssec-sender-recipient-context}}), every group member MUST use the new Sender/Recipient Keys when deriving new pairwise keys.
 
 As long as any two group members preserve the same asymmetric keys, the Diffie-Hellman shared secret does not change across updates of the group keying material.
 
 ## Usage of Sequence Numbers ##
 
-When using any of its Pairwise Sender Keys, a sender endpoint including the 'Partial IV' parameter in the protected message MUST use the current fresh value of its own Sender Sequence Number, from its Sender Context (see {{ssec-sender-recipient-context}}). That is, the same Sender Sequence Number space is used for all outgoing messages sent to the group and protected with Group OSCORE, thus limiting both storage and complexity.
+When using any of its Pairwise Sender Keys, a sender endpoint including the 'Partial IV' parameter in the protected message MUST use the current fresh value of its own Sender Sequence Number, from its Sender Context (see {{ssec-sender-recipient-context}}). That is, the same Sender Sequence Number space is used for all outgoing messages protected with Group OSCORE, thus limiting both storage and complexity.
 
 On the other hand, when combining one-to-many and one-to-one communication in the group, this may result in the Partial IV values moving forward more often. This can happen when a client engages in frequent, long sequences of one-to-one exchanges with servers in the group, by sending requests over unicast.
 
@@ -336,7 +336,7 @@ For each other endpoint X with which the endpoint has pairwise keys:
    * The Recipient ID of X, as defined in the associated Recipient Context (i.e. the Sender ID according to endpoint X).
    * The Pairwise Sender Key to use with X, derived as defined in {{key-derivation-pairwise}}.
 
-{{fig-pairwise-context-information}} shows the new information elements in comparison with the OSCORE security context.
+{{fig-pairwise-context-information}} shows the new information elements in the Group OSCORE security context in comparison with the OSCORE security context.
 
 ~~~~~~~~~~~
 +------------------------+----------------------------------------------+
