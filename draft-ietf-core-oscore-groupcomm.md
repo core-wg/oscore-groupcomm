@@ -441,15 +441,15 @@ The OSCORE header compression defined in Section 6 of {{RFC8613}} is used, with 
 
 * The payload of the OSCORE message SHALL encode the ciphertext of the COSE object. In the group mode, the ciphertext above is concatenated with the value of the CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
 
-* This specification defines the usage of the sixth least significant bit, namely the Group Protection Flag bit, in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is registered in {{iana-cons-flag-bits}} of this specification.
+* This specification defines the usage of the sixth least significant bit, called the "Group Flag", in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is registered in {{iana-cons-flag-bits}} of this specification.
 
-* The Group Protection Flag bit MUST be set to 1 if the OSCORE message is protected using the group mode, as per {{ssec-protect-request}} and {{ssec-protect-response}}. Instead, the Group Protection Flag bit MUST be set to 0 if the OSCORE message is protected using the pairwise mode, as per {{sec-pairwise-protection-req}} and {{sec-pairwise-protection-resp}}.
+* The Group Flag MUST be set to 1 if the OSCORE message is protected using the group mode, as per {{ssec-protect-request}} and {{ssec-protect-response}}. Instead, the Group Flag MUST be set to 0 if the OSCORE message is protected using the pairwise mode, as per {{sec-pairwise-protection-req}} and {{sec-pairwise-protection-resp}}.
 
    If any of the following conditions holds, a recipient MUST discard an incoming OSCORE message:
    
-   - The Group Protection Flag bit is set to 1, and the recipient can not retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group.
+   - The Group Flag is set to 1, and the recipient can not retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group.
    
-   - The Group Protection Flag bit is set to 0, and the recipient can retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group, but the recipient does not support the pairwise mode.
+   - The Group Flag is set to 0, and the recipient can retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group, but the recipient does not support the pairwise mode.
     
 ## Examples of Compressed COSE Objects
 
@@ -537,7 +537,7 @@ A client transmits a secure group request as described in Section 8.1 of {{RFC86
 
 * In step 2, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this specification.
 
-* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this specification. The encoding of the compressed COSE object is modified as described in {{compression}} of this specification. In particular, the Group Protection Flag bit MUST be set to 1.
+* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this specification. The encoding of the compressed COSE object is modified as described in {{compression}} of this specification. In particular, the Group Flag MUST be set to 1.
 
 * In step 5, the counter signature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this specification. In particular, the payload of the OSCORE message includes also the counter signature.
 
@@ -549,7 +549,7 @@ The client MUST NOT update the stored value, even in case it is individually rek
 
 ## Verifying the Request ## {#ssec-verify-request}
 
-Upon receiving a secure group request with the Group Protection Flag bit set to 1, a server proceeds as described in Section 8.2 of {{RFC8613}}, with the following modifications.
+Upon receiving a secure group request with the Group Flag set to 1, a server proceeds as described in Section 8.2 of {{RFC8613}}, with the following modifications.
 
 * In step 2, the decoding of the compressed COSE object follows {{compression}} of this specification. In particular:
 
@@ -577,7 +577,7 @@ A server that has received a secure group request may reply with a secure respon
 
 * In step 2, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this specification.
 
-* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this specification. The encoding of the compressed COSE object is modified as described in {{compression}} of this specification. In particular, the Group Protection Flag bit MUST be set to 1.
+* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this specification. The encoding of the compressed COSE object is modified as described in {{compression}} of this specification. In particular, the Group Flag MUST be set to 1.
 
 * In step 5, the counter signature is computed and the format of the OSCORE mesage is modified as described in {{compression}} of this specification. In particular, the payload of the OSCORE message includes also the counter signature.
 
@@ -603,7 +603,7 @@ Furthermore, for each ongoing observation, the server MUST use the stored value 
 
 ## Verifying the Response ## {#ssec-verify-response}
 
-Upon receiving a secure response message with the Group Protection Flag bit set to 1, the client proceeds as described in Section 8.4 of {{RFC8613}}, with the following modifications.
+Upon receiving a secure response message with the Group Flag set to 1, the client proceeds as described in Section 8.4 of {{RFC8613}}, with the following modifications.
 
 * In step 2, the decoding of the compressed COSE object is modified as described in {{compression}} of this specification. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client MAY create a new Recipient Context and initializes it according to Section 3 of {{RFC8613}}, also retrieving the server's public key. If the application does not specify dynamic derivation of new Recipient Contexts, then the client SHALL stop processing the response.
 
@@ -659,7 +659,7 @@ To make this information available, servers MAY provide a resource to which a cl
 
 When using the pairwise mode, a request is protected as defined in {{ssec-protect-request}}, with the following differences.
 
-* The Group Protection Flag bit MUST be set to 0.
+* The Group Flag MUST be set to 0.
 
 * The COSE_Encrypt0 object included in the request is encrypted using a symmetric key K, that the client derives as Pairwise Sender Key for the server (see {{sec-derivation-pairwise}}).
 
@@ -669,7 +669,7 @@ Note that no changes are made to the AEAD nonce and AAD.
 
 ## Verifying the Request {#sec-pairwise-verify-req}
 
-Upon receiving a request with the Group Protection Flag bit set to 0, the server MUST process it as defined in {{ssec-verify-request}}, with the following differences.
+Upon receiving a request with the Group Flag set to 0, the server MUST process it as defined in {{ssec-verify-request}}, with the following differences.
 
 * If the server discards the request due to not retrieving a Security Context associated to the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
 
@@ -681,7 +681,7 @@ Upon receiving a request with the Group Protection Flag bit set to 0, the server
 
 When using the pairwise mode, a response is protected as defined in {{ssec-protect-response}}, with the following differences.
 
-* The Group Protection Flag bit MUST be set to 0.
+* The Group Flag MUST be set to 0.
 
 * The COSE_Encrypt0 object is encrypted using a symmetric pairwise key K, that the server derives as Pairwise Sender Key for the client (see {{sec-derivation-pairwise}}).
 
@@ -691,7 +691,7 @@ Note that no changes are made to the AEAD nonce and AAD.
 
 ## Verifying the Response {#sec-pairwise-verify-resp}
 
-Upon receiving a response with the Group Protection Flag bit set to 0, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
+Upon receiving a response with the Group Flag set to 0, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
 
 * No countersignature to verify is included.
 
@@ -1116,8 +1116,8 @@ IANA is asked to add the following value entry to the "OSCORE Flag Bits" subregi
 | Bit Position |    Name    |         Description           | Reference |
 +--------------+------------+-------------------------------+-----------+
 |       2      | Group      | Set to 1 if the message is    | [This     |
-|              | Protection | protected with the group mode | Document] |
-|              | Flag       | mode of Group OSCORE          |           |
+|              | Flag       | protected with the group mode | Document] |
+|              |            | of Group OSCORE               |           |
 +--------------+------------+-------------------------------+-----------+
 ~~~~~~~~~~~
 
