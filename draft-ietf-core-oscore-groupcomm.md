@@ -443,13 +443,17 @@ The OSCORE header compression defined in Section 6 of {{RFC8613}} is used, with 
 
 * This specification defines the usage of the sixth least significant bit, called the "Group Flag", in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is registered in {{iana-cons-flag-bits}} of this specification.
 
-* The Group Flag MUST be set to 1 if the OSCORE message is protected using the group mode, as per {{ssec-protect-request}} and {{ssec-protect-response}}. Instead, the Group Flag MUST be set to 0 if the OSCORE message is protected using the pairwise mode, as per {{sec-pairwise-protection-req}} and {{sec-pairwise-protection-resp}}.
+* The Group Flag MUST be set to 1 if the OSCORE message is protected using the group mode ({{mess-processing}}). 
 
-   If any of the following conditions holds, a recipient MUST discard an incoming OSCORE message:
+* The Group Flag MUST be set to 0 if the OSCORE message is protected using the pairwise mode ({{sec-pairwise-protection}}). The Group Flag MUST also be set to 0 for ordinary OSCORE messages processed according to {{RFC8613}}.
+
+If any of the following two conditions holds, a recipient MUST discard an incoming OSCORE message:
    
    - The Group Flag is set to 1, and the recipient can not retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group.
    
-   - The Group Flag is set to 0, and the recipient can retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group, but the recipient does not support the pairwise mode.
+   - The Group Flag is set to 0, and the recipient retrieves a Security Context which is both valid to process the message and also associated to an OSCORE group, but the recipient does not support the pairwise mode.
+
+Note that if the Group Flag is set to 0, and the recipient retrieves a Security Context which is valid to process the message but is not associated to an OSCORE group, then the message is processed according to {{RFC8613}}.
     
 ## Examples of Compressed COSE Objects
 
