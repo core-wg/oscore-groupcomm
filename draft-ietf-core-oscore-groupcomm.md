@@ -432,7 +432,7 @@ Compared with Section 5.4 of {{RFC8613}} the aad_array additionally includes:
 
 * the value of the OSCORE Option encoded as a binary string.
 
-Note for implementation: this construction requires the OSCORE option of the message to be sent to be generated before calculating the signature. Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
+Note for implementation: this construction requires the OSCORE option of the message to be generated before calculating the signature. Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
 
 
 # OSCORE Header Compression {#compression}
