@@ -513,15 +513,15 @@ Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b COUNTERSIGN
 
 # Message Binding, Sequence Numbers, Freshness and Replay Protection
 
-The requirements and properties described in Section 7 of {{RFC8613}} also apply to OSCORE used in group communication. In particular, group OSCORE provides message binding of responses to requests, which provides relative freshness of responses, and replay protection of requests.
+The requirements and properties described in Section 7 of {{RFC8613}} also apply to OSCORE used in group communication. In particular, group OSCORE provides message binding of responses to requests, which enables relative freshness of responses, and replay protection of requests.
 
-## Synchronization of Sender Sequence Numbers # {#sec-synch-seq-num}
+## Update of Replay Window # {#sec-synch-seq-num}
 
-Upon joining the group, new servers are not aware of the Sender Sequence Number values currently used by different clients to transmit group requests. This means that, when such servers receive a secure group request from a given client for the first time, they are not able to verify if that request is fresh and has not been replayed or (purposely) delayed. The same holds when a server loses synchronization with Sender Sequence Numbers of clients, for instance after a device reboot.
+Upon joining the group, new servers are not aware of the current Partial IVs (Sender Sequence Numbers of the clients). This means that when such servers receive a secure group request for the first time, they are not able to verify if that request is fresh and has not been replayed. The same holds when a server loses its mutable security context, for instance after a device reboot.
 
-The exact way to address this issue is application specific, and depends on the particular use case and its synchronization requirements. The list of methods to handle synchronization of Sender Sequence Numbers is part of the group communication policy, and different servers can use different methods.
+The exact way to address this issue is application specific, and depends on the particular use case and its replay requirements. The list of methods to handle update of replay window is part of the group communication policy, and different servers can use different methods.
 
-{{synch-ex}} describes three possible approaches that can be considered for synchronization of sequence numbers.
+{{synch-ex}} describes three possible approaches that can be considered for update of replay window.
 
 # Message Processing in Group Mode # {#mess-processing}
 
