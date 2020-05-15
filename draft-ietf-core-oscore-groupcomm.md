@@ -441,7 +441,7 @@ The OSCORE header compression defined in Section 6 of {{RFC8613}} is used, with 
 
 * The payload of the OSCORE message SHALL encode the ciphertext of the COSE object. In the group mode, the ciphertext above is concatenated with the value of the CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
 
-* This specification defines the usage of the sixth least significant bit, called the "Group Flag", in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is registered in {{iana-cons-flag-bits}} of this specification.
+* This specification defines the usage of the sixth least significant bit, called the "Group Flag", in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is specified in {{iana-cons-flag-bits}}.
 
 * The Group Flag MUST be set to 1 if the OSCORE message is protected using the group mode ({{mess-processing}}). 
 
@@ -525,25 +525,24 @@ The exact way to address this issue is application specific, and depends on the 
 
 # Message Processing in Group Mode # {#mess-processing}
 
-When using the group mode, messages are protected and processed as specified in {{RFC8613}}, with the modifications described in this section.
+When using the group mode, messages are protected and processed as specified in {{RFC8613}}, with the modifications described in this section. The security objectives of group mode are discussed in {{ssec-sec-objectives}}. The group mode MUST be supported.
 
-The group mode MUST be supported, and fulfills the following security objectives, as further discussed in {{ssec-sec-objectives}}: data replay protection, group-level data confidentiality, source authentication and message integrity.
+The group mode MUST be used to protect group requests intended for multiple recipients or for the whole group. This includes both requests directly addressed to multiple recipients, e.g. sent by the client over multicast, as well as requests sent by the client over unicast to a proxy, that forwards them to the intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}.
 
-The group mode MUST be used to protect group requests intended for multiple recipients or for the whole group. This includes both requests directly addressed to the multiple recipients, e.g. sent by the client over multicast, as well as requests sent by the client over unicast to a proxy, that forwards them to the intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}.
-
-As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-Confirmable, and thus cannot be retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a pre-defined, sufficient amount of time, in order to correctly perform possible retransmissions at the application layer. However, this does not prevent the acknowledgment of Confirmable group requests in non-multicast environments. Besides, according to Section 5.2.3 of {{RFC7252}}, responses to Non-Confirmable group requests SHOULD be also Non-Confirmable. However, endpoints MUST be prepared to receive Confirmable responses in reply to a Non-Confirmable group request.
+As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-Confirmable, and thus cannot be retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a pre-defined, sufficient amount of time, in order to correctly perform possible retransmissions at the application layer. This does not prevent the acknowledgment of Confirmable group requests in non-multicast environments. According to Section 5.2.3 of {{RFC7252}}, responses to Non-Confirmable group requests SHOULD be also Non-Confirmable, but endpoints MUST be prepared to receive Confirmable responses in reply to a Non-Confirmable group request.
 
 Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{RFC8613}}. However, a recipient MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}}, or which is not cryptographically validated in a successful way. In either case, it is RECOMMENDED that the recipient does not send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the group.
+
 
 ## Protecting the Request ## {#ssec-protect-request}
 
 A client transmits a secure group request as described in Section 8.1 of {{RFC8613}}, with the following modifications.
 
-* In step 2, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this specification.
+* In step 2, the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
-* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this specification. The encoding of the compressed COSE object is modified as described in {{compression}} of this specification. In particular, the Group Flag MUST be set to 1.
+* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}}. The encoding of the compressed COSE object is modified as described in {{compression}}. In particular, the Group Flag MUST be set to 1.
 
-* In step 5, the counter signature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this specification. In particular, the payload of the OSCORE message includes also the counter signature.
+* In step 5, the counter signature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}}. In particular, the payload of the OSCORE message includes also the counter signature.
 
 ### Supporting Observe ###
 
@@ -555,17 +554,17 @@ The client MUST NOT update the stored value, even in case it is individually rek
 
 Upon receiving a secure group request with the Group Flag set to 1, a server proceeds as described in Section 8.2 of {{RFC8613}}, with the following modifications.
 
-* In step 2, the decoding of the compressed COSE object follows {{compression}} of this specification. In particular:
+* In step 2, the decoding of the compressed COSE object follows {{compression}}. In particular:
 
    - If the server discards the request due to not retrieving a Security Context associated to the OSCORE group, the server MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
 
-   - If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the server MAY create a new Recipient Context and initializes it according to Section 3 of {{RFC8613}}, also retrieving the client's public key. Such a configuration is application specific. If the application does not specify dynamic derivation of new Recipient Contexts, then the server SHALL stop processing the request.
+   - If the received 'kid context' matches an existing ID Context (Gid) but the received 'kid' does not match any Recipient ID in this Security Context, then the server MAY create a new Recipient Context for this Recipient ID and initialize it according to Section 3 of {{RFC8613}}, and also retrive the associated public key. Such a configuration is application specific. If the application does not specify dynamic derivation of new Recipient Contexts, then the server SHALL stop processing the request.
 
-* In step 4, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this specification.
+* In step 4, the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
-* In step 6, the server also verifies the counter signature using the public key of the client from the associated Recipient Context. If the signature verification fails, the server MAY reply with a 4.00 (Bad Request) response.
+* In step 6, the server also verifies the counter signature using the public key of the client from the associated Recipient Context. If the signature verification fails, the server SHALL stop processing the request and MAY respond with a 4.00 (Bad Request) response. If verification fails, the same steps are taken as if decryption had failed. In particular, the Replay Window is only updated if both signature verification and decryption succeeds.
 
-* Additionally, if the used Recipient Context was created upon receiving this group request and the message is not verified successfully, the server MAY delete that Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the server's storage and creating processing overhead on the server.
+* Additionally, if the used Recipient Context was created upon receiving this group request and the message is not verified successfully, the server MAY delete that Recipient Context. Such a configuration, which is specified by the application, mitigates attacks to overload the server's storage.
     
 A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context.
 
@@ -573,35 +572,31 @@ A server SHOULD NOT process a request if the received Recipient ID ('kid') is eq
 
 If Observe {{RFC7641}} is supported, for each newly started observation, the server MUST store the value of the 'kid' parameter from the original Observe request.
 
-The server MUST NOT update the stored value, even in case the observer client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{ssec-wrap-around-partial-iv}}).
+The server MUST NOT update the stored value of a 'kid' parameter associated to a particular Observe request, even in case the observer client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{ssec-wrap-around-partial-iv}}).
 
 ## Protecting the Response ## {#ssec-protect-response}
 
-A server that has received a secure group request may reply with a secure response, which is protected as described in Section 8.3 of {{RFC8613}}, with the following modifications.
+If a server generates a CoAP message in response to an Group OSCORE request, then the server SHALL follow the description in Section 8.3 of {{RFC8613}}, with the modifications described in this section. 
 
-* In step 2, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this specification.
+Note that the server always protects a response with the Sender Context from its latest Security Context, and that a new Security Context does not reset the Sender Sequence Number unless otherwise specified by the application (see {{sec-group-key-management}}).
 
-* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this specification. The encoding of the compressed COSE object is modified as described in {{compression}} of this specification. In particular, the Group Flag MUST be set to 1.
+* In step 2, the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
-* In step 5, the counter signature is computed and the format of the OSCORE mesage is modified as described in {{compression}} of this specification. In particular, the payload of the OSCORE message includes also the counter signature.
+* In step 3, if the server is using a different Security Context for the response compared to what was used to verify the request (see {{sec-group-key-management}}) then the AEAD nonce from the request MUST NOT be used.
 
-Note that the server MUST always protect a response by using its own Sender Context from the latest owned Security Context.
+* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}}. The encoding of the compressed COSE object is modified as described in {{compression}}. In particular, the Group Flag MUST be set to 1. If the server is using a different ID Context (Gid) for the response compared to what was used to verify the request 
+(see {{sec-group-key-management}}) then the new ID Context SHOULD be included in the 'kid context' parameter of the response.
 
-Consistently, upon the establishment of a new Security Context, the server may end up protecting a response by using a Security Context different from the one used to protect the group request (see {{ssec-key-rotation}}). In such a case:
+* In step 5, the counter signature is computed and the format of the OSCORE message is modified as described in {{compression}}. In particular, the payload of the OSCORE message includes also the counter signature.
 
-* The server MUST encode the Partial IV (Sender Sequence Number in network byte order), which is set to the Sender Sequence Number of the server; increment the Sender Sequence Number by one; compute the AEAD nonce from the Sender ID, Common IV, and Partial IV. As defined in {{sec-group-key-management}}, upon the establishment of a new Security Context, the server does not reset its own Sender Sequence Number, unless otherwise specified by the application.
-
-* The server MUST include in the response the 'Partial IV' parameter, which is set to the encoded Partial IV value above.
-
-* The server SHOULD include in the response the 'kid context' parameter, which is set to the ID Context of the new Security Context, i.e. the new Group Identifier (Gid).
 
 ### Supporting Observe ###
 
 If Observe {{RFC7641}} is supported, the server may have ongoing observations, started by Observe requests protected with an old Security Context.
 
-After completing the establishment of a new Security Context, the server MUST protect the following notifications with its own Sender Context from the new Security Context.
+After completing the establishment of a new Security Context, the server MUST protect the following notifications with the Sender Context of the new Security Context.
 
-For each ongoing observation, the server SHOULD include in the first notification protected with the new Security Context also the 'kid context' parameter, which is set to the ID Context of the new Security Context, i.e. the new Group Identifier (Gid). It is OPTIONAL for the server to include the 'kid context' parameter, as set to the new Gid, also in further following notifications for those observations.
+For each ongoing observation, the server SHOULD include in the first notification protected with the new Security Context also the 'kid context' parameter, which is set to the ID Context (Gid) of the new Security Context. It is OPTIONAL for the server to include the ID Context (Gid) in the 'kid context' parameter also in further following notifications for those observations.
 
 Furthermore, for each ongoing observation, the server MUST use the stored value of the 'kid' parameter from the original Observe request, as value for the 'request\_kid' parameter in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}), when protecting notifications for that observation.
 
@@ -609,17 +604,16 @@ Furthermore, for each ongoing observation, the server MUST use the stored value 
 
 Upon receiving a secure response message with the Group Flag set to 1, the client proceeds as described in Section 8.4 of {{RFC8613}}, with the following modifications.
 
-* In step 2, the decoding of the compressed COSE object is modified as described in {{compression}} of this specification. If the received Recipient ID ('kid') does not match with any Recipient Context for the retrieved Gid ('kid context'), then the client MAY create a new Recipient Context and initializes it according to Section 3 of {{RFC8613}}, also retrieving the server's public key. If the application does not specify dynamic derivation of new Recipient Contexts, then the client SHALL stop processing the response.
+Note that a client may receive a response protected with a Security Context different from the one used to protect the corresponding group request, and that upon the establishment of a new Security Context, the client does not reset its own replay windows in its Recipient Contexts, unless otherwise specified by the application (see {{sec-group-key-management}}).
 
-* In step 3, the 'algorithms' array in the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this specification.
+* In step 2, the decoding of the compressed COSE object is modified as described in {{compression}}. If the received 'kid context' matches an existing ID Context (Gid) but the received 'kid' does not match any Recipient ID in this Security Context, then the client MAY create a new Recipient Context for this Recipient ID and initialize it according to Section 3 of {{RFC8613}}, and also retrive the associated public key. If the application does not specify dynamic derivation of new Recipient Contexts, then the client SHALL stop processing the response.
 
-* In step 5, the client also verifies the counter signature using the public key of the server from the associated Recipient Context.
+* In step 3, the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
-* Additionally, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client MAY delete that Recipient Context. Such a configuration, which is specified by the application, would prevent attackers from overloading the client's storage and creating processing overhead on the client.
+* In step 5, the client also verifies the counter signature using the public key of the server from the associated Recipient Context. If verification fails, the same steps are taken as if decryption had failed.
 
-Note that, as discussed in {{ssec-key-rotation}}, a client may receive a response protected with a Security Context different from the one used to protect the corresponding group request.
+* Additionally, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client MAY delete that Recipient Context. Such a configuration, which is specified by the application, mitigates attacks to overload the client's storage.
 
-As defined in {{sec-group-key-management}}, upon the establishment of a new Security Context, the client does not reset its own replay windows in its Recipient Contexts, unless otherwise specified by the application.
 
 ### Supporting Observe ###
 
