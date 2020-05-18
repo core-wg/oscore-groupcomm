@@ -265,7 +265,8 @@ If required by the application (see {{ssec-sec-assumptions}}), it is RECOMMENDED
 
 The specific approach used to distribute new group data is out of the scope of this document. However, it is RECOMMENDED that the Group Manager supports the distribution of the new Gid and Master Secret parameter to the group according to the Group Rekeying Process described in {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
-## Exhaustion of Partial IV Values {#ssec-wrap-around-partial-iv}
+
+## Exhaustion of Sender Sequence Numbers {#ssec-wrap-around-partial-iv}
 
 An endpoint can eventually exhaust the Sender Sequence Numbers, which are incremented for each new message including a Partial IV. This is the case for group requests, Observe notifications {{RFC7641}} and, optionally, any other response.
 
@@ -277,9 +278,18 @@ Furthermore, the endpoint SHOULD inform the Group Manager, that can take one of 
 
 * The Group Manager renews the Security Context in the group (see {{sec-group-key-management}}).
 
-* The Group Manager provides a new unused Sender ID value to the endpoint that has experienced the exhaustion. Then, the endpoint derives a new Sender Context using the new Sender ID (see {{ssec-sender-recipient-context}}).
+* The Group Manager provides a new unused Sender ID value to the endpoint that has experienced the exhaustion. Then, the endpoint derives a new Sender Context using the new Sender ID (see {{ssec-sender-recipient-context}}). 
 
 In either case, the same considerations from {{sec-group-key-management}} hold about stale Recipient Contexts.
+
+
+## Loss of Mutable Security Context {#ssec-loss-mutable-context}
+
+An endpoint can lose its mutable security context such as Sender Sequence Number and Replay Window, e.g., due to reboot. There are inherent security issues associated with re-use of old Sender Sequence Numbers and acceptance of replayed messages. Appendix B.1 of {{RFC8613}} describes secure procedures for handling loss of Sender Sequence Number and update of Replay Window. The procedure in Appendix B.1.1 of {{RFC8613}} applies also to servers in Group OSCORE, as does a variant of Appendix B.1.2 of {{RFC8613}}, see {{ssec-synch-challenge-response}}.
+
+As we have seen in {{ssec-wrap-around-partial-iv}}, the existence of a Group Manager provides other options for handling loss of valid Security Context: renewing the Security Context in the group, or providing new unused Sender IDs to the server who has lost its mutable Security Context. In the latter case, the server still server still needs to update its replay window, as described in {{sec-synch-seq-num}}.
+
+
 
 # Pairwise Keys # {#sec-derivation-pairwise}
 
@@ -517,7 +527,7 @@ The requirements and properties described in Section 7 of {{RFC8613}} also apply
 
 ## Update of Replay Window # {#sec-synch-seq-num}
 
-Upon joining the group, new servers are not aware of the current Partial IVs (Sender Sequence Numbers of the clients). This means that when such servers receive a secure group request for the first time, they are not able to verify if that request is fresh and has not been replayed. The same holds when a server loses its mutable security context, for instance after a device reboot.
+A new server joining a group may not be aware of the current Partial IVs (Sender Sequence Numbers of the clients). The first time the new server receives a request from a particular client, it is not able to verify if that request is a replayed. The same holds when a server loses its mutable security context, for instance after a device reboot.
 
 The exact way to address this issue is application specific, and depends on the particular use case and its replay requirements. The list of methods to handle update of replay window is part of the group communication policy, and different servers can use different methods.
 
@@ -1254,7 +1264,7 @@ The Group Manager MAY indicate which of such approaches are used in the group, a
 
 Upon receiving a group request from a client, a server does not take any action to synchronize with the sender sequence number of that client. This provides no assurance at all as to message freshness, which can be acceptable in non-critical use cases.
 
-With the notable exception of Observe notifications and responses following a group rekeying, it is optional for the server to use its own sender sequence number as Partial IV. Instead, for efficiency reasons, the server may rather use the request's Partial IV when protecting a response.
+With the notable exception of Observe notifications and responses following a group rekeying, it is optional for the server to use the sender sequence number as Partial IV. Instead, for efficiency reasons, the server may rather use the request's Partial IV when protecting a response.
 
 ## Baseline Synchronization ## {#ssec-synch-baseline}
 
