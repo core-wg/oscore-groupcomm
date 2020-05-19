@@ -285,10 +285,9 @@ In either case, the same considerations from {{sec-group-key-management}} hold a
 
 ## Loss of Mutable Security Context {#ssec-loss-mutable-context}
 
-An endpoint can lose its mutable security context such as Sender Sequence Number and Replay Window, e.g., due to reboot. There are inherent security issues associated with re-use of old Sender Sequence Numbers and acceptance of replayed messages. Appendix B.1 of {{RFC8613}} describes secure procedures for handling loss of Sender Sequence Number and update of Replay Window. The procedure in Appendix B.1.1 of {{RFC8613}} applies also to servers in Group OSCORE, as does a variant of Appendix B.1.2 of {{RFC8613}}, see {{ssec-synch-challenge-response}}.
+An endpoint losing its mutable Security Context, e.g., due to reboot, need to prevent re-use of Sender Sequence Numbers and acceptance of replayed messages. Appendix B.1 of {{RFC8613}} describes secure procedures for handling loss of Sender Sequence Number and update of Replay Window. The procedure in Appendix B.1.1 of {{RFC8613}} applies also to servers in Group OSCORE, as does a variant of Appendix B.1.2 of {{RFC8613}}, see {{ssec-synch-challenge-response}}.
 
-As we have seen in {{ssec-wrap-around-partial-iv}}, the existence of a Group Manager provides other options for handling loss of valid Security Context: renewing the Security Context in the group, or providing new unused Sender IDs to the server who has lost its mutable Security Context. In the latter case, the server still server still needs to update its replay window, as described in {{sec-synch-seq-num}}.
-
+As we have seen in {{ssec-wrap-around-partial-iv}}, the existence of a Group Manager provides alternative options for handling loss of valid Security Context: renewing the Security Context in the whole group, or providing new unused Sender IDs to the server who has lost its mutable Security Context. In the latter case, the server still needs to update its replay window, as described in {{sec-synch-seq-num}}.
 
 
 # Pairwise Keys # {#sec-derivation-pairwise}
