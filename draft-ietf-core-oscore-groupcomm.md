@@ -266,28 +266,39 @@ If required by the application (see {{ssec-sec-assumptions}}), it is RECOMMENDED
 The specific approach used to distribute new group data is out of the scope of this document. However, it is RECOMMENDED that the Group Manager supports the distribution of the new Gid and Master Secret parameter to the group according to the Group Rekeying Process described in {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
 
-## Exhaustion of Sender Sequence Numbers {#ssec-wrap-around-partial-iv}
+## Update of Security Context {#ssec-sec-context-persistence} 
+
+The mutable parts of the Security Context are updated by the endpoint when executing the security protocol but may nevertheless become outdated, e.g. due to loss of mutable Security Context ({{ssec-loss-mutable-context}}) or exhaustion of Sender Sequence Numbers ({{ssec-wrap-around-partial-iv}}).
+
+It is RECOMMENDED that the immutable part of the Security Context is stored in non-volatile memory or otherwise can be reliably accessed throughout the operation of the group, e.g. after device reboot. However, also immutable parts of the Security Context may need to be updated, for example, due to new or re-joining members in the group, see {{sec-group-re-join}}.
+
+If an endpoint does not have an up-to-date Sender Security Context, it MUST NOT protect further messages using this Security Context to avoid reusing a nonce with the same AEAD key. 
+
+### Loss of Mutable Security Context {#ssec-loss-mutable-context}
+
+An endpoint losing its mutable Security Context, e.g., due to reboot, need to prevent re-use of Sender Sequence Numbers and to handle replayed messages. Appendix B.1 of {{RFC8613}} describes secure procedures for handling loss of Sender Sequence Number and update of Replay Window. The procedure in Appendix B.1.1 of {{RFC8613}} applies also to servers in Group OSCORE and is RECOMMENDED to use. A variant of Appendix B.1.2 of {{RFC8613}} applicable to Group OSCORE is specified in {{ssec-synch-challenge-response}}.
+
+If an endpoint is not able to establish an updated Sender Security Context then it MUST NOT protect further messages using this Security Context, it SHOULD inform the Group Manager and retrieve new Security Context parameters from the Group Manager ({{sec-group-re-join}}). 
+
+
+### Exhaustion of Sender Sequence Numbers {#ssec-wrap-around-partial-iv}
 
 An endpoint can eventually exhaust the Sender Sequence Numbers, which are incremented for each new message including a Partial IV. This is the case for group requests, Observe notifications {{RFC7641}} and, optionally, any other response.
 
 If an implementation's integers support wrapping addition, the implementation MUST detect a wrap-around of the Sender Sequence Number value and treat those as exhausted.
 
-Upon exhausting the Sender Sequence Numbers, the endpoint MUST NOT transmit further messages for that group until it has derived a new Sender Context, to avoid reusing nonces with the same keys.
-
-Furthermore, the endpoint SHOULD inform the Group Manager, that can take one of the following actions:
-
-* The Group Manager renews the Security Context in the group (see {{sec-group-key-management}}).
-
-* The Group Manager provides a new unused Sender ID value to the endpoint that has experienced the exhaustion. Then, the endpoint derives a new Sender Context using the new Sender ID (see {{ssec-sender-recipient-context}}). 
-
-In either case, the same considerations from {{sec-group-key-management}} hold about stale Recipient Contexts.
+Upon exhausting the Sender Sequence Numbers, the endpoint MUST NOT transmit further messages for that group, it SHOULD inform the Group Manager and retrieve new Security Context parameters from the Group Manager ({{sec-group-re-join}}).
 
 
-## Loss of Mutable Security Context {#ssec-loss-mutable-context}
+### Update Involving the Group Manager {#sec-group-re-join}
 
-An endpoint losing its mutable Security Context, e.g., due to reboot, need to prevent re-use of Sender Sequence Numbers and acceptance of replayed messages. Appendix B.1 of {{RFC8613}} describes secure procedures for handling loss of Sender Sequence Number and update of Replay Window. The procedure in Appendix B.1.1 of {{RFC8613}} applies also to servers in Group OSCORE, as does a variant of Appendix B.1.2 of {{RFC8613}}, see {{ssec-synch-challenge-response}}.
+If the Group Manager gets informed that a member does not have an up-to-date Security Context it can take one of the following actions:
 
-As we have seen in {{ssec-wrap-around-partial-iv}}, the existence of a Group Manager provides alternative options for handling loss of valid Security Context: renewing the Security Context in the whole group, or providing new unused Sender IDs to the server who has lost its mutable Security Context. In the latter case, the server still needs to update its replay window, as described in {{sec-synch-seq-num}}.
+* The Group Manager assigns the endpoint a new Sender ID. The Group Manager MUST NOT assign a Sender ID that has been used in this group. The endpoint can then retrieve its new Sender ID and other parts of the immutable Security Context from the Group Manager and derive a new Sender Context (see {{ssec-sender-recipient-context}}). Since the Sender Sequence Number of the endpoint is initialized to 0, this prevents the reuse of AEAD nonces with the same Sender Key. 
+
+* The Group Manager establishes a new Security Context for the group (see {{sec-group-key-management}}). The Group Manager SHOULD NOT establish a new Security Context for the group because one member has an outdated Security Context, unless that was already planned or required for other reasons. All endpoints of the group need to acquire new Security Context parameters from the Group Manager.
+
+In either case, members may end up retaining stale Recipient Contexts (see {{sec-group-key-management}}) and may also need to update the Replay Window (see {{sec-synch-seq-num}}).
 
 
 # Pairwise Keys # {#sec-derivation-pairwise}
