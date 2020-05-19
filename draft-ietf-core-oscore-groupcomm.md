@@ -62,7 +62,6 @@ normative:
   I-D.ietf-core-groupcomm-bis:
   RFC2119:
   RFC4086:
-  I-D.mattsson-cfrg-det-sigs-with-noise:
   RFC7252:
   RFC7748:
   RFC8032:
@@ -97,6 +96,7 @@ informative:
   I-D.ietf-ace-oauth-authz:
   I-D.ietf-core-echo-request-tag:
   I-D.somaraju-ace-multicast:
+  I-D.mattsson-cfrg-det-sigs-with-noise:
   RFC4944:
   RFC4949:
   RFC6282:
@@ -216,7 +216,7 @@ Further details about the security context of Group OSCORE are provided in the r
 
 The ID Context parameter (see Sections 3.3 and 5.1 of {{RFC8613}}) in the Common Context SHALL contain the Group Identifier (Gid) of the group. The choice of the Gid is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle potential collisions between Gids, see {{ssec-gid-collision}}.
 
-The Counter Signature Algorithm identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 4.5 of {{RFC8152}}). Its value is immutable once the Common Context is established. The used Counter Signature Algorithm MUST be selected among the signature algorithms defined in the COSE Algorithms Registry (see section 16.4 of {{RFC8152}}). The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. If elliptic curve signatures are used, it is RECOMMENDED to implement deterministic signatures with additional randomness as specified in {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
+The Counter Signature Algorithm identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 4.5 of {{RFC8152}}). Its value is immutable once the Common Context is established. The used Counter Signature Algorithm MUST be selected among the signature algorithms defined in the COSE Algorithms Registry (see section 16.4 of {{RFC8152}}). The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. If elliptic curve signatures are used, it is recommended to implement deterministic signatures with additional randomness as specified in {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
 
 The Counter Signature Parameters identifies the parameters associated to the digital signature algorithm specified in the Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined in the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), where each entry indicates a specified structure of the Counter Signature Parameters.
 
