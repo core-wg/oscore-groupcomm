@@ -1374,6 +1374,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Pairwise Flag bit renamed as Group Protection Flag bit, set to 1 in group mode, set to 0 in pairwise mode.
 
+* Dedicated section on update of Security Context.
+
 * By default, sender sequence numbers and replay windows are not reset upon group rekeying.
 
 * An endpoint implementing only a silent server does not support the pairwise mode.
