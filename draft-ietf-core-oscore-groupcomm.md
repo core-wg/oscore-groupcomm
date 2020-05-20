@@ -1342,33 +1342,6 @@ An optimized request is processed as a request in group mode ({{ssec-protect-req
 
 The optimized request is compatible with all AEAD algorithms defined in {{RFC8152}}, but would not be compatible with AEAD algorithms that do not have a well-defined tag.
 
-# Considerations on Device Rebooting # {#sec-rebooting}
-
-If a member of an OSCORE group reboots, two cases are envisioned, depending on the device capability to retain some parameters of the OSCORE Security Context. This section describes the two cases.
-
-If the device has lost its security association with the Group Manager, it MUST re-establish it before resuming to communicate in the group. To this end, the device can either start a new security association or resume the previous one, if the security protocol used with the Group Manager allows so.
-
-## Re-Establishment of the Same Security Context {#sec-rebooting-re-establish}
-
-This case concerns a device which is able to:
-
-* Preserve the Master Secret, Master Salt, ID Context and Sender ID after a reboot. To this end, the device may implement procedures for writing these parameters to nonvolatile memory, after having joined the group and if they change, e.g. upon a group rekeying.
-
-* Handle the loss of its Sender Sequence Number, for instance by implementing procedures for regularly writing the current value to nonvolatile memory during normal operations. In particular, the procedure defined in Appendix B.1.1 of {{RFC8613}} is RECOMMENDED.
-
-After rebooting, the device can re-establish the Common Context and Sender Context of the OSCORE Security Context (see {{sec-context}}), by using the parameters and procedures above. Instead, it can re-establish the Recipient Contexts associated to other group members, when it gets knownledge of their respective Sender ID and public key.
-
-## Group Re-Joining {#sec-rebooting-re-join}
-
-This case concerns a device which, across a reboot, is not able to both preserve all the parameters mentioned in {{sec-rebooting-re-establish}} and handle the loss of its own Sender Sequence Number.
-
-After rebooting, the device MUST rejoin the group through the Group Manager, and use the keying material received from the Group Manager to establish a new OSCORE Security Context (see {{sec-context}}).
-
-If, during the joining process, the Group Manager recognizes the device as a group member that has actually never left the group:
-
-* The Group Manager SHOULD NOT rekey the group, unless already planned so or required due to other reasons.
-
-* The Group Manager MUST anyway assign a new Sender ID to the device. Since the Sender Sequence Number of the device is initialized to 0, this prevents both the reusage of AEAD nonces with the same Sender Key as well as the detection of fresh requests from that device as replays.
 
 # Document Updates # {#sec-document-updates}
 
