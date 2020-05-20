@@ -255,7 +255,7 @@ In order to establish a new Security Context for a group, a new Group Identifier
 
 Having acquired new group data as described above, each member can re-derive the keying material stored in its Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise. Unless otherwise specified by the application, a group member does not reset the Sender Sequence Number in its Sender Context, and does not reset the replay windows in its Recipient Contexts. From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
 
-The Recipient ID ('kid') SHOULD NOT be considered as a persistent and reliable indicator of a group member. Such an indication can be achieved only by using that members's public key, when verifying countersignatures of received messages (in group mode), or when verifying messages integrity-protected with pairwise keying material derived from asymmetric keys (in pairwise mode). As a consequence, group members may end up retaining stale Recipient Contexts, that are no longer useful to verify incoming secure messages.
+As group members change, or as members get new Sender IDs (see, {{ssec-sec-context-persistence}}) so does the relevant Recipient IDs that the other endpoints need to keep track of. The Recipient ID ('kid') SHOULD NOT be considered as a persistent and reliable indicator of a group member. Such an indication can be achieved only by using that members's public key, when verifying countersignatures of received messages (in group mode), or when verifying messages integrity-protected with pairwise keying material derived from asymmetric keys (in pairwise mode). As a consequence, group members may end up retaining stale Recipient Contexts, that are no longer useful to verify incoming secure messages.
 
 The Group Manager MUST NOT recycle an endpoint's Sender ID ('kid') with the same Gid, Master Secret and Master Salt. Even if Gid and Master Secret are renewed as described in this section, the Group Manager SHOULD NOT recycle an endpoint's Sender ID ('kid') within a same group, especially in the short term. Furthermore, applications may define policies to: i) delete (long-)unused Recipient Contexts and reduce the impact on storage space; as well as ii) check with the Group Manager that a public key is currently the one associated to a 'kid' value, after a number of consecutive failed verifications.
 
@@ -276,7 +276,7 @@ If an endpoint does not have an up-to-date Sender Security Context, it MUST NOT 
 
 ### Loss of Mutable Security Context {#ssec-loss-mutable-context}
 
-An endpoint losing its mutable Security Context, e.g., due to reboot, need to prevent the re-use of Sender Sequence Numbers and to handle incoming replayed messages. Appendix B.1 of {{RFC8613}} describes secure procedures for handling loss of Sender Sequence Number and update of Replay Window. The procedure in Appendix B.1.1 of {{RFC8613}} applies also to servers in Group OSCORE and is RECOMMENDED to use. A variant of Appendix B.1.2 of {{RFC8613}} applicable to Group OSCORE is specified in {{ssec-synch-challenge-response}}.
+An endpoint losing its mutable Security Context, e.g., due to reboot, need to prevent the re-use of Sender Sequence Numbers, and to handle incoming replayed messages. Appendix B.1 of {{RFC8613}} describes secure procedures for handling loss of Sender Sequence Number and update of Replay Window. The procedure in Appendix B.1.1 of {{RFC8613}} applies also to servers in Group OSCORE and is RECOMMENDED to use. A variant of Appendix B.1.2 of {{RFC8613}} applicable to Group OSCORE is specified in {{ssec-synch-challenge-response}}.
 
 If an endpoint is not able to establish an updated Sender Security Context, it MUST NOT protect further messages using this Security Context, it SHOULD inform the Group Manager and retrieve new Security Context parameters from the Group Manager ({{sec-group-re-join}}). 
 
@@ -290,15 +290,23 @@ If an implementation's integers support wrapping addition, the implementation MU
 Upon exhausting the Sender Sequence Numbers, the endpoint MUST NOT transmit further messages using this Security Context, it SHOULD inform the Group Manager and retrieve new Security Context parameters from the Group Manager ({{sec-group-re-join}}).
 
 
-### Update Involving the Group Manager {#sec-group-re-join}
+### Re-joining the Group {#sec-group-re-join}
 
-If the Group Manager gets informed that a group member does not have an up-to-date Security Context, it can take one of the following actions:
+The Group Manager can assist an endpoint with incomplete Sender Security Context to retrieve missing data of the Security Context and thereby re-join the group. The two main options are described in this section. Update of Replay Window in Recipient Contexts is discussed in {{sec-synch-seq-num}}.
 
-* The Group Manager assigns the endpoint a new Sender ID as described in {{sec-group-key-management}}. The endpoint can then retrieve its new Sender ID and other parts of the immutable Security Context from the Group Manager and derive a new Sender Context (see {{ssec-sender-recipient-context}}). Since the Sender Sequence Number of the endpoint is initialized to 0, this prevents the reuse of AEAD nonces with the same Sender Key. 
 
-* The Group Manager establishes a new Security Context for the group (see {{sec-group-key-management}}). The Group Manager SHOULD NOT establish a new Security Context for the group because one member has an outdated Security Context, unless that was already planned or required for other reasons. All endpoints of the group need to acquire new Security Context parameters from the Group Manager.
+#### New Sender ID {#new-sender-id}
 
-In either case, group members may end up retaining stale Recipient Contexts (see {{sec-group-key-management}}) and may also need to update the Replay Window (see {{sec-synch-seq-num}}).
+The Group Manager assigns the endpoint a new Sender ID, leaving the Gid, Master Secret and Master Salt unchanged. The Group Manager MUST assign an unused Sender ID.  Having retrieved the new Sender ID, and potentially other missing data of the immutable Security Context, the endpoint can derive a new Sender Context (see {{ssec-sender-recipient-context}}). The Sender Sequence Number is initialized to 0. 
+
+The Recipient Context of the other group members corresponding to the old Sender ID becomes stale (see {{sec-group-key-management}}).
+
+
+#### New Security Context for the Group
+
+The Group Manager establishes a new Security Context for the group (see {{sec-group-key-management}}). The Group Manager SHOULD NOT establish a new Security Context for the group because one member has an outdated Security Context (see {{new-sender-id}}), unless that was already planned or required for other reasons. All endpoints of the group need to acquire new Security Context parameters from the Group Manager.
+
+How to handle the old Security Context is discussed in {{ssec-key-rotation}}. 
 
 
 # Pairwise Keys # {#sec-derivation-pairwise}
