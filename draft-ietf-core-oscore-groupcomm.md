@@ -576,7 +576,7 @@ A client transmits a secure group request as described in Section 8.1 of {{RFC86
 
 If Observe {{RFC7641}} is supported, for each newly started observation, the client MUST store the value of the 'kid' parameter from the original Observe request.
 
-The client MUST NOT update the stored value, even in case it is individually rekeyed and receives a new Sender ID from the Group Manager (see {{ssec-wrap-around-partial-iv}}).
+The client MUST NOT update the stored value, even in case it is individually rekeyed and receives a new Sender ID from the Group Manager (see {{new-sender-id}}).
 
 ## Verifying the Request ## {#ssec-verify-request}
 
@@ -600,7 +600,7 @@ A server SHOULD NOT process a request if the received Recipient ID ('kid') is eq
 
 If Observe {{RFC7641}} is supported, for each newly started observation, the server MUST store the value of the 'kid' parameter from the original Observe request.
 
-The server MUST NOT update the stored value of a 'kid' parameter associated to a particular Observe request, even in case the observer client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{ssec-wrap-around-partial-iv}}).
+The server MUST NOT update the stored value of a 'kid' parameter associated to a particular Observe request, even in case the observer client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}).
 
 ## Protecting the Response ## {#ssec-protect-response}
 
@@ -646,7 +646,7 @@ Note that a client may receive a response protected with a Security Context diff
 
 If Observe {{RFC7641}} is supported, for each ongoing observation, the client MUST use the stored value of the 'kid' parameter from the original Observe request, as value for the 'request\_kid' parameter in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}), when verifying notifications for that observation.
 
-This ensures that the client can correctly verify notifications, even in case it is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{ssec-wrap-around-partial-iv}}).
+This ensures that the client can correctly verify notifications, even in case it is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}).
 
 # Message Processing in Pairwise Mode # {#sec-pairwise-protection}
 
@@ -918,7 +918,7 @@ With particular reference to the OSCORE Master Secret, it has to be kept secret 
 
 As in OSCORE, also Group OSCORE relies on sender sequence numbers included in the COSE message field 'Partial IV' and used to build AEAD nonces.
 
-Note that the Partial IV of an endpoint does not necessarily grow monotonically. For instance, upon exhaustion of the endpoint Sender Sequence Number, the Partial IV also gets exhausted. As discussed in {{ssec-wrap-around-partial-iv}}, this results either in the endpoint being individually rekeyed and getting a new Sender ID, or in the establishment of a new Security Context in the group. Therefore, uniqueness of (key, nonce) pairs (see {{ssec-key-nonce-uniqueness}}) is preserved also when a new Security Context is established.
+Note that the Partial IV of an endpoint does not necessarily grow monotonically. For instance, upon exhaustion of the endpoint Sender Sequence Number, the Partial IV also gets exhausted. As discussed in {{sec-group-re-join}}, this results either in the endpoint being individually rekeyed and getting a new Sender ID, or in the establishment of a new Security Context in the group. Therefore, uniqueness of (key, nonce) pairs (see {{ssec-key-nonce-uniqueness}}) is preserved also when a new Security Context is established.
 
 As discussed in {{sec-synch-seq-num}}, an endpoint that has just joined a group is exposed to replay attack, as it is not aware of the sender sequence numbers currently used by other group members. {{synch-ex}} describes how endpoints can synchronize with senders' sequence numbers.
 
