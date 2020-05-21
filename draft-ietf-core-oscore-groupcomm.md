@@ -253,7 +253,7 @@ The Group Manager may serve additional entities acting as signature checkers, e.
 
 In order to establish a new Security Context for a group, a new Group Identifier (Gid) for that group and a new value for the Master Secret parameter MUST be generated. An example of Gid format supporting this operation is provided in {{gid-ex}}. When distributing the new Gid and Master Secret, the Group Manager MAY distribute also a new value for the Master Salt parameter, and SHOULD preserve the current value of the Sender ID of each group member.
 
-Having acquired new group data as described above, each member can re-derive the keying material stored in its Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise. Unless otherwise specified by the application, a group member does not reset the Sender Sequence Number in its Sender Context, and does not reset the replay windows in its Recipient Contexts. From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
+Having acquired new group data as described above, each member can re-derive the keying material stored in its Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise. Unless otherwise specified by the application, a group member does not reset the Sender Sequence Number in its Sender Context, and does not reset the Replay Windows in its Recipient Contexts. From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
 
 As group members change, or as members get new Sender IDs (see, {{ssec-sec-context-persistence}}) so does the relevant Recipient IDs that the other endpoints need to keep track of. The Recipient ID ('kid') SHOULD NOT be considered as a persistent and reliable indicator of a group member. Such an indication can be achieved only by using that members's public key, when verifying countersignatures of received messages (in group mode), or when verifying messages integrity-protected with pairwise keying material derived from asymmetric keys (in pairwise mode). As a consequence, group members may end up retaining stale Recipient Contexts, that are no longer useful to verify incoming secure messages.
 
@@ -295,7 +295,7 @@ Upon exhausting the Sender Sequence Numbers, the endpoint MUST NOT protect furth
 The Group Manager can assist an endpoint with incomplete Sender Security Context to retrieve missing data of the Security Context and thereby re-join the group. The two main options are described in this section. Update of Replay Window in Recipient Contexts is discussed in {{sec-synch-seq-num}}.
 
 
-#### New Sender ID {#new-sender-id}
+#### New Sender ID for the Re-joining Endpoint {#new-sender-id}
 
 The Group Manager may assign the endpoint a new Sender ID, leaving the Gid, Master Secret and Master Salt unchanged. In this case the Group Manager MUST assign an unused Sender ID.  Having retrieved the new Sender ID, and potentially other missing data of the immutable Security Context, the endpoint can derive a new Sender Context (see {{ssec-sender-recipient-context}}). The Sender Sequence Number is initialized to 0. 
 
@@ -304,7 +304,7 @@ The Recipient Context of the other group members corresponding to the old Sender
 
 #### New Security Context for the Group
 
-The Group Manager may establishe a new Security Context for the group (see {{sec-group-key-management}}). The Group Manager SHOULD NOT establish a new Security Context for the group if one member has an outdated Security Context (see {{new-sender-id}}), unless that was already planned or required for other reasons. All endpoints of the group need to acquire new Security Context parameters from the Group Manager.
+The Group Manager may establish a new Security Context for the group (see {{sec-group-key-management}}). The Group Manager SHOULD NOT establish a new Security Context for the group if one member has an outdated Security Context (see {{new-sender-id}}), unless that was already planned or required for other reasons. All endpoints of the group need to acquire new Security Context parameters from the Group Manager.
 
 How to handle the old Security Context is discussed in {{ssec-key-rotation}}. 
 
