@@ -354,7 +354,7 @@ On the other hand, when combining group and pairwise communication modes, this m
 
 As a consequence, replay checks may be invoked more often on the recipient side, where larger replay windows should be considered.
 
-## Note on Implementation ##
+## Note on Implementation ## {#pairwise-implementation}
 
 The shared secrets used in the key derivation of the pairwise keys ({{key-derivation-pairwise}}) may be stored in memory or recomputed each time they are needed. This applies also to the pairwise keys themselves, with the difference that the shared secrets only change if the asymmetric keys do. In order to optimize performance, an endpoint may store the derived pairwise keys in the Security Context for future retrieval. This can work as follows. 
 
@@ -654,7 +654,7 @@ This ensures that the client can correctly verify notifications, even in case it
 
 When using the pairwise mode of Group OSCORE, messages are protected and processed as specified in {{RFC8613}}, with the modifications described in this section. 
 
-The pairwise mode takes advantage of an existing security context for the group mode with a compatible signature algorithm, to establish a security context shared exclusively with any other member. The pairwise mode does not support intermediary verification of source authentication or integrity.
+The pairwise mode takes advantage of an existing security context for the group mode to establish a security context shared exclusively with any other member. In order to use the pairwise mode the signature scheme of the group mode MUST support a combined signature and encryption scheme; for example signature with ECDSA, and encryption using AES-CCM with key derived with ECDH. The pairwise mode does not support intermediary verification of source authentication or integrity.
 
 The pairwise mode MAY be supported. However, it MUST be supported by endpoints that support the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}. An endpoint implementing only a silent server does not support the pairwise mode.
 
@@ -664,7 +664,7 @@ The pairwise mode protects messages between two members of a group, essentially 
 
 * The external_aad defined in {{sec-cose-object-ext-aad-enc}} is used for the encryption process.
 
-* The Sender/Recipient keys are derived as defined in {{sec-derivation-pairwise}}.
+* The Sender/Recipient Keys used in the pairwise mode are derived as defined in {{sec-derivation-pairwise}}.
 
 Senders MUST NOT use the pairwise mode to protect a message intended for multiple recipients or for the whole group. This prevents a client from protecting a request with the pairwise key associated to one specific server, and then send the request to multiple recipients, e.g. over multicast, making it impossible to decrypt for any of the other servers in the group.
 
@@ -672,7 +672,7 @@ The Group Manager MAY indicate that the group uses also the pairwise mode, as pa
 
 ## Pre-Requirements
 
-In order to protect an outgoing message in pairwise mode, a sender needs to know the public key and the Recipient ID for the message recipient, as stored in its own Recipient Context associated to that recipient.
+In order to protect an outgoing message in pairwise mode, the sender needs to know the public key and the Recipient ID for the recipient endpoint, as stored in the Recipient Context associated to that endpoint (see Pairwise Sender Context of {{pairwise-implementation}}).
 
 Furthermore, the sender needs to know the individual address of the message recipient. This information may not be known at any given point in time. For instance, right after having joined the group, a client may know the public key and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.
 
