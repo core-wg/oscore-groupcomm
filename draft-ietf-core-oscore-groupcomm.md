@@ -299,7 +299,7 @@ The Group Manager can assist an endpoint with incomplete Sender Security Context
 
 The Group Manager may assign the endpoint a new Sender ID, leaving the Gid, Master Secret and Master Salt unchanged. In this case the Group Manager MUST assign an unused Sender ID.  Having retrieved the new Sender ID, and potentially other missing data of the immutable Security Context, the endpoint can derive a new Sender Context (see {{ssec-sender-recipient-context}}). The Sender Sequence Number is initialized to 0. 
 
-The assignment of a new Sender ID may be the result of different processes. The endpoint may request a new Sender ID, e.g., because of wrapping of Sender Sequence Numbers ({{ssec-wrap-around-partial-iv}}). An endpoint may request to re-join the group, e.g. because of losing mutable Security Context ({{ssec-loss-mutable-context}}), and recieve as response a new Sender ID plus the latest immutable Security Context.
+The assignment of a new Sender ID may be the result of different processes. The endpoint may request a new Sender ID, e.g., because of exhaustion of Sender Sequence Numbers ({{ssec-wrap-around-partial-iv}}). An endpoint may request to re-join the group, e.g. because of losing its mutable Security Context ({{ssec-loss-mutable-context}}), and receive as response a new Sender ID plus the latest immutable Security Context.
 
 The Recipient Context of the other group members corresponding to the old Sender ID becomes stale (see {{sec-group-key-management}}).
 
