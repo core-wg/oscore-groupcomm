@@ -346,7 +346,7 @@ After establishing a partially or completely new Security Context (see {{sec-gro
 
 As long as any two group members preserve the same asymmetric keys, the Diffie-Hellman shared secret does not change across updates of the group keying material.
 
-## Usage of Sequence Numbers ##
+## Usage of Sequence Numbers ## {#pairwise-seqno}
 
 When using any of its Pairwise Sender Keys, a sender endpoint including the 'Partial IV' parameter in the protected message MUST use the current fresh value of the Sender Sequence Number from its Sender Context (see {{ssec-sender-recipient-context}}). That is, the same Sender Sequence Number space is used for all outgoing messages protected with Group OSCORE, thus limiting both storage and complexity.
 
@@ -684,11 +684,11 @@ When using the pairwise mode, a request is protected as defined in {{ssec-protec
 
 * The Group Flag MUST be set to 0.
 
-* The COSE_Encrypt0 object included in the request is encrypted using a symmetric key K, that the client derives as Pairwise Sender Key for the server (see {{sec-derivation-pairwise}}).
+* The Sender Key used is the Pairwise Sender Key (see {{sec-derivation-pairwise}}).
 
-* The Counter Signature is not computed. That is, unlike defined in {{compression}}, the payload of the OSCORE message terminates with the encoded ciphertext of the COSE object.
+* The counter signature is not computed and therefore not included in the message, in contrast to group mode, see {{compression}}. The payload of the OSCORE message thus terminates with the encoded ciphertext of the COSE object, just as in {{RFC8613}}.
 
-Note that no changes are made to the AEAD nonce and AAD.
+Note in particular that, just as in group mode, the external_aad for encryption is generated as in {{sec-cose-object-ext-aad-enc}}, and the Partial IV is the current fresh value of the Sender Sequence Number, see {{pairwise-seqno}}.
 
 ## Verifying the Request {#sec-pairwise-verify-req}
 
@@ -696,9 +696,12 @@ Upon receiving a request with the Group Flag set to 0, the server MUST process i
 
 * If the server discards the request due to not retrieving a Security Context associated to the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
 
-* No countersignature to verify is included.
+* If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}) and may also be deleted if the message is not successfully verified. 
 
-* The COSE_Encrypt0 object included in the request is decrypted and verified using the same symmetric key K in {{sec-pairwise-protection-req}}, that the server derives as Pairwise Recipient Key for the client (see {{sec-derivation-pairwise}}).
+* The Recipient Key used is the Pairwise Recipient Key (see {{sec-derivation-pairwise}}).
+
+* No verification of counter signature as there none included in the message.
+
 
 ## Protecting the Response {#sec-pairwise-protection-resp}
 
@@ -706,19 +709,21 @@ When using the pairwise mode, a response is protected as defined in {{ssec-prote
 
 * The Group Flag MUST be set to 0.
 
-* The COSE_Encrypt0 object is encrypted using a symmetric pairwise key K, that the server derives as Pairwise Sender Key for the client (see {{sec-derivation-pairwise}}).
+* The Sender Key used is the Pairwise Sender Key (see {{sec-derivation-pairwise}}).
 
-* The Counter Signature is not computed. That is, unlike defined in {{compression}}, the payload of the OSCORE message terminates with the encoded ciphertext of the COSE object.
+* The counter signature is not computed and therefore not included in the message.
 
-Note that no changes are made to the AEAD nonce and AAD.
 
 ## Verifying the Response {#sec-pairwise-verify-resp}
 
 Upon receiving a response with the Group Flag set to 0, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
 
-* No countersignature to verify is included.
+* If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}) and may also be deleted if the message is not successfully verified.
 
-* The COSE_Encrypt0 object included in the response is decrypted and verified using the same symmetric pairwise key K in {{sec-pairwise-protection-resp}}, that the client derives as Pairwise Recipient Key for the server (see {{sec-derivation-pairwise}}).
+* The Recipient Key used is the Pairwise Recipient Key (see {{sec-derivation-pairwise}}).
+
+* No verification of counter signature as there none included in the message.
+
 
 ## Usage in Non-Multicast Settings {#sec-pairwise-non-multicast-setups}
 
