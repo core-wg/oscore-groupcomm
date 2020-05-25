@@ -654,7 +654,7 @@ This ensures that the client can correctly verify notifications, even in case it
 
 When using the pairwise mode of Group OSCORE, messages are protected and processed as specified in {{RFC8613}}, with the modifications described in this section. 
 
-The pairwise mode takes advantage of an existing security context for the group mode to establish a security context shared exclusively with any other member. In order to use the pairwise mode the signature scheme of the group mode MUST support a combined signature and encryption scheme; for example signature with ECDSA, and encryption using AES-CCM with key derived with ECDH. The pairwise mode does not support intermediary verification of source authentication or integrity.
+The pairwise mode takes advantage of an existing security context for the group mode to establish a security context shared exclusively with any other member. In order to use the pairwise mode, the signature scheme of the group mode MUST support a combined signature and encryption scheme; for example signature with ECDSA, and encryption using AES-CCM with key derived with ECDH. The pairwise mode does not support intermediary verification of source authentication or integrity.
 
 The pairwise mode MAY be supported. However, it MUST be supported by endpoints that support the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}. An endpoint implementing only a silent server does not support the pairwise mode.
 
@@ -688,7 +688,7 @@ When using the pairwise mode, the request is protected as defined in {{ssec-prot
 
 * The counter signature is not computed and therefore not included in the message, which deviates from {{compression}}. The payload of the OSCORE message thus terminates with the encoded ciphertext of the COSE object, just as in {{RFC8613}}.
 
-Note that, just as in group mode, the external_aad for encryption is generated as in {{sec-cose-object-ext-aad-enc}}, and the Partial IV is the current fresh value of the Sender Sequence Number, see {{pairwise-seqno}}.
+Note that, just as in the group mode, the external_aad for encryption is generated as in {{sec-cose-object-ext-aad-enc}}, and the Partial IV is the current fresh value of the Sender Sequence Number, see {{pairwise-seqno}}.
 
 ## Verifying the Request {#sec-pairwise-verify-req}
 
@@ -700,7 +700,7 @@ Upon receiving a request with the Group Flag set to 0, the server MUST process i
 
 * The Recipient Key used is the Pairwise Recipient Key (see {{sec-derivation-pairwise}}).
 
-* No verification of counter signature as there none included in the message.
+* No verification of counter signature occurs, as there is none included in the message.
 
 
 ## Protecting the Response {#sec-pairwise-protection-resp}
@@ -722,7 +722,7 @@ Upon receiving a response with the Group Flag set to 0, the client MUST process 
 
 * The Recipient Key used is the Pairwise Recipient Key (see {{sec-derivation-pairwise}}).
 
-* No verification of counter signature as there none included in the message.
+* No verification of counter signature occurs, as there is none included in the message.
 
 
 ## Usage in Non-Multicast Settings {#sec-pairwise-non-multicast-setups}
@@ -1373,8 +1373,6 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Normative support for the signature and pairwise mode.
 
 * Revised methods for synchronization with clients' sender sequence number.
-
-* New appendix with considerations on device rebooting.
 
 * Clarifications and editorial improvements.
 
