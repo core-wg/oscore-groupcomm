@@ -547,7 +547,7 @@ The requirements and properties described in Section 7 of {{RFC8613}} also apply
 
 ## Update of Replay Window # {#sec-synch-seq-num}
 
-A new server joining a group may not be aware of the current Partial IVs (Sender Sequence Numbers of the clients). The first time the new server receives a request from a particular client, it is not able to verify if that request is a replay. The same holds when a server loses its mutable Security Context, for instance after a device reboot.
+A new server joining a group may not be aware of the current Partial IVs (Sender Sequence Numbers of the clients). The first time the new server receives a request from a particular client, it is not able to verify if that request is a replay. The same holds when a server loses its mutable Security Context ({{ssec-loss-mutable-context}}), for instance after a device reboot.
 
 The exact way to address this issue is application specific, and depends on the particular use case and its replay requirements. The list of methods to handle the update of a Replay Window is part of the group communication policy, and different servers can use different methods.
 
