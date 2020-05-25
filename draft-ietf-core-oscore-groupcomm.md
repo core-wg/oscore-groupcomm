@@ -670,25 +670,25 @@ Senders MUST NOT use the pairwise mode to protect a message intended for multipl
 
 The Group Manager MAY indicate that the group uses also the pairwise mode, as part of the group communication policies signalled to candidate group members upon their group joining.
 
-## Pre-Requirements
+## Pre-Conditions
 
 In order to protect an outgoing message in pairwise mode, the sender needs to know the public key and the Recipient ID for the recipient endpoint, as stored in the Recipient Context associated to that endpoint (see Pairwise Sender Context of {{pairwise-implementation}}).
 
-Furthermore, the sender needs to know the individual address of the message recipient. This information may not be known at any given point in time. For instance, right after having joined the group, a client may know the public key and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.
+Furthermore, the sender needs to know the individual address of the recipient endpoint. This information may not be known at any given point in time. For instance, right after having joined the group, a client may know the public key and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.
 
 To make this information available, servers MAY provide a resource to which a client can send a request for a server identified by its 'kid' value, or a set thereof. The specified set may be empty, hence identifying all the servers in the group. Further details of such an interface are out of scope for this document.
 
 ## Protecting the Request {#sec-pairwise-protection-req}
 
-When using the pairwise mode, a request is protected as defined in {{ssec-protect-request}}, with the following differences.
+When using the pairwise mode, the request is protected as defined in {{ssec-protect-request}}, with the following differences.
 
 * The Group Flag MUST be set to 0.
 
 * The Sender Key used is the Pairwise Sender Key (see {{sec-derivation-pairwise}}).
 
-* The counter signature is not computed and therefore not included in the message, in contrast to group mode, see {{compression}}. The payload of the OSCORE message thus terminates with the encoded ciphertext of the COSE object, just as in {{RFC8613}}.
+* The counter signature is not computed and therefore not included in the message, which deviates from {{compression}}. The payload of the OSCORE message thus terminates with the encoded ciphertext of the COSE object, just as in {{RFC8613}}.
 
-Note in particular that, just as in group mode, the external_aad for encryption is generated as in {{sec-cose-object-ext-aad-enc}}, and the Partial IV is the current fresh value of the Sender Sequence Number, see {{pairwise-seqno}}.
+Note that, just as in group mode, the external_aad for encryption is generated as in {{sec-cose-object-ext-aad-enc}}, and the Partial IV is the current fresh value of the Sender Sequence Number, see {{pairwise-seqno}}.
 
 ## Verifying the Request {#sec-pairwise-verify-req}
 
