@@ -270,7 +270,7 @@ The specific approach used to distribute new group data is out of the scope of t
 
 The mutable parts of the Security Context are updated by the endpoint when executing the security protocol, but may nevertheless become outdated, e.g. due to loss of the mutable Security Context ({{ssec-loss-mutable-context}}) or exhaustion of Sender Sequence Numbers ({{ssec-wrap-around-partial-iv}}).
 
-It is RECOMMENDED that the immutable part of the Security Context is stored in non-volatile memory, or that it can otherwise be reliably accessed throughout the operation of the group, e.g. after device reboot. However, also immutable parts of the Security Context may need to be updated, for example due to new or re-joining members in the group, see {{sec-group-re-join}}.
+It is RECOMMENDED that the immutable part of the Security Context is stored in non-volatile memory, or that it can otherwise be reliably accessed throughout the operation of the group, e.g. after device reboot. However, also immutable parts of the Security Context may need to be updated, for example due to scheduled key renewal, new or re-joining members in the group, or that the endpoint changes Sender ID, see {{sec-group-re-join}}.
 
 If an endpoint does not have an up-to-date Sender Security Context, it MUST NOT protect further messages using this Security Context to avoid reusing a nonce with the same AEAD key. 
 
@@ -290,21 +290,23 @@ If an implementation's integers support wrapping addition, the implementation MU
 Upon exhausting the Sender Sequence Numbers, the endpoint MUST NOT protect further messages using this Security Context, it SHOULD inform the Group Manager and retrieve new Security Context parameters from the Group Manager ({{sec-group-re-join}}).
 
 
-### Re-joining the Group {#sec-group-re-join}
+### Retrieving New Security Context Parameters {#sec-group-re-join}
 
-The Group Manager can assist an endpoint with incomplete Sender Security Context to retrieve missing data of the Security Context and thereby re-join the group. The two main options are described in this section. Update of Replay Window in Recipient Contexts is discussed in {{sec-synch-seq-num}}.
+The Group Manager can assist an endpoint with incomplete Sender Security Context to retrieve missing data of the Security Context and thereby become fully operative in the group again. The two main options are described in this section. Update of Replay Window in Recipient Contexts is discussed in {{sec-synch-seq-num}}.
 
 
-#### New Sender ID for the Re-joining Endpoint {#new-sender-id}
+#### New Sender ID for the Endpoint {#new-sender-id}
 
 The Group Manager may assign the endpoint a new Sender ID, leaving the Gid, Master Secret and Master Salt unchanged. In this case the Group Manager MUST assign an unused Sender ID.  Having retrieved the new Sender ID, and potentially other missing data of the immutable Security Context, the endpoint can derive a new Sender Context (see {{ssec-sender-recipient-context}}). The Sender Sequence Number is initialized to 0. 
+
+The assignment of a new Sender ID may be the result of different processes. The endpoint may request a new Sender ID, e.g., because of wrapping of Sender Sequence Numbers ({{ssec-wrap-around-partial-iv}}). An endpoint may request to re-join the group, e.g. because of losing mutable Security Context ({{ssec-loss-mutable-context}}), and recieve as response a new Sender ID plus the latest immutable Security Context.
 
 The Recipient Context of the other group members corresponding to the old Sender ID becomes stale (see {{sec-group-key-management}}).
 
 
 #### New Security Context for the Group
 
-The Group Manager may establish a new Security Context for the group (see {{sec-group-key-management}}). The Group Manager SHOULD NOT establish a new Security Context for the group if one member has an outdated Security Context (see {{new-sender-id}}), unless that was already planned or required for other reasons. All endpoints of the group need to acquire new Security Context parameters from the Group Manager.
+The Group Manager may establish a new Security Context for the group (see {{sec-group-key-management}}). The Group Manager does not necessarily establish a new Security Context for the group if one member has an outdated Security Context (see {{new-sender-id}}), unless that was already planned or required for other reasons. All endpoints of the group need to acquire new Security Context parameters from the Group Manager.
 
 How to handle the old Security Context is discussed in {{ssec-key-rotation}}. 
 
