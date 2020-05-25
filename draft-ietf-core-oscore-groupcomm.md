@@ -652,25 +652,21 @@ This ensures that the client can correctly verify notifications, even in case it
 
 # Message Processing in Pairwise Mode # {#sec-pairwise-protection}
 
-For use cases that do not require an intermediary performing signature verification and that use a compatible signature algorithm, the pairwise mode defined in this section can be used for unicast communication.
+When using the pairwise mode of Group OSCORE, messages are protected and processed as specified in {{RFC8613}}, with the modifications described in this section. 
 
-This mode provides significant smaller message sizes, by relying on shorter integrity tags instead of digital signatures. Thus, it results in a lower message overhead, while still providing source authentication of messages.
+The pairwise mode takes advantage of an existing security context for the group mode with a compatible signature algorithm, to establish a security context shared exclusively with any other member. The pairwise mode does not support intermediary verification of source authentication or integrity.
 
-Furthermore, this mode increases the security by making messages not only source-authenticated, but also confidential and accessible only to the sender and the single intended recipient.
+The pairwise mode MAY be supported. However, it MUST be supported by endpoints that support the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}. An endpoint implementing only a silent server does not support the pairwise mode.
 
-To this end, this mode uses the derivation process defined in {{sec-derivation-pairwise}}, and allows two group members to protect requests and responses exchanged with each other using pairwise keying material.
-
-The pairwise mode processes messages very similarly to {{RFC8613}}, with the following notable differences:
+The pairwise mode protects messages between two members of a group, essentially following {{RFC8613}}, but with the following notable differences:
 
 * The 'kid' and 'kid context' parameters of the COSE object are used as defined in {{sec-cose-object-kid}}.
 
 * The external_aad defined in {{sec-cose-object-ext-aad-enc}} is used for the encryption process.
 
-* The encryption/decryption key is a pairwise key derived as defined in {{sec-derivation-pairwise}}.
+* The Sender/Recipient keys are derived as defined in {{sec-derivation-pairwise}}.
 
 Senders MUST NOT use the pairwise mode to protect a message intended for multiple recipients or for the whole group. This prevents a client from protecting a request with the pairwise key associated to one specific server, and then send the request to multiple recipients, e.g. over multicast, making it impossible to decrypt for any of the other servers in the group.
-
-The pairwise mode MAY be supported. However, it MUST be supported by endpoints that support the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}. An endpoint implementing only a silent server does not support the pairwise mode.
 
 The Group Manager MAY indicate that the group uses also the pairwise mode, as part of the group communication policies signalled to candidate group members upon their group joining.
 
