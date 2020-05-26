@@ -151,11 +151,11 @@ As with OSCORE, it is possible to combine Group OSCORE with communication securi
 
 Group OSCORE defines two modes of operation:
 
-* In the group mode, Group OSCORE requests and responses are digitally signed with the private key of the sender and embedded in the protected CoAP message. The group mode supports all COSE algorithms as well as signature verification by intermediaries. This mode is defined in {{mess-processing}} and MUST be supported.
+* In the group mode, Group OSCORE requests and responses are digitally signed with the private key of the sender and embedded in the protected CoAP message. The group mode supports all COSE algorithms as well as signature verification by intermediaries. This mode is defined in {{mess-processing}} and mandatory to support.
 
-* In the pairwise mode, two group members exchange Group OSCORE requests and responses over unicast, protected with symmetric keys. These symmetric keys are derived from Diffie-Hellman shared secrets, calculated with the asymmetric keys of the sender and recipient. This allows for shorter integrity tags and therefore lower message overhead. This mode is defined in {{sec-pairwise-protection}} and MAY be supported. The pairwise mode MUST be supported by endpoints that support the Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}, for instance, for responses after the first block-wise request possibly targeting all servers in the group and including the CoAP Block2 option (see Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}}).
+* In the pairwise mode, two group members exchange Group OSCORE requests and responses over unicast, protected with symmetric keys. These symmetric keys are derived from Diffie-Hellman shared secrets, calculated with the asymmetric keys of the sender and recipient. This allows for shorter integrity tags and therefore lower message overhead. This mode is defined in {{sec-pairwise-protection}} and optional to support. 
 
-Both modes provide source authentication of CoAP messages. It is up to the application to decide in which mode a message has to be protected, potentially on a per-message basis. Such decision can be based, for instance, on pre-configured policies or dynamic assessing of the target recipient and/or resource, among other things. One important case is when requests are protected with group mode, and responses with pairwise mode, since this significantly reduces the overhead in case of many responses to one request.
+Both modes provide source authentication of CoAP messages. The application decides what mode to use, potentially on a per-message basis. Such decision can be based, for instance, on pre-configured policies or dynamic assessing of the target recipient and/or resource, among other things. One important case is when requests are protected with group mode, and responses with pairwise mode, since this significantly reduces the overhead in case of many responses to one request.
 
 
 ## Terminology ## {#terminology}
@@ -656,7 +656,7 @@ When using the pairwise mode of Group OSCORE, messages are protected and process
 
 The pairwise mode takes advantage of an existing security context for the group mode to establish a security context shared exclusively with any other member. In order to use the pairwise mode, the signature scheme of the group mode MUST support a combined signature and encryption scheme; for example signature with ECDSA, and encryption using AES-CCM with key derived with ECDH. The pairwise mode does not support intermediary verification of source authentication or integrity.
 
-The pairwise mode MAY be supported. However, it MUST be supported by endpoints that support the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}. An endpoint implementing only a silent server does not support the pairwise mode.
+The pairwise mode MAY be supported. The pairwise mode MUST be supported by endpoints that support the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}, for instance, for responses after the first block-wise request possibly targeting all servers in the group and including the CoAP Block2 option (see Section 2.3.6 of [I-D.ietf-core-groupcomm-bis]). An endpoint implementing only a silent server does not support the pairwise mode.
 
 The pairwise mode protects messages between two members of a group, essentially following {{RFC8613}}, but with the following notable differences:
 
