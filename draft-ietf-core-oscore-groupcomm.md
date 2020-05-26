@@ -97,6 +97,7 @@ informative:
   I-D.ietf-core-echo-request-tag:
   I-D.somaraju-ace-multicast:
   I-D.mattsson-cfrg-det-sigs-with-noise:
+  I-D.ietf-lwig-security-protocol-comparison:
   RFC4944:
   RFC4949:
   RFC6282:
@@ -156,6 +157,8 @@ Group OSCORE defines two modes of operation:
 * In the pairwise mode, two group members exchange Group OSCORE requests and responses over unicast, protected with symmetric keys. These symmetric keys are derived from Diffie-Hellman shared secrets, calculated with the asymmetric keys of the sender and recipient. This allows for shorter integrity tags and therefore lower message overhead. This mode is defined in {{sec-pairwise-protection}} and optional to support. 
 
 Both modes provide source authentication of CoAP messages. The application decides what mode to use, potentially on a per-message basis. Such decision can be based, for instance, on pre-configured policies or dynamic assessing of the target recipient and/or resource, among other things. One important case is when requests are protected with group mode, and responses with pairwise mode, since this significantly reduces the overhead in case of many responses to one request.
+
+A special deployment of Group OSCORE is to use pairwise mode only. For example, consider the case of a constrained-node network {{RFC7228}} with a large number of CoAP endpoints and the objective to establish secure communication between any pair of endpoints with a small message overhead. Since the total number of security associations that need to be established grows with the square of the number of nodes, it is desirable to restrict the provisioned keying material and also avoid the setting that a key establishment protocol needs to be executed per security association. One solution to this is to deploy Group OSCORE with the endpoints being part of a group and use the pairwise mode. This solution assumes a trusted third party called the Group Manager (see {{group-manager}}) but has the benefit that it essentially suffices to distribute the public key of the other endpoint. After that, a CoAP endpoint can locally derive the OSCORE security context for the other endpoint and protect the CoAP communication with very low overhead {{I-D.ietf-lwig-security-protocol-comparison}}.
 
 
 ## Terminology ## {#terminology}
@@ -725,17 +728,6 @@ Upon receiving a response with the Group Flag set to 0, the client MUST process 
 * No verification of counter signature occurs, as there is none included in the message.
 
 
-## Usage in Non-Multicast Settings {#sec-pairwise-non-multicast-setups}
-
-Some network deployments may comprise a large number of CoAP endpoints as engaging only in one-to-one communication, i.e. never recurring to one-to-many message delivery, e.g. over IP Multicast.
-
-In this case, the natural choice to provide end-to-end security at the application layer would be using OSCORE {{RFC8613}}, between each pair of communicating endpoints. However, unless the necessary keying material is pre-installed on the deployed devices, this requires each pair of CoAP endpoints to separately establish a pairwise OSCORE Security Context, with a number of exchanges on the wire.
-
-Especially in large-scale deployments, the communication overhead due to such key establishment exchanges can be drastically reduced, by rather using Group OSCORE in pairwise mode. That is, assuming it is acceptable to additionally deploy a Group OSCORE infrastructure, and especially a Group Manager, the CoAP endpoints would not need to perform any key establishment with each other on the wire.
-
-Instead, each CoAP endpoint can join a same common OSCORE group associated to the whole network scenario, by interacting with the Group Manager. When doing so, the endpoint performs on the wire a single key establishment exchange with the Group Manager, in order to establish the Security Context to operate in the OSCORE group.
-
-After that, a CoAP endpoint locally derives any further keying material when needing to, in order to process secure messages to/from another CoAP endpoint in the group. This especially includes the derivation of pairwise keying material (see {{sec-derivation-pairwise}}), which is used to process messages exchanged in a one-to-one fashion, and protected with the pairwise mode of Group OSCORE defined in this section.
 
 # Responsibilities of the Group Manager # {#sec-group-manager}
 
