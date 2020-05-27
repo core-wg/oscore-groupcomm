@@ -669,9 +669,9 @@ The pairwise mode protects messages between two members of a group, essentially 
 
 * The Sender/Recipient Keys used in the pairwise mode are derived as defined in {{sec-derivation-pairwise}}.
 
-Senders MUST NOT use the pairwise mode to protect a message intended for multiple recipients or for the whole group. This prevents a client from protecting a request with the pairwise key associated to one specific server, and then send the request to multiple recipients, e.g. over multicast, making it impossible to decrypt for any of the other servers in the group.
+Senders MUST NOT use the pairwise mode to protect a message intended for multiple recipients, since the key used is derived from keying material available only to one recipient. 
 
-The Group Manager MAY indicate that the group uses also the pairwise mode, as part of the group communication policies signalled to candidate group members upon their group joining.
+The Group Manager MAY indicate that the group uses also the pairwise mode, as part of the group communication policies signalled to candidate group members when joining the group.
 
 ## Pre-Conditions
 
@@ -679,7 +679,7 @@ In order to protect an outgoing message in pairwise mode, the sender needs to kn
 
 Furthermore, the sender needs to know the individual address of the recipient endpoint. This information may not be known at any given point in time. For instance, right after having joined the group, a client may know the public key and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.
 
-To make this information available, servers MAY provide a resource to which a client can send a request for a server identified by its 'kid' value, or a set thereof. The specified set may be empty, hence identifying all the servers in the group. Further details of such an interface are out of scope for this document.
+To make addressing information available, servers MAY provide a resource to which a client can send a request for a server identified by its 'kid' value, or a set thereof. The specified set may be empty, hence identifying all the servers in the group. Further details of such an interface are out of scope for this document.
 
 ## Protecting the Request {#sec-pairwise-protection-req}
 
@@ -699,7 +699,7 @@ Upon receiving a request with the Group Flag set to 0, the server MUST process i
 
 * If the server discards the request due to not retrieving a Security Context associated to the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
 
-* If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}) and may also be deleted if the message is not successfully verified. 
+* If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}), and deleted if the Recipient Context is deleted as a result of the message not being successfully verified. 
 
 * The Recipient Key used is the Pairwise Recipient Key (see {{sec-derivation-pairwise}}).
 
@@ -721,7 +721,7 @@ When using the pairwise mode, a response is protected as defined in {{ssec-prote
 
 Upon receiving a response with the Group Flag set to 0, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
 
-* If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}) and may also be deleted if the message is not successfully verified.
+* If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}), and deleted if the Recipient Context is deleted as a result of the message not being successfully verified.
 
 * The Recipient Key used is the Pairwise Recipient Key (see {{sec-derivation-pairwise}}).
 
