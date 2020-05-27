@@ -699,7 +699,7 @@ Upon receiving a request with the Group Flag set to 0, the server MUST process i
 
 * If the server discards the request due to not retrieving a Security Context associated to the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
 
-* If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}), and deleted if the Recipient Context is deleted as a result of the message not being successfully verified. 
+* If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}). The new Pairwise Sender/Recipient Keys are deleted if the Recipient Context is deleted as a result of the message not being successfully verified. 
 
 * The Recipient Key used is the Pairwise Recipient Key (see {{sec-derivation-pairwise}}).
 
@@ -721,7 +721,7 @@ When using the pairwise mode, a response is protected as defined in {{ssec-prote
 
 Upon receiving a response with the Group Flag set to 0, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
 
-* If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}), and deleted if the Recipient Context is deleted as a result of the message not being successfully verified.
+* If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}). The new Pairwise Sender/Recipient Keys are deleted if the Recipient Context is deleted as a result of the message not being successfully verified. 
 
 * The Recipient Key used is the Pairwise Recipient Key (see {{sec-derivation-pairwise}}).
 
