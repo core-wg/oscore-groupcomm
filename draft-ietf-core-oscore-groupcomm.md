@@ -60,13 +60,14 @@ author:
 normative:
 
   I-D.ietf-core-groupcomm-bis:
+  I-D.ietf-cose-rfc8152bis-struct:
+  I-D.ietf-cose-rfc8152bis-algs:
   RFC2119:
   RFC4086:
   RFC7252:
   RFC7748:
   RFC8032:
   RFC8126:
-  RFC8152:
   RFC8174:
   RFC8613:
   NIST-800-56A:
@@ -136,7 +137,7 @@ This document defines Group Object Security for Constrained RESTful Environments
 
 The Constrained Application Protocol (CoAP) {{RFC7252}} is a web transfer protocol specifically designed for constrained devices and networks {{RFC7228}}. Group communication for CoAP {{I-D.ietf-core-groupcomm-bis}} addresses use cases where deployed devices benefit from a group communication model, for example to reduce latencies, improve performance and reduce bandwidth utilization. Use cases include lighting control, integrated building control, software and firmware updates, parameter and configuration updates, commissioning of constrained networks, and emergency multicast (see {{sec-use-cases}}). This specification defines the security protocol for Group communication for CoAP {{I-D.ietf-core-groupcomm-bis}}.
 
-Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} describes a security protocol based on the exchange of protected CoAP messages. OSCORE builds on CBOR Object Signing and Encryption (COSE) {{RFC8152}} and provides end-to-end encryption, integrity, replay protection and binding of response to request between a sender and a recipient, independent of transport also in the presence of intermediaries. To this end, a CoAP message is protected by including its payload (if any), certain options, and header fields in a COSE object, which replaces the authenticated and encrypted fields in the protected message.
+Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} describes a security protocol based on the exchange of protected CoAP messages. OSCORE builds on CBOR Object Signing and Encryption (COSE) {{I-D.ietf-cose-rfc8152bis-struct}}{{I-D.ietf-cose-rfc8152bis-algs}} and provides end-to-end encryption, integrity, replay protection and binding of response to request between a sender and a recipient, independent of transport also in the presence of intermediaries. To this end, a CoAP message is protected by including its payload (if any), certain options, and header fields in a COSE object, which replaces the authenticated and encrypted fields in the protected message.
 
 This document defines Group OSCORE, providing the same end-to-end security properties as OSCORE in the case where CoAP requests have multiple recipients. In particular, the described approach defines how OSCORE should be used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses.
 
@@ -165,7 +166,7 @@ A special deployment of Group OSCORE is to use pairwise mode only. For example, 
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
 
-Readers are expected to be familiar with the terms and concepts described in CoAP {{RFC7252}} including "endpoint", "client", "server", "sender" and "recipient"; group communication for CoAP {{I-D.ietf-core-groupcomm-bis}}; COSE and counter signatures {{RFC8152}}.
+Readers are expected to be familiar with the terms and concepts described in CoAP {{RFC7252}} including "endpoint", "client", "server", "sender" and "recipient"; group communication for CoAP {{I-D.ietf-core-groupcomm-bis}}; COSE and counter signatures {{I-D.ietf-cose-rfc8152bis-struct}}{{I-D.ietf-cose-rfc8152bis-algs}}.
 
 Readers are also expected to be familiar with the terms and concepts for protection and processing of CoAP messages through OSCORE, such as "Security Context" and "Master Secret", defined in {{RFC8613}}.
 
@@ -217,15 +218,50 @@ Further details about the security context of Group OSCORE are provided in the r
 
 ## Common Context ## {#ssec-common-context}
 
+The Common Context may be acquired from the Group Manager (see {{group-manager}}). The following sections define how the Common Context is extended, compared to {{RFC8613}}.
+
+### ID Context ## {#ssec-common-context-id-context}
+
 The ID Context parameter (see Sections 3.3 and 5.1 of {{RFC8613}}) in the Common Context SHALL contain the Group Identifier (Gid) of the group. The choice of the Gid is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle potential collisions between Gids, see {{ssec-gid-collision}}.
 
-The Counter Signature Algorithm identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 4.5 of {{RFC8152}}). Its value is immutable once the Common Context is established. The used Counter Signature Algorithm MUST be selected among the signature algorithms defined in the COSE Algorithms Registry (see section 16.4 of {{RFC8152}}). The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. If elliptic curve signatures are used, it is recommended to implement deterministic signatures with additional randomness as specified in {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
+### Counter Signature Algorithm ## {#ssec-common-context-cs-alg}
 
-The Counter Signature Parameters identifies the parameters associated to the digital signature algorithm specified in the Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined in the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), where each entry indicates a specified structure of the Counter Signature Parameters.
+Counter Signature Algorithm identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 4.4 of {{I-D.ietf-cose-rfc8152bis-struct}}). Its value is immutable once the Common Context is established.
 
-The Counter Signature Key Parameters identifies the parameters associated to the keys used with the digital signature algorithm specified in the Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established. The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined in the Counter Signature Key Parameters Registry (see {{iana-cons-cs-key-params}}), where each entry indicates a specified structure of the Counter Signature Key Parameters.
+Counter Signature Algorithm MUST take value from the "Value" column of the "COSE Algorithms" Registry, as updated in Section 10.2 of {{I-D.ietf-cose-rfc8152bis-algs}}. The value implies an associated key type, as "\[kty\]" is a listed capability of each registered algorithm.
 
-The Common Context may be acquired from the Group Manager (see {{group-manager}}).
+The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. If elliptic curve signatures are used, it is recommended to implement deterministic signatures with additional randomness as specified in {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
+
+### Counter Signature Parameters ## {#ssec-common-context-cs-params}
+
+Counter Signature Parameters identifies the parameters associated to the digital signature algorithm specified in Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established.
+
+The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined as follows.
+
+1. The entry for the key type associated to the Counter Signature Algorithm is considered, from the "COSE Key Types" Registry as updated in Section 10.1 of {{I-D.ietf-cose-rfc8152bis-algs}}. Then, the array V in the "Capabilities" column of this entry is considered.
+
+2. Counter Signature Parameters takes the following value.
+   * If V has one element, it takes no value.
+   * If V has two elements, it takes the second element of V.
+   * If V has N > 2 elements, it takes an array Z of N-1 elements. In particular, Z\[i\] = V\[i+1\], i = (0 ... N-2).
+
+Examples of Counter Signature Parameters are in {{sec-cs-params-ex}}.
+   
+### Counter Signature Key Parameters ## {#ssec-common-context-cs-key-params}
+
+Counter Signature Key Parameters identifies the parameters associated to the keys used with the digital signature algorithm specified in Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established.
+
+The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined as follows.
+
+1. The entry for the key type associated to the Counter Signature Algorithm is considered, from the "COSE Key Types" Registry as updated in Section 10.1 of {{I-D.ietf-cose-rfc8152bis-algs}}. Then, the array V in the "Capabilities" column of this entry is considered.
+
+2. Counter Signature Key Parameters takes the following value.
+   * If V has one element, i.e. kty(n), it takes n.
+   * If V has N > 1 elements, it takes an array Z of N elements, where:
+      * Z\[0\] = n , where V\[0\] = kty(n)
+      * Z\[i\] = V\[i\] , i = (1 ... N-1).
+
+Examples of Counter Signature Key Parameters are in {{sec-cs-params-ex}}.
 
 ## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
@@ -390,13 +426,13 @@ For each other endpoint X with which the endpoint has pairwise keys:
 
 # The COSE Object # {#sec-cose-object}
 
-Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{RFC8152}} to wrap and protect data in the original message. OSCORE uses the untagged COSE_Encrypt0 structure with an Authenticated Encryption with Associated Data (AEAD) algorithm. Unless otherwise specified, the following modifications apply for both the group mode and the pairwise mode of Group OSCORE.
+Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{I-D.ietf-cose-rfc8152bis-struct}} to wrap and protect data in the original message. OSCORE uses the untagged COSE_Encrypt0 structure with an Authenticated Encryption with Associated Data (AEAD) algorithm. Unless otherwise specified, the following modifications apply for both the group mode and the pairwise mode of Group OSCORE.
 
 ## Counter Signature # {#sec-cose-object-unprotected-field}
 
 For the group mode only, the 'unprotected' field MUST additionally include the following parameter:
 
-* CounterSignature0: its value is set to the counter signature of the COSE object, computed by the sender as described in Appendix A.2 of {{RFC8152}}, by using the private key and according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context. In particular, the Sig_structure contains the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE_Encrypt0 object as payload.
+* CounterSignature0: its value is set to the counter signature of the COSE object, computed by the sender as described in Section 5.2 of {{I-D.ietf-cose-rfc8152bis-struct}}, by using the private key and according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context. In particular, the Sig_structure contains the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE_Encrypt0 object as payload.
 
 ## The 'kid' and 'kid context' parameters # {#sec-cose-object-kid}
 
@@ -410,7 +446,7 @@ The external_aad of the Additional Authenticated Data (AAD) is different compare
 
 ### external_aad for Encryption ### {#sec-cose-object-ext-aad-enc}
 
-The external_aad for encryption (see Section 5.3 of {{RFC8152}}), used both in group mode and pairwise mode, includes the counter signature algorithm and related signature parameters, see {{fig-ext-aad-encryption}}. 
+The external_aad for encryption (see Section 6.3 of {{I-D.ietf-cose-rfc8152bis-struct}}), used both in group mode and pairwise mode, includes the counter signature algorithm and related signature parameters, see {{fig-ext-aad-encryption}}. 
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
@@ -430,16 +466,27 @@ aad_array = [
 
 Compared with Section 5.4 of {{RFC8613}}, the 'algorithms' array in the aad_array additionally includes:
 
-* 'alg_countersign', which contains the Counter Signature Algorithm from the Common Context (see {{ssec-common-context}}). This parameter has the value specified in the "Value" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}) for this counter signature algorithm.
+* 'alg_countersign', which specifies Counter Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Counter Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this counter signature algorithm.
 
-* 'par_countersign', which contains the Counter Signature Parameters from the Common Context (see {{ssec-common-context}}). This parameter contains the counter signature parameters encoded as specified in the "Parameters" field of the Counter Signature Parameters Registry (see {{iana-cons-cs-params}}), for the used counter signature algorithm. If the Counter Signature Parameters in the Common Context is empty, 'par_countersign' MUST be encoding the CBOR simple value Null.
+* 'par_countersign', which specifies Counter Signature Parameters from the Common Context (see {{ssec-common-context-cs-params}}). This parameter is encoded as follows.
 
-* 'par_countersign_key', which contains the Counter Signature Key Parameters from the Common Context (see {{ssec-common-context}}). This parameter contains the counter signature key parameters encoded as specified in the "Parameters" field of the Counter Signature Key Parameters Registry (see {{iana-cons-cs-key-params}}), for the used counter signature algorithm. If the Counter Signature Key Parameters in the Common Context is empty, 'par_countersign_key' MUST be encoding the CBOR simple value Null.
+   - Let V be the array in the "Capabilities" column of the "COSE Key Types" Registry, in the entry for the key type associated to Counter Signature Algorithm. V\[i\] denotes the i-th element of V, i = (0 ... N-1).
+   - If Counter Signature Parameters has no value, 'par_countersign' MUST be encoding the CBOR simple value Null.
+   - If Counter Signature Parameters has a single value, 'par_countersign' MUST be encoding that value, with the same CBOR type of V\[1\].
+   - If Counter Signature Parameters is an array Z of N-1 elements, 'par_countersign' MUST be encoding a CBOR array of N-1 elements. The i-th element of the CBOR array MUST encode the value of Z\[i\], with the same CBOR type of V\[i+1\].
 
+* 'par_countersign_key', which specifies Counter Signature Key Parameters from the Common Context (see {{ssec-common-context-cs-key-params}}). This parameter is encoded as follows.
+
+   - Let V be the array in the "Capabilities" column of the "COSE Key Types" Registry, in the entry for the key type associated to Counter Signature Algorithm. V\[i\] denotes the i-th element of V, i = (0 ... N-1).
+   - If Counter Signature Key Parameters has no value, 'par_countersign_key' MUST be encoding the CBOR simple value Null.
+   - If Counter Signature Key Parameters has a single value, 'par_countersign_key' MUST be encoding that value as a CBOR integer or text string, consistently with the "Value" field for this key type in the "COSE Key Types" Registry.
+   - If Counter Signature Key Parameters is an array Z of N elements, 'par_countersign_key' MUST be encoding a CBOR array of N elements. In particular:
+      * The first element of the CBOR array MUST encode the value of Z\[0\] as a CBOR integer or text string, consistently with the "Value" field for this key type in the "COSE Key Types" Registry.
+      * The i-th element of the CBOR array, i = (1 ... N-1), MUST encode the value of Z\[i\], with the same CBOR type of V\[i\].
 
 ### external_aad for Signing ### {#sec-cose-object-ext-aad-sign}
 
-The external_aad for signing (see Section 4.4 of {{RFC8152}}) used in group mode is identical to the external_aad for encryption (see {{sec-cose-object-ext-aad-enc}}) with the addition of the OSCORE option, see {{fig-ext-aad-signing}}.
+The external_aad for signing (see Section 4.4 of {{I-D.ietf-cose-rfc8152bis-struct}}) used in group mode is identical to the external_aad for encryption (see {{sec-cose-object-ext-aad-enc}}) with the addition of the OSCORE option, see {{fig-ext-aad-signing}}.
 
 
 ~~~~~~~~~~~ CDDL
@@ -961,172 +1008,6 @@ Note to RFC Editor: Please replace all occurrences of "\[This Document\]" with t
 
 This document has the following actions for IANA.
 
-## Counter Signature Parameters Registry {#iana-cons-cs-params}
-
-This specification establishes the IANA "Counter Signature Parameters" Registry. The Registry has been created to use the "Expert Review Required" registration procedure {{RFC8126}}. Expert review guidelines are provided in {{review}}.
-
-This registry specifies the parameters of each admitted countersignature algorithm, as well as the possible structure they are organized into. This information is used to populate the parameter Counter Signature Parameters of the Common Context (see {{sec-context}}).
-
-The columns of this table are:
-
-* Name: A value that can be used to identify an algorithm in documents for easier comprehension. Its value is taken from the 'Name' column of the "COSE Algorithms" Registry.
-
-* Value: The value to be used to identify this algorithm. Its content is taken from the 'Value' column of the "COSE Algorithms" Registry. The value MUST be the same one used in the "COSE Algorithms" Registry for the entry with the same 'Name' field.
-
-* Parameters: This indicates the CBOR encoding of the parameters (if any) for the counter signature algorithm indicated by the 'Value' field.
-
-* Description: A short description of the parameters encoded in the 'Parameters' field (if any).
-
-* Reference: This contains a pointer to the public specification for the field, if one exists.
-
-Initial entries in the registry are as follows.
-
-~~~~~~~~~~~
-+-------------+-------+--------------+-----------------+-----------+
-|    Name     | Value |  Parameters  |   Description   | Reference |
-+-------------+-------+--------------+-----------------+-----------+
-|             |       |              |                 |           |
-|    EdDSA    |  -8   |  crv : int   | crv value taken | [This     |
-|             |       |              | from the COSE   | Document] |
-|             |       |              | Elliptic Curve  |           |
-|             |       |              | Registry        |           |
-|             |       |              |                 |           |
-+-------------+-------+--------------+-----------------+-----------+
-|             |       |              |                 |           |
-|    ES256    |  -7   |  crv : int   | crv value taken | [This     |
-|             |       |              | from the COSE   | Document] |
-|             |       |              | Elliptic Curve  |           |
-|             |       |              | Registry        |           |
-|             |       |              |                 |           |
-+-------------+-------+--------------+-----------------+-----------+
-|             |       |              |                 |           |
-|    ES384    |  -35  |  crv : int   | crv value taken | [This     |
-|             |       |              | from the COSE   | Document] |
-|             |       |              | Elliptic Curve  |           |
-|             |       |              | Registry        |           |
-|             |       |              |                 |           |
-+-------------+-------+--------------+-----------------+-----------+
-|             |       |              |                 |           |
-|    ES512    |  -36  |  crv : int   | crv value taken | [This     |
-|             |       |              | from the COSE   | Document] |
-|             |       |              | Elliptic Curve  |           |
-|             |       |              | Registry        |           |
-|             |       |              |                 |           |
-+-------------+-------+--------------+-----------------+-----------+
-|             |       |              |                 |           |
-|    PS256    |  -37  |              | Parameters not  | [This     |
-|             |       |              | present         | Document] |
-|             |       |              |                 |           |
-+-------------+-------+--------------+-----------------+-----------+
-|             |       |              |                 |           |
-|    PS384    |  -38  |              | Parameters not  | [This     |
-|             |       |              | present         | Document] |
-|             |       |              |                 |           |
-+-------------+-------+--------------+-----------------+-----------+
-|             |       |              |                 |           |
-|    PS512    |  -39  |              | Parameters not  | [This     |
-|             |       |              | present         | Document] |
-|             |       |              |                 |           |
-+-------------+-------+--------------+-----------------+-----------+
-~~~~~~~~~~~
-
-## Counter Signature Key Parameters Registry {#iana-cons-cs-key-params}
-
-This specification establishes the IANA "Counter Signature Key Parameters" Registry. The Registry has been created to use the "Expert Review Required" registration procedure {{RFC8126}}. Expert review guidelines are provided in {{review}}.
-
-This registry specifies the parameters of countersignature keys for each admitted countersignature algorithm, as well as the possible structure they are organized into. This information is used to populate the parameter Counter Signature Key Parameters of the Common Context (see {{sec-context}}).
-
-The columns of this table are:
-
-* Name: A value that can be used to identify an algorithm in documents for easier comprehension. Its value is taken from the 'Name' column of the "COSE Algorithms" Registry.
-
-* Value: The value to be used to identify this algorithm. Its content is taken from the 'Value' column of the "COSE Algorithms" Registry. The value MUST be the same one used in the "COSE Algorithms" Registry for the entry with the same 'Name' field.
-
-* Parameters: This indicates the CBOR encoding of the key parameters (if any) for the counter signature algorithm indicated by the 'Value' field.
-
-* Description: A short description of the parameters encoded in the 'Parameters' field (if any).
-
-* Reference: This contains a pointer to the public specification for the field, if one exists.
-
-Initial entries in the registry are as follows.
-
-~~~~~~~~~~~
-+-------------+-------+--------------+-------------------+-----------+
-|    Name     | Value |  Parameters  |   Description     | Reference |
-+-------------+-------+--------------+-------------------+-----------+
-|             |       |              |                   |           |
-|    EdDSA    |  -8   | [kty : int , | kty value is 1,   | [This     |
-|             |       |              | as Key Type "OKP" | Document] |
-|             |       |              | from the COSE Key |           |
-|             |       |              | Types Registry    |           |
-|             |       |              |                   |           |
-|             |       |              |                   |           |
-|             |       |  crv : int]  | crv value taken   |           |
-|             |       |              | from the COSE     |           |
-|             |       |              | Elliptic Curve    |           |
-|             |       |              | Registry          |           |
-|             |       |              |                   |           |
-+-------------+-------+--------------+-------------------+-----------+
-|             |       |              |                   |           |
-|    ES256    |  -7   | [kty : int , | kty value is 2,   | [This     |
-|             |       |              | as Key Type "EC2" | Document] |
-|             |       |              | from the COSE Key |           |
-|             |       |              | Types Registry    |           |
-|             |       |              |                   |           |
-|             |       |              |                   |           |
-|             |       |  crv : int]  | crv value taken   |           |
-|             |       |              | from the COSE     |           |
-|             |       |              | Elliptic Curve    |           |
-|             |       |              | Registry          |           |
-|             |       |              |                   |           |
-+-------------+-------+--------------+-------------------+-----------+
-|             |       |              |                   |           |
-|    ES384    |  -35  | [kty : int , | kty value is 2,   | [This     |
-|             |       |              | as Key Type "EC2" | Document] |
-|             |       |              | from the COSE Key |           |
-|             |       |              | Types Registry    |           |
-|             |       |              |                   |           |
-|             |       |  crv : int]  | crv value taken   |           |
-|             |       |              | from the COSE     |           |
-|             |       |              | Elliptic Curve    |           |
-|             |       |              | Registry          |           |
-|             |       |              |                   |           |
-+-------------+-------+--------------+-------------------+-----------+
-|             |       |              |                   |           |
-|    ES512    |  -36  | [kty : int , | kty value is 2,   | [This     |
-|             |       |              | as Key Type "EC2" | Document] |
-|             |       |              | from the COSE Key |           |
-|             |       |              | Types Registry    |           |
-|             |       |              |                   |           |
-|             |       |  crv : int]  | crv value taken   |           |
-|             |       |              | from the COSE     |           |
-|             |       |              | Elliptic Curve    |           |
-|             |       |              | Registry          |           |
-|             |       |              |                   |           |
-+-------------+-------+--------------+-------------------+-----------+
-|             |       |              |                   |           |
-|    PS256    |  -37  |  kty : int   | kty value is 3,   | [This     |
-|             |       |              | as Key Type "RSA" | Document] |
-|             |       |              | from the COSE Key |           |
-|             |       |              | Types Registry    |           |
-|             |       |              |                   |           |
-+-------------+-------+--------------+-------------------+-----------+
-|             |       |              |                   |           |
-|    PS384    |  -38  |  kty : int   | kty value is 3,   | [This     |
-|             |       |              | as Key Type "RSA" | Document] |
-|             |       |              | from the COSE Key |           |
-|             |       |              | Types Registry    |           |
-|             |       |              |                   |           |
-+-------------+-------+--------------+-------------------+-----------+
-|             |       |              |                   |           |
-|    PS512    |  -39  |  kty : int   | kty value is 3,   | [This     |
-|             |       |              | as Key Type "RSA" | Document] |
-|             |       |              | from the COSE Key |           |
-|             |       |              | Types Registry    |           |
-|             |       |              |                   |           |
-+-------------+-------+--------------+-------------------+-----------+
-~~~~~~~~~~~
-
 ## OSCORE Flag Bits Registry {#iana-cons-flag-bits}
 
 IANA is asked to add the following value entry to the "OSCORE Flag Bits" subregistry defined in Section 13.7 of {{RFC8613}} as part of the "CoRE Parameters" registry.
@@ -1135,49 +1016,11 @@ IANA is asked to add the following value entry to the "OSCORE Flag Bits" subregi
 +--------------+------------+-------------------------------+-----------+
 | Bit Position |    Name    |         Description           | Reference |
 +--------------+------------+-------------------------------+-----------+
-|       2      | Group      | Set to 1 if the message is    | [This     |
-|              | Flag       | protected with the group mode | Document] |
+|       2      | Group Flag | Set to 1 if the message is    | [This     |
+|              |            | protected with the group mode | Document] |
 |              |            | of Group OSCORE               |           |
 +--------------+------------+-------------------------------+-----------+
 ~~~~~~~~~~~
-
-## Expert Review Instructions {#review}
-
-The IANA Registries established in this document are defined as "Expert Review".
-This section gives some general guidelines for what the experts should be 
-looking for, but they are being designated as experts for a reason so they 
-should be given substantial latitude.
-
-Expert reviewers should take into consideration the following points:
-
-* Clarity and correctness of registrations.
-Experts are expected to check the clarity of purpose and use of the requested
-entries. Experts should inspect the entry for the algorithm considered, to
-verify the conformity of the encoding proposed against the theoretical algorithm,
-including completeness of the 'Parameters' column.
-Expert needs to make sure values are taken from the right registry, 
- when that's required.
-Expert should consider requesting an opinion on the correctness of registered 
-parameters from the CBOR Object Signing and Encryption Working Group (COSE).
-Encodings that do not meet these objective of clarity and completeness 
-should not be registered.
-
-* Duplicated registration and point squatting should be discouraged.
- Reviewers are encouraged to get sufficient information for registration 
- requests to ensure that the usage is not going to duplicate one that is 
- already registered and that the point is likely to be used in deployments.
-
-* Experts should take into account the expected usage of fields when approving point assignment.
-The length of the 'Parameters' encoding should be weighed against the
- usage of the entry, considering the size of device it will be used on.
-Additionally, the length of the encoded value should be weighed against 
-how many code points of that length are left, the size of device it will be
-used on, and the number of code points left that encode to that
-size.
-
-* Specifications are recommended.
-When specifications are not provided, the description provided needs to
-have sufficient information to verify the points above.
 
 --- back
 
@@ -1335,8 +1178,45 @@ In this specification, it is NOT RECOMMENDED that endpoints do not verify the co
 
 An optimized request is processed as a request in group mode ({{ssec-protect-request}}) and uses the OSCORE header compression defined in {{compression}} for the group mode, with the following difference: the payload of the OSCORE message SHALL encode the ciphertext without the tag, concatenated with the value of the CounterSignature0 of the COSE object computed as described in {{sec-cose-object-unprotected-field}}.
 
-The optimized request is compatible with all AEAD algorithms defined in {{RFC8152}}, but would not be compatible with AEAD algorithms that do not have a well-defined tag.
+The optimized request is compatible with all AEAD algorithms defined in {{I-D.ietf-cose-rfc8152bis-algs}}, but would not be compatible with AEAD algorithms that do not have a well-defined tag.
 
+# Example Values of Parameters for Countersignatures # {#sec-cs-params-ex}
+
+The table below provides examples of values for Counter Signature Parameters in the Common Context (see {{ssec-common-context-cs-params}}), for different Counter Signature Algorithm.
+
+~~~~~~~~~~~
++-------------------+----------------------------+
+| Counter Signature | Example Values for Counter |
+| Algorithm         | Signature Parameters       |
++-------------------+----------------------------+
+|  (-8)   // EdDSA  |      6     // Ed25519      |
+|  (-7)   // ES256  |      1     // P-256        |
+|  (-35)  // ES384  |      2     // P-384        |
+|  (-36)  // ES512  |      3     // P-512        |
+|  (-37)  // PS256  |      null                  |
+|  (-38)  // PS384  |      null                  |
+|  (-39)  // PS512  |      null                  |
++-------------------+----------------------------+
+~~~~~~~~~~~
+{: #fig-examples-counter-signature-parameters title="Examples of Counter Signature Parameters" artwork-align="center"}
+
+The table below provides examples of values for Counter Signature Key Parameters in the Common Context (see {{ssec-common-context-cs-key-params}}), for different Counter Signature Algorithm.
+
+~~~~~~~~~~~
++-------------------+----------------------------------+
+| Counter Signature | Example Values for Counter       |
+| Algorithm         | Signature Key Parameters         |
++-------------------+----------------------------------+
+| (-8)    // EdDSA  | [1 , 6]   // 1: OKP , 6: Ed25519 |
+| (-7)    // ES256  | [2 , 1]   // 2: EC2 , 1: P-256   |
+| (-35)   // ES384  | [2 , 2]   // 2: EC2 , 2: P-384   |     
+| (-36)   // ES512  | [2 , 3]   // 2: EC2 , 3: P-512   |
+| (-37)   // PS256  |    3      // 3: RSA              |
+| (-38)   // PS384  |    3      // 3: RSA              |
+| (-39)   // PS512  |    3      // 3: RSA              |
++-------------------+----------------------------------+
+~~~~~~~~~~~
+{: #fig-examples-counter-signature-key-parameters title="Examples of Counter Signature Key Parameters" artwork-align="center"}
 
 # Document Updates # {#sec-document-updates}
 
@@ -1347,6 +1227,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Pairwise keys are discarded after group rekeying.
 
 * Signature mode renamed to group mode.
+
+* The parameters for countersignatures use the updated COSE registries. Newly defined IANA registries have been removed.
 
 * Pairwise Flag bit renamed as Group Protection Flag bit, set to 1 in group mode, set to 0 in pairwise mode.
 
@@ -1365,6 +1247,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Normative support for the signature and pairwise mode.
 
 * Revised methods for synchronization with clients' sender sequence number.
+
+* Appendix with example values of parameters for countersignatures.
 
 * Clarifications and editorial improvements.
 
