@@ -99,6 +99,7 @@ informative:
   I-D.somaraju-ace-multicast:
   I-D.mattsson-cfrg-det-sigs-with-noise:
   I-D.ietf-lwig-security-protocol-comparison:
+  I-D.tiloca-core-observe-multicast-notifications:
   RFC4944:
   RFC4949:
   RFC6282:
@@ -406,7 +407,8 @@ For each other endpoint X with which the endpoint has pairwise keys:
 * The endpoint stores the Pairwise Recipient Key for endpoint X in the Recipient Context associated to X.
 
 * The endpoint stores the Pairwise Sender Key to use with endpoint X in the Sender Context. 
-	* In order to identify the right key to use, the Pairwise Sender Key for X may be associated to the Recipient ID of X, as defined in the associated Recipient Context (i.e. the Sender ID from the point of view of endpoint X).
+
+* In order to identify the right key to use, the Pairwise Sender Key for X may be associated to the Recipient ID of X, as defined in the associated Recipient Context (i.e. the Sender ID from the point of view of endpoint X).
   
 
 <!-- Clarify that the Rec ID is used for lookup, no need to duplicate Rec ID, but keep storage terminology, linking  -->
@@ -654,9 +656,7 @@ Upon receiving a secure group request with the Group Flag set to 1, a server pro
 
 * Additionally, if the used Recipient Context was created upon receiving this group request and the message is not verified successfully, the server MAY delete that Recipient Context. Such a configuration, which is specified by the application, mitigates attacks to overload the server's storage.
     
-A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. For an example where this is not fulfilled, see Section XX in {{}}.
-
-<!-- Marco to fill in reference -->
+A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. For an example where this is not fulfilled, see Section 5.2.1 in {{I-D.tiloca-core-observe-multicast-notifications}}.
 
 ### Supporting Observe ###
 
@@ -813,7 +813,7 @@ The Group Manager is responsible for performing the following tasks:
 
 11. Validating that the format and parameters of public keys of group members are consistent with the countersignature algorithm and related parameters used in the respective OSCORE group.
 
-The Group Manager described in {{I-D.ietf.ace-key-groupcomm-oscore}} provides this functionality.
+The Group Manager described in {{I-D.ietf-ace-key-groupcomm-oscore}} provides this functionality.
 
 # Security Considerations  # {#sec-security-considerations}
 
@@ -943,9 +943,7 @@ Additional considerations are discussed in {{ssec-synch-challenge-response}}, wi
 
 The impact of such an attack depends especially on the REST method of the request, i.e. the Inner CoAP Code of the OSCORE request message. In particular, safe methods such as GET and FETCH would trigger (several) unintended responses from the targeted server(s), while not resulting in destructive behavior. On the other hand, non safe methods such as PUT, POST and PATCH/iPATCH would result in the target server(s) taking active actions on their resources and possible cyber-physical environment, with the risk of destructive consequences and possible implications for safety.
 
-A client may instead use the pairwise mode defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. A client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast, instead of using the group mode.  For an example where this is not fulfilled, see Section XX in {{}}.
-
-<!-- Marco to fill in reference -->
+A client may instead use the pairwise mode defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. A client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast, instead of using the group mode. For an example where this is not fulfilled, see Section 5.2.1 in {{I-D.tiloca-core-observe-multicast-notifications}}.
 
 ## End-to-end Protection {#ssec-e2e-protection}
 
