@@ -176,7 +176,7 @@ This document refers also to the following terminology.
 
 * Keying material: data that is necessary to establish and maintain secure communication among endpoints. This includes, for instance, keys and IVs {{RFC4949}}.
 
-* Group: a set of endpoints that share group keying material and security parameters (Common Context, see {{sec-context}}). Unless specified otherwise, the term group used in this specification refers thus to a "security group", not to be confused with CoAP/network/multicast group or application group.
+* Group: a set of endpoints that share group keying material and security parameters (Common Context, see {{sec-context}}). Unless specified otherwise, the term group used in this specification refers thus to a "security group" (see Section 2.1 of {{I-D.ietf-core-groupcomm-bis}}), not to be confused with "CoAP group" or "application group".
 
 * Group Manager: entity responsible for a group. Each endpoint in a group communicates securely with the respective Group Manager, which is neither required to be an actual group member nor to take part in the group communication. The full list of responsibilities of the Group Manager is provided in {{sec-group-manager}}.
 
