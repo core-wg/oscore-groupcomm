@@ -394,7 +394,7 @@ As a consequence, replay checks may be invoked more often on the recipient side,
 ## Additions to Security Context in Pairwise Mode  ## {#pairwise-implementation}
 
  
-The pairwise keys ({{key-derivation-pairwise}}) as well as the shared secrets used in their derivation may be stored in memory or recomputed each time they are needed. The shared secret changes only when a public/private key pair used for its derivation change. In order to optimize performance, an endpoint may store the derived pairwise keys in the Security Context for future retrieval. This can work as follows. 
+The pairwise keys as well as the shared secrets used in their derivation (see {{key-derivation-pairwise}}) may be stored in memory or recomputed each time they are needed. The shared secret changes only when a public/private key pair used for its derivation changes. In order to optimize performance, an endpoint may store the derived pairwise keys in the Security Context for future retrieval. This can work as follows. 
 
 <!-- This is an example, implementations can do it in another way -->
 
@@ -712,7 +712,7 @@ When using the pairwise mode of Group OSCORE, messages are protected and process
 
 The pairwise mode takes advantage of an existing security context for the group mode to establish a security context shared exclusively with any other member. In order to use the pairwise mode, the signature scheme of the group mode MUST support a combined signature and encryption scheme; for example signature with ECDSA, and encryption using AES-CCM with key derived with ECDH. The pairwise mode does not support intermediary verification of source authentication or integrity.
 
-The pairwise mode MAY be supported. The pairwise mode MUST be supported by endpoints that use the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}, for instance, for responses after the first block-wise request possibly targeting all servers in the group and including the CoAP Block2 option (see Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}}). An endpoint implementing only a silent server does not support the pairwise mode.
+The pairwise mode MAY be supported. The pairwise mode MUST be supported by endpoints that use the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}, for instance for responses after the first block-wise request, possibly targeting all servers in the group and including the CoAP Block2 option (see Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}}). An endpoint implementing only a silent server does not support the pairwise mode.
 
 The pairwise mode protects messages between two members of a group, essentially following {{RFC8613}}, but with the following notable differences:
 
@@ -733,7 +733,7 @@ In order to protect an outgoing message in pairwise mode, the sender needs to kn
 
 Furthermore, the sender needs to know the individual address of the recipient endpoint. This information may not be known at any given point in time. For instance, right after having joined the group, a client may know the public key and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.
 
-To make individual endpoint addressing information available, servers in the group MAY expose a resource to which a client can send a group request targeting a server or a set of servers, identified by their 'kid' value(s). The specified set may be empty, hence identifying all the servers in the group. Further details of such an interface are out of scope for this document.
+To make addressing information of individual endpoints available, servers in the group MAY expose a resource to which a client can send a group request targeting a server or a set of servers, identified by their 'kid' value(s). The specified set may be empty, hence identifying all the servers in the group. Further details of such an interface are out of scope for this document.
 
 ## Protecting the Request {#sec-pairwise-protection-req}
 
@@ -809,7 +809,7 @@ The Group Manager is responsible for performing the following tasks:
 
 11. Validating that the format and parameters of public keys of group members are consistent with the countersignature algorithm and related parameters used in the respective OSCORE group.
 
-The Group Manager described in {{I-D.ietf-ace-key-groupcomm-oscore}} provides this functionality.
+The Group Manager described in {{I-D.ietf-ace-key-groupcomm-oscore}} provides these functionalities.
 
 # Security Considerations  # {#sec-security-considerations}
 
