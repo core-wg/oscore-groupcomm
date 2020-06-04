@@ -377,10 +377,6 @@ where:
  
 * info and L are defined as in Section 3.2.1 of {{RFC8613}}. 
 
-The derivation of pairwise keys defined above is compatible with ECDSA and EdDSA asymmetric keys, but is not compatible with RSA asymmetric keys. The security of using the same key pair for Diffie-Hellman and for signing is demonstrated in {{Degabriele}}. 
-
-<!-- Marco to move previous sentence into the security considerations -->
-
 If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}.
 
 After establishing a partially or completely new Security Context (see {{sec-group-key-management}} and {{ssec-sec-context-persistence}}), the old pairwise keys MUST be deleted. Since new Sender/Recipient Keys are derived from the new group keying material (see {{ssec-sender-recipient-context}}), every group member MUST use the new Sender/Recipient Keys when deriving new pairwise keys.
@@ -996,6 +992,8 @@ In order to renew its own Sender Context, the endpoint SHOULD inform the Group M
 Additionally, the same considerations from Section 12.6 of {{RFC8613}} hold for Group OSCORE, about building the AEAD nonce and the secrecy of the Security Context parameters.
 
 The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. For many constrained IoT devices, it is problematic to support more than one signature algorithm or multiple whole cipher suites. This means that some deployments using, for instance, ECDSA with NIST P-256 may not support the mandatory signature algorithm. However, this is not a problem for local deployments.
+
+The derivation of pairwise keys defined in {{key-derivation-pairwise}} is compatible with ECDSA and EdDSA asymmetric keys, but is not compatible with RSA asymmetric keys. The security of using the same key pair for Diffie-Hellman and for signing is demonstrated in {{Degabriele}}. 
 
 ## Message Segmentation {#ssec-message-segmentation}
 
