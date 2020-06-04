@@ -871,7 +871,7 @@ This may result in a client using an old Security Context to protect a group req
 
 In particular, a server may first get a group request protected with the old Security Context, then install the new Security Context, and only after that produce a response to send back to the client. In such a case, as specified in {{ssec-protect-response}}, the server MUST protect the potential response using the new Security Context. Specifically, the server MUST use its own Sender Sequence Number as Partial IV to protect that response, and not the Partial IV from the request, in order to prevent reuse of AEAD nonces in the new Security Context.
 
-Then, the client will process that response using the new Security Context, provided that it has installed the new security parameters and keying material before the message reception.
+The client will process that response using the new Security Context, provided that it has installed the new security parameters and keying material before the message reception.
 
 In case block-wise transfer {{RFC7959}} is used, the same considerations from Section 7.2 of {{I-D.ietf-ace-key-groupcomm}} hold.
 
