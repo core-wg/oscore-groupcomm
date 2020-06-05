@@ -189,24 +189,26 @@ This specification defines group as a set of endpoints sharing keying material a
 
 * One Common Context, shared by all the endpoints in the group. Three new parameters are included in the Common Context: Counter Signature Algorithm, Counter Signature Parameters and Counter Signature Key Parameters, which all relate to the  signature of the message included in group mode (see {{mess-processing}}).
 
-* One Sender Context, extended with the endpoint's private key. The private key is used to sign the message in group mode, and for calculating the pairwise keys in pairwise mode ({{sec-derivation-pairwise}}). The Sender Context is omitted if the endpoint is configured exclusively as silent server.
+* One Sender Context, extended with the endpoint's private key. The private key is used to sign the message in group mode, and for calculating the pairwise keys in pairwise mode ({{sec-derivation-pairwise}}). If the pairwise mode is supported, then the Sender Context is also extended with the Pairwise Sender Keys associated to the other endpoints. The Sender Context is omitted if the endpoint is configured exclusively as silent server. 
 
-* One Recipient Context for each endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated to endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the public key of the associated endpoint, used to verify the signature in group mode and for calculating the pairwise keys in pairwise mode ({{sec-derivation-pairwise}}).
+* One Recipient Context for each endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated to endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the public key of the associated endpoint, used to verify the signature in group mode and for calculating the pairwise keys in pairwise mode ({{sec-derivation-pairwise}}). If the pairwise mode is supported, then the Recipient Context is also extended with the Pairwise Recipient Key  associated to other endpoint.
 
 ~~~~~~~~~~~
-+---------------------------+----------------------------------+
-| Context Component         | New Information Elements         |
-+---------------------------+----------------------------------+
-|                           | Counter Signature Algorithm      |
-| Common Context            | Counter Signature Parameters     |
-|                           | Counter Signature Key Parameters |
-+---------------------------+----------------------------------+
-| Sender Context            | Endpoint's own private key       |
-+---------------------------+----------------------------------+
-| Each Recipient Context    | Public key of the other endpoint |
-+---------------------------+----------------------------------+
++------------------------+-----------------------------------------------+
+| Context Component      | New Information Elements                      |
++------------------------+-----------------------------------------------+
+|                        | Counter Signature Algorithm                   |
+| Common Context         | Counter Signature Parameters                  |
+|                        | Counter Signature Key Parameters              |
++------------------------+-----------------------------------------------+
+| Sender Context         | Endpoint's own private key                    |
+|                        | *Pairwise Sender Keys for the other endpoints |
++------------------------+-----------------------------------------------+
+| Each Recipient Context | Public key of the other endpoint              |
+|                        | *Pairwise Recipient Key of the other endpoint |
++------------------------+-----------------------------------------------+
 ~~~~~~~~~~~
-{: #fig-additional-context-information title="Additions to the OSCORE Security Context" artwork-align="center"}
+{: #fig-additional-context-information title="Additions to the OSCORE Security Context. Optional additions labeled with an asterisk." artwork-align="center"}
 
 Further details about the security context of Group OSCORE are provided in the remainder of this section. How the security context is established by the members is out of scope for this specification, but if there is more than one security context applicable to a message, then the endpoints MUST be able to tell which security context was latest established.
 
@@ -310,41 +312,14 @@ On the other hand, when combining group and pairwise communication modes, this m
 
 As a consequence, replay checks may be invoked more often on the recipient side, where larger replay windows should be considered.
 
-### Additions to Security Context in Pairwise Mode  ### {#pairwise-implementation}
+### Security Context for Pairwise Mode  ### {#pairwise-implementation}
+
+If pairwise mode is supported, then the pairwise keys are added to the Security Context, as described in the beginning of {{sec-context}}.
  
-The pairwise keys as well as the shared secrets used in their derivation (see {{key-derivation-pairwise}}) may be stored in memory or recomputed each time they are needed. The shared secret changes only when a public/private key pair used for its derivation changes. In order to optimize performance, an endpoint may store the derived pairwise keys in the Security Context for future retrieval. This can work as follows. 
+The pairwise keys as well as the shared secrets used in their derivation (see {{key-derivation-pairwise}}) may be stored in memory or recomputed each time they are needed. The shared secret changes only when a public/private key pair used for its derivation changes, and then the pairwise keys also change. The pairwise keys changes additionally if the Sender ID changes or if there is a new Security Context for the group, see (see {{sec-group-re-join}}). In order to optimize protocol performance, an endpoint may store the derived pairwise keys for easy retrieval. 
 
-<!-- This is an example, implementations can do it in another way -->
+In the pairwise mode, the Sender Context includes the Pairwise Sender Keys for the other endpoints, see {{fig-additional-context-information}}. In order to identify the right key to use, the Pairwise Sender Key for endpoint X may be associated to the Recipient ID of endpoint X as defined in the Recipient Context (i.e. the Sender ID from the point of view of endpoint X). In this way the Recipient ID can be used for lookup of the right Pairwise Sender Key. This association may be implemented in different ways, e.g. storing the pair (Recipient ID, Pairwise Sender Key), or linking a Pairwise Sender Key to a Recipient Context.
 
-For each other endpoint X with which the endpoint has pairwise keys:
-
-* The endpoint stores the Pairwise Recipient Key for endpoint X in the Recipient Context associated to X.
-
-* The endpoint stores the Pairwise Sender Key to use with endpoint X in the Sender Context. 
-
-* In order to identify the right key to use, the Pairwise Sender Key for X may be associated to the Recipient ID of X, as defined in the associated Recipient Context (i.e. the Sender ID from the point of view of endpoint X).
-  
-
-<!-- Clarify that the Rec ID is used for lookup, no need to duplicate Rec ID, but keep storage terminology, linking  -->
-
-{{fig-pairwise-context-information}} shows the new information elements in the Group OSCORE security context in comparison with the OSCORE security context.
-
-~~~~~~~~~~~
-+------------------------+----------------------------------------------+
-| Context Component      | New Information Elements                     |
-+------------------------+----------------------------------------------+
-|                        | Counter Signature Algorithm                  |
-| Common Context         | Counter Signature Parameters                 |
-|                        | Counter Signature Key Parameters             |
-+------------------------+----------------------------------------------+
-| Sender Context         | Endpoint's own private key                   |
-|                        | Pairwise Sender Keys for the other endpoints |
-+------------------------+----------------------------------------------+
-| Each Recipient Context | Public key of the other endpoint             |
-|                        | Pairwise Recipient Key of the other endpoint |
-+------------------------+----------------------------------------------+
-~~~~~~~~~~~
-{: #fig-pairwise-context-information title="Additions to the OSCORE Security Context" artwork-align="center"}
 
 ## Update of Security Context {#ssec-sec-context-persistence} 
 
@@ -369,7 +344,14 @@ Upon exhausting the Sender Sequence Numbers, the endpoint MUST NOT protect furth
 
 ### Retrieving New Security Context Parameters {#sec-group-re-join}
 
-The Group Manager can assist an endpoint with an incomplete Sender Security Context to retrieve missing data of the Security Context and thereby become fully operative in the group again. The two main options are described in this section. Update of Replay Window in Recipient Contexts is discussed in {{sec-synch-seq-num}}.
+The Group Manager can assist an endpoint with an incomplete Sender Security Context to retrieve missing data of the Security Context and thereby become fully operative in the group again. The two main options are described in this section: Assignment of a new Sender ID ({{new-sender-id}}), and defining a new security context for the group ({{new-sec-context}}). Update of Replay Window in Recipient Contexts is discussed in {{sec-synch-seq-num}}.
+
+As group membership changes, or as group members get new Sender IDs (see {{new-sender-id}}) so does the relevant Recipient IDs that the other endpoints need to keep track of. As a consequence, group members may end up retaining stale Recipient Contexts, that are no longer useful to verify incoming secure messages. 
+
+The Recipient ID ('kid') SHOULD NOT be considered as a persistent and reliable indicator of a group member. Such an indication can be achieved only by using that members's public key, when verifying countersignatures of received messages (in group mode), or when verifying messages integrity-protected with pairwise keying material derived from asymmetric keys (in pairwise mode).
+
+Furthermore, applications MAY define policies to: i) delete (long-)unused Recipient Contexts and reduce the impact on storage space; as well as ii) check with the Group Manager that a public key is currently the one associated to a 'kid' value, after a number of consecutive failed verifications.
+
 
 #### New Sender ID for the Endpoint {#new-sender-id}
 
@@ -379,11 +361,14 @@ The assignment of a new Sender ID may be the result of different processes. The 
 
 The Recipient Context of the other group members corresponding to the old Sender ID becomes stale (see {{sec-group-key-management}}).
 
-#### New Security Context for the Group
+#### New Security Context for the Group {#new-sec-context}
 
 The Group Manager may establish a new Security Context for the group (see {{sec-group-key-management}}). The Group Manager does not necessarily establish a new Security Context for the group if one member has an outdated Security Context (see {{new-sender-id}}), unless that was already planned or required for other reasons. All endpoints in the group need to acquire new Security Context parameters from the Group Manager.
 
-How to handle the old Security Context is discussed in {{ssec-key-rotation}}.
+Having acquired new Security Context parameters, each member can re-derive the keying material stored in its Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise. Unless otherwise specified by the application, a group member does not reset the Sender Sequence Number in its Sender Context, and does not reset the Replay Windows in its Recipient Contexts. From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
+
+The distribution of a new Gid and Master Secret may result in temporarily misaligned Security Contexts among group members. In particular, this may result in a group member not being able to process messages received right after a new Gid and Master Secret have been distributed. A discussion on practical consequences and possible ways to address them, as well as how to handle the old Security Context is provided in {{ssec-key-rotation}}.
+
 
 # The Group Manager # {#group-manager}
 
@@ -403,17 +388,41 @@ The Group Manager MAY serve additional entities acting as signature checkers, e.
 
 In order to establish a new Security Context for a group, a new Group Identifier (Gid) for that group and a new value for the Master Secret parameter MUST be generated. An example of Gid format supporting this operation is provided in {{gid-ex}}. When distributing the new Gid and Master Secret, the Group Manager MAY distribute also a new value for the Master Salt parameter, and SHOULD preserve the current value of the Sender ID of each group member.
 
-Having acquired new group data as described above, each member can re-derive the keying material stored in its Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise. Unless otherwise specified by the application, a group member does not reset the Sender Sequence Number in its Sender Context, and does not reset the Replay Windows in its Recipient Contexts. From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
-
-As group membership changes, or as group members get new Sender IDs (see {{new-sender-id}}) so does the relevant Recipient IDs that the other endpoints need to keep track of. As a consequence, group members may end up retaining stale Recipient Contexts, that are no longer useful to verify incoming secure messages. The Recipient ID ('kid') SHOULD NOT be considered as a persistent and reliable indicator of a group member. Such an indication can be achieved only by using that members's public key, when verifying countersignatures of received messages (in group mode), or when verifying messages integrity-protected with pairwise keying material derived from asymmetric keys (in pairwise mode). 
-
-The Group Manager MUST NOT reassign a previously used Sender ID ('kid') with the same Gid, Master Secret and Master Salt. Even if Gid and Master Secret are renewed as described in this section, the Group Manager SHOULD NOT reassign an endpoint's Sender ID ('kid') within a same group, especially in the short term. Furthermore, applications MAY define policies to: i) delete (long-)unused Recipient Contexts and reduce the impact on storage space; as well as ii) check with the Group Manager that a public key is currently the one associated to a 'kid' value, after a number of consecutive failed verifications.
-
-The distribution of a new Gid and Master Secret may result in temporarily misaligned Security Contexts among group members. In particular, this may result in a group member not being able to process messages received right after a new Gid and Master Secret have been distributed. A discussion on practical consequences and possible ways to address them is provided in {{ssec-key-rotation}}.
+The Group Manager MUST NOT reassign a previously used Sender ID ('kid') with the same Gid, Master Secret and Master Salt. Even if Gid and Master Secret are renewed as described in this section, the Group Manager SHOULD NOT reassign an endpoint's Sender ID ('kid') within a same group, especially in the short term. 
 
 If required by the application (see {{ssec-sec-assumptions}}), it is RECOMMENDED to adopt a group key management scheme, and securely distribute a new value for the Gid and for the Master Secret parameter of the group's Security Context, before a new joining endpoint is added to the group or after a currently present endpoint leaves the group. This is necessary to preserve backward security and forward security in the group, if the application requires it.
 
 The specific approach used to distribute new group data is out of the scope of this document. However, it is RECOMMENDED that the Group Manager supports the distribution of the new Gid and Master Secret parameter to the group according to the Group Rekeying Process described in {{I-D.ietf-ace-key-groupcomm-oscore}}.
+
+
+## Responsibilities of the Group Manager ## {#sec-group-manager}
+
+The Group Manager is responsible for performing the following tasks:
+
+1. Creating and managing OSCORE groups. This includes the assignment of a Gid to every newly created group, as well as ensuring uniqueness of Gids within the set of its OSCORE groups.
+
+2. Defining policies for authorizing the joining of its OSCORE groups.
+
+3. Handling the join process to add new endpoints as group members.
+
+4. Establishing the Common Context part of the Security Context, and providing it to authorized group members during the join process, together with the corresponding Sender Context.
+
+5. Generating and managing Sender IDs within its OSCORE groups, as well as assigning and providing them to new endpoints during the join process. This includes ensuring uniqueness of Sender IDs within each of its OSCORE groups.
+
+6. Defining communication policies for each of its OSCORE groups, and signalling them to new endpoints during the join process.
+
+7. Renewing the Security Context of an OSCORE group upon membership change, by revoking and renewing common security parameters and keying material (rekeying).
+
+8. Providing the management keying material that a new endpoint requires to participate in the rekeying process, consistent with the key management scheme used in the group joined by the new endpoint.
+
+9. Updating the Gid of its OSCORE groups, upon renewing the respective Security Context.
+
+10. Acting as key repository, in order to handle the public keys of the members of its OSCORE groups, and providing such public keys to other members of the same group upon request. The actual storage of public keys may be entrusted to a separate secure storage device.
+
+11. Validating that the format and parameters of public keys of group members are consistent with the countersignature algorithm and related parameters used in the respective OSCORE group.
+
+The Group Manager described in {{I-D.ietf-ace-key-groupcomm-oscore}} provides these functionalities.
+
 
 # The COSE Object # {#sec-cose-object}
 
@@ -768,35 +777,6 @@ Upon receiving a response with the Group Flag set to 0, the client MUST process 
 
 * No verification of counter signature occurs, as there is none included in the message.
 
-
-
-# Responsibilities of the Group Manager # {#sec-group-manager}
-
-The Group Manager is responsible for performing the following tasks:
-
-1. Creating and managing OSCORE groups. This includes the assignment of a Gid to every newly created group, as well as ensuring uniqueness of Gids within the set of its OSCORE groups.
-
-2. Defining policies for authorizing the joining of its OSCORE groups.
-
-3. Handling the join process to add new endpoints as group members.
-
-4. Establishing the Common Context part of the Security Context, and providing it to authorized group members during the join process, together with the corresponding Sender Context.
-
-5. Generating and managing Sender IDs within its OSCORE groups, as well as assigning and providing them to new endpoints during the join process. This includes ensuring uniqueness of Sender IDs within each of its OSCORE groups.
-
-6. Defining communication policies for each of its OSCORE groups, and signalling them to new endpoints during the join process.
-
-7. Renewing the Security Context of an OSCORE group upon membership change, by revoking and renewing common security parameters and keying material (rekeying).
-
-8. Providing the management keying material that a new endpoint requires to participate in the rekeying process, consistent with the key management scheme used in the group joined by the new endpoint.
-
-9. Updating the Gid of its OSCORE groups, upon renewing the respective Security Context.
-
-10. Acting as key repository, in order to handle the public keys of the members of its OSCORE groups, and providing such public keys to other members of the same group upon request. The actual storage of public keys may be entrusted to a separate secure storage device.
-
-11. Validating that the format and parameters of public keys of group members are consistent with the countersignature algorithm and related parameters used in the respective OSCORE group.
-
-The Group Manager described in {{I-D.ietf-ace-key-groupcomm-oscore}} provides these functionalities.
 
 # Security Considerations  # {#sec-security-considerations}
 
