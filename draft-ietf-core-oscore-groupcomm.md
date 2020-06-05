@@ -535,11 +535,13 @@ Note that if the Group Flag is set to 0, and the recipient retrieves a Security 
     
 ## Examples of Compressed COSE Objects
 
-This section covers a list of OSCORE Header Compression examples for group requests and responses, with Group OSCORE used in group mode.
+This section covers a list of OSCORE Header Compression examples for group requests and responses, with Group OSCORE used in group mode (see {{sssec-example-cose-group}}) or in pairwise mode (see {{sssec-example-cose-pairwise}}).
 
 The examples assume that the COSE_Encrypt0 object is set (which means the CoAP message and cryptographic material is known). Note that the examples do not include the full CoAP unprotected message or the full Security Context, but only the input necessary to the compression mechanism, i.e. the COSE_Encrypt0 object. The output is the compressed COSE object as defined in {{compression}} and divided into two parts, since the object is transported in two CoAP fields: OSCORE option and payload.
 
-The examples assume that the plaintext (see Section 5.3 of {{RFC8613}}) is 6 bytes long, and that the AEAD tag is 8 bytes long, hence resulting in a ciphertext which is 14 bytes long. Finally, COUNTERSIGN is the CounterSignature0 byte string as described in {{sec-cose-object}} and is 64 bytes long.
+The examples assume that the plaintext (see Section 5.3 of {{RFC8613}}) is 6 bytes long, and that the AEAD tag is 8 bytes long, hence resulting in a ciphertext which is 14 bytes long. When using the group mode, COUNTERSIGN denotes the CounterSignature0 byte string as described in {{sec-cose-object}}, and is 64 bytes long.
+
+### Examples in Group Mode ## {#sssec-example-cose-group}
 
 * Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25, Partial IV = 5 and kid context = 0x44616c
 
@@ -587,6 +589,54 @@ Option Value: 28 52 (2 bytes)
 
 Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b COUNTERSIGN
 (14 bytes + size of COUNTERSIGN)
+~~~~~~~~~~~
+
+### Examples in Pairwise Mode ## {#sssec-example-cose-pairwise}
+
+* Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25, Partial IV = 5 and kid context = 0x44616c
+
+~~~~~~~~~~~
+Before compression (32 bytes):
+
+[
+h'',
+{ 4:h'25', 6:h'05', 10:h'44616c' },
+h'aea0155667924dff8a24e4cb35b9'
+]
+~~~~~~~~~~~
+
+~~~~~~~~~~~
+After compression (21 bytes):
+
+Flag byte: 0b00011001 = 0x19
+
+Option Value: 19 05 03 44 61 6c 25 (7 bytes)
+
+Payload: ae a0 15 56 67 92 4d ff 8a 24 e4 cb 35 b9 (14 bytes)
+
+~~~~~~~~~~~
+
+
+* Response with ciphertext = 0x60b035059d9ef5667c5a0710823b, kid = 0x52 and no Partial IV.
+
+~~~~~~~~~~~
+Before compression (24 bytes):
+
+[
+h'',
+{ 4:h'52'},
+h'60b035059d9ef5667c5a0710823b'
+]
+~~~~~~~~~~~
+
+~~~~~~~~~~~
+After compression (16 bytes):
+
+Flag byte: 0b00001000 = 0x08
+
+Option Value: 08 52 (2 bytes)
+
+Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b (14 bytes)
 ~~~~~~~~~~~
 
 # Message Binding, Sequence Numbers, Freshness and Replay Protection
