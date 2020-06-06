@@ -1294,6 +1294,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * An endpoint implementing only a silent server does not support the pairwise mode.
 
+* Separate section on general message reception.
+
 * Pairwise mode moved to the document body.
 
 * Considerations on using the pairwise mode in non-multicast settings.
