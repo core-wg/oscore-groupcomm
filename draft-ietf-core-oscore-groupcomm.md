@@ -524,14 +524,6 @@ The OSCORE header compression defined in Section 6 of {{RFC8613}} is used, with 
 * The Group Flag MUST be set to 1 if the OSCORE message is protected using the group mode ({{mess-processing}}). 
 
 * The Group Flag MUST be set to 0 if the OSCORE message is protected using the pairwise mode ({{sec-pairwise-protection}}). The Group Flag MUST also be set to 0 for ordinary OSCORE messages processed according to {{RFC8613}}.
-
-If any of the following two conditions holds, a recipient MUST discard an incoming OSCORE message:
-   
-   - The Group Flag is set to 1, and the recipient can not retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group.
-   
-   - The Group Flag is set to 0, and the recipient retrieves a Security Context which is both valid to process the message and also associated to an OSCORE group, but the recipient does not support the pairwise mode.
-
-Note that if the Group Flag is set to 0, and the recipient retrieves a Security Context which is valid to process the message but is not associated to an OSCORE group, then the message is processed according to {{RFC8613}}.
     
 ## Examples of Compressed COSE Objects
 
@@ -650,6 +642,22 @@ A new server joining a group may not be aware of the current Partial IVs (Sender
 The exact way to address this issue is application specific, and depends on the particular use case and its replay requirements. The list of methods to handle the update of a Replay Window is part of the group communication policy, and different servers can use different methods.
 
 {{synch-ex}} describes three possible approaches that can be considered to update a Replay Window.
+
+# Message Reception # {#sec-message-reception}
+
+Upon receiving a protected message, a recipient endpoint retrieves a Security Context as in {{RFC8613}}. In addition, an endpoint MUST be able to distinguish between a Security Context to process OSCORE messages as in {{RFC8613}} and a Security Context to process Group OSCORE messages as defined in this specification.
+
+To this end, an endpoint can take into account the different structure of the Security Context defined in {{sec-context}}, and especially the presence of the parameters Counter Signature Algorithm, Counter Signature Parameters and Counter Signature Key Parameters. Implementations can further rely on an additional parameter in the Security Context, to explicitly signal that it is intended for Group OSCORE messages.
+
+If any of the following two conditions holds, a recipient endpoint MUST discard the incoming protected message:
+   
+   - The Group Flag is set to 1, and the recipient endpoint can not retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group.
+   
+   - The Group Flag is set to 0, and the recipient endpoint retrieves a Security Context which is both valid to process the message and also associated to an OSCORE group, but the endpoint does not support the pairwise mode.
+
+Otherwise, if a Security Context associated to an OSCORE group and valid to process the message is retrieved, the recipient endpoint processes the message with Group OSCORE, using the group mode (see {{mess-processing}}) if the Group Flag is set to 1, or the pairwise mode (see {{sec-pairwise-protection}}) if the Group Flag is set to 0.
+   
+Note that, if the Group Flag is set to 0, and the recipient endpoint retrieves a Security Context which is valid to process the message but is not associated to an OSCORE group, then the message is processed according to {{RFC8613}}.
 
 # Message Processing in Group Mode # {#mess-processing}
 
