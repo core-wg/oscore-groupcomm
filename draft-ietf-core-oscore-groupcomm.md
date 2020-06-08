@@ -645,9 +645,9 @@ The exact way to address this issue is application specific, and depends on the 
 
 # Message Reception # {#sec-message-reception}
 
-Upon receiving a protected message, a recipient endpoint retrieves a Security Context as in {{RFC8613}}. In addition, an endpoint MUST be able to distinguish between a Security Context to process OSCORE messages as in {{RFC8613}} and a Security Context to process Group OSCORE messages as defined in this specification.
+Upon receiving a protected message, a recipient endpoint retrieves a Security Context as in {{RFC8613}}. An endpoint MUST be able to distinguish between a Security Context to process OSCORE messages as in {{RFC8613}} and a Security Context to process Group OSCORE messages as defined in this specification.
 
-To this end, an endpoint can take into account the different structure of the Security Context defined in {{sec-context}}, and especially the presence of the parameters Counter Signature Algorithm, Counter Signature Parameters and Counter Signature Key Parameters. Implementations can further rely on an additional parameter in the Security Context, to explicitly signal that it is intended for Group OSCORE messages.
+To this end, an endpoint can take into account the different structure of the Security Context defined in {{sec-context}}, for example the presence of the Counter Signature Algorithm parameter in the Common Context. Alternatively implementations can use an additional parameter in the Security Context, to explicitly signal that it is intended for Group OSCORE messages.
 
 If any of the following two conditions holds, a recipient endpoint MUST discard the incoming protected message:
    
@@ -690,7 +690,7 @@ The client MUST NOT update the stored value, even in case it is individually rek
 
 ## Verifying the Request ## {#ssec-verify-request}
 
-Upon receiving a secure group request with the Group Flag set to 1, a server proceeds as described in Section 8.2 of {{RFC8613}}, with the following modifications.
+Upon receiving a secure group request with the Group Flag set to 1, following the procedure in {{sec-message-reception}}, a server proceeds as described in Section 8.2 of {{RFC8613}}, with the following modifications.
 
 * In step 2, the decoding of the compressed COSE object follows {{compression}}. In particular:
 
@@ -739,7 +739,7 @@ Furthermore, for each ongoing observation, the server MUST use the stored value 
 
 ## Verifying the Response ## {#ssec-verify-response}
 
-Upon receiving a secure response message with the Group Flag set to 1, the client proceeds as described in Section 8.4 of {{RFC8613}}, with the following modifications.
+Upon receiving a secure response message with the Group Flag set to 1, following the procedure in {{sec-message-reception}}, the client proceeds as described in Section 8.4 of {{RFC8613}}, with the following modifications.
 
 Note that a client may receive a response protected with a Security Context different from the one used to protect the corresponding group request, and that, upon the establishment of a new Security Context, the client does not reset its own replay windows in its Recipient Contexts, unless otherwise specified by the application (see {{sec-group-key-management}}).
 
@@ -801,7 +801,7 @@ Note that, just as in the group mode, the external_aad for encryption is generat
 
 ## Verifying the Request {#sec-pairwise-verify-req}
 
-Upon receiving a request with the Group Flag set to 0, the server MUST process it as defined in {{ssec-verify-request}}, with the following differences.
+Upon receiving a request with the Group Flag set to 0, following the procedure in {{sec-message-reception}}, the server MUST process it as defined in {{ssec-verify-request}}, with the following differences.
 
 * If the server discards the request due to not retrieving a Security Context associated to the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
 
@@ -825,7 +825,7 @@ When using the pairwise mode, a response is protected as defined in {{ssec-prote
 
 ## Verifying the Response {#sec-pairwise-verify-resp}
 
-Upon receiving a response with the Group Flag set to 0, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
+Upon receiving a response with the Group Flag set to 0, following the procedure in {{sec-message-reception}}, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
 
 * If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}). The new Pairwise Sender/Recipient Keys are deleted if the Recipient Context is deleted as a result of the message not being successfully verified. 
 
