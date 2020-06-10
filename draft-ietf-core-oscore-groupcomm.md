@@ -70,6 +70,19 @@ normative:
   RFC8126:
   RFC8174:
   RFC8613:
+  COSE.Algorithms:
+    author: 
+      org: IANA
+    date: false
+    title: COSE Algorithms
+    target: https://www.iana.org/assignments/cose/cose.xhtml#algorithms
+  COSE.Key.Types:
+    author: 
+      org: IANA
+    date: false
+    title: COSE Key Types
+    target: https://www.iana.org/assignments/cose/cose.xhtml#key-type
+    
   NIST-800-56A:
     author:
       -
@@ -225,40 +238,29 @@ The ID Context parameter (see Sections 3.3 and 5.1 of {{RFC8613}}) in the Common
 
 ### Counter Signature Algorithm ## {#ssec-common-context-cs-alg}
 
-Counter Signature Algorithm identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 4.4 of {{I-D.ietf-cose-rfc8152bis-struct}}). Its value is immutable once the Common Context is established.
+Counter Signature Algorithm identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 5.2 of {{I-D.ietf-cose-rfc8152bis-struct}}).
 
-Counter Signature Algorithm MUST take value from the "Value" column of the "COSE Algorithms" Registry, as updated in Section 10.2 of {{I-D.ietf-cose-rfc8152bis-algs}}. The value implies an associated key type, as "\[kty\]" is a listed capability of each registered algorithm.
+This parameter is immutable once the Common Context is established. Counter Signature Algorithm MUST take value from the "Value" column of the "COSE Algorithms" Registry {{COSE.Algorithms}}. The value is associated to a COSE key type, specified in the "Capabilities" column of the Registry. COSE capabilities for algorithms are defined in Section 8 of {{I-D.ietf-cose-rfc8152bis-algs}}.
 
-The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. If elliptic curve signatures are used, it is RECOMMENDED to implement deterministic signatures with additional randomness as specified in {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
+The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. For endpoints that support the pairwise mode of Group OSCORE, the X25519 function {{RFC7748}} is also mandatory to implement. If elliptic curve signatures are used, it is RECOMMENDED to implement deterministic signatures with additional randomness as specified in {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
 
 ### Counter Signature Parameters ## {#ssec-common-context-cs-params}
 
-Counter Signature Parameters identifies the parameters associated to the digital signature algorithm specified in Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established.
+Counter Signature Parameters identifies the parameters associated to the digital signature algorithm specified in Counter Signature Algorithm. This parameter is immutable once the Common Context is established.
 
-The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined as follows.
+The exact structure and value of this parameter depends on the value of Counter Signature Algorithm, and is defined as the concatenation of the following two elements:
 
-1. The entry for the key type associated to the Counter Signature Algorithm is considered, from the "COSE Key Types" Registry as updated in Section 10.1 of {{I-D.ietf-cose-rfc8152bis-algs}}. Then, the array V in the "Capabilities" column of this entry is considered.
+* The array of COSE capabilities for Counter Signature Algorithm, as specified for that algorithm in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
 
-2. Counter Signature Parameters takes the following value.
-   * If V has one element, it takes no value.
-   * If V has two elements, it takes the second element of V.
-   * If V has N > 2 elements, it takes an array Z of N-1 elements. In particular, Z\[i\] = V\[i+1\], i = (0 ... N-2).
-
+* The array of COSE capabilities for the COSE key type associated to Counter Signature Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}).
+   
 Examples of Counter Signature Parameters are in {{sec-cs-params-ex}}.
    
 ### Counter Signature Key Parameters ## {#ssec-common-context-cs-key-params}
 
-Counter Signature Key Parameters identifies the parameters associated to the keys used with the digital signature algorithm specified in Counter Signature Algorithm. This parameter MAY be empty and is immutable once the Common Context is established.
+Counter Signature Key Parameters identifies the parameters associated to the keys used with the digital signature algorithm specified in Counter Signature Algorithm. This parameter is immutable once the Common Context is established.
 
-The exact structure of this parameter depends on the value of Counter Signature Algorithm, and is defined as follows.
-
-1. The entry for the key type associated to the Counter Signature Algorithm is considered, from the "COSE Key Types" Registry as updated in Section 10.1 of {{I-D.ietf-cose-rfc8152bis-algs}}. Then, the array V in the "Capabilities" column of this entry is considered.
-
-2. Counter Signature Key Parameters takes the following value.
-   * If V has one element, i.e. kty(n), it takes n.
-   * If V has N > 1 elements, it takes an array Z of N elements, where:
-      * Z\[0\] = n , where V\[0\] = kty(n)
-      * Z\[i\] = V\[i\] , i = (1 ... N-1).
+The exact structure and value of this parameter depends on the value of Counter Signature Algorithm. In particular, this parameter takes the same structure and value of the array of COSE capabilities for the COSE key type associated to Counter Signature Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}).
 
 Examples of Counter Signature Key Parameters are in {{sec-cs-params-ex}}.
 
@@ -1027,7 +1029,7 @@ In order to renew its own Sender Context, the endpoint SHOULD inform the Group M
 
 Additionally, the same considerations from Section 12.6 of {{RFC8613}} hold for Group OSCORE, about building the AEAD nonce and the secrecy of the Security Context parameters.
 
-The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. For endpoints that support the pairwise mode of Group OSCORE, the X25519 function {{RFC7748}} is mandatory to implement. Montgomery curves and (twisted) Edwards curves {{RFC7748}} can be alternatively represented in short-Weierstrass form as described in {{I-D.ietf-lwig-curve-representations}}.
+The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. For endpoints that support the pairwise mode of Group OSCORE, the X25519 function {{RFC7748}} is also mandatory to implement. Montgomery curves and (twisted) Edwards curves {{RFC7748}} can be alternatively represented in short-Weierstrass form as described in {{I-D.ietf-lwig-curve-representations}}.
 
 For many constrained IoT devices, it is problematic to support more than one signature algorithm or multiple whole cipher suites. As a consequence some deployments using, for instance, ECDSA with NIST P-256 may not support the mandatory signature algorithm but that should not be an issue for local deployments.
 
@@ -1236,36 +1238,36 @@ The optimized request is compatible with all AEAD algorithms defined in {{I-D.ie
 The table below provides examples of values for Counter Signature Parameters in the Common Context (see {{ssec-common-context-cs-params}}), for different Counter Signature Algorithm.
 
 ~~~~~~~~~~~
-+-------------------+----------------------------+
-| Counter Signature | Example Values for Counter |
-| Algorithm         | Signature Parameters       |
-+-------------------+----------------------------+
-|  (-8)   // EdDSA  |      6     // Ed25519      |
-|  (-7)   // ES256  |      1     // P-256        |
-|  (-35)  // ES384  |      2     // P-384        |
-|  (-36)  // ES512  |      3     // P-512        |
-|  (-37)  // PS256  |      null                  |
-|  (-38)  // PS384  |      null                  |
-|  (-39)  // PS512  |      null                  |
-+-------------------+----------------------------+
++-------------------+----------------------------------------+
+| Counter Signature | Example Values for Counter             |
+| Algorithm         | Signature Parameters                   |
++-------------------+----------------------------------------+
+|  (-8)   // EdDSA  | [6], [1, 6]  // Ed25519 ; OKP, Ed25519 |
+|  (-7)   // ES256  | [1], [2, 1]  // P-256 ; EC2 , P-256    |
+|  (-35)  // ES384  | [2], [2, 2]  // P-384 ; EC2 , P-384    |
+|  (-36)  // ES512  | [3], [2, 3]  // P-512 ; EC2 , P-512    |
+|  (-37)  // PS256  | [], [3]      // empty ; RSA            |
+|  (-38)  // PS384  | [], [3]      // empty ; RSA            |
+|  (-39)  // PS512  | [], [3]      // empty ; RSA            |
++-------------------+----------------------------------------+
 ~~~~~~~~~~~
 {: #fig-examples-counter-signature-parameters title="Examples of Counter Signature Parameters" artwork-align="center"}
 
 The table below provides examples of values for Counter Signature Key Parameters in the Common Context (see {{ssec-common-context-cs-key-params}}), for different Counter Signature Algorithm.
 
 ~~~~~~~~~~~
-+-------------------+----------------------------------+
-| Counter Signature | Example Values for Counter       |
-| Algorithm         | Signature Key Parameters         |
-+-------------------+----------------------------------+
-| (-8)    // EdDSA  | [1 , 6]   // 1: OKP , 6: Ed25519 |
-| (-7)    // ES256  | [2 , 1]   // 2: EC2 , 1: P-256   |
-| (-35)   // ES384  | [2 , 2]   // 2: EC2 , 2: P-384   |     
-| (-36)   // ES512  | [2 , 3]   // 2: EC2 , 3: P-512   |
-| (-37)   // PS256  |    3      // 3: RSA              |
-| (-38)   // PS384  |    3      // 3: RSA              |
-| (-39)   // PS512  |    3      // 3: RSA              |
-+-------------------+----------------------------------+
++-------------------+---------------------------------+
+| Counter Signature | Example Values for Counter      |
+| Algorithm         | Signature Key Parameters        |
++-------------------+---------------------------------+
+| (-8)    // EdDSA  | [1, 6]   // 1: OKP , 6: Ed25519 |
+| (-7)    // ES256  | [2, 1]   // 2: EC2 , 1: P-256   |
+| (-35)   // ES384  | [2, 2]   // 2: EC2 , 2: P-384   |     
+| (-36)   // ES512  | [2, 3]   // 2: EC2 , 3: P-512   |
+| (-37)   // PS256  | [3]      // 3: RSA              |
+| (-38)   // PS384  | [3]      // 3: RSA              |
+| (-39)   // PS512  | [3]      // 3: RSA              |
++-------------------+---------------------------------+
 ~~~~~~~~~~~
 {: #fig-examples-counter-signature-key-parameters title="Examples of Counter Signature Key Parameters" artwork-align="center"}
 
