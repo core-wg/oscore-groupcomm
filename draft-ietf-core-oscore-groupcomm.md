@@ -374,7 +374,7 @@ As with OSCORE, endpoints communicating with Group OSCORE need to establish the 
 
 It is RECOMMENDED to use a Group Manager as described in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for authentication and authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}.
 
-The Group Manager assigns unique Group Identifiers (Gids) to different groups under its control, as well as unique Sender IDs (and thereby Recipient IDs) to the members of those groups. According to a hierarchical approach, the Gid value assigned to a group is associated to a dedicated space for the values of Sender ID and Recipient ID of the members of that group. In addition, the Group Manager maintains records of the public keys of endpoints in a group, and provides information about the group and its members to other members and selected roles.
+The Group Manager assigns unique Group Identifiers (Gids) to different groups under its control, as well as unique Sender IDs (and thereby Recipient IDs) to the members of those groups. According to a hierarchical approach, the Gid value assigned to a group is associated to a dedicated space for the values of Sender ID and Recipient ID of the members of that group. In addition, the Group Manager maintains records of the public keys of endpoints in a group, and provides information about the group and its members to other members and selected roles. Upon nodes' joining, the Group Manager collects such public keys and MUST verify proof-of-possession of the respective private key.
 
 An endpoint acquires group data such as the Gid and OSCORE input parameters including its own Sender ID from the Group Manager, and provides information about its public key to the Group Manager, for example upon joining the group. 
 
@@ -880,7 +880,9 @@ As a consequence, each message encrypted/decrypted with the same Sender Key is p
 
 The approach described in this specification should take into account the risk of compromise of group members. In particular, this document specifies that a key management scheme for secure revocation and renewal of Security Contexts and group keying material should be adopted.
 
-Especially in dynamic, large-scale, groups where endpoints can join and leave at any time, it is important that the considered group key management scheme is efficient and highly scalable with the group size, in order to limit the impact on performance due to the Security Context and keying material update.
+{{I-D.ietf-ace-key-groupcomm-oscore}} provides a simple rekying scheme for renewing Security Context in a group.
+
+Alternative rekeying schemes which are more scalable with the group size may be needed in dynamic, large-scale, groups where endpoints can join and leave at any time, in order to limit the impact on performance due to the Security Context and keying material update.
 
 ## Update of Security Context and Key Rotation {#ssec-key-rotation}
 
@@ -978,31 +980,20 @@ If the client uses its own Sender Key to protect a unicast request to a group me
 
 This is due to the fact that the client is not able to indicate the single intended recipient in a way which is secure and possible to process for Group OSCORE on the server side. In particular, Group OSCORE does not protect network addressing information such as the IP address of the intended recipient server. It follows that the server(s) receiving the redirected request cannot assert whether that was the original intention of the client, and would thus simply assume so.
 
-With particular reference to block-wise transfers {{RFC7959}}, Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}} points out that, while an initial request including the CoAP Block2 option can be sent over multicast, any other request in a transfer has to occur over unicast, individually addressing the servers in the group.
-
-Additional considerations are discussed in {{ssec-synch-challenge-response}}, with respect to requests including an CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} that has to be sent over unicast, as a challenge-response method for servers to achieve synchronization of client Sender Sequence Numbers.
-
 The impact of such an attack depends especially on the REST method of the request, i.e. the Inner CoAP Code of the OSCORE request message. In particular, safe methods such as GET and FETCH would trigger (several) unintended responses from the targeted server(s), while not resulting in destructive behavior. On the other hand, non safe methods such as PUT, POST and PATCH/iPATCH would result in the target server(s) taking active actions on their resources and possible cyber-physical environment, with the risk of destructive consequences and possible implications for safety.
 
 A client may instead use the pairwise mode defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. A client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast, instead of using the group mode. For an example where this is not fulfilled, see Section 5.2.1 in {{I-D.tiloca-core-observe-multicast-notifications}}.
+
+With particular reference to block-wise transfers {{RFC7959}}, Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}} points out that, while an initial request including the CoAP Block2 option can be sent over multicast, any other request in a transfer has to occur over unicast, individually addressing the servers in the group.
+
+Additional considerations are discussed in {{ssec-synch-challenge-response}}, with respect to requests including an CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} that has to be sent over unicast, as a challenge-response method for servers to achieve synchronization of client Sender Sequence Numbers.
 
 ## End-to-end Protection {#ssec-e2e-protection}
 
 The same considerations from Section 12.1 of {{RFC8613}} hold for Group OSCORE.
 
-Additionally, (D)TLS and Group OSCORE can be combined for protecting message exchanges occurring over unicast. Instead, it is not possible to combine DTLS and Group OSCORE for protecting message exchanges where messages are (also) sent over multicast.
+Additionally, (D)TLS and Group OSCORE can be combined for protecting message exchanges occurring over unicast. However, it is not possible to combine DTLS and Group OSCORE for protecting message exchanges where messages are (also) sent over multicast.
 
-## Security Context Establishment {#ssec-ctx-establishment}
-
-The use of COSE_Encrypt0 and AEAD to protect messages as specified in this document requires an endpoint to be a member of an OSCORE group.
-
-That is, upon joining the group, the endpoint securely receives from the Group Manager the necessary input parameters, which are used to derive the Common Context and the Sender Context (see {{sec-context}}). The Group Manager ensures uniqueness of Sender IDs in the same group.
-
-Each different Recipient Context for decrypting messages from a particular sender can be derived at runtime, at the latest upon receiving a message from that sender for the first time.
-
-Countersignatures of group messages are verified by means of the public key of the respective sender endpoint. Upon nodes' joining, the Group Manager collects such public keys and MUST verify proof-of-possession of the respective private key. Later on, a group member can request from the Group Manager the public keys of other group members. 
-
-The joining process can occur, for instance, as defined in {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
 ## Master Secret {#ssec-master-secret}
 
@@ -1036,7 +1027,7 @@ In order to renew its own Sender Context, the endpoint SHOULD inform the Group M
 
 Additionally, the same considerations from Section 12.6 of {{RFC8613}} hold for Group OSCORE, about building the AEAD nonce and the secrecy of the Security Context parameters.
 
-The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. For many constrained IoT devices, it is problematic to support more than one signature algorithm or multiple whole cipher suites. This means that some deployments using, for instance, ECDSA with NIST P-256 may not support the mandatory signature algorithm. However, this is not a problem for local deployments.
+The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. For many constrained IoT devices, it is problematic to support more than one signature algorithm or multiple whole cipher suites. As a consequence some deployments using, for instance, ECDSA with NIST P-256 may not support the mandatory signature algorithm but that should not be an issue for local deployments.
 
 The derivation of pairwise keys defined in {{key-derivation-pairwise}} is compatible with ECDSA and EdDSA asymmetric keys, but is not compatible with RSA asymmetric keys. The security of using the same key pair for Diffie-Hellman and for signing is demonstrated in {{Degabriele}}. 
 
@@ -1056,7 +1047,7 @@ Furthermore, the following privacy considerations hold, about the OSCORE option 
 
 Also, using the mechanisms described in {{ssec-synch-challenge-response}} to achieve sequence number synchronization with a client may reveal when a server device goes through a reboot. This can be mitigated by the server device storing the precise state of the replay window of each known client on a clean shutdown.
 
-Finally, the mechanism described in {{ssec-gid-collision}} to prevent collisions of Group Identifiers from different Group Managers  may reveal information about events in the respective OSCORE groups. In particular, a Group Idenfier changes when the corresponding group is rekeyed. Thus, changes in the shared list of Group Identifiers may be used to infer about the rate and patterns of group membership changes triggering a group rekeying, e.g. due to newly joined members or evicted (compromised) members. In order to alleviate such privacy concerns, it should be hidden from the Group Managers which exact Group Manager has currently assigned which Group Identifiers in its OSCORE groups.
+Finally, the mechanism described in {{ssec-gid-collision}} to prevent collisions of Group Identifiers from different Group Managers may reveal information about events in the respective OSCORE groups. In particular, a Group Identifier changes when the corresponding group is rekeyed. Thus, changes in the shared list of Group Identifiers may be used to infer about the rate and patterns of group membership changes triggering a group rekeying, e.g. due to newly joined members or evicted (compromised) members. In order to alleviate such privacy concerns, it should be hidden from the Group Managers which exact Group Manager has currently assigned which Group Identifiers in its OSCORE groups.
 
 # IANA Considerations # {#iana}
 
