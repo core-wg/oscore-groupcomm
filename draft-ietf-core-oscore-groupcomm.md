@@ -100,6 +100,7 @@ informative:
   I-D.mattsson-cfrg-det-sigs-with-noise:
   I-D.ietf-lwig-security-protocol-comparison:
   I-D.tiloca-core-observe-multicast-notifications:
+  I-D.ietf-lwig-curve-representations:
   RFC4944:
   RFC4949:
   RFC6282:
@@ -336,8 +337,7 @@ If an endpoint is not able to establish an updated Sender Security Context, e.g.
 
 An endpoint can eventually exhaust the Sender Sequence Numbers, which are incremented for each new outgoing message including a Partial IV. This is the case for group requests, Observe notifications {{RFC7641}} and, optionally, any other response.
 
-If an implementation's integers support wrapping addition, the implementation MUST detect a wrap-around of the Sender Sequence Number value and treat those as exhausted.
-<!-- This MUST is not possible to test, better formulation? -->
+If an implementation's integers support wrapping addition, when a wrap-around is detected the implementation MUST treat Sender Sequence Numbers as exhausted.
 
 Upon exhausting the Sender Sequence Numbers, the endpoint MUST NOT protect further messages using this Security Context. The endpoint SHOULD inform the Group Manager and retrieve new Security Context parameters from the Group Manager (see {{sec-group-re-join}}).
 
@@ -1027,7 +1027,9 @@ In order to renew its own Sender Context, the endpoint SHOULD inform the Group M
 
 Additionally, the same considerations from Section 12.6 of {{RFC8613}} hold for Group OSCORE, about building the AEAD nonce and the secrecy of the Security Context parameters.
 
-The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. For many constrained IoT devices, it is problematic to support more than one signature algorithm or multiple whole cipher suites. As a consequence some deployments using, for instance, ECDSA with NIST P-256 may not support the mandatory signature algorithm but that should not be an issue for local deployments.
+The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. For endpoints that support the pairwise mode of Group OSCORE, the X25519 function {{RFC7748}} is mandatory to implement. Montgomery curves and (twisted) Edwards curves {{RFC7748}} can be alternatively represented in short-Weierstrass form as described in {{I-D.ietf-lwig-curve-representations}}.
+
+For many constrained IoT devices, it is problematic to support more than one signature algorithm or multiple whole cipher suites. As a consequence some deployments using, for instance, ECDSA with NIST P-256 may not support the mandatory signature algorithm but that should not be an issue for local deployments.
 
 The derivation of pairwise keys defined in {{key-derivation-pairwise}} is compatible with ECDSA and EdDSA asymmetric keys, but is not compatible with RSA asymmetric keys. The security of using the same key pair for Diffie-Hellman and for signing is demonstrated in {{Degabriele}}. 
 
