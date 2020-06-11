@@ -454,9 +454,10 @@ external_aad = bstr .cbor aad_array
 aad_array = [
    oscore_version : uint,
    algorithms : [alg_aead : int / tstr,
-                 alg_countersign : int / tstr,
-                 par_countersign : any / nil,
-                 par_countersign_key : any / nil],
+                 alg_countersign : int / tstr,       
+                 par_countersign : [countersign_alg_capab,
+                                    countersign_key_type_capab],
+                 par_countersign_key : countersign_key_type_capab],
    request_kid : bstr,
    request_piv : bstr,
    options : bstr
@@ -468,21 +469,15 @@ Compared with Section 5.4 of {{RFC8613}}, the 'algorithms' array in the aad_arra
 
 * 'alg_countersign', which specifies Counter Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Counter Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this counter signature algorithm.
 
-* 'par_countersign', which specifies Counter Signature Parameters from the Common Context (see {{ssec-common-context-cs-params}}). This parameter is encoded as follows.
+* 'par_countersign', which specifies Counter Signature Parameters from the Common Context (see {{ssec-common-context-cs-params}}). In particular:
 
-   - Let V be the array in the "Capabilities" column of the "COSE Key Types" Registry, in the entry for the key type associated to Counter Signature Algorithm. V\[i\] denotes the i-th element of V, i = (0 ... N-1).
-   - If Counter Signature Parameters has no value, 'par_countersign' MUST be encoding the CBOR simple value Null.
-   - If Counter Signature Parameters has a single value, 'par_countersign' MUST be encoding that value, with the same CBOR type of V\[1\].
-   - If Counter Signature Parameters is an array Z of N-1 elements, 'par_countersign' MUST be encoding a CBOR array of N-1 elements. The i-th element of the CBOR array MUST encode the value of Z\[i\], with the same CBOR type of V\[i+1\].
+   - 'countersign_alg_capab' is the array of COSE capabilities for the countersignature algorithm indicated in 'alg_countersign'.
 
-* 'par_countersign_key', which specifies Counter Signature Key Parameters from the Common Context (see {{ssec-common-context-cs-key-params}}). This parameter is encoded as follows.
+   - 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type used by the countersignature algorithm indicated in 'alg_countersign'.
 
-   - Let V be the array in the "Capabilities" column of the "COSE Key Types" Registry, in the entry for the key type associated to Counter Signature Algorithm. V\[i\] denotes the i-th element of V, i = (0 ... N-1).
-   - If Counter Signature Key Parameters has no value, 'par_countersign_key' MUST be encoding the CBOR simple value Null.
-   - If Counter Signature Key Parameters has a single value, 'par_countersign_key' MUST be encoding that value as a CBOR integer or text string, consistently with the "Value" field for this key type in the "COSE Key Types" Registry.
-   - If Counter Signature Key Parameters is an array Z of N elements, 'par_countersign_key' MUST be encoding a CBOR array of N elements. In particular:
-      * The first element of the CBOR array MUST encode the value of Z\[0\] as a CBOR integer or text string, consistently with the "Value" field for this key type in the "COSE Key Types" Registry.
-      * The i-th element of the CBOR array, i = (1 ... N-1), MUST encode the value of Z\[i\], with the same CBOR type of V\[i\].
+* 'par_countersign_key', which specifies Counter Signature Key Parameters from the Common Context (see {{ssec-common-context-cs-key-params}}). In particular, 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type used by the countersignature algorithm indicated in 'alg_countersign'.
+
+
 
 ### external_aad for Signing ### {#sec-cose-object-ext-aad-sign}
 
