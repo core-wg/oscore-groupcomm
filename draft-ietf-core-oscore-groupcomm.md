@@ -1234,18 +1234,18 @@ The optimized request is compatible with all AEAD algorithms defined in {{I-D.ie
 The table below provides examples of values for Counter Signature Parameters in the Common Context (see {{ssec-common-context-cs-params}}), for different Counter Signature Algorithm.
 
 ~~~~~~~~~~~
-+-------------------+----------------------------------------+
-| Counter Signature | Example Values for Counter             |
-| Algorithm         | Signature Parameters                   |
-+-------------------+----------------------------------------+
-|  (-8)   // EdDSA  | [6], [1, 6]  // Ed25519 ; OKP, Ed25519 |
-|  (-7)   // ES256  | [1], [2, 1]  // P-256 ; EC2 , P-256    |
-|  (-35)  // ES384  | [2], [2, 2]  // P-384 ; EC2 , P-384    |
-|  (-36)  // ES512  | [3], [2, 3]  // P-512 ; EC2 , P-512    |
-|  (-37)  // PS256  | [], [3]      // empty ; RSA            |
-|  (-38)  // PS384  | [], [3]      // empty ; RSA            |
-|  (-39)  // PS512  | [], [3]      // empty ; RSA            |
-+-------------------+----------------------------------------+
++-------------------+---------------------------------------------+
+| Counter Signature | Example Values for Counter                  |
+| Algorithm         | Signature Parameters                        |
++-------------------+---------------------------------------------+
+|  (-8)   // EdDSA  | [1], [1, 6]  // 1: OKP ; 1: OKP, 6: Ed25519 |
+|  (-7)   // ES256  | [2], [2, 1]  // 2: EC2 ; 2: EC2, 1: P-256   |
+|  (-35)  // ES384  | [2], [2, 2]  // 2: EC2 ; 2: EC2, 2: P-384   |
+|  (-36)  // ES512  | [2], [2, 3]  // 2: EC2 ; 2: EC2, 3: P-512   |
+|  (-37)  // PS256  | [], [3]      // empty ; 3: RSA              |
+|  (-38)  // PS384  | [], [3]      // empty ; 3: RSA              |
+|  (-39)  // PS512  | [], [3]      // empty ; 3: RSA              |
++-------------------+---------------------------------------------+
 ~~~~~~~~~~~
 {: #fig-examples-counter-signature-parameters title="Examples of Counter Signature Parameters" artwork-align="center"}
 
