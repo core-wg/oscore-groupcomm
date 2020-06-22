@@ -248,7 +248,7 @@ The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. For
 
 Counter Signature Parameters identifies the parameters associated to the digital signature algorithm specified in Counter Signature Algorithm. This parameter is immutable once the Common Context is established.
 
-This parameter is an array including the following two elements, whose exact structure and value depend on the value of Counter Signature Algorithm:
+This parameter is a CBOR array including the following two elements, whose exact structure and value depend on the value of Counter Signature Algorithm:
 
 * The first element is the array of COSE capabilities for Counter Signature Algorithm, as specified for that algorithm in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
 
@@ -469,7 +469,7 @@ Compared with Section 5.4 of {{RFC8613}}, the 'algorithms' array in the aad_arra
 
 * 'alg_countersign', which specifies Counter Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Counter Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this counter signature algorithm.
 
-* 'par_countersign', which specifies the array Counter Signature Parameters from the Common Context (see {{ssec-common-context-cs-params}}). In particular:
+* 'par_countersign', which specifies the CBOR array Counter Signature Parameters from the Common Context (see {{ssec-common-context-cs-params}}). In particular:
 
    - 'countersign_alg_capab' is the array of COSE capabilities for the countersignature algorithm indicated in 'alg_countersign'.
 
