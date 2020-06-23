@@ -67,7 +67,6 @@ normative:
   RFC7252:
   RFC7748:
   RFC8032:
-  RFC8126:
   RFC8174:
   RFC8613:
   COSE.Algorithms:
