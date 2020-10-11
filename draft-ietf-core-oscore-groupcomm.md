@@ -62,6 +62,7 @@ normative:
   I-D.ietf-core-groupcomm-bis:
   I-D.ietf-cose-rfc8152bis-struct:
   I-D.ietf-cose-rfc8152bis-algs:
+  I-D.ietf-cose-countersign:
   RFC2119:
   RFC4086:
   RFC7252:
@@ -173,7 +174,7 @@ A special deployment of Group OSCORE is to use pairwise mode only. For example, 
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
 
-Readers are expected to be familiar with the terms and concepts described in CoAP {{RFC7252}} including "endpoint", "client", "server", "sender" and "recipient"; group communication for CoAP {{I-D.ietf-core-groupcomm-bis}}; COSE and counter signatures {{I-D.ietf-cose-rfc8152bis-struct}}{{I-D.ietf-cose-rfc8152bis-algs}}.
+Readers are expected to be familiar with the terms and concepts described in CoAP {{RFC7252}} including "endpoint", "client", "server", "sender" and "recipient"; group communication for CoAP {{I-D.ietf-core-groupcomm-bis}}; COSE and counter signatures {{I-D.ietf-cose-rfc8152bis-struct}}{{I-D.ietf-cose-rfc8152bis-algs}}{{I-D.ietf-cose-countersign}}.
 
 Readers are also expected to be familiar with the terms and concepts for protection and processing of CoAP messages through OSCORE, such as "Security Context" and "Master Secret", defined in {{RFC8613}}.
 
@@ -237,7 +238,7 @@ The ID Context parameter (see Sections 3.3 and 5.1 of {{RFC8613}}) in the Common
 
 ### Counter Signature Algorithm ## {#ssec-common-context-cs-alg}
 
-Counter Signature Algorithm identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Section 5.2 of {{I-D.ietf-cose-rfc8152bis-struct}}).
+Counter Signature Algorithm identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Sections 3.2 and 3.3 of {{I-D.ietf-cose-countersign}}).
 
 This parameter is immutable once the Common Context is established. Counter Signature Algorithm MUST take value from the "Value" column of the "COSE Algorithms" Registry {{COSE.Algorithms}}. The value is associated to a COSE key type, specified in the "Capabilities" column of the Registry. COSE capabilities for algorithms are defined in Section 8 of {{I-D.ietf-cose-rfc8152bis-algs}}.
 
@@ -431,7 +432,7 @@ Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{I-D
 
 For the group mode only, the 'unprotected' field MUST additionally include the following parameter:
 
-* CounterSignature0: its value is set to the counter signature of the COSE object, computed by the sender as described in Section 5.2 of {{I-D.ietf-cose-rfc8152bis-struct}}, by using the private key and according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context. In particular, the Sig_structure contains the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE_Encrypt0 object as payload.
+* CounterSignature0: its value is set to the counter signature of the COSE object, computed by the sender as described in Sections 3.2 and 3.3 of {{I-D.ietf-cose-countersign}}, by using the private key and according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context. In particular, the Countersign_structure contains the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE_Encrypt0 object as payload.
 
 ## The 'kid' and 'kid context' parameters # {#sec-cose-object-kid}
 
@@ -445,7 +446,7 @@ The external_aad of the Additional Authenticated Data (AAD) is different compare
 
 ### external_aad for Encryption ### {#sec-cose-object-ext-aad-enc}
 
-The external_aad for encryption (see Section 6.3 of {{I-D.ietf-cose-rfc8152bis-struct}}), used both in group mode and pairwise mode, includes also the counter signature algorithm and related signature parameters, see {{fig-ext-aad-encryption}}. 
+The external_aad for encryption (see Section 4.3 of {{I-D.ietf-cose-rfc8152bis-struct}}), used both in group mode and pairwise mode, includes also the counter signature algorithm and related signature parameters, see {{fig-ext-aad-encryption}}. 
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
@@ -480,7 +481,7 @@ Compared with Section 5.4 of {{RFC8613}}, the 'algorithms' array in the aad_arra
 
 ### external_aad for Signing ### {#sec-cose-object-ext-aad-sign}
 
-The external_aad for signing (see Section 4.4 of {{I-D.ietf-cose-rfc8152bis-struct}}) used in group mode is identical to the external_aad for encryption (see {{sec-cose-object-ext-aad-enc}}) with the addition of the OSCORE option, see {{fig-ext-aad-signing}}.
+The external_aad for signing (see Section 4.3 of {{I-D.ietf-cose-rfc8152bis-struct}}) used in group mode is identical to the external_aad for encryption (see {{sec-cose-object-ext-aad-enc}}) with the addition of the OSCORE option, see {{fig-ext-aad-signing}}.
 
 
 ~~~~~~~~~~~ CDDL
@@ -1267,6 +1268,8 @@ The table below provides examples of values for Counter Signature Key Parameters
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -09 to -10 ## {#sec-09-10}
+
+* Reference to draft-ietf-cose-countersign.
 
 * Removed optimized requests.
 
