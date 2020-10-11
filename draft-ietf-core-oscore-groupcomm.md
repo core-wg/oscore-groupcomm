@@ -271,7 +271,7 @@ For endpoints that support the pairwise mode, the ECDH-SS + HKDF-256 algorithm s
 
 Secret Derivation Parameters identifies the parameters associated to the elliptic curve Diffie-Hellman algorithm specified in Secret Derivation Algorithm. This parameter is immutable once the Common Context is established.
 
-This parameter is a CBOR array including the following two elements, whose exact structure and value depend on the value of Counter Signature Algorithm:
+This parameter is a CBOR array including the following two elements, whose exact structure and value depend on the value of Secret Derivation Algorithm:
 
 * The first element is the array of COSE capabilities for Secret Derivation Algorithm, as specified for that algorithm in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}} (see Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}).
 
@@ -507,7 +507,9 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
 
       - 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type used by the countersignature algorithm indicated in 'alg_countersign'. This is the second element of the CBOR array Counter Signature Parameters from the Common Context.
 
-   - 'par_countersign_key', which specifies the parameters associated to the keys used with the digital signature algorithm indicated in 'alg_countersign'. These parameters are encoded as a CBOR array 'countersign_key_type_capab', which takes the same structure and value of the array of COSE capabilities for the COSE key type of the keys used with the countersignature algorithm. In particular, these are as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
+   - 'par_countersign_key', which specifies the parameters associated to the keys used with the digital signature algorithm indicated in 'alg_countersign'. These parameters are encoded as a CBOR array 'countersign_key_type_capab', whose exact structure and value depend on the value of 'alg_countersign'.
+   
+      In particular, 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type of the keys used with the countersignature algorithm. These are as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
 
       Examples of 'par_countersign_key' are in {{sec-cs-params-ex}}.
    
