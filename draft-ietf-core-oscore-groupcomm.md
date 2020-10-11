@@ -432,7 +432,9 @@ Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{I-D
 
 For the group mode only, the 'unprotected' field MUST additionally include the following parameter:
 
-* CounterSignature0: its value is set to the counter signature of the COSE object, computed by the sender as described in Sections 3.2 and 3.3 of {{I-D.ietf-cose-countersign}}, by using the private key and according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context. In particular, the Countersign_structure contains the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE_Encrypt0 object as payload.
+* COSE_CounterSignature0: its value is set to the counter signature of the COSE object, computed by the sender as described in Sections 3.2 and 3.3 of {{I-D.ietf-cose-countersign}}, by using its private key and according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context.
+
+   In particular, the Countersign_structure contains the context text string "CounterSignature0", the external_aad as defined in {{sec-cose-object-ext-aad-sign}} and the ciphertext of the COSE object as payload.
 
 ## The 'kid' and 'kid context' parameters # {#sec-cose-object-kid}
 
@@ -515,7 +517,7 @@ Note for implementation: this construction requires the OSCORE option of the mes
 
 The OSCORE header compression defined in Section 6 of {{RFC8613}} is used, with the following differences.
 
-* The payload of the OSCORE message SHALL encode the ciphertext of the COSE object. In the group mode, the ciphertext above is concatenated with the value of the CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
+* The payload of the OSCORE message SHALL encode the ciphertext of the COSE_Encrypt0 object. In the group mode, the ciphertext above is concatenated with the value of the COSE_CounterSignature0 of the COSE object, computed as described in {{sec-cose-object-unprotected-field}}.
 
 * This specification defines the usage of the sixth least significant bit, called the "Group Flag", in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is specified in {{iana-cons-flag-bits}}.
 
@@ -529,7 +531,7 @@ This section covers a list of OSCORE Header Compression examples of Group OSCORE
 
 The examples assume that the COSE_Encrypt0 object is set (which means the CoAP message and cryptographic material is known). Note that the examples do not include the full CoAP unprotected message or the full Security Context, but only the input necessary to the compression mechanism, i.e. the COSE_Encrypt0 object. The output is the compressed COSE object as defined in {{compression}} and divided into two parts, since the object is transported in two CoAP fields: OSCORE option and payload.
 
-The examples assume that the plaintext (see Section 5.3 of {{RFC8613}}) is 6 bytes long, and that the AEAD tag is 8 bytes long, hence resulting in a ciphertext which is 14 bytes long. When using the group mode, COUNTERSIGN denotes the CounterSignature0 byte string as described in {{sec-cose-object}}, and is 64 bytes long.
+The examples assume that the plaintext (see Section 5.3 of {{RFC8613}}) is 6 bytes long, and that the AEAD tag is 8 bytes long, hence resulting in a ciphertext which is 14 bytes long. When using the group mode, COUNTERSIGN denotes the COSE_CounterSignature0 byte string as described in {{sec-cose-object}}, and is 64 bytes long.
 
 ### Examples in Group Mode ## {#sssec-example-cose-group}
 
@@ -540,7 +542,7 @@ Before compression (96 bytes):
 
 [
 h'',
-{ 4:h'25', 6:h'05', 10:h'44616c', 9:COUNTERSIGN },
+{ 4:h'25', 6:h'05', 10:h'44616c', 11:COUNTERSIGN },
 h'aea0155667924dff8a24e4cb35b9'
 ]
 ~~~~~~~~~~~
@@ -565,7 +567,7 @@ Before compression (88 bytes):
 
 [
 h'',
-{ 4:h'52', 9:COUNTERSIGN },
+{ 4:h'52', 11:COUNTERSIGN },
 h'60b035059d9ef5667c5a0710823b'
 ]
 ~~~~~~~~~~~
@@ -1269,7 +1271,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -09 to -10 ## {#sec-09-10}
 
-* Reference to draft-ietf-cose-countersign.
+* New counter signature header parameter from draft-ietf-cose-countersign.
 
 * Removed optimized requests.
 
