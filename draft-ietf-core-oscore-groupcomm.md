@@ -188,7 +188,7 @@ This document refers also to the following terminology.
 
 * Group Manager: entity responsible for a group. Each endpoint in a group communicates securely with the respective Group Manager, which is neither required to be an actual group member nor to take part in the group communication. The full list of responsibilities of the Group Manager is provided in {{sec-group-manager}}.
 
-* Silent server: member of a group that never sends protected responses in reply to requests. For CoAP group communications, requests are normally sent without necessarily expecting a response. A silent server may send unprotected responses, as error responses reporting an OSCORE error. Note that an endpoint can implement both a silent server and a client, i.e. the two roles are independent. An endpoint acting only as a silent server performs only Group OSCORE processing on incoming requests. Silent servers maintain less keying material and in particular do not have a Sender Context for the group. Since silent servers do not have a Sender ID they cannot support pairwise mode.
+* Silent server: member of a group that never sends protected responses in reply to requests. For CoAP group communications, requests are normally sent without necessarily expecting a response. A silent server may send unprotected responses, as error responses reporting an OSCORE error. Note that an endpoint can implement both a silent server and a client, i.e. the two roles are independent. An endpoint acting only as a silent server performs only Group OSCORE processing on incoming requests. Silent servers maintain less keying material and in particular do not have a Sender Context for the group. Since silent servers do not have a Sender ID they cannot support the pairwise mode.
 
 * Group Identifier (Gid): identifier assigned to the group, unique within the set of groups of a given Group Manager.
 
@@ -201,7 +201,9 @@ This document refers also to the following terminology.
 
 This specification refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol (see {{terminology}}). Each endpoint which is member of a group maintains a Security Context as defined in Section 3 of {{RFC8613}}, extended as follows (see {{fig-additional-context-information}}):
 
-* One Common Context, shared by all the endpoints in the group. Two new parameters are included in the Common Context: Counter Signature Algorithm and Counter Signature Parameters, which all relate to the counter signature of the message computed when using the group mode (see {{mess-processing}}).
+* One Common Context, shared by all the endpoints in the group. Two new parameters are included in the Common Context, namely Counter Signature Algorithm and Counter Signature Parameters. These relate to the computation of counter signatures, when messages are protected using the group mode (see {{mess-processing}}).
+
+   If the pairwise mode is supported, the Common Context is further extended with two new parameters, namely Secret Derivation Algorithm and Secret Derivation Parameters. These relate to the derivation of a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
 
 * One Sender Context, extended with the endpoint's private key. The private key is used to sign the message in group mode, and for calculating the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). If the pairwise mode is supported, the Sender Context is also extended with the Pairwise Sender Keys associated to the other endpoints (see {{sec-derivation-pairwise}}). The Sender Context is omitted if the endpoint is configured exclusively as silent server. 
 
@@ -213,6 +215,8 @@ This specification refers to a group as a set of endpoints sharing keying materi
 +-------------------+-----------------------------------------------+
 | Common Context    | Counter Signature Algorithm                   |
 |                   | Counter Signature Parameters                  |
+|                   | *Secret Derivation Algorithm                  |
+|                   | *Secret Derivation Parameters                 |
 +-------------------+-----------------------------------------------+
 | Sender Context    | Endpoint's own private key                    |
 |                   | *Pairwise Sender Keys for the other endpoints |
@@ -237,11 +241,11 @@ The ID Context parameter (see Sections 3.3 and 5.1 of {{RFC8613}}) in the Common
 
 ### Counter Signature Algorithm ## {#ssec-common-context-cs-alg}
 
-Counter Signature Algorithm identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Sections 3.2 and 3.3 of {{I-D.ietf-cose-countersign}}).
+Counter Signature Algorithm identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Sections 3.2 and 3.3 of {{I-D.ietf-cose-countersign}}), when messages are protected using the group mode (see {{mess-processing}}).
 
 This parameter is immutable once the Common Context is established. Counter Signature Algorithm MUST take value from the "Value" column of the "COSE Algorithms" Registry {{COSE.Algorithms}}. The value is associated to a COSE key type, specified in the "Capabilities" column of the Registry. COSE capabilities for algorithms are defined in Section 8 of {{I-D.ietf-cose-rfc8152bis-algs}}.
 
-The EdDSA signature algorithm and the elliptic curve Ed25519 {{RFC8032}} are mandatory to implement. For endpoints that support the pairwise mode, the ECDH-SS + HKDF-256 algorithm specified in Section 6.3.1 of {{I-D.ietf-cose-rfc8152bis-algs}} and the X25519 curve {{RFC7748}} are also mandatory to implement. If elliptic curve signatures are used, it is RECOMMENDED to implement deterministic signatures with additional randomness as specified in {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
+The EdDSA signature algorithm and the elliptic curve Ed25519 {{RFC8032}} are mandatory to implement. If elliptic curve signatures are used, it is RECOMMENDED to implement deterministic signatures with additional randomness as specified in {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
 
 ### Counter Signature Parameters ## {#ssec-common-context-cs-params}
 
@@ -255,6 +259,26 @@ This parameter is a CBOR array including the following two elements, whose exact
    
 Examples of Counter Signature Parameters are in {{sec-cs-params-ex}}.
    
+### Secret Derivation Algorithm ## {#ssec-common-context-dh-alg}
+
+Secret Derivation Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
+
+This parameter is immutable once the Common Context is established. Secret Derivation Algorithm MUST take value from the "Value" column of the "COSE Algorithms" Registry {{COSE.Algorithms}}. The value is associated to a COSE key type, specified in the "Capabilities" column of the Registry. COSE capabilities for algorithms are defined in Section 8 of {{I-D.ietf-cose-rfc8152bis-algs}}.
+
+For endpoints that support the pairwise mode, the ECDH-SS + HKDF-256 algorithm specified in Section 6.3.1 of {{I-D.ietf-cose-rfc8152bis-algs}} and the X25519 curve {{RFC7748}} are mandatory to implement.
+
+### Secret Derivation Parameters ## {#ssec-common-context-dh-params}
+
+Secret Derivation Parameters identifies the parameters associated to the elliptic curve Diffie-Hellman algorithm specified in Secret Derivation Algorithm. This parameter is immutable once the Common Context is established.
+
+This parameter is a CBOR array including the following two elements, whose exact structure and value depend on the value of Counter Signature Algorithm:
+
+* The first element is the array of COSE capabilities for Secret Derivation Algorithm, as specified for that algorithm in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}} (see Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}).
+
+* The second element is the array of COSE capabilities for the COSE key type associated to Secret Derivation Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
+   
+Examples of Secret Derivation Parameters are in {{sec-cs-params-ex}}.
+
 ## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
 OSCORE specifies the derivation of Sender Context and Recipient Context, specifically of Sender/Recipient Keys and Common IV, from a set of input parameters (see Section 3.2 of {{RFC8613}}). This derivation applies also to Group OSCORE, and the mandatory-to-implement HKDF and AEAD algorithms are the same as in {{RFC8613}}. The Sender ID SHALL be unique for each endpoint in a group with a fixed Master Secret, Master Salt and Group Identifier (see Section 3.3 of {{RFC8613}}).
@@ -308,7 +332,7 @@ As a consequence, replay checks may be invoked more often on the recipient side,
 
 ### Security Context for Pairwise Mode  ### {#pairwise-implementation}
 
-If the pairwise mode is supported, the pairwise keys are added to the Security Context, as described at the beginning of {{sec-context}}.
+If the pairwise mode is supported, the Security Context additionally includes Secret Derivation Algorithm, Secret Derivation Parameters and the pairwise keys, as described at the beginning of {{sec-context}}.
  
 The pairwise keys as well as the shared secrets used in their derivation (see {{key-derivation-pairwise}}) may be stored in memory or recomputed each time they are needed. The shared secret changes only when a public/private key pair used for its derivation changes, which results in the pairwise keys also changing. Additionally, the pairwise keys change if the Sender ID changes or if a new Security Context is established for the group (see {{sec-group-re-join}}). In order to optimize protocol performance, an endpoint may store the derived pairwise keys for easy retrieval. 
 
@@ -1260,7 +1284,7 @@ There are some application scenarios using group communication that have particu
 
 In this specification, it is NOT RECOMMENDED that endpoints do not verify the counter signature of received messages protected with the group mode. However, it is recognized that there may be situations where it is not always required. The consequence of not doing the signature validation in messages protected with the group mode is that security in the group is based only on the group-authenticity of the shared keying material used for encryption. That is, endpoints in the group would have evidence that the received message has been originated by a group member, although not specifically identifiable in a secure way. This can violate a number of security requirements, as the compromise of any element in the group means that the attacker has the ability to control the entire group. Even worse, the group may not be limited in scope, and hence the same keying material might be used not only for light bulbs but for locks as well. Therefore, extreme care must be taken in situations where the security requirements are relaxed, so that deployment of the system will always be done safely.
 
-# Example Values of Parameters for Countersignatures # {#sec-cs-params-ex}
+# Example Values with COSE Capabilities # {#sec-cs-params-ex}
 
 The table below provides examples of values for Counter Signature Parameters in the Common Context (see {{ssec-common-context-cs-params}}), for different values of Counter Signature Algorithm.
 
@@ -1270,6 +1294,7 @@ The table below provides examples of values for Counter Signature Parameters in 
 | Algorithm         | Signature Parameters                        |
 +-------------------+---------------------------------------------+
 |  (-8)   // EdDSA  | [1], [1, 6]  // 1: OKP ; 1: OKP, 6: Ed25519 |
+|  (-8)   // EdDSA  | [1], [1, 6]  // 1: OKP ; 1: OKP, 7: Ed448   |
 |  (-7)   // ES256  | [2], [2, 1]  // 2: EC2 ; 2: EC2, 1: P-256   |
 |  (-35)  // ES384  | [2], [2, 2]  // 2: EC2 ; 2: EC2, 2: P-384   |
 |  (-36)  // ES512  | [2], [2, 3]  // 2: EC2 ; 2: EC2, 3: P-512   |
@@ -1280,6 +1305,22 @@ The table below provides examples of values for Counter Signature Parameters in 
 ~~~~~~~~~~~
 {: #fig-examples-counter-signature-parameters title="Examples of Counter Signature Parameters" artwork-align="center"}
 
+The table below provides examples of values for Secret Derivation Parameters in the Common Context (see {{ssec-common-context-dh-params}}), for different values of Secret Derivation Algorithm.
+
+~~~~~~~~~~~
++-----------------------+--------------------------------------------+
+| Secret Derivation     | Example Values for Secret                  |
+| Algorithm             | Derivation Parameters                      |
++-----------------------+--------------------------------------------+
+|  (-27)  // ECDH-SS    | [1], [1, 6]  // 1: OKP ; 1: OKP, 4: X25519 |
+|         // + HKDF-256 |                                            |
+|  (-7)   // ES256      | [2], [2, 1]  // 2: EC2 ; 2: EC2, 1: P-256  |
+|  (-35)  // ES384      | [2], [2, 2]  // 2: EC2 ; 2: EC2, 2: P-384  |
+|  (-36)  // ES512      | [2], [2, 3]  // 2: EC2 ; 2: EC2, 3: P-512  |
++-----------------------+--------------------------------------------+
+~~~~~~~~~~~
+{: #fig-examples-counter-dh-parameters title="Examples of Counter Signature Parameters" artwork-align="center"}
+
 The table below provides examples of values for the 'par_countersign_key' element of the 'algorithms' array used in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}), for different values of Counter Signature Algorithm.
 
 ~~~~~~~~~~~
@@ -1288,6 +1329,7 @@ The table below provides examples of values for the 'par_countersign_key' elemen
 | Algorithm         | 'par_countersign_key'           |
 +-------------------+---------------------------------+
 | (-8)    // EdDSA  | [1, 6]   // 1: OKP , 6: Ed25519 |
+| (-8)    // EdDSA  | [1, 6]   // 1: OKP , 7: Ed448   |
 | (-7)    // ES256  | [2, 1]   // 2: EC2 , 1: P-256   |
 | (-35)   // ES384  | [2, 2]   // 2: EC2 , 2: P-384   |     
 | (-36)   // ES512  | [2, 3]   // 2: EC2 , 3: P-512   |
@@ -1306,6 +1348,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Removed 'Counter Signature Key Parameters' from the Common Context.
 
+* New parameters in the Common Context covering the DH secret derivation.
+
 * New counter signature header parameter from draft-ietf-cose-countersign.
 
 * Stronger policies non non-recycling of Sender IDs and Gid.
@@ -1323,6 +1367,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Both client and server store the 'kid_context' of the original observation request.
 
 * The server uses a fresh PIV if protecting the response with a Security Context different from the one used to protect the request.
+
+* Clarifications on MTI algorithms and curves.
 
 * Removed optimized requests.
 
