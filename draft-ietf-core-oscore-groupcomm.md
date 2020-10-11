@@ -680,13 +680,13 @@ A client transmits a secure group request as described in Section 8.1 of {{RFC86
 
 * In step 5, the counter signature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}}. In particular, the payload of the OSCORE message includes also the counter signature.
 
-### Supporting Observe ###
+### Supporting Observe ### {#ssec-protect-request-observe}
 
 If Observe {{RFC7641}} is supported, the following holds for each newly started observation.
 
-* The client MUST store the value of the 'kid' parameter from the original Observe request, if it intends to keep the observation active beyond a possible change of Sender ID. Even in case the client is individually rekeyed and receives a new Sender ID from the Group Manager (see {{new-sender-id}}), the client MUST NOT update the stored value associated to the ongoing observation.
+* If the client intends to keep the observation active beyond a possible change of Sender ID, the client MUST store the value of the 'kid' parameter from the original Observe request and retain it for the whole duration of the observation. Even in case the client is individually rekeyed and receives a new Sender ID from the Group Manager (see {{new-sender-id}}), the client MUST NOT update the stored value associated to a particular Observe request.
 
-* The client MUST store the value of the 'kid context' from the original Observe request, if it intends to keep the observation active beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}). That is, upon establishing a new Security Context with a new ID Context as Gid (see {{new-sec-context}}), the client MUST NOT update the stored value associated to the ongoing observation.
+* If the client intends to keep the observation active beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}), the client MUST store the value of the 'kid context' parameter from the original Observe request and retain it for the whole duration of the observation. Upon establishing a new Security Context with a new ID Context as Gid (see {{new-sec-context}}), the client MUST NOT update the stored value associated to a particular Observe request.
 
 ## Verifying the Request ## {#ssec-verify-request}
 
@@ -710,11 +710,13 @@ Upon receiving a secure group request with the Group Flag set to 1, following th
     
 A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. For an example where this is not fulfilled, see Section 6.2.1 in {{I-D.tiloca-core-observe-multicast-notifications}}.
 
-### Supporting Observe ###
+### Supporting Observe ### {#ssec-verify-request-observe}
 
-If Observe {{RFC7641}} is supported, for each newly started observation, the server MUST store the value of the 'kid' parameter from the original Observe request.
+If Observe {{RFC7641}} is supported, the following holds for each newly started observation.
 
-The server MUST NOT update the stored value of a 'kid' parameter associated to a particular Observe request, even in case the observer client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}).
+* The server MUST store the value of the 'kid' parameter from the original Observe request and retain it for the whole duration of the observation. The server MUST NOT update the stored value of a 'kid' parameter associated to a particular Observe request, even in case the observer client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}).
+
+* The server MUST store the value of the 'kid context' parameter from the original Observe request and retain it for the whole duration of the observation, beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}). That is, upon establishing a new Security Context with a new ID Context as Gid (see {{new-sec-context}}), the server MUST NOT update the stored value associated to the ongoing observation.
 
 ## Protecting the Response ## {#ssec-protect-response}
 
@@ -733,13 +735,15 @@ Note that the server always protects a response with the Sender Context from its
 
 ### Supporting Observe ###
 
-If Observe {{RFC7641}} is supported, the server may have ongoing observations, started by Observe requests protected with an old Security Context.
+If Observe {{RFC7641}} is supported, the following holds when protecting notifications for an ongoing observation.
 
-After completing the establishment of a new Security Context, the server MUST protect the following notifications with the Sender Context of the new Security Context.
+* The server MUST use the stored value of the 'kid' parameter from the original Observe request (see {{ssec-verify-request-observe}}), as value for the 'request\_kid' parameter in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}).
+
+* The server MUST use the stored value of the 'kid context' parameter from the original Observe request (see {{ssec-verify-request-observe}}), as value for the 'request\_kid\_context' parameter in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}).
+
+Furthermore, the server may have ongoing observations started by Observe requests protected with an old Security Context. After completing the establishment of a new Security Context, the server MUST protect the following notifications with the Sender Context of the new Security Context.
 
 For each ongoing observation, the server MUST include in the first notification protected with the new Security Context also the 'kid context' parameter, which is set to the ID Context (Gid) of the new Security Context. It is OPTIONAL for the server to include the ID Context (Gid) in the 'kid context' parameter also in further following notifications for those observations.
-
-Furthermore, for each ongoing observation, the server MUST use the stored value of the 'kid' parameter from the original Observe request, as value for the 'request\_kid' parameter in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}), when protecting notifications for that observation.
 
 ## Verifying the Response ## {#ssec-verify-response}
 
@@ -758,9 +762,13 @@ Note that a client may receive a response protected with a Security Context diff
 
 ### Supporting Observe ###
 
-If Observe {{RFC7641}} is supported, for each ongoing observation, the client MUST use the stored value of the 'kid' parameter from the original Observe request, as value for the 'request\_kid' parameter in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}), when verifying notifications for that observation.
+If Observe {{RFC7641}} is supported, the following holds when verifying notifications for an ongoing observation.
 
-This ensures that the client can correctly verify notifications, even in case it is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}).
+* The client MUST use the stored value of the 'kid' parameter from the original Observe request (see {{ssec-protect-request-observe}}), as value for the 'request\_kid' parameter in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}).
+
+* The client MUST use the stored value of the 'kid context' parameter from the original Observe request (see {{ssec-protect-request-observe}}), as value for the 'request\_kid\_context' parameter in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}).
+
+This ensures that the client can correctly verify notifications, even in case it is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}), as well as when it establishes a new Security Context with a new ID Context (Gid) following a group rekeying (see {{sec-group-key-management}}).
 
 # Message Processing in Pairwise Mode # {#sec-pairwise-protection}
 
@@ -1282,6 +1290,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * The server can respond with 5.03 if the client's public key is not available.
 
 * Relaxed storing of original 'kid' for observer clients.
+
+* Both client and server store the 'kid_context' of the original observation request.
 
 * The server uses a fresh PIV if protecting the response with a Security Context different from the one used to protect the request.
 
