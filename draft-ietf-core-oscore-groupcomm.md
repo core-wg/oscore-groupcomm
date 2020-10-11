@@ -722,7 +722,7 @@ Note that the server always protects a response with the Sender Context from its
 
 * In step 2, the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
-* In step 3, if the server is using a different Security Context for the response compared to what was used to verify the request (see {{sec-group-key-management}}), then the AEAD nonce from the request MUST NOT be used.
+* In step 3, if the server is using a different Security Context for the response compared to what was used to verify the request (see {{sec-group-key-management}}), then the server MUST include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response. This prevents the AEAD nonce from the request from being reused.
 
 * In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}}. The encoding of the compressed COSE object is modified as described in {{compression}}. In particular, the Group Flag MUST be set to 1. If the server is using a different ID Context (Gid) for the response compared to what was used to verify the request (see {{sec-group-key-management}}), then the new ID Context MUST be included in the 'kid context' parameter of the response. 
 
@@ -1276,6 +1276,10 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -09 to -10 ## {#sec-09-10}
 
 * New counter signature header parameter from draft-ietf-cose-countersign.
+
+* The server can respond with 5.03 if the client's public key is not available.
+
+* The server uses a fresh PIV if protecting the response with a Security Context different from the one used to protect the request.
 
 * Removed optimized requests.
 
