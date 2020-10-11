@@ -462,24 +462,27 @@ aad_array = [
                  par_countersign_key : countersign_key_type_capab],
    request_kid : bstr,
    request_piv : bstr,
+   request_kid_context : bstr,
    options : bstr
 ]
 ~~~~~~~~~~~
 {: #fig-ext-aad-encryption title="external_aad for Encryption" artwork-align="center"}
 
-Compared with Section 5.4 of {{RFC8613}}, the 'algorithms' array in the aad_array additionally includes:
+Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differences.
 
-* 'alg_countersign', which specifies Counter Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Counter Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this counter signature algorithm.
+* The 'algorithms' array in the aad_array additionally includes:
 
-* 'par_countersign', which specifies the CBOR array Counter Signature Parameters from the Common Context (see {{ssec-common-context-cs-params}}). In particular:
+   - 'alg_countersign', which specifies Counter Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Counter Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this counter signature algorithm.
 
-   - 'countersign_alg_capab' is the array of COSE capabilities for the countersignature algorithm indicated in 'alg_countersign'.
+   - 'par_countersign', which specifies the CBOR array Counter Signature Parameters from the Common Context (see {{ssec-common-context-cs-params}}). In particular:
 
-   - 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type used by the countersignature algorithm indicated in 'alg_countersign'.
+      - 'countersign_alg_capab' is the array of COSE capabilities for the countersignature algorithm indicated in 'alg_countersign'.
 
-* 'par_countersign_key', which specifies Counter Signature Key Parameters from the Common Context (see {{ssec-common-context-cs-key-params}}). In particular, 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type used by the countersignature algorithm indicated in 'alg_countersign'.
+      - 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type used by the countersignature algorithm indicated in 'alg_countersign'.
 
+   - 'par_countersign_key', which specifies Counter Signature Key Parameters from the Common Context (see {{ssec-common-context-cs-key-params}}). In particular, 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type used by the countersignature algorithm indicated in 'alg_countersign'.
 
+* The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}).
 
 ### external_aad for Signing ### {#sec-cose-object-ext-aad-sign}
 
@@ -498,6 +501,7 @@ aad_array = [
                  par_countersign_key : countersign_key_type_capab],
    request_kid : bstr,
    request_piv : bstr,
+   request_kid_context : bstr,
    options : bstr,
    OSCORE_option: bstr
 ]
@@ -508,7 +512,9 @@ Compared with Section 5.4 of {{RFC8613}} the aad_array additionally includes:
 
 * the 'algorithms' array as defined in the external_aad for encryption, see {{sec-cose-object-ext-aad-enc}};
 
-* the value of the OSCORE Option encoded as a binary string.
+* the 'request_kid_context' element as defined in the external_aad for encryption, see {{sec-cose-object-ext-aad-enc}}.
+
+* the value of the OSCORE Option present in the protected message, encoded as a binary string.
 
 Note for implementation: this construction requires the OSCORE option of the message to be generated before calculating the signature. Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
 
@@ -1286,6 +1292,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -09 to -10 ## {#sec-09-10}
 
 * New counter signature header parameter from draft-ietf-cose-countersign.
+
+* Added 'request_kid_context' in the aad_array.
 
 * The server can respond with 5.03 if the client's public key is not available.
 
