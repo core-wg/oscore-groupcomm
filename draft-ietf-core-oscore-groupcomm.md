@@ -355,7 +355,7 @@ Furthermore, applications MAY define policies to: i) delete (long-)unused Recipi
 
 #### New Sender ID for the Endpoint {#new-sender-id}
 
-The Group Manager may assign a new Sender ID to an endpoint, while leaving the Gid, Master Secret and Master Salt unchanged in the group. In this case, the Group Manager MUST assign a new Sender ID that was never assigned before in that group. Having retrieved the new Sender ID, and potentially other missing data of the immutable Security Context, the endpoint can derive a new Sender Context (see {{ssec-sender-recipient-context}}). The Sender Sequence Number is initialized to 0. 
+The Group Manager may assign a new Sender ID to an endpoint, while leaving the Gid, Master Secret and Master Salt unchanged in the group. In this case, the Group Manager MUST assign a Sender ID that has never been assigned before in that group. Having retrieved the new Sender ID, and potentially other missing data of the immutable Security Context, the endpoint can derive a new Sender Context (see {{ssec-sender-recipient-context}}). The Sender Sequence Number is initialized to 0. 
 
 The assignment of a new Sender ID may be the result of different processes. The endpoint may request a new Sender ID, e.g. because of exhaustion of Sender Sequence Numbers (see {{ssec-wrap-around-partial-iv}}). An endpoint may request to re-join the group, e.g. because of losing its mutable Security Context (see {{ssec-loss-mutable-context}}), and receive as response a new Sender ID together with the latest immutable Security Context.
 
@@ -396,9 +396,11 @@ The Group Manager MAY serve additional entities acting as signature checkers, e.
 
 ## Management of Group Keying Material # {#sec-group-key-management}
 
-In order to establish a new Security Context for a group, a new Group Identifier (Gid) for that group and a new value for the Master Secret parameter MUST be generated. An example of Gid format supporting this operation is provided in {{gid-ex}}. When distributing the new Gid and Master Secret, the Group Manager MAY distribute also a new value for the Master Salt parameter, and SHOULD preserve the current value of the Sender ID of each group member.
+In order to establish a new Security Context for a group, a new Group Identifier (Gid) for that group and a new value for the Master Secret parameter MUST be generated. When distributing the new Gid and Master Secret, the Group Manager MAY distribute also a new value for the Master Salt parameter, and SHOULD preserve the current value of the Sender ID of each group member.
 
-The Group Manager MUST NOT reassign a previously used Sender ID ('kid') with the same Gid, Master Secret and Master Salt. Even if Gid and Master Secret are renewed as described in this section, the Group Manager SHOULD NOT reassign an endpoint's Sender ID ('kid') within a same group, especially in the short term. 
+The Group Manager MUST NOT reassign a Gid value to the same group. That is, each group can have a given Gid at most once during its lifetime. An example of Gid format supporting this operation is provided in {{gid-ex}}.
+
+The Group Manager MUST NOT reassign a previously used Sender ID ('kid') with the same Gid, Master Secret and Master Salt. Even if Gid and Master Secret are renewed as described in this section, the Group Manager MUST NOT reassign an endpoint's Sender ID ('kid') within a same group (see {{new-sender-id}}).
 
 If required by the application (see {{ssec-sec-assumptions}}), it is RECOMMENDED to adopt a group key management scheme, and securely distribute a new value for the Gid and for the Master Secret parameter of the group's Security Context, before a new joining endpoint is added to the group or after a currently present endpoint leaves the group. This is necessary to preserve backward security and forward security in the group, if the application requires it.
 
@@ -1302,6 +1304,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -09 to -10 ## {#sec-09-10}
 
 * New counter signature header parameter from draft-ietf-cose-countersign.
+
+* Stronger policies non non-recycling of Sender IDs and Gid.
 
 * The Sender Sequence Number is reset when establishing a new Security Context.
 
