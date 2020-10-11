@@ -967,7 +967,7 @@ If the countersignature did not cover the OSCORE option, the attack would be pos
 
 ## Group OSCORE for Unicast Requests {#ssec-unicast-requests}
 
-With reference to the processing defined in {{ssec-protect-request}} for the group mode and in {{sec-optimized-request}} for the optimized request, it is NOT RECOMMENDED for a client to use the group mode for securing a request intended for a single group member and sent over unicast.
+If a request is intended to be sent over unicast as addressed to a single group member, it is NOT RECOMMENDED for the client to protect the request by using the group mode as defined in {{ssec-protect-request}}.
 
 This does not include the case where the client sends a request over unicast to a proxy, to be forwarded to multiple intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}. In this case, the client MUST protect the request with the group mode, even though it is sent to the proxy over unicast (see {{mess-processing}}).
 
@@ -1224,12 +1224,6 @@ There are some application scenarios using group communication that have particu
 
 In this specification, it is NOT RECOMMENDED that endpoints do not verify the counter signature of received messages protected with the group mode. However, it is recognized that there may be situations where it is not always required. The consequence of not doing the signature validation in messages protected with the group mode is that security in the group is based only on the group-authenticity of the shared keying material used for encryption. That is, endpoints in the group would have evidence that the received message has been originated by a group member, although not specifically identifiable in a secure way. This can violate a number of security requirements, as the compromise of any element in the group means that the attacker has the ability to control the entire group. Even worse, the group may not be limited in scope, and hence the same keying material might be used not only for light bulbs but for locks as well. Therefore, extreme care must be taken in situations where the security requirements are relaxed, so that deployment of the system will always be done safely.
 
-# Optimized Request # {#sec-optimized-request}
-
-An optimized request is processed as a request in group mode ({{ssec-protect-request}}) and uses the OSCORE header compression defined in {{compression}} for the group mode, with the following difference: the payload of the OSCORE message SHALL encode the ciphertext without the tag, concatenated with the value of the CounterSignature0 of the COSE object computed as described in {{sec-cose-object-unprotected-field}}.
-
-The optimized request is compatible with all AEAD algorithms defined in {{I-D.ietf-cose-rfc8152bis-algs}}, but would not be compatible with AEAD algorithms that do not have a well-defined tag.
-
 # Example Values of Parameters for Countersignatures # {#sec-cs-params-ex}
 
 The table below provides examples of values for Counter Signature Parameters in the Common Context (see {{ssec-common-context-cs-params}}), for different values of Counter Signature Algorithm.
@@ -1271,6 +1265,10 @@ The table below provides examples of values for Counter Signature Key Parameters
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
+
+## Version -09 to -10 ## {#sec-09-10}
+
+* Removed optimized requests.
 
 ## Version -08 to -09 ## {#sec-08-09}
 
