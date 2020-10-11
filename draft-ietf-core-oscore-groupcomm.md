@@ -704,7 +704,13 @@ If Observe {{RFC7641}} is supported, the following holds for each newly started 
 
 * If the client intends to keep the observation active beyond a possible change of Sender ID, the client MUST store the value of the 'kid' parameter from the original Observe request and retain it for the whole duration of the observation. Even in case the client is individually rekeyed and receives a new Sender ID from the Group Manager (see {{new-sender-id}}), the client MUST NOT update the stored value associated to a particular Observe request.
 
-* If the client intends to keep the observation active beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}), the client MUST store the value of the 'kid context' parameter from the original Observe request and retain it for the whole duration of the observation. Upon establishing a new Security Context with a new ID Context as Gid (see {{new-sec-context}}), the client MUST NOT update the stored value associated to a particular Observe request.
+* If the client intends to keep the observation active beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}), then the following applies.
+
+   - The client MUST store the value of the 'kid context' parameter from the original Observe request and retain it for the whole duration of the observation. Upon establishing a new Security Context with a new ID Context as Gid (see {{new-sec-context}}), the client MUST NOT update the stored value associated to a particular Observe request.
+   
+   - The client MUST store an invariant identifier of the group, which is immutable even in case the Security Context of the group is re-established. For example, this invariant identifier is the "group name" in {{I-D.ietf-ace-key-groupcomm-oscore}}, where it is used for joining the group and retrieving the current group keying material from the Group Manager.
+   
+      After a group rekeying, such an invariant information makes it simpler for the observer client to retrieve the current group keying material from the Group Manager, in case the client has missed both the rekeying messages and the first observe notification protected with the new Security Context (see {{ssec-protect-response-observe}}).
 
 ## Verifying the Request ## {#ssec-verify-request}
 
@@ -751,7 +757,7 @@ Note that the server always protects a response with the Sender Context from its
 * In step 5, the counter signature is computed and the format of the OSCORE message is modified as described in {{compression}}. In particular, the payload of the OSCORE message includes also the counter signature.
 
 
-### Supporting Observe ###
+### Supporting Observe ### {#ssec-protect-response-observe}
 
 If Observe {{RFC7641}} is supported, the following holds when protecting notifications for an ongoing observation.
 
@@ -1312,6 +1318,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Added 'request_kid_context' in the aad_array.
 
 * The server can respond with 5.03 if the client's public key is not available.
+
+* The observer client stores an invariant identifier of the group.
 
 * Relaxed storing of original 'kid' for observer clients.
 
