@@ -682,9 +682,11 @@ A client transmits a secure group request as described in Section 8.1 of {{RFC86
 
 ### Supporting Observe ###
 
-If Observe {{RFC7641}} is supported, for each newly started observation, the client MUST store the value of the 'kid' parameter from the original Observe request.
+If Observe {{RFC7641}} is supported, the following holds for each newly started observation.
 
-The client MUST NOT update the stored value, even in case it is individually rekeyed and receives a new Sender ID from the Group Manager (see {{new-sender-id}}).
+* The client MUST store the value of the 'kid' parameter from the original Observe request, if it intends to keep the observation active beyond a possible change of Sender ID. Even in case the client is individually rekeyed and receives a new Sender ID from the Group Manager (see {{new-sender-id}}), the client MUST NOT update the stored value associated to the ongoing observation.
+
+* The client MUST store the value of the 'kid context' from the original Observe request, if it intends to keep the observation active beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}). That is, upon establishing a new Security Context with a new ID Context as Gid (see {{new-sec-context}}), the client MUST NOT update the stored value associated to the ongoing observation.
 
 ## Verifying the Request ## {#ssec-verify-request}
 
@@ -1278,6 +1280,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * New counter signature header parameter from draft-ietf-cose-countersign.
 
 * The server can respond with 5.03 if the client's public key is not available.
+
+* Relaxed storing of original 'kid' for observer clients.
 
 * The server uses a fresh PIV if protecting the response with a Security Context different from the one used to protect the request.
 
