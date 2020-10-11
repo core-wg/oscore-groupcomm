@@ -1318,12 +1318,15 @@ The table below provides examples of values for Secret Derivation Parameters in 
 |         // + HKDF-256 |                                            |
 |  (-27)  // ECDH-SS    | [1], [1, 6]  // 1: OKP ; 1: OKP, 5: X448   |
 |         // + HKDF-256 |                                            |
-|  (-7)   // ES256      | [2], [2, 1]  // 2: EC2 ; 2: EC2, 1: P-256  |
-|  (-35)  // ES384      | [2], [2, 2]  // 2: EC2 ; 2: EC2, 2: P-384  |
-|  (-36)  // ES512      | [2], [2, 3]  // 2: EC2 ; 2: EC2, 3: P-512  |
+|  (-27)  // ECDH-SS    | [2], [2, 1]  // 2: EC2 ; 2: EC2, 1: P-256  |
+|         // + HKDF-256 |                                            |
+|  (-27)  // ECDH-SS    | [2], [2, 2]  // 2: EC2 ; 2: EC2, 2: P-384  |
+|         // + HKDF-256 |                                            |
+|  (-27)  // ECDH-SS    | [2], [2, 3]  // 2: EC2 ; 2: EC2, 3: P-512  |
+|         // + HKDF-256 |                                            |
 +-----------------------+--------------------------------------------+
 ~~~~~~~~~~~
-{: #fig-examples-counter-dh-parameters title="Examples of Counter Signature Parameters" artwork-align="center"}
+{: #fig-examples-counter-dh-parameters title="Examples of Secret Derivation Parameters" artwork-align="center"}
 
 The table below provides examples of values for the 'par_countersign_key' element of the 'algorithms' array used in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}), for different values of Counter Signature Algorithm.
 
