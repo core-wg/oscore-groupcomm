@@ -201,7 +201,7 @@ This document refers also to the following terminology.
 
 This specification refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol (see {{terminology}}). Each endpoint which is member of a group maintains a Security Context as defined in Section 3 of {{RFC8613}}, extended as follows (see {{fig-additional-context-information}}):
 
-* One Common Context, shared by all the endpoints in the group. Three new parameters are included in the Common Context: Counter Signature Algorithm, Counter Signature Parameters and Counter Signature Key Parameters, which all relate to the  signature of the message included in group mode (see {{mess-processing}}).
+* One Common Context, shared by all the endpoints in the group. Two new parameters are included in the Common Context: Counter Signature Algorithm and Counter Signature Parameters, which all relate to the counter signature of the message computed when using the group mode (see {{mess-processing}}).
 
 * One Sender Context, extended with the endpoint's private key. The private key is used to sign the message in group mode, and for calculating the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). If the pairwise mode is supported, the Sender Context is also extended with the Pairwise Sender Keys associated to the other endpoints (see {{sec-derivation-pairwise}}). The Sender Context is omitted if the endpoint is configured exclusively as silent server. 
 
@@ -211,9 +211,8 @@ This specification refers to a group as a set of endpoints sharing keying materi
 +-------------------+-----------------------------------------------+
 | Context Component | New Information Elements                      |
 +-------------------+-----------------------------------------------+
-|                   | Counter Signature Algorithm                   |
-| Common Context    | Counter Signature Parameters                  |
-|                   | Counter Signature Key Parameters              |
+| Common Context    | Counter Signature Algorithm                   |
+|                   | Counter Signature Parameters                  |
 +-------------------+-----------------------------------------------+
 | Sender Context    | Endpoint's own private key                    |
 |                   | *Pairwise Sender Keys for the other endpoints |
@@ -256,14 +255,6 @@ This parameter is a CBOR array including the following two elements, whose exact
    
 Examples of Counter Signature Parameters are in {{sec-cs-params-ex}}.
    
-### Counter Signature Key Parameters ## {#ssec-common-context-cs-key-params}
-
-Counter Signature Key Parameters identifies the parameters associated to the keys used with the digital signature algorithm specified in Counter Signature Algorithm. This parameter is immutable once the Common Context is established.
-
-The exact structure and value of this parameter depends on the value of Counter Signature Algorithm. In particular, this parameter takes the same structure and value of the array of COSE capabilities for the COSE key type associated to Counter Signature Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
-
-Examples of Counter Signature Key Parameters are in {{sec-cs-params-ex}}.
-
 ## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
 OSCORE specifies the derivation of Sender Context and Recipient Context, specifically of Sender/Recipient Keys and Common IV, from a set of input parameters (see Section 3.2 of {{RFC8613}}). This derivation applies also to Group OSCORE, and the mandatory-to-implement HKDF and AEAD algorithms are the same as in {{RFC8613}}. The Sender ID SHALL be unique for each endpoint in a group with a fixed Master Secret, Master Salt and Group Identifier (see Section 3.3 of {{RFC8613}}).
@@ -488,12 +479,14 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
 
    - 'par_countersign', which specifies the CBOR array Counter Signature Parameters from the Common Context (see {{ssec-common-context-cs-params}}). In particular:
 
-      - 'countersign_alg_capab' is the array of COSE capabilities for the countersignature algorithm indicated in 'alg_countersign'.
+      - 'countersign_alg_capab' is the array of COSE capabilities for the countersignature algorithm indicated in 'alg_countersign'. This is the first element of the CBOR array Counter Signature Parameters from the Common Context.
 
-      - 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type used by the countersignature algorithm indicated in 'alg_countersign'.
+      - 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type used by the countersignature algorithm indicated in 'alg_countersign'. This is the second element of the CBOR array Counter Signature Parameters from the Common Context.
 
-   - 'par_countersign_key', which specifies Counter Signature Key Parameters from the Common Context (see {{ssec-common-context-cs-key-params}}). In particular, 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type used by the countersignature algorithm indicated in 'alg_countersign'.
+   - 'par_countersign_key', which specifies the parameters associated to the keys used with the digital signature algorithm indicated in 'alg_countersign'. These parameters are encoded as a CBOR array 'countersign_key_type_capab', which takes the same structure and value of the array of COSE capabilities for the COSE key type of the keys used with the countersignature algorithm. In particular, these are as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
 
+      Examples of 'par_countersign_key' are in {{sec-cs-params-ex}}.
+   
 * The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}).
 
 ### external_aad for Signing ### {#sec-cose-object-ext-aad-sign}
@@ -1285,12 +1278,12 @@ The table below provides examples of values for Counter Signature Parameters in 
 ~~~~~~~~~~~
 {: #fig-examples-counter-signature-parameters title="Examples of Counter Signature Parameters" artwork-align="center"}
 
-The table below provides examples of values for Counter Signature Key Parameters in the Common Context (see {{ssec-common-context-cs-key-params}}), for different values of Counter Signature Algorithm.
+The table below provides examples of values for the 'par_countersign_key' element of the 'algorithms' array used in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}), for different values of Counter Signature Algorithm.
 
 ~~~~~~~~~~~
 +-------------------+---------------------------------+
-| Counter Signature | Example Values for Counter      |
-| Algorithm         | Signature Key Parameters        |
+| Counter Signature | Example Values for              |
+| Algorithm         | 'par_countersign_key'           |
 +-------------------+---------------------------------+
 | (-8)    // EdDSA  | [1, 6]   // 1: OKP , 6: Ed25519 |
 | (-7)    // ES256  | [2, 1]   // 2: EC2 , 1: P-256   |
@@ -1301,13 +1294,15 @@ The table below provides examples of values for Counter Signature Key Parameters
 | (-39)   // PS512  | [3]      // 3: RSA              |
 +-------------------+---------------------------------+
 ~~~~~~~~~~~
-{: #fig-examples-counter-signature-key-parameters title="Examples of Counter Signature Key Parameters" artwork-align="center"}
+{: #fig-examples-counter-signature-key-parameters title="Examples of 'par_countersign_key'" artwork-align="center"}
 
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -09 to -10 ## {#sec-09-10}
+
+* Removed 'Counter Signature Key Parameters' from the Common Context.
 
 * New counter signature header parameter from draft-ietf-cose-countersign.
 
