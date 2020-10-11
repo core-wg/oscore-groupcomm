@@ -250,9 +250,9 @@ Counter Signature Parameters identifies the parameters associated to the digital
 
 This parameter is a CBOR array including the following two elements, whose exact structure and value depend on the value of Counter Signature Algorithm:
 
-* The first element is the array of COSE capabilities for Counter Signature Algorithm, as specified for that algorithm in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
+* The first element is the array of COSE capabilities for Counter Signature Algorithm, as specified for that algorithm in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}} (see Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}).
 
-* The second element is the array of COSE capabilities for the COSE key type associated to Counter Signature Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}).
+* The second element is the array of COSE capabilities for the COSE key type associated to Counter Signature Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
    
 Examples of Counter Signature Parameters are in {{sec-cs-params-ex}}.
    
@@ -260,7 +260,7 @@ Examples of Counter Signature Parameters are in {{sec-cs-params-ex}}.
 
 Counter Signature Key Parameters identifies the parameters associated to the keys used with the digital signature algorithm specified in Counter Signature Algorithm. This parameter is immutable once the Common Context is established.
 
-The exact structure and value of this parameter depends on the value of Counter Signature Algorithm. In particular, this parameter takes the same structure and value of the array of COSE capabilities for the COSE key type associated to Counter Signature Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}).
+The exact structure and value of this parameter depends on the value of Counter Signature Algorithm. In particular, this parameter takes the same structure and value of the array of COSE capabilities for the COSE key type associated to Counter Signature Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
 
 Examples of Counter Signature Key Parameters are in {{sec-cs-params-ex}}.
 
