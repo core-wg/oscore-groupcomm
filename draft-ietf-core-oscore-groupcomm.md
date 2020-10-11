@@ -363,9 +363,19 @@ The Recipient Context of the other group members corresponding to the old Sender
 
 #### New Security Context for the Group {#new-sec-context}
 
-The Group Manager may establish a new Security Context for the group (see {{sec-group-key-management}}). The Group Manager does not necessarily establish a new Security Context for the group if one member has an outdated Security Context (see {{new-sender-id}}), unless that was already planned or required for other reasons. All endpoints in the group need to acquire new Security Context parameters from the Group Manager.
+The Group Manager may establish a new Security Context for the group (see {{sec-group-key-management}}). The Group Manager does not necessarily establish a new Security Context for the group if one member has an outdated Security Context (see {{new-sender-id}}), unless that was already planned or required for other reasons.
 
-Having acquired new Security Context parameters, each member can re-derive the keying material stored in its Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise. Unless otherwise specified by the application, a group member does not reset the Sender Sequence Number in its Sender Context, and does not reset the Replay Windows in its Recipient Contexts. From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
+All the group members need to acquire new Security Context parameters from the Group Manager. Having acquired new Security Context parameters, each group member performs the following actions.
+
+* It re-derives the keying material stored in its Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise.
+
+* It resets to 0 its Sender Sequence Number in its Sender Context.
+
+* It re-initializes its Replay Windows in its Recipient Contexts.
+
+* It resets to 0 the sequence number of each ongoing observation where it is an observer client and that it wants to keep active.
+
+From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
 
 The distribution of a new Gid and Master Secret may result in temporarily misaligned Security Contexts among group members. In particular, this may result in a group member not being able to process messages received right after a new Gid and Master Secret have been distributed. A discussion on practical consequences and possible ways to address them, as well as on how to handle the old Security Context, is provided in {{ssec-key-rotation}}.
 
@@ -728,7 +738,7 @@ If Observe {{RFC7641}} is supported, the following holds for each newly started 
 
 If a server generates a CoAP message in response to a Group OSCORE request, then the server SHALL follow the description in Section 8.3 of {{RFC8613}}, with the modifications described in this section. 
 
-Note that the server always protects a response with the Sender Context from its latest Security Context, and that a new Security Context does not reset the Sender Sequence Number unless otherwise specified by the application (see {{sec-group-key-management}}).
+Note that the server always protects a response with the Sender Context from its latest Security Context, and that establishing a new Security Context resets the Sender Sequence Number to 0 (see {{sec-group-key-management}}).
 
 * In step 2, the Additional Authenticated Data is modified as described in {{sec-cose-object}}.
 
@@ -755,7 +765,7 @@ For each ongoing observation, the server MUST include in the first notification 
 
 Upon receiving a secure response message with the Group Flag set to 1, following the procedure in {{sec-message-reception}}, the client proceeds as described in Section 8.4 of {{RFC8613}}, with the following modifications.
 
-Note that a client may receive a response protected with a Security Context different from the one used to protect the corresponding group request, and that, upon the establishment of a new Security Context, the client does not reset its own replay windows in its Recipient Contexts, unless otherwise specified by the application (see {{sec-group-key-management}}).
+Note that a client may receive a response protected with a Security Context different from the one used to protect the corresponding group request, and that, upon the establishment of a new Security Context, the client re-initializes its replay windows in its Recipient Contexts (see {{sec-group-key-management}}).
 
 * In step 2, the decoding of the compressed COSE object is modified as described in {{compression}}. If the received 'kid context' matches an existing ID Context (Gid) but the received 'kid' does not match any Recipient ID in this Security Context, then the client MAY create a new Recipient Context for this Recipient ID and initialize it according to Section 3 of {{RFC8613}}, and also retrieve the associated public key. If the application does not specify dynamic derivation of new Recipient Contexts, then the client SHALL stop processing the response.
 
@@ -1292,6 +1302,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -09 to -10 ## {#sec-09-10}
 
 * New counter signature header parameter from draft-ietf-cose-countersign.
+
+* The Sender Sequence Number is reset when establishing a new Security Context.
 
 * Added 'request_kid_context' in the aad_array.
 
