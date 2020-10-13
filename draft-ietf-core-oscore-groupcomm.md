@@ -401,7 +401,11 @@ The Recipient Context of the other group members corresponding to the old Sender
 
 The Group Manager may establish a new Security Context for the group (see {{sec-group-key-management}}). The Group Manager does not necessarily establish a new Security Context for the group if one member has an outdated Security Context (see {{new-sender-id}}), unless that was already planned or required for other reasons.
 
-All the group members need to acquire new Security Context parameters from the Group Manager. Having acquired new Security Context parameters, each group member performs the following actions.
+All the group members need to acquire new Security Context parameters from the Group Manager. Once, having acquired new Security Context parameters, each group member performs the following actions.
+
+* From then on, it MUST NOT use the current Security Context to start processing new messages for the considered group.
+
+* It completes any ongoing message processing for the considered group.
 
 * It re-derives the keying material stored in its Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise.
 
@@ -411,7 +415,7 @@ All the group members need to acquire new Security Context parameters from the G
 
 * It resets to 0 the sequence number of each ongoing observation where it is an observer client and that it wants to keep active.
 
-From then on, each group member MUST use its latest installed Sender Context to protect outgoing messages.
+* From then on, it can resume processing new messages for the considered group, for which it MUST use its latest installed Sender Context to protect outgoing messages.
 
 The distribution of a new Gid and Master Secret may result in temporarily misaligned Security Contexts among group members. In particular, this may result in a group member not being able to process messages received right after a new Gid and Master Secret have been distributed. A discussion on practical consequences and possible ways to address them, as well as on how to handle the old Security Context, is provided in {{ssec-key-rotation}}.
 
@@ -722,6 +726,8 @@ Note that, if the Group Flag is set to 0, and the recipient endpoint retrieves a
 # Message Processing in Group Mode # {#mess-processing}
 
 When using the group mode, messages are protected and processed as specified in {{RFC8613}}, with the modifications described in this section. The security objectives of the group mode are discussed in {{ssec-sec-objectives}}. The group mode MUST be supported.
+
+During all the steps of the message processing, an endpoint MUST use the same Security Context for the considered group. That is, an endpoint MUST NOT install a new Security Context for that group (see {{new-sec-context}}) until the message processing is completed.
 
 The group mode MUST be used to protect group requests intended for multiple recipients or for the whole group. This includes both requests directly addressed to multiple recipients, e.g. sent by the client over multicast, as well as requests sent by the client over unicast to a proxy, that forwards them to the intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}.
 
