@@ -401,7 +401,7 @@ The Recipient Context of the other group members corresponding to the old Sender
 
 The Group Manager may establish a new Security Context for the group (see {{sec-group-key-management}}). The Group Manager does not necessarily establish a new Security Context for the group if one member has an outdated Security Context (see {{new-sender-id}}), unless that was already planned or required for other reasons.
 
-All the group members need to acquire new Security Context parameters from the Group Manager. Once, having acquired new Security Context parameters, each group member performs the following actions.
+All the group members need to acquire new Security Context parameters from the Group Manager. Once having acquired new Security Context parameters, each group member performs the following actions.
 
 * From then on, it MUST NOT use the current Security Context to start processing new messages for the considered group.
 
