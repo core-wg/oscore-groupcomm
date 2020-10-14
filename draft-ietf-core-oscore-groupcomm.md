@@ -306,11 +306,13 @@ Pairwise Sender Key    = HKDF(Sender Key, Shared Secret, info, L)
 
 where:
 
-* The Pairwise Recipient Key is the AEAD key for receiving from endpoint X.
+* The Pairwise Recipient Key is the AEAD key for processing incoming messages from endpoint X.
 
-* The Pairwise Sender Key is the AEAD key for sending to endpoint X. 
+* The Pairwise Sender Key is the AEAD key for processing outgoing messages addressed to endpoint X. 
 
-* The Shared Secret is computed as a static-static Diffie-Hellman shared secret {{NIST-800-56A}}, where the endpoint uses its private key and the public key of the other endpoint X. 
+* HKDF is the HKDF algorithm specified by Secret Derivation Algorithm from the Common Context (see {{ssec-common-context-dh-alg}}).
+
+* The Shared Secret is computed as a static-static Diffie-Hellman shared secret {{NIST-800-56A}}, where the endpoint uses its private key and the public key of the other endpoint X.
 
 * The Recipient Key and the public key are from the Recipient Context associated to endpoint X. 
 
