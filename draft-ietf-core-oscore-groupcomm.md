@@ -504,7 +504,7 @@ The external_aad of the Additional Authenticated Data (AAD) is different compare
 
 ### external_aad for Encryption ### {#sec-cose-object-ext-aad-enc}
 
-The external_aad for encryption (see Section 4.3 of {{I-D.ietf-cose-rfc8152bis-struct}}), used both in group mode and pairwise mode, includes also the counter signature algorithm and related signature parameters, see {{fig-ext-aad-encryption}}. 
+The external_aad for encryption (see Section 4.3 of {{I-D.ietf-cose-rfc8152bis-struct}}), used both in group mode and pairwise mode, includes also the counter signature algorithm and related signature parameters, as well as the value of the 'kid context' in the COSE object of the request (see {{fig-ext-aad-encryption}}).
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
@@ -518,8 +518,8 @@ aad_array = [
                  par_countersign_key : countersign_key_type_capab],
    request_kid : bstr,
    request_piv : bstr,
-   request_kid_context : bstr,
-   options : bstr
+   options : bstr,
+   request_kid_context : bstr
 ]
 ~~~~~~~~~~~
 {: #fig-ext-aad-encryption title="external_aad for Encryption" artwork-align="center"}
@@ -546,7 +546,7 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
 
 ### external_aad for Signing ### {#sec-cose-object-ext-aad-sign}
 
-The external_aad for signing (see Section 4.3 of {{I-D.ietf-cose-rfc8152bis-struct}}) used in group mode is identical to the external_aad for encryption (see {{sec-cose-object-ext-aad-enc}}) with the addition of the OSCORE option, see {{fig-ext-aad-signing}}.
+The external_aad for signing (see Section 4.3 of {{I-D.ietf-cose-rfc8152bis-struct}}) used in group mode is identical to the external_aad for encryption (see {{sec-cose-object-ext-aad-enc}}) with the addition of the OSCORE option (see {{fig-ext-aad-signing}}).
 
 
 ~~~~~~~~~~~ CDDL
@@ -561,8 +561,8 @@ aad_array = [
                  par_countersign_key : countersign_key_type_capab],
    request_kid : bstr,
    request_piv : bstr,
-   request_kid_context : bstr,
    options : bstr,
+   request_kid_context : bstr,
    OSCORE_option: bstr
 ]
 ~~~~~~~~~~~
@@ -570,9 +570,9 @@ aad_array = [
 
 Compared with Section 5.4 of {{RFC8613}} the aad_array additionally includes:
 
-* the 'algorithms' array as defined in the external_aad for encryption, see {{sec-cose-object-ext-aad-enc}};
+* the 'algorithms' array, as defined in the external_aad for encryption (see {{sec-cose-object-ext-aad-enc}});
 
-* the 'request_kid_context' element as defined in the external_aad for encryption, see {{sec-cose-object-ext-aad-enc}}.
+* the 'request_kid_context' element, as defined in the external_aad for encryption (see {{sec-cose-object-ext-aad-enc}});
 
 * the value of the OSCORE Option present in the protected message, encoded as a binary string.
 
