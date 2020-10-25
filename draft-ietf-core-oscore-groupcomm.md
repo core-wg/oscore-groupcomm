@@ -63,6 +63,7 @@ normative:
   I-D.ietf-cose-rfc8152bis-struct:
   I-D.ietf-cose-rfc8152bis-algs:
   I-D.ietf-cose-countersign:
+  I-D.ietf-cbor-7049bis:
   RFC2119:
   RFC4086:
   RFC7252:
@@ -175,7 +176,7 @@ A special deployment of Group OSCORE is to use pairwise mode only. For example, 
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
 
-Readers are expected to be familiar with the terms and concepts described in CoAP {{RFC7252}} including "endpoint", "client", "server", "sender" and "recipient"; group communication for CoAP {{I-D.ietf-core-groupcomm-bis}}; COSE and counter signatures {{I-D.ietf-cose-rfc8152bis-struct}}{{I-D.ietf-cose-rfc8152bis-algs}}{{I-D.ietf-cose-countersign}}.
+Readers are expected to be familiar with the terms and concepts described in CoAP {{RFC7252}} including "endpoint", "client", "server", "sender" and "recipient"; group communication for CoAP {{I-D.ietf-core-groupcomm-bis}}; CBOR {{I-D.ietf-cbor-7049bis}}; COSE {{I-D.ietf-cose-rfc8152bis-struct}}{{I-D.ietf-cose-rfc8152bis-algs}} and related counter signatures  {{I-D.ietf-cose-countersign}}.
 
 Readers are also expected to be familiar with the terms and concepts for protection and processing of CoAP messages through OSCORE, such as "Security Context" and "Master Secret", defined in {{RFC8613}}.
 
