@@ -1165,13 +1165,13 @@ This document has the following actions for IANA.
 IANA is asked to add the following value entry to the "OSCORE Flag Bits" subregistry defined in Section 13.7 of {{RFC8613}} as part of the "CoRE Parameters" registry.
 
 ~~~~~~~~~~~
-+--------------+------------+-------------------------------+-----------+
-| Bit Position |    Name    |         Description           | Reference |
-+--------------+------------+-------------------------------+-----------+
-|       2      | Group Flag | Set to 1 if the message is    | [This     |
-|              |            | protected with the group mode | Document] |
-|              |            | of Group OSCORE               |           |
-+--------------+------------+-------------------------------+-----------+
++--------------+------------+----------------------------+-----------+
+| Bit Position |    Name    |         Description        | Reference |
++--------------+------------+----------------------------+-----------+
+|       2      | Group Flag | Set to 1 if the message is | [This     |
+|              |            | protected with the group   | Document] |
+|              |            | mode of Group OSCORE       |           |
++--------------+------------+----------------------------+-----------+
 ~~~~~~~~~~~
 
 --- back
