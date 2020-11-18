@@ -314,11 +314,11 @@ where:
 
 * HKDF is the HKDF algorithm specified by Secret Derivation Algorithm from the Common Context (see {{ssec-common-context-dh-alg}}).
 
-* The Shared Secret is computed as a static-static Diffie-Hellman shared secret {{NIST-800-56A}}, where the endpoint uses its private key and the public key of the other endpoint X.
+* The Shared Secret is computed as a static-static Diffie-Hellman shared secret {{NIST-800-56A}}, where the endpoint uses its private key and the public key of the other endpoint X. The Shared Secred is used as Input Keying Material (IKM) in the HKDF.
 
-* The Recipient Key and the public key are from the Recipient Context associated to endpoint X. 
+* The Recipient Key and the public key are from the Recipient Context associated to endpoint X. The Recipient Key is used as salt in the HKDF, when deriving the Pairwise Recipient Key.
 
-* The Sender Key and private key are from the Sender Context.
+* The Sender Key and private key are from the Sender Context. The Sender Key is used as salt in the HKDF, when deriving the Pairwise Sender Key.
  
 * info and L are defined as in Section 3.2.1 of {{RFC8613}}. 
 
