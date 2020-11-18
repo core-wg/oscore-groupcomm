@@ -1346,9 +1346,9 @@ The table below provides examples of values for Counter Signature Parameters in 
 |  (-7)   // ES256  | [2], [2, 1]  // 2: EC2 ; 2: EC2, 1: P-256   |
 |  (-35)  // ES384  | [2], [2, 2]  // 2: EC2 ; 2: EC2, 2: P-384   |
 |  (-36)  // ES512  | [2], [2, 3]  // 2: EC2 ; 2: EC2, 3: P-512   |
-|  (-37)  // PS256  | [], [3]      // empty  ; 3: RSA             |
-|  (-38)  // PS384  | [], [3]      // empty  ; 3: RSA             |
-|  (-39)  // PS512  | [], [3]      // empty  ; 3: RSA             |
+|  (-37)  // PS256  | [3], [3]     // 3: RSA ; 3: RSA             |
+|  (-38)  // PS384  | [3], [3]     // 3: RSA ; 3: RSA             |
+|  (-39)  // PS512  | [3], [3]     // 3: RSA ; 3: RSA             |
 +-------------------+---------------------------------------------+
 ~~~~~~~~~~~
 {: #fig-examples-counter-signature-parameters title="Examples of Counter Signature Parameters" artwork-align="center"}
@@ -1396,6 +1396,10 @@ The table below provides examples of values for the 'par_countersign_key' elemen
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
+
+## Version -10 to -11 ## {#sec-10-11}
+
+* Fixes and editorial improvements.
 
 ## Version -09 to -10 ## {#sec-09-10}
 
