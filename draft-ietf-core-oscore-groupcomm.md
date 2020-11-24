@@ -613,7 +613,7 @@ This section covers a list of OSCORE Header Compression examples of Group OSCORE
 
 The examples assume that the COSE_Encrypt0 object is set (which means the CoAP message and cryptographic material is known). Note that the examples do not include the full CoAP unprotected message or the full Security Context, but only the input necessary to the compression mechanism, i.e. the COSE_Encrypt0 object. The output is the compressed COSE object as defined in {{compression}} and divided into two parts, since the object is transported in two CoAP fields: OSCORE option and payload.
 
-The examples assume that the plaintext (see Section 5.3 of {{RFC8613}}) is 6 bytes long, and that the AEAD tag is 8 bytes long, hence resulting in a ciphertext which is 14 bytes long. When using the group mode, COUNTERSIGN denotes the COSE_CounterSignature0 byte string as described in {{sec-cose-object}}, and is 64 bytes long.
+The examples assume that the plaintext (see Section 5.3 of {{RFC8613}}) is 6 bytes long, and that the AEAD tag is 8 bytes long, hence resulting in a ciphertext which is 14 bytes long. When using the group mode, the COSE_CounterSignature0 byte string as described in {{sec-cose-object}} is assumed to be 64 bytes long.
 
 ### Examples in Group Mode ## {#sssec-example-cose-group}
 
@@ -624,7 +624,7 @@ Before compression (96 bytes):
 
 [
 h'',
-{ 4:h'25', 6:h'05', 10:h'44616c', 11:COUNTERSIGN },
+{ 4:h'25', 6:h'05', 10:h'44616c', 11:h'de9e ... f1' },
 h'aea0155667924dff8a24e4cb35b9'
 ]
 ~~~~~~~~~~~
@@ -636,8 +636,8 @@ Flag byte: 0b00111001 = 0x39
 
 Option Value: 39 05 03 44 61 6c 25 (7 bytes)
 
-Payload: ae a0 15 56 67 92 4d ff 8a 24 e4 cb 35 b9 COUNTERSIGN
-(14 bytes + size of COUNTERSIGN)
+Payload: ae a0 15 56 67 92 4d ff 8a 24 e4 cb 35 b9 de 9e ... f1
+(14 bytes + size of the counter signature)
 
 ~~~~~~~~~~~
 
@@ -649,7 +649,7 @@ Before compression (88 bytes):
 
 [
 h'',
-{ 4:h'52', 11:COUNTERSIGN },
+{ 4:h'52', 11:h'ca1e ... b3' },
 h'60b035059d9ef5667c5a0710823b'
 ]
 ~~~~~~~~~~~
@@ -661,8 +661,8 @@ Flag byte: 0b00101000 = 0x28
 
 Option Value: 28 52 (2 bytes)
 
-Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b COUNTERSIGN
-(14 bytes + size of COUNTERSIGN)
+Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b ca 1e ... b3
+(14 bytes + size of the counter signature)
 ~~~~~~~~~~~
 
 ### Examples in Pairwise Mode ## {#sssec-example-cose-pairwise}
