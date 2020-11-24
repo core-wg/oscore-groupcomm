@@ -882,17 +882,19 @@ The pairwise mode protects messages between two members of a group, essentially 
 
 * The Pairwise Sender/Recipient Keys used as Sender/Recipient keys are derived as defined in {{sec-derivation-pairwise}} of this document.
 
-Senders MUST NOT use the pairwise mode to protect a message intended for multiple recipients. The pairwise mode is defined only between two endpoints and the keying material is thus only available to one recipient. 
+Senders cannot use the pairwise mode to protect a message intended for multiple recipients. In fact, the pairwise mode is defined only between two endpoints and the keying material is thus only available to one recipient.
+
+However, a sender can use the pairwise mode to protect a message sent to (but not intended for) multiple recipients, if interested in a response from only one of them. For instance, this is useful to support the address discovery service defined in {{ssec-pre-conditions}}, when a single 'kid' value is indicated in the payload of a request sent to multiple recipients, e.g. over multicast.
 
 The Group Manager MAY indicate that the group uses also the pairwise mode, as part of the group data provided to candidate group members when joining the group.
 
-## Pre-Conditions
+## Pre-Conditions ## {#ssec-pre-conditions}
 
 In order to protect an outgoing message in pairwise mode, the sender needs to know the public key and the Recipient ID for the recipient endpoint, as stored in the Recipient Context associated to that endpoint (see Pairwise Sender Context of {{pairwise-implementation}}).
 
 Furthermore, the sender needs to know the individual address of the recipient endpoint. This information may not be known at any given point in time. For instance, right after having joined the group, a client may know the public key and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.
 
-To make addressing information of individual endpoints available, servers in the group MAY expose a resource to which a client can send a group request targeting a server or a set of servers, identified by their 'kid' value(s). The specified set may be empty, hence identifying all the servers in the group. Further details of such an interface are out of scope for this document.
+To make addressing information of individual endpoints available, servers in the group MAY expose a resource to which a client can send a group request targeting a set of servers, identified by their 'kid' values specified in the request payload. The specified set may be empty, hence identifying all the servers in the group. Further details of such an interface are out of scope for this document.
 
 ## Protecting the Request {#sec-pairwise-protection-req}
 
