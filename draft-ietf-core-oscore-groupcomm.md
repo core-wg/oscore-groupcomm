@@ -1120,7 +1120,12 @@ Note that the Partial IV of an endpoint does not necessarily grow monotonically.
 
 As discussed in {{sec-synch-seq-num}}, an endpoint that has just joined a group is exposed to replay attack, as it is not aware of the Sender Sequence Numbers currently used by other group members. {{synch-ex}} describes how endpoints can synchronize with others' Sender Sequence Number.
 
+<!-- OLD and replaced with an easier paragraph below:
+
 Unless exchanges in a group rely only on unicast messages, Group OSCORE cannot be used with reliable transport. Thus, unless only unicast messages are sent in the group, it cannot be defined that only messages with sequence numbers that are equal to the previous sequence number + 1 are accepted.
+-->
+
+Since one-to-many communication such as multicast usually involves unreliable transports, the simplification of the replay window to a size of 1 suggested in Section 7.4 of {{RFC8613}} is not viable with Group OSCORE, unless exchanges in the group rely only on unicast messages.
 
 The processing of response messages described in Section 2.3.1 of {{I-D.ietf-core-groupcomm-bis}} also ensures that a client accepts a single valid response to a given request from each replying server, unless CoAP observation is used.
 
