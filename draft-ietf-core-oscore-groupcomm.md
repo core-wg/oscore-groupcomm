@@ -502,7 +502,7 @@ Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{I-D
 
 ## Counter Signature # {#sec-cose-object-unprotected-field}
 
-For the group mode only, the 'unprotected' field MUST additionally include the following parameter:
+When protecting a message in group mode, the 'unprotected' field MUST additionally include the following parameter:
 
 * COSE_CounterSignature0: its value is set to the counter signature of the COSE object, computed by the sender as described in Sections 3.2 and 3.3 of {{I-D.ietf-cose-countersign}}, by using its private key and according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context.
 
@@ -510,7 +510,7 @@ For the group mode only, the 'unprotected' field MUST additionally include the f
 
 ## The 'kid' and 'kid context' parameters # {#sec-cose-object-kid}
 
-The value of the 'kid' parameter in the 'unprotected' field of response messages MUST be set to the Sender ID of the endpoint transmitting the message. That is, unlike in {{RFC8613}}, the 'kid' parameter is always present in all messages, both requests and responses.
+The value of the 'kid' parameter in the 'unprotected' field of response messages MUST be set to the Sender ID of the endpoint transmitting the message, if the request was protected in group mode. That is, unlike in {{RFC8613}}, the 'kid' parameter is always present in responses to a request that was protected in group mode.
 
 The value of the 'kid context' parameter in the 'unprotected' field of requests messages MUST be set to the ID Context, i.e. the Group Identifier value (Gid) of the group. That is, unlike in {{RFC8613}}, the 'kid context' parameter is always present in requests.
 
@@ -617,7 +617,7 @@ The examples assume that the plaintext (see Section 5.3 of {{RFC8613}}) is 6 byt
 
 ### Examples in Group Mode ## {#sssec-example-cose-group}
 
-* Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25, Partial IV = 5 and kid context = 0x44616c
+* Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25, Partial IV = 5 and kid context = 0x44616c.
 
 ~~~~~~~~~~~
 Before compression (96 bytes):
@@ -632,11 +632,11 @@ h'aea0155667924dff8a24e4cb35b9'
 ~~~~~~~~~~~
 After compression (85 bytes):
 
-Flag byte: 0b00111001 = 0x39
+Flag byte: 0b00111001 = 0x39 (1 byte)
 
 Option Value: 39 05 03 44 61 6c 25 (7 bytes)
 
-Payload: ae a0 15 56 67 92 4d ff 8a 24 e4 cb 35 b9 de 9e ... f1
+Payload: 0xae a0155667924dff8a24e4cb35b9de9e ... f1
 (14 bytes + size of the counter signature)
 
 ~~~~~~~~~~~
@@ -657,20 +657,20 @@ h'60b035059d9ef5667c5a0710823b'
 ~~~~~~~~~~~
 After compression (80 bytes):
 
-Flag byte: 0b00101000 = 0x28
+Flag byte: 0b00101000 = 0x28 (1 byte)
 
 Option Value: 28 52 (2 bytes)
 
-Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b ca 1e ... b3
+Payload: 0x60 b035059d9ef5667c5a0710823bca1e ... b3
 (14 bytes + size of the counter signature)
 ~~~~~~~~~~~
 
 ### Examples in Pairwise Mode ## {#sssec-example-cose-pairwise}
 
-* Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25, Partial IV = 5 and kid context = 0x44616c
+* Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25, Partial IV = 5 and kid context = 0x44616c.
 
 ~~~~~~~~~~~
-Before compression (32 bytes):
+Before compression (29 bytes):
 
 [
 h'',
@@ -682,35 +682,35 @@ h'aea0155667924dff8a24e4cb35b9'
 ~~~~~~~~~~~
 After compression (21 bytes):
 
-Flag byte: 0b00011001 = 0x19
+Flag byte: 0b00011001 = 0x19 (1 byte)
 
 Option Value: 19 05 03 44 61 6c 25 (7 bytes)
 
-Payload: ae a0 15 56 67 92 4d ff 8a 24 e4 cb 35 b9 (14 bytes)
+Payload: 0xae a0155667924dff8a24e4cb35b9 (14 bytes)
 
 ~~~~~~~~~~~
 
 
-* Response with ciphertext = 0x60b035059d9ef5667c5a0710823b, kid = 0x52 and no Partial IV.
+* Response with ciphertext = 0x60b035059d9ef5667c5a0710823b and no Partial IV.
 
 ~~~~~~~~~~~
-Before compression (24 bytes):
+Before compression (18 bytes):
 
 [
 h'',
-{ 4:h'52'},
+{},
 h'60b035059d9ef5667c5a0710823b'
 ]
 ~~~~~~~~~~~
 
 ~~~~~~~~~~~
-After compression (16 bytes):
+After compression (14 bytes):
 
-Flag byte: 0b00001000 = 0x08
+Flag byte: 0b00000000 = 0x00 (1 byte)
 
-Option Value: 08 52 (2 bytes)
+Option Value: 0x (0 bytes)
 
-Payload: 60 b0 35 05 9d 9e f5 66 7c 5a 07 10 82 3b (14 bytes)
+Payload: 0x60 b035059d9ef5667c5a0710823b (14 bytes)
 ~~~~~~~~~~~
 
 # Message Binding, Sequence Numbers, Freshness and Replay Protection
