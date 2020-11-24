@@ -291,7 +291,9 @@ With the exception of the public key of the sender endpoint, a receiver endpoint
 
 For severely constrained devices, it may be not feasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the sender endpoint's public key. Such devices can be configured to drop a received message for which there is no (complete) Recipient Context, and retrieve the sender endpoint's public key in order to have it available to verify subsequent messages from that endpoint.
 
-Furthermore, sufficiently large replay windows should be considered, to handle Partial IV values moving forward fast. This can happen when a client engages in frequent or long sequences of one-to-one exchanges with servers in the group, such as a large number of block-wise transfers to a single server. When receiving following group requests from that client, other servers in the group may have lost synchronization with the client's Sender Sequence Number. If these servers use an Echo exchange to re-gain synchronization (see {{ssec-synch-challenge-response}}), this in itself may consume a considerable amount of client's Sender Sequence Numbers, hence later resulting in the servers possibly performing a new Echo exchange.
+Sender Sequence Numbers seen by a server as Partial IV values in request messages can spontaneously increase at a fast pace, for example when a client exchanges unicast messages with other servers using the Group OSCORE Security Context. As in OSCORE {{RFC8613}}, servers always need to accept such increases.
+
+During their operation, servers may lose synchronization with a client's Sender Sequence Numbers, e.g. due to a reboot, or because they deleted their previously synchronized version of the Recipient Context {{ssec-loss-mutable-context}}. Then, re-synchonization is necessary, e.g. by using the Echo Option for CoAP (see {{ssec-synch-challenge-response}}).
 
 ## Pairwise Keys ## {#sec-derivation-pairwise}
 
