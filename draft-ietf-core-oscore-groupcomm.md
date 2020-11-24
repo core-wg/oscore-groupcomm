@@ -833,7 +833,9 @@ If Observe {{RFC7641}} is supported, the following holds when protecting notific
 
 Furthermore, the server may have ongoing observations started by Observe requests protected with an old Security Context. After completing the establishment of a new Security Context, the server MUST protect the following notifications with the Sender Context of the new Security Context.
 
-For each ongoing observation, the server MUST include in the first notification protected with the new Security Context also the 'kid context' parameter, which is set to the ID Context (Gid) of the new Security Context. It is OPTIONAL for the server to include the ID Context (Gid) in the 'kid context' parameter also in further following notifications for those observations.
+For each ongoing observation, the server can help the client to synchronize, by including also the 'kid context' parameter in notifcations following a group rekeying, with value set to the ID Context (Gid) of the new Security Context.
+
+If there is a known upper limit to the duration of a group rekeying, the server SHOULD include the 'kid context' parameter during that time. Otherwise, the server SHOULD include it until the Max-Age has expired for the last notification sent before the installation of the new Security Context.
 
 ## Verifying the Response ## {#ssec-verify-response}
 
