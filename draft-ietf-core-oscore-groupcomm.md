@@ -442,11 +442,11 @@ The Group Manager assigns unique Group Identifiers (Gids) to different groups un
 
 The Group Manager MUST NOT reassign a Gid value to the same group, and MUST NOT reassign a Sender ID within the same group under the same Gid value.
 
-In addition, the Group Manager maintains records of the public keys of endpoints in a group, and provides information about the group and its members to other members and selected roles. Upon nodes' joining, the Group Manager collects such public keys and MUST verify proof-of-possession of the respective private key.
+In addition, the Group Manager maintains records of the public keys of endpoints in a group, and provides information about the group and its members to other group members and selected roles. Upon nodes' joining, the Group Manager collects such public keys and MUST verify proof-of-possession of the respective private key.
 
 An endpoint acquires group data such as the Gid and OSCORE input parameters including its own Sender ID from the Group Manager, and provides information about its public key to the Group Manager, for example upon joining the group. 
 
-A group member can retrieve from the Group Manager the public key and other information associated to another group member, with which it can generate the corresponding Recipient Context. An application can configure a group member to asynchronously retrieve information about Recipient Contexts, e.g. by Observing {{RFC7641}} a resource at the Group Manager to get updates on the group membership.
+A group member can retrieve from the Group Manager the public key and other information associated to another member of the group, with which it can generate the corresponding Recipient Context. In particular, the requested public key is provided together with the Sender ID of the associated group member. An application can configure a group member to asynchronously retrieve information about Recipient Contexts, e.g. by Observing {{RFC7641}} a resource at the Group Manager to get updates on the group membership.
 
 The Group Manager MAY serve additional entities acting as signature checkers, e.g. intermediary gateways. These entities do not join a group as members, but can retrieve public keys of group members from the Group Manager, in order to verify counter signatures of group messages. A signature checker MUST be authorized for retrieving public keys of members in a specific group from the Group Manager. To this end, the same method mentioned above based on the ACE framework {{I-D.ietf-ace-oauth-authz}} can be used.
 
