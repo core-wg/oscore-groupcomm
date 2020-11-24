@@ -393,7 +393,7 @@ Furthermore, applications MAY define policies to: i) delete (long-)unused Recipi
 
 #### New Sender ID for the Endpoint {#new-sender-id}
 
-The Group Manager may assign a new Sender ID to an endpoint, while leaving the Gid, Master Secret and Master Salt unchanged in the group. In this case, the Group Manager MUST assign a Sender ID that has never been assigned before in the group.
+The Group Manager may assign a new Sender ID to an endpoint, while leaving the Gid, Master Secret and Master Salt unchanged in the group. In this case, the Group Manager MUST assign a Sender ID that has never been assigned before in the group under the current Gid value.
 
 Having retrieved the new Sender ID, and potentially other missing data of the immutable Security Context, the endpoint can derive a new Sender Context (see {{ssec-sender-recipient-context}}). When doing so, the endpoint re-initilizes the Sender Sequence Number in its Sender Context to 0.
 
@@ -452,13 +452,13 @@ The Group Manager MAY serve additional entities acting as signature checkers, e.
 
 ## Management of Group Keying Material # {#sec-group-key-management}
 
-In order to establish a new Security Context for a group, a new Group Identifier (Gid) for that group and a new value for the Master Secret parameter MUST be generated. When distributing the new Gid and Master Secret, the Group Manager MAY distribute also a new value for the Master Salt parameter, and SHOULD preserve the current value of the Sender ID of each group member.
+In order to establish a new Security Context for a group, a new Group Identifier (Gid) for that group and a new value for the Master Secret parameter MUST be generated. When distributing the new Gid and Master Secret, the Group Manager MAY distribute also a new value for the Master Salt parameter, and should preserve the current value of the Sender ID of each group member.
 
-The Group Manager MUST NOT reassign a Gid value to the same group. That is, each group can have a given Gid at most once during its lifetime. An example of Gid format supporting this operation is provided in {{gid-ex}}.
+The Group Manager MUST NOT reassign a Gid value to the same group. That is, every group can have a given Gid at most once during its lifetime. An example of Gid format supporting this operation is provided in {{gid-ex}}.
 
-The Group Manager MUST NOT reassign a previously used Sender ID ('kid') with the same Gid, Master Secret and Master Salt. That is, even if Gid and Master Secret are renewed as described in this section, the Group Manager MUST NOT reassign an endpoint's Sender ID ('kid') within a same group under the same Gid value (see {{new-sender-id}}).
+The Group Manager MUST NOT reassign a previously used Sender ID ('kid') with the same Gid, Master Secret and Master Salt. That is, the Group Manager MUST NOT reassign a Sender ID value within a same group under the same Gid value (see {{new-sender-id}}). Within this restriction, the Group Manager can assign a Sender ID used under an old Gid value, thus avoiding Sender ID values to irrecoverably grow in size.
 
-Furthermore, also when an endpoint joining a group is recognized as a current member of that group, e.g. through the ongoing secure communication association, the Group Manager MUST assign a new Sender ID different than the one currently used by the endpoint in the group.
+Even when an endpoint joining a group is recognized as a current member of that group, e.g. through the ongoing secure communication association, the Group Manager MUST assign a new Sender ID different than the one currently used by the endpoint in the group, unless the group is rekeyed first and a new Gid value is established.
 
 If required by the application (see {{ssec-sec-assumptions}}), it is RECOMMENDED to adopt a group key management scheme, and securely distribute a new value for the Gid and for the Master Secret parameter of the group's Security Context, before a new joining endpoint is added to the group or after a currently present endpoint leaves the group. This is necessary to preserve backward security and forward security in the group, if the application requires it.
 
@@ -481,7 +481,7 @@ The Group Manager is responsible for performing the following tasks:
 
 6. Generating and managing Sender IDs within its OSCORE groups, as well as assigning and providing them to new endpoints during the join process, or to current group members upon request of renewal or re-joining.
 
-   This includes ensuring that each Sender ID is unique within each of the OSCORE groups, and that it is not reassigned within the same group under the same Gid value, not even to a current group member re-joining the same group.
+   This includes ensuring that each Sender ID: is unique within each of the OSCORE groups; and is not reassigned within the same group under the same Gid value, i.e. not even to a current group member re-joining the same group without a rekeying happening first.
 
 7. Defining communication policies for each of its OSCORE groups, and signalling them to new endpoints during the join process.
 
