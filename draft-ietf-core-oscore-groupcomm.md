@@ -1421,7 +1421,27 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -10 to -11 ## {#sec-10-11}
 
+* Preservation of Sender IDs over rekeying.
+
+* Clearer cause-effect about reset of SSN.
+
+* The GM provides public keys of group members with associated Sender IDs.
+
+* Presence of 'kid' in responses to requests protected with the pairwise mode.
+
+* Inclusion of 'kid_context' in notifications following a group rekeying.
+
+* Revised examples with signature values.
+
+* Decoupled growth of clients' Sender Sequence Numbers and loss of synchronization for server.
+
 * Sender IDs not recycled in the group under the same Gid.
+
+* Processing and description of the Group Flag bit in the OSCORE option.
+
+* Usage of the pairwise mode for multicast requests.
+
+* Clarifications on synchronization using the Echo option.
 
 * Fixes and editorial improvements.
 
