@@ -729,15 +729,17 @@ Furthermore, when the Group Manager establishes a new Security Context for the g
 
 # Message Reception # {#sec-message-reception}
 
-Upon receiving a protected message, a recipient endpoint retrieves a Security Context as in {{RFC8613}}. An endpoint MUST be able to distinguish between a Security Context to process OSCORE messages as in {{RFC8613}} and a Security Context to process Group OSCORE messages as defined in this specification.
+Upon receiving a protected message, a recipient endpoint retrieves a Security Context as in {{RFC8613}}. An endpoint MUST be able to distinguish between a Security Context to process OSCORE messages as in {{RFC8613}} and a Group OSCORE Security Context to process Group OSCORE messages as defined in this specification.
 
 To this end, an endpoint can take into account the different structure of the Security Context defined in {{sec-context}}, for example based on the presence of Counter Signature Algorithm in the Common Context. Alternatively implementations can use an additional parameter in the Security Context, to explicitly signal that it is intended for processing Group OSCORE messages.
 
 If either of the following two conditions holds, a recipient endpoint MUST discard the incoming protected message:
    
-   - The Group Flag is set to 1, and the recipient endpoint can not retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group.
-   
    - The Group Flag is set to 0, and the recipient endpoint retrieves a Security Context which is both valid to process the message and also associated to an OSCORE group, but the endpoint does not support the pairwise mode.
+   
+   - The Group Flag is set to 1, and the recipient endpoint can not retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group.
+    
+      As per Section 6.1 of {{RFC8613}}, this holds also when retrieving a Security Context which is valid but not associated to an OSCORE group. Future specifications may define how to process incoming messages protected with a Security Contexts as in {{RFC8613}}, when the Group Flag bit is set to 1.
 
 Otherwise, if a Security Context associated to an OSCORE group and valid to process the message is retrieved, the recipient endpoint processes the message with Group OSCORE, using the group mode (see {{mess-processing}}) if the Group Flag is set to 1, or the pairwise mode (see {{sec-pairwise-protection}}) if the Group Flag is set to 0.
    
@@ -1182,13 +1184,14 @@ This document has the following actions for IANA.
 IANA is asked to add the following value entry to the "OSCORE Flag Bits" subregistry defined in Section 13.7 of {{RFC8613}} as part of the "CoRE Parameters" registry.
 
 ~~~~~~~~~~~
-+--------------+------------+----------------------------+-----------+
-| Bit Position |    Name    |         Description        | Reference |
-+--------------+------------+----------------------------+-----------+
-|       2      | Group Flag | Set to 1 if the message is | [This     |
-|              |            | protected with the group   | Document] |
-|              |            | mode of Group OSCORE       |           |
-+--------------+------------+----------------------------+-----------+
++--------------+------------+-----------------------------+-----------+
+| Bit Position |    Name    |         Description         | Reference |
++--------------+------------+-----------------------------+-----------+
+|       2      | Group Flag | For using a Group OSCORE    | [This     |
+|              |            | Security Context, set to 1  | Document] |
+|              |            | if the message is protected |           |
+|              |            | with the group mode         |           |
++--------------+------------+-----------------------------+-----------+
 ~~~~~~~~~~~
 
 --- back
