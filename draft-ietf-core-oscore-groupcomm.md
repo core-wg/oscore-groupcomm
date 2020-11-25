@@ -289,11 +289,13 @@ For Group OSCORE, the Sender Context and Recipient Context additionally contain 
 
 With the exception of the public key of the sender endpoint, a receiver endpoint can derive a complete Security Context from a received Group OSCORE message and the Common Context. The public keys in the Recipient Contexts can be retrieved from the Group Manager (see {{group-manager}}) upon joining the group. A public key can alternatively be acquired from the Group Manager at a later time, for example the first time a message is received from a particular endpoint in the group (see {{ssec-verify-request}} and {{ssec-verify-response}}).
 
+An endpoint admits a maximum amount of Recipient Contexts for a same Security Context, e.g. due to memory limitations. After reaching that limit, the creation of a new Recipient Context results in an overflow. When this happens the endpoint has to delete a current Recipient Context to install the new one. It is up to the application to define policies for selecting the Recipient Context to delete. Following an overflow, any newly installed Recipient Context is initialized with an invalid Replay Window, and accordingly requires the endpoint to take appropriate actions (see {{ssec-loss-mutable-context}}).
+
 For severely constrained devices, it may be not feasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the sender endpoint's public key. Such devices can be configured to drop a received message for which there is no (complete) Recipient Context, and retrieve the sender endpoint's public key in order to have it available to verify subsequent messages from that endpoint.
 
 Sender Sequence Numbers seen by a server as Partial IV values in request messages can spontaneously increase at a fast pace, for example when a client exchanges unicast messages with other servers using the Group OSCORE Security Context. As in OSCORE {{RFC8613}}, servers always need to accept such increases.
 
-During their operation, servers may lose synchronization with a client's Sender Sequence Numbers, e.g. due to a reboot, or because they deleted their previously synchronized version of the Recipient Context {{ssec-loss-mutable-context}}. Then, re-synchonization is necessary, e.g. by using the Echo Option for CoAP (see {{ssec-synch-challenge-response}}).
+During their operation, servers may lose synchronization with a client's Sender Sequence Numbers, e.g. due to a reboot, or because they deleted their previously synchronized version of the Recipient Context (see {{ssec-loss-mutable-context}}). Then, re-synchonization is necessary, e.g. by using the Echo Option for CoAP (see {{ssec-synch-challenge-response}}).
 
 ## Pairwise Keys ## {#sec-derivation-pairwise}
 
@@ -1420,6 +1422,8 @@ The table below provides examples of values for the 'par_countersign_key' elemen
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -10 to -11 ## {#sec-10-11}
+
+* Loss of Recipient Contexts due to their overflow.
 
 * Preservation of Sender IDs over rekeying.
 
