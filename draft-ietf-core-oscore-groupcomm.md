@@ -1422,6 +1422,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Loss of Recipient Contexts due to their overflow.
 
+* Distinction between anti-replay and freshness.
+
 * Preservation of Sender IDs over rekeying.
 
 * Clearer cause-effect about reset of SSN.
