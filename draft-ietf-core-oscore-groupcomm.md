@@ -289,13 +289,9 @@ For Group OSCORE, the Sender Context and Recipient Context additionally contain 
 
 With the exception of the public key of the sender endpoint, a receiver endpoint can derive a complete Security Context from a received Group OSCORE message and the Common Context. The public keys in the Recipient Contexts can be retrieved from the Group Manager (see {{group-manager}}) upon joining the group. A public key can alternatively be acquired from the Group Manager at a later time, for example the first time a message is received from a particular endpoint in the group (see {{ssec-verify-request}} and {{ssec-verify-response}}).
 
-An endpoint admits a maximum amount of Recipient Contexts for a same Security Context, e.g. due to memory limitations. After reaching that limit, the creation of a new Recipient Context results in an overflow. When this happens the endpoint has to delete a current Recipient Context to install the new one. It is up to the application to define policies for selecting the Recipient Context to delete. Following an overflow, any newly installed Recipient Context is initialized with an invalid Replay Window, and accordingly requires the endpoint to take appropriate actions (see {{ssec-loss-mutable-context}}).
+An endpoint admits a maximum amount of Recipient Contexts for a same Security Context, e.g. due to memory limitations. After reaching that limit, the creation of a new Recipient Context results in an overflow. When this happens the endpoint has to delete a current Recipient Context to install the new one. It is up to the application to define policies for selecting the current Recipient Context to delete. A newly installed Recipient Context that has required to delete another Recipient Context is initialized with an invalid Replay Window, and accordingly requires the endpoint to take appropriate actions (see {{ssec-loss-mutable-context-overflow}}).
 
 For severely constrained devices, it may be not feasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the sender endpoint's public key. Such devices can be configured to drop a received message for which there is no (complete) Recipient Context, and retrieve the sender endpoint's public key in order to have it available to verify subsequent messages from that endpoint.
-
-Sender Sequence Numbers seen by a server as Partial IV values in request messages can spontaneously increase at a fast pace, for example when a client exchanges unicast messages with other servers using the Group OSCORE Security Context. As in OSCORE {{RFC8613}}, servers always need to accept such increases.
-
-During their operation, servers may lose synchronization with a client's Sender Sequence Numbers, e.g. due to a reboot, or because they deleted their previously synchronized version of the Recipient Context (see {{ssec-loss-mutable-context}}). Then, re-synchonization is necessary, e.g. by using the Echo Option for CoAP (see {{ssec-synch-challenge-response}}).
 
 ## Pairwise Keys ## {#sec-derivation-pairwise}
 
@@ -352,26 +348,42 @@ It is RECOMMENDED that the immutable part of the Security Context is stored in n
 
 On the other hand, the mutable parts of the Security Context are updated by the endpoint when executing the security protocol, but may nevertheless become outdated, e.g. due to loss of the mutable Security Context (see {{ssec-loss-mutable-context}}) or exhaustion of Sender Sequence Numbers (see {{ssec-wrap-around-partial-iv}}).
 
-If it is not feasible or practically possible to store and maintain up-to-date the mutable part in non-volatile memory (e.g., due to limited number of write operations), the endpoint MUST be able to detect a loss of the mutable Security Context.
-
-When a loss of mutable Security Context is detected (e.g., following a reboot), the endpoint MUST NOT protect further messages using this Security Context to avoid reusing a nonce with the same AEAD key, and SHOULD instead retrieve new security parameters from the Group Manager (see {{ssec-loss-mutable-context}}).
+If it is not feasible or practically possible to store and maintain up-to-date the mutable part in non-volatile memory (e.g., due to limited number of write operations), the endpoint MUST be able to detect a loss of the mutable Security Context and MUST accordingly take the actions defined in {{ssec-loss-mutable-context}}.
 
 ### Loss of Mutable Security Context {#ssec-loss-mutable-context}
 
 <!-- MT 2020-10-12: This is now partly overriden, since the rebooted endpoint has to contact the Group Manager for help. Then, either it gets a new Sender ID, or the whole group is rekeyed. In either case, the endpoint resets its Sender Sequence Number to 0 and derives a new Sender Key.
 
-An endpoint losing its mutable Security Context, e.g., due to reboot, needs to prevent the re-use of Sender Sequence Numbers, and to handle incoming replayed messages. Appendix B.1 of {{RFC8613}} describes secure procedures for handling the loss of Sender Sequence Number and the update of Replay Window. The procedure in Appendix B.1.1 of {{RFC8613}} applies also to servers in Group OSCORE and is RECOMMENDED to use. A variant of Appendix B.1.2 of {{RFC8613}} applicable to Group OSCORE is specified in {{ssec-synch-challenge-response}} of this specification.
+An endpoint losing its mutable Security Context, e.g., due to reboot, needs to prevent the re-use of Sender Sequence Numbers, and to handle incoming replayed messages. Appendix B.1 of {{RFC8613}} describes secure procedures for handling the loss of Sender Sequence Number and the update of Replay Window. The procedure in Appendix B.1.1 of {{RFC8613}} applies also to servers in Group OSCORE and is RECOMMENDED to use. A variant of Appendix B.1.2 of {{RFC8613}} applicable to Group OSCORE is specified in {{sec-synch-challenge-response}} of this specification.
 -->
 
-An endpoint that has lost its mutable Security Context, e.g. due to a reboot, needs to prevent the re-use of a nonce with the same AEAD key, and to handle incoming replayed messages.
+An endpoint may lose its mutable Security Context, e.g. due to a reboot (see {{ssec-loss-mutable-context-total}}) or to an overflow of Recipient Contexts (see {{ssec-loss-mutable-context-overflow}}).
 
-To this end, after a loss of mutable Security Context, the endpoint SHOULD inform the Group Manager, retrieve new Security Context parameters from the Group Manager (see {{sec-group-re-join}}), and use them to derive a new Sender Context (see {{ssec-sender-recipient-context}}).
+In such a case, the endpoint needs to prevent the re-use of a nonce with the same AEAD key, and to handle incoming replayed messages.
 
-From then on, the endpoint MUST use its latest installed Sender Context to protect outgoing messages.
+#### Reboot and Total Loss {#ssec-loss-mutable-context-total}
 
-If an endpoint is not able to establish an updated Sender Context, e.g. because of lack of connectivity with the Group Manager, the endpoint MUST NOT protect further messages using the current Security Context.
+In case a loss of the Sender Context and/or of all the Recipient Contexts is detected (e.g., following a reboot), the endpoint MUST NOT protect further messages using this Security Context to avoid reusing a nonce with the same AEAD key.
 
-In order to handle the update of Replay Window in Recipient Contexts, three approaches are discussed in {{synch-ex}}. In particular, the approach specified in {{ssec-synch-challenge-response}} and based on the Echo Option {{I-D.ietf-core-echo-request-tag}} is a variant of the approach defined in Appendix B.1.2 of {{RFC8613}} as applicable to Group OSCORE.
+In particular, before resuming its operations in the group, the endpoint MUST retrieve new Security Context parameters from the Group Manager (see {{sec-group-re-join}}) and use them to derive a new Sender Context (see {{ssec-sender-recipient-context}}). Since this includes a newly derived Sender Key, the server will not reuse the same pair (key, nonce), even when using the Partial IV of (old re-injected) requests to build the AEAD nonce for protecting the corresponding responses.
+
+From then on, the endpoint MUST use the latest installed Sender Context to protect outgoing messages. Also, newly created Recipient Contexts will have a Replay Window which is initialized as valid.
+
+If not able to establish an updated Sender Context, e.g. because of lack of connectivity with the Group Manager, the endpoint MUST NOT protect further messages using the current Security Context and MUST NOT accept incoming messages from other group members, as currently unable to detect possible replays.
+
+#### Overflow of Recipient Contexts {#ssec-loss-mutable-context-overflow}
+
+After reaching the maximum amount of Recipient Contexts, an endpoint will experience an overflow when installing a new Recipient Context, as it requires to first delete an existing one (see {{ssec-sender-recipient-context}}).
+
+Every time this happens, the Replay Window of the new Recipient Context is initialized as not valid. Therefore, the endpoint MUST take the following actions, before accepting request messages from the client associated to the new Recipient Context.
+
+If it is not configured as silent server, the endpoint MUST either:
+
+* Retrieve new Security Context parameters from the Group Manager and derive a new Sender Context, as defined in {{ssec-loss-mutable-context-total}}; or
+
+* When receiving a first request to process with the new Recipient Context, use the approach specified in {{sec-synch-challenge-response}} and based on the Echo Option {{I-D.ietf-core-echo-request-tag}}, if supported. In particular, the endpoint MUST use its Partial IV when generating the AEAD nonce and MUST include the Partial IV in the response message conveying the Echo Option.
+
+If it is configured exclusively as silent server, the endpoint MUST wait for the next group rekeying to occur, in order to derive a new Security Context and re-initialize the Replay Window of each Recipient Contexts as valid.
 
 ### Exhaustion of Sender Sequence Number {#ssec-wrap-around-partial-iv}
 
@@ -387,7 +399,7 @@ From then on, the endpoint MUST use its latest installed Sender Context to prote
 
 ### Retrieving New Security Context Parameters {#sec-group-re-join}
 
-The Group Manager can assist an endpoint with an incomplete Sender Context to retrieve missing data of the Security Context and thereby become fully operational in the group again. The two main options for the Group Manager are described in this section: i) assignment of a new Sender ID to the endpoint (see {{new-sender-id}}); and ii) establishment of a new Security Context for the group (see {{new-sec-context}}). Update of Replay Window in Recipient Contexts is discussed in {{sec-synch-seq-num}}.
+The Group Manager can assist an endpoint with an incomplete Sender Context to retrieve missing data of the Security Context and thereby become fully operational in the group again. The two main options for the Group Manager are described in this section: i) assignment of a new Sender ID to the endpoint (see {{new-sender-id}}); and ii) establishment of a new Security Context for the group (see {{new-sec-context}}). The update of the Replay Window in each of the Recipient Contexts is discussed in {{sec-synch-seq-num}}.
 
 As group membership changes, or as group members get new Sender IDs (see {{new-sender-id}}) so do the relevant Recipient IDs that the other endpoints need to keep track of. As a consequence, group members may end up retaining stale Recipient Contexts, that are no longer useful to verify incoming secure messages. 
 
@@ -719,15 +731,23 @@ Payload: 0x60 b035059d9ef5667c5a0710823b (14 bytes)
 
 # Message Binding, Sequence Numbers, Freshness and Replay Protection
 
-The requirements and properties described in Section 7 of {{RFC8613}} also apply to OSCORE used in group communication. In particular, Group OSCORE provides message binding of responses to requests, which enables absolute freshness of responses that are not notifications, relative freshness of requests and notification responses, and replay protection of requests.
+The requirements and properties described in Section 7 of {{RFC8613}} also apply to Group OSCORE. In particular, Group OSCORE provides message binding of responses to requests, which enables absolute freshness of responses that are not notifications, relative freshness of requests and notification responses, and replay protection of requests. In addition, the following holds for Group OSCORE.
 
 ## Update of Replay Window # {#sec-synch-seq-num}
 
-A new server joining a group may not be aware of the current Partial IVs (Sender Sequence Numbers of the clients). Hence, when receiving a request from a particular client for the first time, the new server is not able to verify if that request is a replay. The same holds when a server loses its mutable Security Context (see {{ssec-loss-mutable-context}}), for instance after a device reboot.
+Sender Sequence Numbers seen by a server as Partial IV values in request messages can spontaneously increase at a fast pace, for example when a client exchanges unicast messages with other servers using the Group OSCORE Security Context. As in OSCORE {{RFC8613}}, a server always needs to accept such increases and accordingly updates the Replay Window in each of its Recipient Contexts.
 
-The exact way to address this issue is application specific, and depends on the particular use case and its replay requirements. The list of methods to handle the update of a Replay Window is part of the group communication policy, and different servers can use different methods. {{synch-ex}} describes three possible approaches that can be considered to address the issue discussed above.
+As discussed in {{ssec-loss-mutable-context}}, a newly created Recipient Context would have an invalid Replay Window, if its installation has required to delete another Recipient Context. Hence, the server is not able to verify if a request from the client associated to the new Recipient Context is a replay. When this happens, the server MUST validate the Replay Window of the new Recipient Context, before accepting messages from the associated client (see {{ssec-loss-mutable-context}}).
 
 Furthermore, when the Group Manager establishes a new Security Context for the group (see {{new-sec-context}}), every server re-initializes the Replay Window in each of its Recipient Contexts.
+
+## Message Freshness # {#sec-freshness}
+
+When receiving a request from a client for the first time, the server is not synchronized with the client's Sender Sequence Number, i.e. it is not able to verify if that request is fresh. This applies to a server that has just joined the group, with respect to already present clients, and recurs as new clients are added as group members.
+
+During its operations in the group, the server may also lose synchronization with a client's Sender Sequence Number. This can happen, for instance, if the server has rebooted or has deleted its previously synchronized version of the Recipient Context for that client (see {{ssec-loss-mutable-context}}).
+
+If the application requires message freshness, e.g. according to time- or event-based policies, the server has to (re-)synchonize with a client's Sender Sequence Number before delivering request messages from that client to the application. To this end, the server can use the approach in {{sec-synch-challenge-response}} based on the Echo Option for CoAP {{I-D.ietf-core-echo-request-tag}}, as a variant of the approach defined in Appendix B.1.2 of {{RFC8613}} applicable to Group OSCORE.
 
 # Message Reception # {#sec-message-reception}
 
@@ -1101,7 +1121,7 @@ A client can instead use the pairwise mode as defined in {{sec-pairwise-protecti
 
 With particular reference to block-wise transfers {{RFC7959}}, Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}} points out that, while an initial request including the CoAP Block2 option can be sent over multicast, any other request in a transfer has to occur over unicast, individually addressing the servers in the group.
 
-Additional considerations are discussed in {{ssec-synch-challenge-response}}, with respect to requests including a CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} that has to be sent over unicast, as a challenge-response method for servers to achieve synchronization of clients' Sender Sequence Number.
+Additional considerations are discussed in {{sec-synch-challenge-response}}, with respect to requests including a CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} that has to be sent over unicast, as a challenge-response method for servers to achieve synchronization of clients' Sender Sequence Number.
 
 ## End-to-end Protection {#ssec-e2e-protection}
 
@@ -1118,24 +1138,23 @@ With particular reference to the OSCORE Master Secret, it has to be kept secret 
 
 ## Replay Protection {#ssec-replay-protection}
 
-As in OSCORE, also Group OSCORE relies on sender sequence numbers included in the COSE message field 'Partial IV' and used to build AEAD nonces.
+As in OSCORE {{RFC8613}}, also Group OSCORE relies on sender sequence numbers included in the COSE message field 'Partial IV' and used to build AEAD nonces.
 
 Note that the Partial IV of an endpoint does not necessarily grow monotonically. For instance, upon exhaustion of the endpoint Sender Sequence Number, the Partial IV also gets exhausted. As discussed in {{sec-group-re-join}}, this results either in the endpoint being individually rekeyed and getting a new Sender ID, or in the establishment of a new Security Context in the group. Therefore, uniqueness of (key, nonce) pairs (see {{ssec-key-nonce-uniqueness}}) is preserved also when a new Security Context is established.
 
-As discussed in {{sec-synch-seq-num}}, an endpoint that has just joined a group is exposed to replay attack, as it is not aware of the Sender Sequence Numbers currently used by other group members. {{synch-ex}} describes how endpoints can synchronize with others' Sender Sequence Number.
+Since one-to-many communication such as multicast usually involves unreliable transports, the simplification of the Replay Window to a size of 1 suggested in Section 7.4 of {{RFC8613}} is not viable with Group OSCORE, unless exchanges in the group rely only on unicast messages.
 
-<!-- OLD and replaced with an easier paragraph below:
+As discussed in {{sec-synch-seq-num}}, a Replay Window may be initialized as not valid, following the loss of mutable Security Context {{ssec-loss-mutable-context}}. In particular, {{ssec-loss-mutable-context-total}} and {{ssec-loss-mutable-context-total}} define measures that endpoints need to take in such a situation, before resuming to accept incoming messages from other group members.
 
-Unless exchanges in a group rely only on unicast messages, Group OSCORE cannot be used with reliable transport. Thus, unless only unicast messages are sent in the group, it cannot be defined that only messages with sequence numbers that are equal to the previous sequence number + 1 are accepted.
--->
+## Message Freshness {#ssec-seccons-freshness}
 
-Since one-to-many communication such as multicast usually involves unreliable transports, the simplification of the replay window to a size of 1 suggested in Section 7.4 of {{RFC8613}} is not viable with Group OSCORE, unless exchanges in the group rely only on unicast messages.
+As discussed in {{sec-freshness}}, a server may not be able to assert whether an incoming request is fresh, in case it does not have or has lost synchronization with the client's Sender Sequence Numbers.
 
-The processing of response messages described in Section 2.3.1 of {{I-D.ietf-core-groupcomm-bis}} also ensures that a client accepts a single valid response to a given request from each replying server, unless CoAP observation is used.
+If freshness is relevant for the application, the server may (re-)synchronize with the client's Sender Sequence Number at any time, by using the approach described in {{sec-synch-challenge-response}} and based on the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}}, as a variant of the approach defined in Appendix B.1.2 of {{RFC8613}} applicable to Group OSCORE.
 
 ## Client Aliveness {#ssec-client-aliveness}
 
-As discussed in Section 12.5 of {{RFC8613}}, a server may use the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} to verify the aliveness of the client that originated a received request. This would also allow the server to (re-)synchronize with the client's Sender Sequence Number, as well as to ensure that the request is fresh and has not been replayed or (purposely) delayed, if it is the first one received from that client after having joined the group or rebooted (see {{ssec-synch-challenge-response}}).
+Building on Section 12.5 of {{RFC8613}}, a server may use the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} to verify the aliveness of the client that originated a received request, by using the approach described in {{sec-synch-challenge-response}}.
 
 ## Cryptographic Considerations {#ssec-crypto-considerations}
 
@@ -1171,7 +1190,7 @@ Furthermore, the following privacy considerations hold, about the OSCORE option 
 
 When receiving a group request, each of the recipient endpoints can reply with a response that includes its Sender ID as 'kid' parameter. All these responses will be matchable with the request through the Token. Thus, even if these responses do not include a 'kid context' parameter, it becomes possible to understand that the responder endpoints are in the same group of the requester endpoint.
 
-Furthermore, using the mechanisms described in {{ssec-synch-challenge-response}} to achieve sequence number synchronization with a client may reveal when a server device goes through a reboot. This can be mitigated by the server device storing the precise state of the replay window of each known client on a clean shutdown.
+Furthermore, using the mechanisms described in {{sec-synch-challenge-response}} to achieve sequence number synchronization with a client may reveal when a server device goes through a reboot. This can be mitigated by the server device storing the precise state of the replay window of each known client on a clean shutdown.
 
 Finally, the mechanism described in {{ssec-gid-collision}} to prevent collisions of Group Identifiers from different Group Managers may reveal information about events in the respective OSCORE groups. In particular, a Group Identifier changes when the corresponding group is rekeyed. Thus, Group Managers might use the shared list of Group Identifiers to infer the rate and patterns of group membership changes triggering a group rekeying, e.g. due to newly joined members or evicted (compromised) members. In order to alleviate this privacy concern, it should be hidden from the Group Managers which exact Group Manager has currently assigned which Group Identifiers in its OSCORE groups.
 
@@ -1288,31 +1307,9 @@ In case of successful authorization check, the Group Manager generates a Sender 
 
 It is RECOMMENDED that the join process adopts the approach described in {{I-D.ietf-ace-key-groupcomm-oscore}} and based on the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. 
 
-# Examples of Synchronization Approaches {#synch-ex}
+# Challenge-Response Synchronization # {#sec-synch-challenge-response}
 
-This section describes three possible approaches that can be considered by server endpoints to synchronize with Sender Sequence Numbers of client endpoints sending group requests.
-
-The Group Manager MAY indicate which of such approaches are used in the group, as part of the group communication policies signalled to candidate group members upon their group joining.
-
-If a server has recently lost the mutable Security Context, e.g. due to a reboot, the server has also to establish an updated Security Context before resuming to send protected messages to the group (see {{ssec-loss-mutable-context}}). Since this results in deriving a new Sender Key for its Sender Context, the server does not reuse the same pair (key, nonce), even when using the Partial IV of (old re-injected) requests to build the AEAD nonce for protecting the corresponding responses.
-
-## Best-Effort Synchronization ## {#ssec-synch-best-effort}
-
-Upon receiving a group request from a client, a server does not take any action to synchronize with the Sender Sequence Number of that client. This provides no assurance at all as to message freshness, which can be acceptable in non-critical use cases.
-
-With the notable exception of Observe notifications and responses following a group rekeying, it is optional for the server to use its Sender Sequence Number as Partial IV when protecting a response. Instead, for efficiency reasons, the server may rather use the request's Partial IV when protecting a response to that request.
-
-## Baseline Synchronization ## {#ssec-synch-baseline}
-
-Upon receiving a group request from a given client for the first time, a server initializes the last-seen Sender Sequence Number associated to that client in its corresponding Recipient Context. The server may also drop the group request without delivering it to the application. This method provides a reference point to identify if future group requests from the same client are fresher than the last one received.
-
-A replay time interval exists, between when a possibly replayed or delayed message is originally transmitted by a given client and the first authentic fresh message from that same client is received. This can be acceptable for use cases where servers admit such a trade-off between performance and assurance of message freshness.
-
-With the notable exception of Observe notifications and responses following a group rekeying, it is optional for the server to use its Sender Sequence Number as Partial IV when protecting a response. Instead, for efficiency reasons, the server may rather use the request's Partial IV when protecting a response to that request.
-
-## Challenge-Response Synchronization ## {#ssec-synch-challenge-response}
-
-A server performs a challenge-response exchange with a client, by using the Echo Option for CoAP described in Section 2 of {{I-D.ietf-core-echo-request-tag}} and according to Appendix B.1.2 of {{RFC8613}}.
+This section describes a possible approach that a server endpoint can use to synchronize with Sender Sequence Numbers of client endpoints sending group requests. In particular, the server performs a challenge-response exchange with a client, by using the Echo Option for CoAP described in Section 2 of {{I-D.ietf-core-echo-request-tag}} and according to Appendix B.1.2 of {{RFC8613}}.
 
 That is, upon receiving a group request from a particular client for the first time, the server processes the message as described in this specification, but, even if valid, does not deliver it to the application. Instead, the server replies to the client with an OSCORE protected 4.01 (Unauthorized) response message, including only the Echo Option and no diagnostic payload. The Echo option value SHOULD not be reused; when it is reused, it MUST be highly unlikely to have been used with this client recently. Since this response is protected with the Security Context used in the group, the client will consider the response valid upon successfully decrypting and verifying it.
 
