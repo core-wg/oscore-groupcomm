@@ -820,7 +820,7 @@ Upon receiving a secure group request with the Group Flag set to 1, following th
 
    - If the server does not have the public key of the client yet, the server MUST stop processing the request and MAY respond with a 5.03 (Service Unavailable) response. The response MAY include a Max-Age Option, indicating to the client the number of seconds after which to retry. If the Max-Age Option is not present, a retry time of 60 seconds will be assumed by the client, as default value defined in Section 5.10.5 of {{RFC7252}}.
 
-   - If the signature verification fails, the server SHALL stop processing the request and MAY respond with a 4.00 (Bad Request) response. If the verification fails, the same steps are taken as if the decryption had failed. In particular, the Replay Window is only updated if both the signature verification and the decryption succeed.
+   - If the signature verification fails, the server SHALL stop processing the request and MAY respond with a 4.00 (Bad Request) response. The server MAY set an Outer Max-Age option with value zero. The diagnostic payload MAY contain a string, which, if present, MUST be "Decryption failed" as if the decryption had failed. Furthermore, the Replay Window MUST be updated only if both the signature verification and the decryption succeed.
 
 * Additionally, if the used Recipient Context was created upon receiving this group request and the message is not verified successfully, the server MAY delete that Recipient Context. Such a configuration, which is specified by the application, mitigates attacks that aim at overloading the server's storage.
     
