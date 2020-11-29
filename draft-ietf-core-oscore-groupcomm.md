@@ -810,7 +810,7 @@ Upon receiving a secure group request with the Group Flag set to 1, following th
 
 * In step 2, the decoding of the compressed COSE object follows {{compression}} of this document. In particular:
 
-   - If the server discards the request due to not retrieving a Security Context associated to the OSCORE group, the server MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
+   - If the server discards the request due to not retrieving a Security Context associated to the OSCORE group, the server MAY respond with a 4.01 (Unauthorized) error message. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
 
    - If the received 'kid context' matches an existing ID Context (Gid) but the received 'kid' does not match any Recipient ID in this Security Context, then the server MAY create a new Recipient Context for this Recipient ID and initialize it according to Section 3 of {{RFC8613}}, and also retrieve the associated public key. Such a configuration is application specific. If the application does not specify dynamic derivation of new Recipient Contexts, then the server SHALL stop processing the request.
 
@@ -859,7 +859,7 @@ If Observe {{RFC7641}} is supported, the following holds when protecting notific
 
 Furthermore, the server may have ongoing observations started by Observe requests protected with an old Security Context. After completing the establishment of a new Security Context, the server MUST protect the following notifications with the Sender Context of the new Security Context.
 
-For each ongoing observation, the server can help the client to synchronize, by including also the 'kid context' parameter in notifcations following a group rekeying, with value set to the ID Context (Gid) of the new Security Context.
+For each ongoing observation, the server can help the client to synchronize, by including also the 'kid context' parameter in notifications following a group rekeying, with value set to the ID Context (Gid) of the new Security Context.
 
 If there is a known upper limit to the duration of a group rekeying, the server SHOULD include the 'kid context' parameter during that time. Otherwise, the server SHOULD include it until the Max-Age has expired for the last notification sent before the installation of the new Security Context.
 
@@ -878,7 +878,7 @@ Note that a client may receive a response protected with a Security Context diff
 * Additionally, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client MAY delete that Recipient Context. Such a configuration, which is specified by the application, mitigates attacks that aim at overloading the client's storage.
 
 
-### Supporting Observe ###
+### Supporting Observe ### {#ssec-verify-response-observe}
 
 If Observe {{RFC7641}} is supported, the following holds when verifying notifications for an ongoing observation.
 
@@ -890,7 +890,7 @@ This ensures that the client can correctly verify notifications, even in case it
 
 # Message Processing in Pairwise Mode # {#sec-pairwise-protection}
 
-When using the pairwise mode of Group OSCORE, messages are protected and processed as in {{mess-processing}}, with the modifications described in this section. The security objectives of the pairwise mode are discussed in {{ssec-sec-objectives}}.
+When using the pairwise mode of Group OSCORE, messages are protected and processed as in {{RFC8613}}, with the modifications described in this section. The security objectives of the pairwise mode are discussed in {{ssec-sec-objectives}}.
 
 The pairwise mode takes advantage of an existing Security Context for the group mode to establish a Security Context shared exclusively with any other member. In order to use the pairwise mode, the signature scheme of the group mode MUST support a combined signature and encryption scheme. This can be, for example, signature using ECDSA, and encryption using AES-CCM with a key derived with ECDH.
 
@@ -899,14 +899,6 @@ The pairwise mode does not support the use of additional entities acting as veri
 The pairwise mode MAY be supported. An endpoint implementing only a silent server does not support the pairwise mode.
 
 If the signature algorithm used in the group supports ECDH (e.g., ECDSA, EdDSA), the pairwise mode MUST be supported by endpoints that use the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}, for instance for responses after the first block-wise request, which possibly targets all servers in the group and includes the CoAP Block2 option (see Section 2.3.6 of {{I-D.ietf-core-groupcomm-bis}}). This prevents the attack described in {{ssec-unicast-requests}}, which leverages requests sent over unicast to a single group member and protected with the group mode.
-
-The pairwise mode protects messages between two members of a group, essentially following {{RFC8613}}, but with the following notable differences:
-
-* The 'kid' and 'kid context' parameters of the COSE object are used as defined in {{sec-cose-object-kid}} of this document.
-
-* The external_aad defined in {{sec-cose-object-ext-aad-enc}} of this document is used for the encryption process.
-
-* The Pairwise Sender/Recipient Keys used as Sender/Recipient keys are derived as defined in {{sec-derivation-pairwise}} of this document.
 
 Senders cannot use the pairwise mode to protect a message intended for multiple recipients. In fact, the pairwise mode is defined only between two endpoints and the keying material is thus only available to one recipient.
 
@@ -922,51 +914,45 @@ Furthermore, the sender needs to know the individual address of the recipient en
 
 To make addressing information of individual endpoints available, servers in the group MAY expose a resource to which a client can send a group request targeting a set of servers, identified by their 'kid' values specified in the request payload. The specified set may be empty, hence identifying all the servers in the group. Further details of such an interface are out of scope for this document.
 
+## Main Differences from OSCORE {#sec-differences-oscore-pairwise}
+
+The pairwise mode protects messages between two members of a group, essentially following {{RFC8613}}, but with the following notable differences.
+
+* The 'kid' and 'kid context' parameters of the COSE object are used as defined in {{sec-cose-object-kid}} of this document.
+
+* The external_aad defined in {{sec-cose-object-ext-aad-enc}} of this document is used for the encryption process.
+
+* The Pairwise Sender/Recipient Keys used as Sender/Recipient keys are derived as defined in {{sec-derivation-pairwise}} of this document.
+
 ## Protecting the Request {#sec-pairwise-protection-req}
 
-When using the pairwise mode, the request is protected as defined in {{ssec-protect-request}}, with the following differences.
+When using the pairwise mode, the request is protected as defined in Section 8.1 of {{RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following difference also applies.
 
-* The Group Flag MUST be set to 0.
-
-* The used Sender Key is the Pairwise Sender Key (see {{sec-derivation-pairwise}}).
-
-* The counter signature is not computed and therefore not included in the message. The payload of the protected request thus terminates with the encoded ciphertext of the COSE object, just like in {{RFC8613}}.
-
-Note that, like in the group mode, the external_aad for encryption is generated as in {{sec-cose-object-ext-aad-enc}}, and the Partial IV is the current fresh value of the client's Sender Sequence Number (see {{pairwise-seqno}}).
+* If Observe {{RFC7641}} is supported, what defined in {{ssec-protect-request-observe}} of this document holds.
 
 ## Verifying the Request {#sec-pairwise-verify-req}
 
-Upon receiving a request with the Group Flag set to 0, following the procedure in {{sec-message-reception}}, the server MUST process it as defined in {{ssec-verify-request}}, with the following differences.
+Upon receiving a request with the Group Flag set to 0, following the procedure in {{sec-message-reception}}, the server MUST process it as defined in Section 8.2 of {{RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following differences also apply.
 
-* If the server discards the request due to not retrieving a Security Context associated to the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.02 (Bad Option) error. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
+* If the server discards the request due to not retrieving a Security Context associated to the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.01 (Unauthorized) error message or a 4.02 (Bad Option) error message, respectively. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
 
 * If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}). The new Pairwise Sender/Recipient Keys are deleted if the Recipient Context is deleted as a result of the message not being successfully verified. 
 
-* The used Recipient Key is the Pairwise Recipient Key (see {{sec-derivation-pairwise}}).
-
-* No verification of counter signature occurs, as there is none included in the message.
-
+* If Observe {{RFC7641}} is supported, what defined in {{ssec-verify-request-observe}} of this document holds.
 
 ## Protecting the Response {#sec-pairwise-protection-resp}
 
-When using the pairwise mode, a response is protected as defined in {{ssec-protect-response}}, with the following differences.
+When using the pairwise mode, a response is protected as defined in Section 8.3 of {{RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following difference also applies.
 
-* The Group Flag MUST be set to 0.
-
-* The used Sender Key is the Pairwise Sender Key (see {{sec-derivation-pairwise}}).
-
-* The counter signature is not computed and therefore not included in the message. The payload of the protected response thus terminates with the encoded ciphertext of the COSE object, just like in {{RFC8613}}.
-
+* If Observe {{RFC7641}} is supported, what defined in {{ssec-protect-response-observe}} of this document holds.
 
 ## Verifying the Response {#sec-pairwise-verify-resp}
 
-Upon receiving a response with the Group Flag set to 0, following the procedure in {{sec-message-reception}}, the client MUST process it as defined in {{ssec-verify-response}}, with the following differences.
+Upon receiving a response with the Group Flag set to 0, following the procedure in {{sec-message-reception}}, the client MUST process it as defined in Section 8.4 of {{RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following differences also apply.
 
 * If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}). The new Pairwise Sender/Recipient Keys are deleted if the Recipient Context is deleted as a result of the message not being successfully verified. 
 
-* The used Recipient Key is the Pairwise Recipient Key (see {{sec-derivation-pairwise}}).
-
-* No verification of counter signature occurs, as there is none included in the message.
+* If Observe {{RFC7641}} is supported, what defined in {{ssec-verify-response-observe}} of this document holds.
 
 
 # Security Considerations  # {#sec-security-considerations}
@@ -1433,6 +1419,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Presence of 'kid' in responses to requests protected with the pairwise mode.
 
 * Inclusion of 'kid_context' in notifications following a group rekeying.
+
+* Pairwise mode presented with OSCORE as baseline.
 
 * Revised examples with signature values.
 
