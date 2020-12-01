@@ -628,7 +628,7 @@ Compared with Section 5.4 of {{RFC8613}} the aad_array additionally includes:
 
 * the 'request_kid_context' element, as defined in the external_aad for encryption (see {{sec-cose-object-ext-aad-enc}});
 
-* the value of the OSCORE Option present in the protected message, encoded as a binary string.
+* the 'OSCORE_option' element, containing the value of the OSCORE Option present in the protected message, encoded as a binary string. This prevents the attack described in {{ssec-cross-group-injection}} when using the group mode, as further explained  in {{sssec-cross-group-injection-group-mode}}. 
 
 Note for implementation: this construction requires the OSCORE option of the message to be generated before calculating the signature. Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
 
