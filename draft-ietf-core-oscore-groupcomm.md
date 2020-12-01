@@ -594,7 +594,9 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
 
       Examples of 'par_countersign_key' are in {{sec-cs-params-ex}}.
    
-* The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}). In case Observe {{RFC7641}} is used, this enables endpoints to keep an observation active beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}).
+* The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}).
+
+   In case Observe {{RFC7641}} is used, this enables endpoints to safely keep an observation active beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}). In particular, it ensures that every notification cryptographically matches with only one observation request, rather than with multiple ones that were protected with different key material but share the same 'request_kid' and 'request_piv' values.
 
 ### external_aad for Signing ### {#sec-cose-object-ext-aad-sign}
 
