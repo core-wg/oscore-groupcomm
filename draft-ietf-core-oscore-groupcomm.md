@@ -476,6 +476,26 @@ The Group Manager MUST NOT reassign a previously used Sender ID ('kid') with the
 
 Even when an endpoint joining a group is recognized as a current member of that group, e.g. through the ongoing secure communication association, the Group Manager MUST assign a new Sender ID different than the one currently used by the endpoint in the group, unless the group is rekeyed first and a new Gid value is established.
 
+{{fig-key-material-diagram}} overviews the different key material components, considering their relation and possible reusage across a group rekeying.
+
+~~~~~~~~~~~
+Components changed in lockstep            * Changing a kid does not
+    upon a group rekeying                   need changing the Group ID
++----------------------------+
+|                            |            * A kid is not reassigned
+| Master               Group |<--> kid1     under the same Group ID
+| Secret <---> o <--->  ID   |
+|              ^             |<--> kid2   * Upon changing the Group ID,
+|              |             |              every current kid should
+|              |             |<--> kid3     be preserved for efficient
+|              v             |              key rollover
+|         Master Salt        | ... ...   
+|         (optional)         |            * After changing Group ID, an
+|                            |              unused kid can be assigned
++----------------------------+
+~~~~~~~~~~~
+{: #fig-key-material-diagram title="Relations among key material components." artwork-align="center"}
+
 If required by the application (see {{ssec-sec-assumptions}}), it is RECOMMENDED to adopt a group key management scheme, and securely distribute a new value for the Gid and for the Master Secret parameter of the group's Security Context, before a new joining endpoint is added to the group or after a currently present endpoint leaves the group. This is necessary to preserve backward security and forward security in the group, if the application requires it.
 
 The specific approach used to distribute new group data is out of the scope of this document. However, it is RECOMMENDED that the Group Manager supports the distribution of the new Gid and Master Secret parameter to the group according to the Group Rekeying Process described in {{I-D.ietf-ace-key-groupcomm-oscore}}.
@@ -1407,6 +1427,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -10 to -11 ## {#sec-10-11}
 
 * Loss of Recipient Contexts due to their overflow.
+
+* Added diagram on key material components and their relation.
 
 * Distinction between anti-replay and freshness.
 
