@@ -566,8 +566,7 @@ aad_array = [
    algorithms : [alg_aead : int / tstr,
                  alg_countersign : int / tstr,       
                  par_countersign : [countersign_alg_capab,
-                                    countersign_key_type_capab],
-                 par_countersign_key : countersign_key_type_capab],
+                                    countersign_key_type_capab]],
    request_kid : bstr,
    request_piv : bstr,
    options : bstr,
@@ -587,12 +586,6 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
       - 'countersign_alg_capab' is the array of COSE capabilities for the countersignature algorithm indicated in 'alg_countersign'. This is the first element of the CBOR array Counter Signature Parameters from the Common Context.
 
       - 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type used by the countersignature algorithm indicated in 'alg_countersign'. This is the second element of the CBOR array Counter Signature Parameters from the Common Context.
-
-   - 'par_countersign_key', which specifies the parameters associated to the keys used with the countersignature algorithm indicated in 'alg_countersign'. These parameters are encoded as a CBOR array 'countersign_key_type_capab', whose exact structure and value depend on the value of 'alg_countersign'.
-   
-      In particular, 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type of the keys used with the countersignature algorithm. This is the second element of the CBOR array Counter Signature Parameters from the Common Context.<!--These are as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).-->
-
-      Examples of 'par_countersign_key' are in {{sec-cs-params-ex}}.
    
 * The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}).
 
@@ -611,8 +604,7 @@ aad_array = [
    algorithms : [alg_aead : int / tstr,
                  alg_countersign : int / tstr,
                  par_countersign : [countersign_alg_capab,
-                                    countersign_key_type_capab],
-                 par_countersign_key : countersign_key_type_capab],
+                                    countersign_key_type_capab]],
    request_kid : bstr,
    request_piv : bstr,
    options : bstr,
@@ -1371,7 +1363,7 @@ The table below provides examples of values for Counter Signature Parameters in 
 | Algorithm         | Signature Parameters                        |
 +-------------------+---------------------------------------------+
 |  (-8)   // EdDSA  | [1], [1, 6]  // 1: OKP ; 1: OKP, 6: Ed25519 |
-|  (-8)   // EdDSA  | [1], [1, 6]  // 1: OKP ; 1: OKP, 7: Ed448   |
+|  (-8)   // EdDSA  | [1], [1, 7]  // 1: OKP ; 1: OKP, 7: Ed448   |
 |  (-7)   // ES256  | [2], [2, 1]  // 2: EC2 ; 2: EC2, 1: P-256   |
 |  (-35)  // ES384  | [2], [2, 2]  // 2: EC2 ; 2: EC2, 2: P-384   |
 |  (-36)  // ES512  | [2], [2, 3]  // 2: EC2 ; 2: EC2, 3: P-512   |
@@ -1389,9 +1381,9 @@ The table below provides examples of values for Secret Derivation Parameters in 
 | Secret Derivation     | Example Values for Secret                  |
 | Algorithm             | Derivation Parameters                      |
 +-----------------------+--------------------------------------------+
-|  (-27)  // ECDH-SS    | [1], [1, 6]  // 1: OKP ; 1: OKP, 4: X25519 |
+|  (-27)  // ECDH-SS    | [1], [1, 4]  // 1: OKP ; 1: OKP, 4: X25519 |
 |         // + HKDF-256 |                                            |
-|  (-27)  // ECDH-SS    | [1], [1, 6]  // 1: OKP ; 1: OKP, 5: X448   |
+|  (-27)  // ECDH-SS    | [1], [1, 5]  // 1: OKP ; 1: OKP, 5: X448   |
 |         // + HKDF-256 |                                            |
 |  (-27)  // ECDH-SS    | [2], [2, 1]  // 2: EC2 ; 2: EC2, 1: P-256  |
 |         // + HKDF-256 |                                            |
@@ -1402,25 +1394,6 @@ The table below provides examples of values for Secret Derivation Parameters in 
 +-----------------------+--------------------------------------------+
 ~~~~~~~~~~~
 {: #fig-examples-counter-dh-parameters title="Examples of Secret Derivation Parameters" artwork-align="center"}
-
-The table below provides examples of values for the 'par_countersign_key' element of the 'algorithms' array used in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}), for different values of Counter Signature Algorithm.
-
-~~~~~~~~~~~
-+-------------------+---------------------------------+
-| Counter Signature | Example Values for              |
-| Algorithm         | 'par_countersign_key'           |
-+-------------------+---------------------------------+
-| (-8)    // EdDSA  | [1, 6]   // 1: OKP , 6: Ed25519 |
-| (-8)    // EdDSA  | [1, 6]   // 1: OKP , 7: Ed448   |
-| (-7)    // ES256  | [2, 1]   // 2: EC2 , 1: P-256   |
-| (-35)   // ES384  | [2, 2]   // 2: EC2 , 2: P-384   |     
-| (-36)   // ES512  | [2, 3]   // 2: EC2 , 3: P-512   |
-| (-37)   // PS256  | [3]      // 3: RSA              |
-| (-38)   // PS384  | [3]      // 3: RSA              |
-| (-39)   // PS512  | [3]      // 3: RSA              |
-+-------------------+---------------------------------+
-~~~~~~~~~~~
-{: #fig-examples-counter-signature-key-parameters title="Examples of 'par_countersign_key'" artwork-align="center"}
 
 # Document Updates # {#sec-document-updates}
 
@@ -1439,6 +1412,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Clearer cause-effect about reset of SSN.
 
 * The GM provides public keys of group members with associated Sender IDs.
+
+* Removed 'par_countersign_key' from the external_aad.
 
 * Presence of 'kid' in responses to requests protected with the pairwise mode.
 
