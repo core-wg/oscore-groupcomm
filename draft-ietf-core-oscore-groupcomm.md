@@ -261,6 +261,8 @@ This parameter is a CBOR array including the following two elements, whose exact
    
 Examples of Counter Signature Parameters are in {{sec-cs-params-ex}}.
    
+This format is consistent with every counter signature algorithm currently considered in {{I-D.ietf-cose-rfc8152bis-algs}}, i.e. with algorithms that have only the COSE key type as their COSE capability. {{sec-future-cose-algs}} describes how Counter Signature Parameters can be generalized for possible future registered algorithms having a different set of COSE capabilities.
+   
 ### Secret Derivation Algorithm ## {#ssec-common-context-dh-alg}
 
 Secret Derivation Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
@@ -280,6 +282,8 @@ This parameter is a CBOR array including the following two elements, whose exact
 * The second element is the array of COSE capabilities for the COSE key type associated to Secret Derivation Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
    
 Examples of Secret Derivation Parameters are in {{sec-cs-params-ex}}.
+
+This format is consistent with every elliptic curve Diffie-Hellman algorithm currently considered in {{I-D.ietf-cose-rfc8152bis-algs}}, i.e. with algorithms that have only the COSE key type as their COSE capability. {{sec-future-cose-algs}} describes how Secret Derivation Parameters can be generalized for possible future registered algorithms having a different set of COSE capabilities.
 
 ## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
@@ -586,6 +590,8 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
       - 'countersign_alg_capab' is the array of COSE capabilities for the countersignature algorithm indicated in 'alg_countersign'. This is the first element of the CBOR array Counter Signature Parameters from the Common Context.
 
       - 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type used by the countersignature algorithm indicated in 'alg_countersign'. This is the second element of the CBOR array Counter Signature Parameters from the Common Context.
+   
+      This format is consistent with every counter signature algorithm currently considered in {{I-D.ietf-cose-rfc8152bis-algs}}, i.e. with algorithms that have only the COSE key type as their COSE capability. {{sec-future-cose-algs}} describes how 'par_countersign' can be generalized for possible future registered algorithms having a different set of COSE capabilities.
    
 * The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}).
 
@@ -1395,6 +1401,72 @@ The table below provides examples of values for Secret Derivation Parameters in 
 ~~~~~~~~~~~
 {: #fig-examples-counter-dh-parameters title="Examples of Secret Derivation Parameters" artwork-align="center"}
 
+# Parameter Extensibility for Future COSE Algorithms # {#sec-future-cose-algs}
+
+As defined in Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}, future algorithms can be registered in the "COSE Algorithms" Registry {{COSE.Algorithms}} as specifying none or multiple COSE capabilities.
+
+To enable the seamless use of such future registered algorithms, this section defines a general, agile format for parameters of the Security Context (see {{ssec-common-context-cs-params}} and {{ssec-common-context-dh-params}}) and for related elements of the external_aad structure (see {{sec-cose-object-ext-aad-enc}}).
+
+If any currently registered algorithm is considered, using this general format yields the same structure defined in this document for the items listed above, hence ensuring retro-compatibility.
+
+## Counter Signature Parameters ## {#sec-future-cose-algs-csp}
+
+The defition of Counter Signature Parameters in the Common Context (see {{ssec-common-context-cs-params}}) is generalized as follows.
+
+Counter Signature Parameters is a CBOR array CS_PARAMS including N+1 elements, whose exact structure and value depend on the value of Counter Signature Algorithm.
+
+* The first element, i.e. CS_PARAMS\[0\], is the array of the N COSE capabilities for Counter Signature Algorithm, as specified for that algorithm in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}} (see Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}).
+
+* Each following element CS_PARAMS\[i\], i.e. with index i > 0, is the array of COSE capabilities for the algorithm capability specified in CS_PARAMS\[0\]\[i-1\].
+
+   For example, if CS_PARAMS\[0\]\[0\] specifies the key type as capability of the algorithm, then CS_PARAMS\[1\] is the array of COSE capabilities for the COSE key type associated to Counter Signature Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
+
+## Secret Derivation Parameters ## {#sec-future-cose-algs-sdp}
+
+The defition of Secret Derivation Parameters in the Common Context (see {{ssec-common-context-dh-params}}) is generalized as follows.
+
+Secret Derivation Parameters is a CBOR array SD_PARAMS including N+1 elements, whose exact structure and value depend on the value of Secret Derivation Algorithm.
+
+* The first element, i.e. SD_PARAMS\[0\], is the array of the N COSE capabilities for Secret Derivation Algorithm, as specified for that algorithm in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}} (see Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}).
+
+* Each following element SD_PARAMS\[i\], i.e. with index i > 0, is the array of COSE capabilities for the algorithm capability specified in SD_PARAMS\[0\]\[i-1\].
+
+   For example, if SD_PARAMS\[0\]\[0\] specifies the key type as capability of the algorithm, then SD_PARAMS\[1\] is the array of COSE capabilities for the COSE key type associated to Secret Derivation Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
+   
+## 'par_countersign' in the external_aad ## {#sec-future-cose-algs-aad}
+
+The definition of the 'par_countersign' element in the 'algorithms' array of the external_aad (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}) is generalized as follows. While the following refers to the external_aad for encryption, the same applies also to the external_aad for signing.
+
+The 'par_countersign' element takes the CBOR array CS_PARAMS specified by Counter Signature Parameters in the Common Context (see {{ssec-common-context-cs-params}}), considering the format generalization in {{sec-future-cose-algs}}. In particular:
+
+- The first element 'countersign_alg_capab' is the array of COSE capabilities for the countersignature algorithm indicated in 'alg_countersign'. This is CS_PARAMS\[0\], i.e. the first element of the CBOR array CS_PARAMS specified by Counter Signature Parameters in the Common Context.
+
+- Each following element 'countersign_capab_i' (i = 1, ..., N) is the array of COSE capabilities for the algorithm capability specified in 'countersign_alg_capab'\[i-1\]. This is the element CS_PARAMS\[0\]\[i-1\] of the CBOR array CS_PARAMS specified by Counter Signature Parameters in the Common Context.
+
+   For example, if 'countersign_alg_capab'\[i-1\] specifies the key type as capability of the algorithm, then 'countersign_capab_i' is the array of COSE capabilities for the COSE key type associated to Counter Signature Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
+
+~~~~~~~~~~~ CDDL
+external_aad = bstr .cbor aad_array
+
+aad_array = [
+   oscore_version : uint,
+   algorithms : [alg_aead : int / tstr,
+                 alg_countersign : int / tstr,       
+                 par_countersign : [countersign_alg_capab,
+                                    countersign_capab_1,
+                                    countersign_capab_2,
+                                    ...,
+                                    countersign__capab_N]],
+   request_kid : bstr,
+   request_piv : bstr,
+   options : bstr,
+   request_kid_context : bstr
+]
+
+countersign_alg_capab : [c_1 : any, c_2 : any, ..., c_N : any]
+~~~~~~~~~~~
+{: #fig-ext-aad-general title="external_aad for Encryption, with general 'par_countersign'" artwork-align="center"}
+   
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
@@ -1432,6 +1504,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Usage of the pairwise mode for multicast requests.
 
 * Clarifications on synchronization using the Echo option.
+
+* General format of context parameters and external_aad elements, supporting future registered COSE algorithms (new Appendix).
 
 * Fixes and editorial improvements.
 
