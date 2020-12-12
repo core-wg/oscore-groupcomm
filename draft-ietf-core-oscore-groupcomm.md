@@ -555,7 +555,7 @@ When protecting a message in group mode, the 'unprotected' field MUST additional
 
 * COSE_CounterSignature0: its value is set to the counter signature of the COSE object, computed by the sender as described in Sections 3.2 and 3.3 of {{I-D.ietf-cose-countersign}}, by using its private key and according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context.
 
-   In particular, the Countersign_structure contains the context text string "CounterSignature0", the external_aad as defined in {{sec-cose-object-ext-aad-sign}} of this specification, and the ciphertext of the COSE object as payload.
+   In particular, the Countersign_structure contains the context text string "CounterSignature0", the external_aad as defined in {{sec-cose-object-ext-aad}} of this specification, and the ciphertext of the COSE object as payload.
 
 ## The 'kid' and 'kid context' parameters # {#sec-cose-object-kid}
 
@@ -565,11 +565,11 @@ The value of the 'kid context' parameter in the 'unprotected' field of requests 
 
 ## external_aad # {#sec-cose-object-ext-aad}
 
-The external_aad of the Additional Authenticated Data (AAD) is different compared to OSCORE. In particular, there is one external_aad used for encryption (both in group mode and pairwise mode), and another external_aad used for signing (only in group mode).
+The external_aad of the Additional Authenticated Data (AAD) is different compared to OSCORE, and is defined in this section.
 
-### external_aad for Encryption ### {#sec-cose-object-ext-aad-enc}
+The same external_aad structure is used in group mode and pairwise mode for encryption (see Section 5.3 of {{I-D.ietf-cose-rfc8152bis-struct}}), as well as in group mode for signing (see Section 4.4 of {{I-D.ietf-cose-rfc8152bis-struct}}).
 
-The external_aad for encryption (see Section 4.3 of {{I-D.ietf-cose-rfc8152bis-struct}}), used both in group mode and pairwise mode, includes also the counter signature algorithm and related signature parameters, as well as the value of the 'kid context' in the COSE object of the request (see {{fig-ext-aad-encryption}}).
+In particular, the external_aad includes also the counter signature algorithm and related signature parameters, the value of the 'kid context' in the COSE object of the request, and the OSCORE option of the protected message.
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
@@ -577,16 +577,17 @@ external_aad = bstr .cbor aad_array
 aad_array = [
    oscore_version : uint,
    algorithms : [alg_aead : int / tstr,
-                 alg_countersign : int / tstr,       
+                 alg_countersign : int / tstr,
                  par_countersign : [countersign_alg_capab,
                                     countersign_key_type_capab]],
    request_kid : bstr,
    request_piv : bstr,
    options : bstr,
-   request_kid_context : bstr
+   request_kid_context : bstr,
+   OSCORE_option: bstr
 ]
 ~~~~~~~~~~~
-{: #fig-ext-aad-encryption title="external_aad for Encryption" artwork-align="center"}
+{: #fig-ext-aad title="external_aad" artwork-align="center"}
 
 Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differences.
 
@@ -606,39 +607,9 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
 
    In case Observe {{RFC7641}} is used, this enables endpoints to safely keep an observation active beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}). In particular, it ensures that every notification cryptographically matches with only one observation request, rather than with multiple ones that were protected with different key material but share the same 'request_kid' and 'request_piv' values.
 
-### external_aad for Signing ### {#sec-cose-object-ext-aad-sign}
+* The new element 'OSCORE_option', containing the value of the OSCORE Option present in the protected message, encoded as a binary string. This prevents the attack described in {{ssec-cross-group-injection}} when using the group mode, as further explained  in {{sssec-cross-group-injection-group-mode}}. 
 
-The external_aad for signing (see Section 4.3 of {{I-D.ietf-cose-rfc8152bis-struct}}) used in group mode is identical to the external_aad for encryption (see {{sec-cose-object-ext-aad-enc}}) with the addition of the OSCORE option (see {{fig-ext-aad-signing}}).
-
-
-~~~~~~~~~~~ CDDL
-external_aad = bstr .cbor aad_array
-
-aad_array = [
-   oscore_version : uint,
-   algorithms : [alg_aead : int / tstr,
-                 alg_countersign : int / tstr,
-                 par_countersign : [countersign_alg_capab,
-                                    countersign_key_type_capab]],
-   request_kid : bstr,
-   request_piv : bstr,
-   options : bstr,
-   request_kid_context : bstr,
-   OSCORE_option: bstr
-]
-~~~~~~~~~~~
-{: #fig-ext-aad-signing title="external_aad for Signing" artwork-align="center"}
-
-Compared with Section 5.4 of {{RFC8613}} the aad_array additionally includes:
-
-* the 'algorithms' array, as defined in the external_aad for encryption (see {{sec-cose-object-ext-aad-enc}});
-
-* the 'request_kid_context' element, as defined in the external_aad for encryption (see {{sec-cose-object-ext-aad-enc}});
-
-* the 'OSCORE_option' element, containing the value of the OSCORE Option present in the protected message, encoded as a binary string. This prevents the attack described in {{ssec-cross-group-injection}} when using the group mode, as further explained  in {{sssec-cross-group-injection-group-mode}}. 
-
-Note for implementation: this construction requires the OSCORE option of the message to be generated before calculating the signature. Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
-
+   Note for implementation: this construction requires the OSCORE option of the message to be generated and finalized before computing the ciphertext of the COSE_Encrypt0 object (when using the group mode or the pairwise mode) and before calculating the counter signature (when using the group mode). Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
 
 # OSCORE Header Compression {#compression}
 
@@ -882,9 +853,9 @@ Note that the server always protects a response with the Sender Context from its
 
 If Observe {{RFC7641}} is supported, the following holds when protecting notifications for an ongoing observation.
 
-* The server MUST use the stored value of the 'kid' parameter from the original Observe request (see {{ssec-verify-request-observe}}), as value for the 'request\_kid' parameter in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}).
+* The server MUST use the stored value of the 'kid' parameter from the original Observe request (see {{ssec-verify-request-observe}}), as value for the 'request\_kid' parameter in the external\_aad structure (see {{sec-cose-object-ext-aad}}).
 
-* The server MUST use the stored value of the 'kid context' parameter from the original Observe request (see {{ssec-verify-request-observe}}), as value for the 'request\_kid\_context' parameter in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}).
+* The server MUST use the stored value of the 'kid context' parameter from the original Observe request (see {{ssec-verify-request-observe}}), as value for the 'request\_kid\_context' parameter in the external\_aad structure (see {{sec-cose-object-ext-aad}}).
 
 Furthermore, the server may have ongoing observations started by Observe requests protected with an old Security Context. After completing the establishment of a new Security Context, the server MUST protect the following notifications with the Sender Context of the new Security Context.
 
@@ -911,9 +882,9 @@ Note that a client may receive a response protected with a Security Context diff
 
 If Observe {{RFC7641}} is supported, the following holds when verifying notifications for an ongoing observation.
 
-* The client MUST use the stored value of the 'kid' parameter from the original Observe request (see {{ssec-protect-request-observe}}), as value for the 'request\_kid' parameter in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}).
+* The client MUST use the stored value of the 'kid' parameter from the original Observe request (see {{ssec-protect-request-observe}}), as value for the 'request\_kid' parameter in the external\_aad structure (see {{sec-cose-object-ext-aad}}).
 
-* The client MUST use the stored value of the 'kid context' parameter from the original Observe request (see {{ssec-protect-request-observe}}), as value for the 'request\_kid\_context' parameter in the two external\_aad structures (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}).
+* The client MUST use the stored value of the 'kid context' parameter from the original Observe request (see {{ssec-protect-request-observe}}), as value for the 'request\_kid\_context' parameter in the external\_aad structure (see {{sec-cose-object-ext-aad}}).
 
 This ensures that the client can correctly verify notifications, even in case it is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}), as well as when it establishes a new Security Context with a new ID Context (Gid) following a group rekeying (see {{sec-group-key-management}}).
 
@@ -949,7 +920,7 @@ The pairwise mode protects messages between two members of a group, essentially 
 
 * The 'kid' and 'kid context' parameters of the COSE object are used as defined in {{sec-cose-object-kid}} of this document.
 
-* The external_aad defined in {{sec-cose-object-ext-aad-enc}} of this document is used for the encryption process.
+* The external_aad defined in {{sec-cose-object-ext-aad}} of this document is used for the encryption process.
 
 * The Pairwise Sender/Recipient Keys used as Sender/Recipient keys are derived as defined in {{sec-derivation-pairwise}} of this document.
 
@@ -1080,7 +1051,7 @@ When a sender endpoint sends a message protected in pairwise mode to a recipient
 
 This practically relies on altering the content of the OSCORE option, and having the same MAC in the ciphertext still correctly validating, which has a success probability depending on the size of the MAC.
 
-As discussed in {{sssec-cross-group-injection-group-mode}}, the attack is practically infeasible if the message is protected in group mode, since the counter signature is bound also to the OSCORE option, through the Additional Authenticated Data used in the signing process (see {{sec-cose-object-ext-aad-sign}}).
+As discussed in {{sssec-cross-group-injection-group-mode}}, the attack is practically infeasible if the message is protected in group mode, since the counter signature is bound also to the OSCORE option, through the Additional Authenticated Data used in the signing process (see {{sec-cose-object-ext-aad}}).
 
 ### Attack Description {#ssec-cross-group-injection-attack}
 
@@ -1104,7 +1075,7 @@ Note that Z does not know the pairwise keys of X and Y, since it does not know a
 
 ### Attack Prevention in Group Mode {#sssec-cross-group-injection-group-mode}
 
-When a Group OSCORE message is protected with the group mode, the counter signature is computed also over the value of the OSCORE option, which is part of the Additional Authenticated Data used in the signing process (see {{sec-cose-object-ext-aad-sign}}).
+When a Group OSCORE message is protected with the group mode, the counter signature is computed also over the value of the OSCORE option, which is part of the Additional Authenticated Data used in the signing process (see {{sec-cose-object-ext-aad}}).
 
 That is, the countersignature is computed also over: the ID Context (Group ID) and the Partial IV, which are always present in group requests; as well as the Sender ID of the message originator, which is always present in all group requests and responses.
 
@@ -1414,7 +1385,7 @@ The table below provides examples of values for Secret Derivation Parameters in 
 
 As defined in Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}, future algorithms can be registered in the "COSE Algorithms" Registry {{COSE.Algorithms}} as specifying none or multiple COSE capabilities.
 
-To enable the seamless use of such future registered algorithms, this section defines a general, agile format for parameters of the Security Context (see {{ssec-common-context-cs-params}} and {{ssec-common-context-dh-params}}) and for related elements of the external_aad structure (see {{sec-cose-object-ext-aad-enc}}).
+To enable the seamless use of such future registered algorithms, this section defines a general, agile format for parameters of the Security Context (see {{ssec-common-context-cs-params}} and {{ssec-common-context-dh-params}}) and for related elements of the external_aad structure (see {{sec-cose-object-ext-aad}}).
 
 If any currently registered algorithm is considered, using this general format yields the same structure defined in this document for the items listed above, hence ensuring retro-compatibility.
 
@@ -1444,7 +1415,7 @@ Secret Derivation Parameters is a CBOR array SD_PARAMS including N+1 elements, w
    
 ## 'par_countersign' in the external_aad ## {#sec-future-cose-algs-aad}
 
-The definition of the 'par_countersign' element in the 'algorithms' array of the external_aad (see {{sec-cose-object-ext-aad-enc}} and {{sec-cose-object-ext-aad-sign}}) is generalized as follows. While the following refers to the external_aad for encryption, the same applies also to the external_aad for signing.
+The definition of the 'par_countersign' element in the 'algorithms' array of the external_aad structure (see {{sec-cose-object-ext-aad}}) is generalized as follows.
 
 The 'par_countersign' element takes the CBOR array CS_PARAMS specified by Counter Signature Parameters in the Common Context (see {{ssec-common-context-cs-params}}), considering the format generalization in {{sec-future-cose-algs}}. In particular:
 
@@ -1469,12 +1440,13 @@ aad_array = [
    request_kid : bstr,
    request_piv : bstr,
    options : bstr,
-   request_kid_context : bstr
+   request_kid_context : bstr,
+   OSCORE_option: bstr
 ]
 
 countersign_alg_capab : [c_1 : any, c_2 : any, ..., c_N : any]
 ~~~~~~~~~~~
-{: #fig-ext-aad-general title="external_aad for Encryption, with general 'par_countersign'" artwork-align="center"}
+{: #fig-ext-aad-general title="external_aad with general 'par_countersign'" artwork-align="center"}
    
 # Document Updates # {#sec-document-updates}
 
@@ -1495,6 +1467,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * The GM provides public keys of group members with associated Sender IDs.
 
 * Removed 'par_countersign_key' from the external_aad.
+
+* One single format for the external_aad, both for encryption and signing.
 
 * Presence of 'kid' in responses to requests protected with the pairwise mode.
 
