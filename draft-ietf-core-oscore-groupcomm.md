@@ -942,7 +942,11 @@ Upon receiving a request with the Group Flag set to 0, following the procedure i
 
 ## Protecting the Response {#sec-pairwise-protection-resp}
 
-When using the pairwise mode, a response is protected as defined in Section 8.3 of {{RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following difference also applies.
+When using the pairwise mode, a response is protected as defined in Section 8.3 of {{RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following differences also apply.
+
+* As discussed in {{new-sender-id}}, the server can obtain a new Sender ID from the Group Manager. In such a case, the server can help the client to synchronize, by including the 'kid' parameter in a response protected in pairwise mode, even when the request was also protected in pairwise mode.
+
+   That is, when responding to a request protected in pairwise mode, the server SHOULD include the 'kid' parameter in a response protected in pairwise mode, if it is replying to that cient for the first time since the assignment of the new Sender ID.
 
 * If Observe {{RFC7641}} is supported, what defined in {{ssec-protect-response-observe}} of this document holds.
 
