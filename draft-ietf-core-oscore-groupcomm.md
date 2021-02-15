@@ -1357,7 +1357,7 @@ The table below provides examples of values for Counter Signature Parameters in 
 |  (-8)   // EdDSA  | [1], [1, 7]  // 1: OKP ; 1: OKP, 7: Ed448   |
 |  (-7)   // ES256  | [2], [2, 1]  // 2: EC2 ; 2: EC2, 1: P-256   |
 |  (-35)  // ES384  | [2], [2, 2]  // 2: EC2 ; 2: EC2, 2: P-384   |
-|  (-36)  // ES512  | [2], [2, 3]  // 2: EC2 ; 2: EC2, 3: P-512   |
+|  (-36)  // ES512  | [2], [2, 3]  // 2: EC2 ; 2: EC2, 3: P-521   |
 |  (-37)  // PS256  | [3], [3]     // 3: RSA ; 3: RSA             |
 |  (-38)  // PS384  | [3], [3]     // 3: RSA ; 3: RSA             |
 |  (-39)  // PS512  | [3], [3]     // 3: RSA ; 3: RSA             |
