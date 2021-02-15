@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 7 July 2021                                        F. Palombini
+Expires: 19 August 2021                                     F. Palombini
                                                              J. Mattsson
                                                              Ericsson AB
                                                                  J. Park
                                              Universitaet Duisburg-Essen
-                                                          3 January 2021
+                                                        15 February 2021
 
 
            Group OSCORE - Secure Group Communication for CoAP
@@ -41,7 +41,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 July 2021.
+   This Internet-Draft will expire on 19 August 2021.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Tiloca, et al.             Expires 7 July 2021                  [Page 1]
+Tiloca, et al.           Expires 19 August 2021                 [Page 1]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Tiloca, et al.             Expires 7 July 2021                  [Page 2]
+Tiloca, et al.           Expires 19 August 2021                 [Page 2]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
      8.2.  Verifying the Request . . . . . . . . . . . . . . . . . .  33
@@ -165,9 +165,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                  [Page 3]
+Tiloca, et al.           Expires 19 August 2021                 [Page 3]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    Appendix H.  Parameter Extensibility for Future COSE
@@ -221,9 +221,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                  [Page 4]
+Tiloca, et al.           Expires 19 August 2021                 [Page 4]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    This document defines Group OSCORE, providing the same end-to-end
@@ -277,9 +277,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                  [Page 5]
+Tiloca, et al.           Expires 19 August 2021                 [Page 5]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    A special deployment of Group OSCORE is to use pairwise mode only.
@@ -333,9 +333,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                  [Page 6]
+Tiloca, et al.           Expires 19 August 2021                 [Page 6]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  Group: a set of endpoints that share group keying material and
@@ -389,9 +389,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                  [Page 7]
+Tiloca, et al.           Expires 19 August 2021                 [Page 7]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  One Common Context, shared by all the endpoints in the group.  Two
@@ -445,9 +445,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                  [Page 8]
+Tiloca, et al.           Expires 19 August 2021                 [Page 8]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    Further details about the Security Context of Group OSCORE are
@@ -501,9 +501,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                  [Page 9]
+Tiloca, et al.           Expires 19 August 2021                 [Page 9]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 2.1.3.  Counter Signature Parameters
@@ -557,9 +557,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 10]
+Tiloca, et al.           Expires 19 August 2021                [Page 10]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    For endpoints that support the pairwise mode, the ECDH-SS + HKDF-256
@@ -613,9 +613,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 11]
+Tiloca, et al.           Expires 19 August 2021                [Page 11]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    For Group OSCORE, the Sender Context and Recipient Context
@@ -669,9 +669,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 12]
+Tiloca, et al.           Expires 19 August 2021                [Page 12]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 2.3.1.  Derivation of Pairwise Keys
@@ -725,9 +725,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 13]
+Tiloca, et al.           Expires 19 August 2021                [Page 13]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    As long as any two group members preserve the same asymmetric keys,
@@ -781,9 +781,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 14]
+Tiloca, et al.           Expires 19 August 2021                [Page 14]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 2.4.  Update of Security Context
@@ -837,9 +837,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 15]
+Tiloca, et al.           Expires 19 August 2021                [Page 15]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    From then on, the endpoint MUST use the latest installed Sender
@@ -893,9 +893,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 16]
+Tiloca, et al.           Expires 19 August 2021                [Page 16]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    Implementations MUST be able to detect an exhaustion of Sender
@@ -949,9 +949,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 17]
+Tiloca, et al.           Expires 19 August 2021                [Page 17]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 2.4.3.1.  New Sender ID for the Endpoint
@@ -1005,9 +1005,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 18]
+Tiloca, et al.           Expires 19 August 2021                [Page 18]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
       -  It re-derives the keying material stored in its Sender Context
@@ -1061,9 +1061,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 19]
+Tiloca, et al.           Expires 19 August 2021                [Page 19]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    It is RECOMMENDED to use a Group Manager as described in
@@ -1117,9 +1117,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 20]
+Tiloca, et al.           Expires 19 August 2021                [Page 20]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 3.1.  Management of Group Keying Material
@@ -1173,9 +1173,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 21]
+Tiloca, et al.           Expires 19 August 2021                [Page 21]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    If required by the application (see Appendix A.1), it is RECOMMENDED
@@ -1229,9 +1229,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 22]
+Tiloca, et al.           Expires 19 August 2021                [Page 22]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    8.   Renewing the Security Context of an OSCORE group upon membership
@@ -1285,9 +1285,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 23]
+Tiloca, et al.           Expires 19 August 2021                [Page 23]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 4.2.  The 'kid' and 'kid context' parameters
@@ -1341,9 +1341,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 24]
+Tiloca, et al.           Expires 19 August 2021                [Page 24]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  The 'algorithms' array additionally includes:
@@ -1397,9 +1397,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 25]
+Tiloca, et al.           Expires 19 August 2021                [Page 25]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
       Note for implementation: this construction requires the OSCORE
@@ -1453,9 +1453,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 26]
+Tiloca, et al.           Expires 19 August 2021                [Page 26]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    The examples assume that the plaintext (see Section 5.3 of [RFC8613])
@@ -1509,9 +1509,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 27]
+Tiloca, et al.           Expires 19 August 2021                [Page 27]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 5.1.2.  Examples in Pairwise Mode
@@ -1565,9 +1565,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 28]
+Tiloca, et al.           Expires 19 August 2021                [Page 28]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 6.1.  Update of Replay Window
@@ -1621,9 +1621,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 29]
+Tiloca, et al.           Expires 19 August 2021                [Page 29]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 7.  Message Reception
@@ -1677,9 +1677,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 30]
+Tiloca, et al.           Expires 19 August 2021                [Page 30]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 8.  Message Processing in Group Mode
@@ -1733,9 +1733,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 31]
+Tiloca, et al.           Expires 19 August 2021                [Page 31]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  In step 2, the Additional Authenticated Data is modified as
@@ -1789,9 +1789,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 32]
+Tiloca, et al.           Expires 19 August 2021                [Page 32]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
          After a group rekeying, such an invariant information makes it
@@ -1845,9 +1845,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 33]
+Tiloca, et al.           Expires 19 August 2021                [Page 33]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
       -  If the signature verification fails, the server SHALL stop
@@ -1901,9 +1901,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 34]
+Tiloca, et al.           Expires 19 August 2021                [Page 34]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    Note that the server always protects a response with the Sender
@@ -1957,9 +1957,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 35]
+Tiloca, et al.           Expires 19 August 2021                [Page 35]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    Furthermore, the server may have ongoing observations started by
@@ -2013,9 +2013,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 36]
+Tiloca, et al.           Expires 19 August 2021                [Page 36]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  In step 5, the client also verifies the counter signature using
@@ -2069,9 +2069,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 37]
+Tiloca, et al.           Expires 19 August 2021                [Page 37]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    The pairwise mode does not support the use of additional entities
@@ -2125,9 +2125,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 38]
+Tiloca, et al.           Expires 19 August 2021                [Page 38]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    To make addressing information of individual endpoints available,
@@ -2181,9 +2181,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 39]
+Tiloca, et al.           Expires 19 August 2021                [Page 39]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  If a new Recipient Context is created for this Recipient ID, new
@@ -2237,9 +2237,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 40]
+Tiloca, et al.           Expires 19 August 2021                [Page 40]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 10.  Security Considerations
@@ -2293,9 +2293,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 41]
+Tiloca, et al.           Expires 19 August 2021                [Page 41]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  The AEAD algorithm provides only group authentication, i.e. it
@@ -2349,9 +2349,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 42]
+Tiloca, et al.           Expires 19 August 2021                [Page 42]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  The case A in Appendix D.4 of [RFC8613] concerns all group
@@ -2405,9 +2405,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 43]
+Tiloca, et al.           Expires 19 August 2021                [Page 43]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    potential response using the new Security Context.  Specifically, the
@@ -2461,9 +2461,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 44]
+Tiloca, et al.           Expires 19 August 2021                [Page 44]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 10.4.2.  Late Update on the Recipient
@@ -2517,9 +2517,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 45]
+Tiloca, et al.           Expires 19 August 2021                [Page 45]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    As discussed in Section 10.6.2, the attack is practically infeasible
@@ -2573,9 +2573,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 46]
+Tiloca, et al.           Expires 19 August 2021                [Page 46]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 10.6.2.  Attack Prevention in Group Mode
@@ -2629,9 +2629,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 47]
+Tiloca, et al.           Expires 19 August 2021                [Page 47]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 10.7.  Group OSCORE for Unicast Requests
@@ -2685,9 +2685,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 48]
+Tiloca, et al.           Expires 19 August 2021                [Page 48]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    A client can instead use the pairwise mode as defined in Section 9.3,
@@ -2741,9 +2741,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 49]
+Tiloca, et al.           Expires 19 August 2021                [Page 49]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    With particular reference to the OSCORE Master Secret, it has to be
@@ -2797,9 +2797,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 50]
+Tiloca, et al.           Expires 19 August 2021                [Page 50]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 10.12.  Client Aliveness
@@ -2853,9 +2853,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 51]
+Tiloca, et al.           Expires 19 August 2021                [Page 51]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    The derivation of pairwise keys defined in Section 2.3.1 is
@@ -2909,9 +2909,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 52]
+Tiloca, et al.           Expires 19 August 2021                [Page 52]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    Furthermore, using the mechanisms described in Appendix E to achieve
@@ -2965,9 +2965,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 53]
+Tiloca, et al.           Expires 19 August 2021                [Page 53]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    [COSE.Key.Types]
@@ -3021,9 +3021,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 54]
+Tiloca, et al.           Expires 19 August 2021                [Page 54]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    [RFC4086]  Eastlake 3rd, D., Schiller, J., and S. Crocker,
@@ -3077,9 +3077,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 55]
+Tiloca, et al.           Expires 19 August 2021                [Page 55]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    [I-D.ietf-ace-key-groupcomm-oscore]
@@ -3123,8 +3123,8 @@ Internet-Draft                Group OSCORE                  January 2021
               Rescorla, E., Tschofenig, H., and N. Modadugu, "The
               Datagram Transport Layer Security (DTLS) Protocol Version
               1.3", Work in Progress, Internet-Draft, draft-ietf-tls-
-              dtls13-39, 2 November 2020, <http://www.ietf.org/internet-
-              drafts/draft-ietf-tls-dtls13-39.txt>.
+              dtls13-40, 20 January 2021, <http://www.ietf.org/internet-
+              drafts/draft-ietf-tls-dtls13-40.txt>.
 
    [I-D.mattsson-cfrg-det-sigs-with-noise]
               Mattsson, J., Thormarker, E., and S. Ruohomaa,
@@ -3133,9 +3133,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 56]
+Tiloca, et al.           Expires 19 August 2021                [Page 56]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
               mattsson-cfrg-det-sigs-with-noise-02, 11 March 2020,
@@ -3189,9 +3189,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 57]
+Tiloca, et al.           Expires 19 August 2021                [Page 57]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    [RFC7959]  Bormann, C. and Z. Shelby, Ed., "Block-Wise Transfers in
@@ -3245,9 +3245,9 @@ A.1.  Assumptions
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 58]
+Tiloca, et al.           Expires 19 August 2021                [Page 58]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
       In a 1-to-N communication model, only a single client transmits
@@ -3301,9 +3301,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 59]
+Tiloca, et al.           Expires 19 August 2021                [Page 59]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  Backward security: a new device joining the security group should
@@ -3357,9 +3357,9 @@ A.2.  Security Objectives
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 60]
+Tiloca, et al.           Expires 19 August 2021                [Page 60]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  Source message authentication: messages sent within the security
@@ -3413,9 +3413,9 @@ Appendix B.  List of Use Cases
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 61]
+Tiloca, et al.           Expires 19 August 2021                [Page 61]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
       for instance, by means of IPv6 and (border) routers supporting
@@ -3469,9 +3469,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 62]
+Tiloca, et al.           Expires 19 August 2021                [Page 62]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
       that they detect tampering hereof only after all data has been
@@ -3525,9 +3525,9 @@ Appendix C.  Example of Group Identifier Format
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 63]
+Tiloca, et al.           Expires 19 August 2021                [Page 63]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    The Group Epoch is set to 0 upon the group's initialization, and is
@@ -3581,9 +3581,9 @@ Appendix D.  Set-up of New Endpoints
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 64]
+Tiloca, et al.           Expires 19 August 2021                [Page 64]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    In case of successful authorization check, the Group Manager
@@ -3637,9 +3637,9 @@ Appendix E.  Challenge-Response Synchronization
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 65]
+Tiloca, et al.           Expires 19 August 2021                [Page 65]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    Upon receiving a 4.01 (Unauthorized) response that includes an Echo
@@ -3693,9 +3693,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 66]
+Tiloca, et al.           Expires 19 August 2021                [Page 66]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    If the verifications above are successful and the Replay Window has
@@ -3749,9 +3749,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 67]
+Tiloca, et al.           Expires 19 August 2021                [Page 67]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    Note that endpoints configured as silent servers are not able to
@@ -3805,9 +3805,9 @@ Appendix F.  No Verification of Signatures in Group Mode
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 68]
+Tiloca, et al.           Expires 19 August 2021                [Page 68]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    In this specification, it is NOT RECOMMENDED that endpoints do not
@@ -3842,7 +3842,7 @@ Appendix G.  Example Values with COSE Capabilities
     |  (-8)   // EdDSA  | [1], [1, 7]  // 1: OKP ; 1: OKP, 7: Ed448   |
     |  (-7)   // ES256  | [2], [2, 1]  // 2: EC2 ; 2: EC2, 1: P-256   |
     |  (-35)  // ES384  | [2], [2, 2]  // 2: EC2 ; 2: EC2, 2: P-384   |
-    |  (-36)  // ES512  | [2], [2, 3]  // 2: EC2 ; 2: EC2, 3: P-512   |
+    |  (-36)  // ES512  | [2], [2, 3]  // 2: EC2 ; 2: EC2, 3: P-521   |
     |  (-37)  // PS256  | [3], [3]     // 3: RSA ; 3: RSA             |
     |  (-38)  // PS384  | [3], [3]     // 3: RSA ; 3: RSA             |
     |  (-39)  // PS512  | [3], [3]     // 3: RSA ; 3: RSA             |
@@ -3861,9 +3861,9 @@ Appendix G.  Example Values with COSE Capabilities
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 69]
+Tiloca, et al.           Expires 19 August 2021                [Page 69]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
   +-----------------------+--------------------------------------------+
@@ -3917,9 +3917,9 @@ H.1.  Counter Signature Parameters
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 70]
+Tiloca, et al.           Expires 19 August 2021                [Page 70]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  Each following element CS_PARAMS[i], i.e. with index i > 0, is the
@@ -3973,9 +3973,9 @@ H.3.  'par_countersign' in the external_aad
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 71]
+Tiloca, et al.           Expires 19 August 2021                [Page 71]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    The 'par_countersign' element takes the CBOR array CS_PARAMS
@@ -4029,9 +4029,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 72]
+Tiloca, et al.           Expires 19 August 2021                [Page 72]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 Appendix I.  Document Updates
@@ -4085,9 +4085,9 @@ I.1.  Version -10 to -11
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 73]
+Tiloca, et al.           Expires 19 August 2021                [Page 73]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  Fixes and editorial improvements.
@@ -4141,9 +4141,9 @@ I.3.  Version -08 to -09
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 74]
+Tiloca, et al.           Expires 19 August 2021                [Page 74]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  Pairwise Flag bit renamed as Group Flag bit, set to 1 in group
@@ -4197,9 +4197,9 @@ I.4.  Version -07 to -08
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 75]
+Tiloca, et al.           Expires 19 August 2021                [Page 75]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  More generic exhaustion (not necessarily wrap-around) of sender
@@ -4253,9 +4253,9 @@ Internet-Draft                Group OSCORE                  January 2021
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 76]
+Tiloca, et al.           Expires 19 August 2021                [Page 76]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 I.5.  Version -06 to -07
@@ -4309,9 +4309,9 @@ I.6.  Version -05 to -06
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 77]
+Tiloca, et al.           Expires 19 August 2021                [Page 77]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  Additional considerations on public key retrieval and group
@@ -4365,9 +4365,9 @@ I.8.  Version -03 to -04
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 78]
+Tiloca, et al.           Expires 19 August 2021                [Page 78]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  Clarified non reliability of 'kid' as identity indicator for a
@@ -4421,9 +4421,9 @@ I.9.  Version -02 to -03
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 79]
+Tiloca, et al.           Expires 19 August 2021                [Page 79]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
    *  Clarifications about error handling in Section 6 "Message
@@ -4477,9 +4477,9 @@ I.10.  Version -01 to -02
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 80]
+Tiloca, et al.           Expires 19 August 2021                [Page 80]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 I.11.  Version -00 to -01
@@ -4533,9 +4533,9 @@ Acknowledgments
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 81]
+Tiloca, et al.           Expires 19 August 2021                [Page 81]
 
-Internet-Draft                Group OSCORE                  January 2021
+Internet-Draft                Group OSCORE                 February 2021
 
 
 Authors' Addresses
@@ -4589,4 +4589,4 @@ Authors' Addresses
 
 
 
-Tiloca, et al.             Expires 7 July 2021                 [Page 82]
+Tiloca, et al.           Expires 19 August 2021                [Page 82]
