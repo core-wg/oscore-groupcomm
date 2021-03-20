@@ -732,6 +732,14 @@ The examples assume that the plaintext (see Section 5.3 of {{RFC8613}}) is 6 byt
 
 The requirements and properties described in Section 7 of {{RFC8613}} also apply to Group OSCORE. In particular, Group OSCORE provides message binding of responses to requests, which enables absolute freshness of responses that are not notifications, relative freshness of requests and notification responses, and replay protection of requests. In addition, the following holds for Group OSCORE.
 
+## Support for Long-Term Observations # {#sec-long-term-observations}
+
+When Observe {{RFC7641}} is used, Group OSCORE allows to preserve a resource observation active indefinitely, even in case the group is rekeyed, with consequent change of ID Context, or in case the observer client obtains a new Sender ID.
+
+As defined in {{mess-processing}} when discussing support for Observe, this is achieved by the client and server(s) storing the 'kid' and 'kid context' used in the original Observe request, throughout the whole duration of the observation.
+
+Upon leaving the group or before re-joining the group, a group member MUST terminate all the ongoing observations that it has started in the group as observer client.
+
 ## Update of Replay Window # {#sec-synch-seq-num}
 
 Sender Sequence Numbers seen by a server as Partial IV values in request messages can spontaneously increase at a fast pace, for example when a client exchanges unicast messages with other servers using the Group OSCORE Security Context. As in OSCORE {{RFC8613}}, a server always needs to accept such increases and accordingly updates the Replay Window in each of its Recipient Contexts.
@@ -1456,6 +1464,10 @@ countersign_alg_capab : [c_1 : any, c_2 : any, ..., c_N : any]
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
+
+## Version -11 to -12 ## {#sec-11-12}
+
+* Termination of ongoing observations as client, upon leaving or before re-joining the group.
 
 ## Version -10 to -11 ## {#sec-10-11}
 
