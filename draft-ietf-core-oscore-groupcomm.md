@@ -419,7 +419,7 @@ Furthermore, applications MAY define policies to: i) delete (long-)unused Recipi
 
 #### New Sender ID for the Endpoint {#new-sender-id}
 
-The Group Manager may assign a new Sender ID to an endpoint, while leaving the Gid, Master Secret and Master Salt unchanged in the group. In this case, the Group Manager MUST assign a Sender ID that has never been used in the group since the latest time when the current Gid value was assigned to the group (see {{sec-group-key-management}}).
+The Group Manager may assign a new Sender ID to an endpoint, while leaving the Gid, Master Secret and Master Salt unchanged in the group. In this case, the Group Manager MUST assign a Sender ID that has not been used in the group since the latest time when the current Gid value was assigned to the group (see {{sec-group-key-management}}).
 
 Having retrieved the new Sender ID, and potentially other missing data of the immutable Security Context, the endpoint can derive a new Sender Context (see {{ssec-sender-recipient-context}}). When doing so, the endpoint resets the Sender Sequence Number in its Sender Context to 0, and derives a new Sender Key. This is in turn used to possibly derive new Pairwise Sender Keys.
 
