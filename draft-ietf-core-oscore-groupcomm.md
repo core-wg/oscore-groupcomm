@@ -484,7 +484,7 @@ Before distributing the new group keying material, the Group Manager MUST check 
 
 * The Group Manager MUST evict the elder members from the group. That is, the Group Manager MUST terminate their membership and MUST rekey the group in such a way that the new key material is not provided to those evicted elder members. This ensures that an Observe notification {{RFC7641}} can never successfully match against the Observe requests of two different observations.
 
-* Until the next group rekeying, the Group Manager MUST store the list of those latest-evicted elder members. If any of those nodes re-joins the group before the next group rekeying occurs, the Group Manager MUST NOT rekey the group upon their re-joining. When one of those nodes re-joins the group, the Group Manager can rely, e.g., on the ongoing secure communication association to recognize the node and match it against the stored list.
+* Until a further following group rekeying, the Group Manager MUST store the list of those latest-evicted elder members. If any of those nodes re-joins the group before a further following group rekeying occurs, the Group Manager MUST NOT rekey the group upon their re-joining. When one of those nodes re-joins the group, the Group Manager can rely, e.g., on the ongoing secure communication association to recognize the node as included in the stored list.
 
 Although the Gid value changes every time a group is rekeyed, the Group Manager can reassign a Gid to the same group over that group's lifetime. This would happen, for instance, once the whole space of Gid values has been used for the group in question.
 
