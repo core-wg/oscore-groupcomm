@@ -466,7 +466,7 @@ It is RECOMMENDED to use a Group Manager as described in {{I-D.ietf-ace-key-grou
 
 The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. Also, for each group, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. According to a hierarchical approach, the Gid value assigned to a group is associated to a dedicated space for the values of Sender ID and Recipient ID of the members of that group.
 
-When a node (re-)joins a group, it is provided also with the current Gid to use in the group, namely the Birth Gid of that node for that group. For each group member, the Group Manager MUST store the corresponding Birth Gid until that member leaves the group.
+When a node (re-)joins a group, it is provided also with the current Gid to use in the group, namely the Birth Gid of that node for that group. For each group member, the Group Manager MUST store the latest corresponding Birth Gid until that member leaves the group. In case the node has in fact re-joined the group, the newly determined Birth Gid overwrites one currently stored.
 
 In addition, the Group Manager maintains records of the public keys of endpoints in a group, and provides information about the group and its members to other group members and selected roles. Upon nodes' joining, the Group Manager collects such public keys and MUST verify proof-of-possession of the respective private key.
 
