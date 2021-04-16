@@ -317,8 +317,13 @@ Certain signature schemes, such as EdDSA and ECDSA, support a secure combined si
 Using the Group OSCORE Security Context (see {{sec-context}}), a group member can derive AEAD keys to protect point-to-point communication between itself and any other endpoint in the group. The same AEAD algorithm as in the group mode is used. The key derivation of these so-called pairwise keys follows the same construction as in Section 3.2.1 of {{RFC8613}}: 
 
 ~~~~~~~~~~~
-Pairwise Sender Key    = HKDF(Sender Key, Shared Secret, info, L)
-Pairwise Recipient Key = HKDF(Recipient Key, Shared Secret, info, L)
+Pairwise Sender Key    = HKDF(Sender Key, IKM-Sender, info, L)
+Pairwise Recipient Key = HKDF(Recipient Key, IKM-Recipient, info, L)
+
+where
+
+IKM-Sender = Sender Public Key || Recipient Public Key || Shared Secret
+IKM-Recipient = Recipient Public Key || Sender Public Key || Shared Secret
 ~~~~~~~~~~~
 
 where:
@@ -333,8 +338,12 @@ where:
 
 * The Recipient Key and the public key are from the Recipient Context associated to endpoint X. The Recipient Key is used as salt in the HKDF, when deriving the Pairwise Recipient Key.
  
-* The Shared Secret is computed as a static-static Diffie-Hellman shared secret {{NIST-800-56A}}, where the endpoint uses its private key and the public key of the other endpoint X. The Shared Secret is used as Input Keying Material (IKM) in the HKDF.
+* IKM-Sender - the Input Keying Material (IKM) used in HKDF for the derivation of the Pairwise Sender Key - is the concatenation of the endpoint's own public key, the other endpoint X's public key from the Recipient Context, and the Shared Secret
 
+* IKM-Recipient - the Input Keying Material (IKM) used in HKDF for the derivation of the Recipient Sender Key - is the concatenation of other endpoint X's public key from the Recipient Context, the endpoint's own public key, and the Shared Secret.
+
+* The Shared Secret is computed as a static-static Diffie-Hellman shared secret {{NIST-800-56A}}, where the endpoint uses its private key and the public key of the other endpoint X. For EdDSA, the procedure is described in Section 5 of {{RFC7748}}.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
 * info and L are as defined in Section 3.2.1 of {{RFC8613}}. 
 
 If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}.
