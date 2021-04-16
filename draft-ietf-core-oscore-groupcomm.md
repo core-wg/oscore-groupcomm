@@ -338,19 +338,34 @@ where:
 
 * The Recipient Key and the public key are from the Recipient Context associated to endpoint X. The Recipient Key is used as salt in the HKDF, when deriving the Pairwise Recipient Key.
  
-* IKM-Sender - the Input Keying Material (IKM) used in HKDF for the derivation of the Pairwise Sender Key - is the concatenation of the endpoint's own public key, the other endpoint X's public key from the Recipient Context, and the Shared Secret
+* IKM-Sender - the Input Keying Material (IKM) used in HKDF for the derivation of the Pairwise Sender Key - is the concatenation of the endpoint's own signature public key, endpoint X's signature public key from the Recipient Context, and the Shared Secret
 
-* IKM-Recipient - the Input Keying Material (IKM) used in HKDF for the derivation of the Recipient Sender Key - is the concatenation of other endpoint X's public key from the Recipient Context, the endpoint's own public key, and the Shared Secret.
+* IKM-Recipient - the Input Keying Material (IKM) used in HKDF for the derivation of the Recipient Sender Key - is the concatenation of endpoint X's signature public key from the Recipient Context, the endpoint's own signature public key, and the Shared Secret.
 
-* The Shared Secret is computed as a static-static Diffie-Hellman shared secret {{NIST-800-56A}}, where the endpoint uses its private key and the public key of the other endpoint X. For EdDSA, the procedure is described in Section 5 of {{RFC7748}}.
+* The Shared Secret is computed as a cofactor Diffie-Hellman shared secret, see Section 5.7.1.2 of {{NIST-800-56A}}, where the endpoint uses its private key and the public key of the other endpoint X. For X25519 and X448, the procedure is described in Section 5 of {{RFC7748}} using public keys mapped to Montgomery coordinates, see {{montgomery}}.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 * info and L are as defined in Section 3.2.1 of {{RFC8613}}. 
 
-If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}.
+If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}. For further details, see {{montgomery}}.
 
 After establishing a partially or completely new Security Context (see {{ssec-sec-context-persistence}} and {{sec-group-key-management}}), the old pairwise keys MUST be deleted. Since new Sender/Recipient Keys are derived from the new group keying material (see {{ssec-sender-recipient-context}}), every group member MUST use the new Sender/Recipient Keys when deriving new pairwise keys.
 
 As long as any two group members preserve the same asymmetric keys, their Diffie-Hellman shared secret does not change across updates of the group keying material.
+
+### ECDH with Montgomery Coordinates {#montgomery}
+
+#### Curve25519
+
+The y-coordinate of the other endpoint's Ed25519 public key is decoded as specified in Section 5.1.3 of {{RFC 8032}}. The Curve25519 u-coordinate is recovered as u = (1 + y) / (1 - y) (mod p) following the map in Section 4.1 of {{RFC7748}}. Note that the mapping is not defined for y = 1, and that y = -1 correspond to u = 0 which corresponds to the neutral group element and thus will result in a degenerate shared secret. Therefore implementations MUST abort if the y-coordinate of the other endpoint's Ed25519 public key is 1 or -1 (mod p). 
+
+The private signing key byte strings (= the lower 32 bytes used for generating the public key, see step 1 of Section 5.1.5 of {{RFC 8032}}) are decoded the same way for signing in Ed25519 and scalar multiplication in X25519. Hence, to compute the shared secret the endpoint applies the X25519 function to the Ed25519 private signing key byte string and the encoded u-coordinate byte string as specified in Section 5 of {{RFC7748}}.
+
+#### Curve448
+
+The y-coordinate of the other endpoint's Ed448 public key is decoded as specified in Section 5.2.3. of {{RFC 8032}}. The Curve448 u-coordinate is recovered as u = y^2 * (d * y^2 - 1) / (y^2 - 1) (mod p) following the map from "edwards448" in Section 4.2 of {{RFC7748}}, and also using the relation x^2 = (y^2 - 1)/(d * y^2 - 1) from the curve equation. Note that the mapping is not defined for y = 1 or -1. Therefore implementations MUST abort if the y-coordinate of the peer endpoint's Ed448 public key is 1 or -1 (mod p). 
+
+The private signing key byte strings (= the lower 57 bytes used for generating the public key, see step 1 of Section 5.2.5 of {{RFC8032}}) are decoded the same way for signing in Ed448 and scalar multiplication in X448. Hence, to compute the shared secret the endpoint applies the X448 function to the Ed448 private signing key byte string and the encoded u-coordinate byte string as specified in Section 5 of {{RFC7748}}.
+
 
 ### Usage of Sequence Numbers ### {#pairwise-seqno}
 
