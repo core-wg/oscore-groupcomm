@@ -1194,7 +1194,7 @@ In order to renew its own Sender Context, the endpoint SHOULD inform the Group M
 
 Additionally, the same considerations from Section 12.6 of {{RFC8613}} hold for Group OSCORE, about building the AEAD nonce and the secrecy of the Security Context parameters.
 
-The elliptic curve Curve25519 and the EdDSA signature algorithm Ed25519 {{RFC8032}} are mandatory to implement. For endpoints that support the pairwise mode, the ECDH-SS + HKDF-256 algorithm specified in Section 6.3.1 of {{I-D.ietf-cose-rfc8152bis-algs}} and the X25519 algorithm {{RFC7748}} are also mandatory to implement. 
+The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. For endpoints that support the pairwise mode, the ECDH-SS + HKDF-256 algorithm specified in Section 6.3.1 of {{I-D.ietf-cose-rfc8152bis-algs}} and the X25519 algorithm {{RFC7748}} are also mandatory to implement. 
 
 Constrained IoT devices may alternatively represent Montgomery curves and (twisted) Edwards curves {{RFC7748}} in the short-Weierstrass form Wei25519, with which the algorithms ECDSA25519 and ECDH25519 can be used for signature operations and Diffie-Hellman secret calculation, respectively {{I-D.ietf-lwig-curve-representations}}.
 
