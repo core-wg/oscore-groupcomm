@@ -152,6 +152,14 @@ informative:
     title: On the Joint Security of Encryption and Signature in EMV
     date: 2011-12
     target: https://eprint.iacr.org/2011/615
+  Thormarker:
+    author:
+      -
+        ins: E. Thormarker
+        name: Erik Thormarker
+    title: On using the same key pair for Ed25519 and an X25519 based KEM
+    date: 2021-04
+    target: https://eprint.iacr.org/2021/509
 
 --- abstract
 
@@ -356,13 +364,13 @@ As long as any two group members preserve the same asymmetric keys, their Diffie
 
 #### Curve25519
 
-The y-coordinate of the other endpoint's Ed25519 public key is decoded as specified in Section 5.1.3 of {{RFC 8032}}. The Curve25519 u-coordinate is recovered as u = (1 + y) / (1 - y) (mod p) following the map in Section 4.1 of {{RFC7748}}. Note that the mapping is not defined for y = 1, and that y = -1 maps to u = 0 which corresponds to the neutral group element and thus will result in a degenerate shared secret. Therefore implementations MUST abort if the y-coordinate of the other endpoint's Ed25519 public key is 1 or -1 (mod p). 
+The y-coordinate of the other endpoint's Ed25519 public key is decoded as specified in Section 5.1.3 of {{RFC8032}}. The Curve25519 u-coordinate is recovered as u = (1 + y) / (1 - y) (mod p) following the map in Section 4.1 of {{RFC7748}}. Note that the mapping is not defined for y = 1, and that y = -1 maps to u = 0 which corresponds to the neutral group element and thus will result in a degenerate shared secret. Therefore implementations MUST abort if the y-coordinate of the other endpoint's Ed25519 public key is 1 or -1 (mod p). 
 
-The private signing key byte strings (= the lower 32 bytes used for generating the public key, see step 1 of Section 5.1.5 of {{RFC 8032}}) are decoded the same way for signing in Ed25519 and scalar multiplication in X25519. Hence, to compute the shared secret the endpoint applies the X25519 function to the Ed25519 private signing key byte string and the encoded u-coordinate byte string as specified in Section 5 of {{RFC7748}}.
+The private signing key byte strings (= the lower 32 bytes used for generating the public key, see step 1 of Section 5.1.5 of {{RFC8032}}) are decoded the same way for signing in Ed25519 and scalar multiplication in X25519. Hence, to compute the shared secret the endpoint applies the X25519 function to the Ed25519 private signing key byte string and the encoded u-coordinate byte string as specified in Section 5 of {{RFC7748}}.
 
 #### Curve448
 
-The y-coordinate of the other endpoint's Ed448 public key is decoded as specified in Section 5.2.3. of {{RFC 8032}}. The Curve448 u-coordinate is recovered as u = y^2 * (d * y^2 - 1) / (y^2 - 1) (mod p) following the map from "edwards448" in Section 4.2 of {{RFC7748}}, and also using the relation x^2 = (y^2 - 1)/(d * y^2 - 1) from the curve equation. Note that the mapping is not defined for y = 1 or -1. Therefore implementations MUST abort if the y-coordinate of the peer endpoint's Ed448 public key is 1 or -1 (mod p). 
+The y-coordinate of the other endpoint's Ed448 public key is decoded as specified in Section 5.2.3. of {{RFC8032}}. The Curve448 u-coordinate is recovered as u = y^2 * (d * y^2 - 1) / (y^2 - 1) (mod p) following the map from "edwards448" in Section 4.2 of {{RFC7748}}, and also using the relation x^2 = (y^2 - 1)/(d * y^2 - 1) from the curve equation. Note that the mapping is not defined for y = 1 or -1. Therefore implementations MUST abort if the y-coordinate of the peer endpoint's Ed448 public key is 1 or -1 (mod p). 
 
 The private signing key byte strings (= the lower 57 bytes used for generating the public key, see step 1 of Section 5.2.5 of {{RFC8032}}) are decoded the same way for signing in Ed448 and scalar multiplication in X448. Hence, to compute the shared secret the endpoint applies the X448 function to the Ed448 private signing key byte string and the encoded u-coordinate byte string as specified in Section 5 of {{RFC7748}}.
 
