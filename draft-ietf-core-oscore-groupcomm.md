@@ -328,10 +328,10 @@ Using the Group OSCORE Security Context (see {{sec-context}}), a group member ca
 Pairwise Sender Key    = HKDF(Sender Key, IKM-Sender, info, L)
 Pairwise Recipient Key = HKDF(Recipient Key, IKM-Recipient, info, L)
 
-where
+with
 
-IKM-Sender = Sender Public Key || Recipient Public Key || Shared Secret
-IKM-Recipient = Recipient Public Key || Sender Public Key || Shared Secret
+IKM-Sender    = Sender Public Key | Recipient Public Key | Shared Secret
+IKM-Recipient = Recipient Public Key | Sender Public Key | Shared Secret
 ~~~~~~~~~~~
 
 where:
@@ -342,17 +342,43 @@ where:
 
 * HKDF is the HKDF algorithm specified by Secret Derivation Algorithm from the Common Context (see {{ssec-common-context-dh-alg}}).
 
-* The Sender Key and private key are from the Sender Context. The Sender Key is used as salt in the HKDF, when deriving the Pairwise Sender Key.
+* The Sender Key from the Sender Context is used as salt in the HKDF, when deriving the Pairwise Sender Key.
 
-* The Recipient Key and the public key are from the Recipient Context associated to endpoint X. The Recipient Key is used as salt in the HKDF, when deriving the Pairwise Recipient Key.
+* The Recipient Key from the Recipient Context associated to endpoint X is used as salt in the HKDF, when deriving the Pairwise Recipient Key.
  
-* IKM-Sender - the Input Keying Material (IKM) used in HKDF for the derivation of the Pairwise Sender Key - is the concatenation of the endpoint's own signature public key, endpoint X's signature public key from the Recipient Context, and the Shared Secret
+* IKM-Sender is the Input Keying Material (IKM) used in the HKDF for the derivation of the Pairwise Sender Key. IKM-Sender is the byte string concatenation of the endpoint's own signature public key, the endpoint X's signature public key from the Recipient Context, and the Shared Secret. The two signature public keys are binary encoded as defined below.
 
-* IKM-Recipient - the Input Keying Material (IKM) used in HKDF for the derivation of the Recipient Sender Key - is the concatenation of endpoint X's signature public key from the Recipient Context, the endpoint's own signature public key, and the Shared Secret.
+* IKM-Recipient is the Input Keying Material (IKM) used in the HKDF for the derivation of the Recipient Sender Key. IKM-Recipient is the byte string concatenation of the endpoint X's signature public key from the Recipient Context, the endpoint's own signature public key, and the Shared Secret. The two signature public keys are binary encoded as defined below.
 
-* The Shared Secret is computed as a cofactor Diffie-Hellman shared secret, see Section 5.7.1.2 of {{NIST-800-56A}}, where the endpoint uses its private key and the public key of the other endpoint X. Note the requirement of validation of public keys in {{ssec-crypto-considerations}}. For X25519 and X448, the procedure is described in Section 5 of {{RFC7748}} using public keys mapped to Montgomery coordinates, see {{montgomery}}.
+* The Shared Secret is computed as a cofactor Diffie-Hellman shared secret, see Section 5.7.1.2 of {{NIST-800-56A}}, where the endpoint uses its private key from the Sender Context and the public key of the other endpoint X from the associated Recipient Context. Note the requirement of validation of public keys in {{ssec-crypto-considerations}}. For X25519 and X448, the procedure is described in Section 5 of {{RFC7748}} using public keys mapped to Montgomery coordinates, see {{montgomery}}.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 * info and L are as defined in Section 3.2.1 of {{RFC8613}}. 
+
+In IKM-Sender and IKM-Recipient, each signature public key is encoded as the byte serialization of a CBOR map, which includes only specific fields from a COSE Key structure identifying the public key in question (see Section 7 of {{I-D.ietf-cose-rfc8152bis-struct}}). The elements of the CBOR map SHALL be encoded in decreasing order by integer label. In particular:
+
+*  For signature public keys of type OKP, the CBOR map SHALL only include the elements 1 (kty), -1 (crv) and -2 (x-coordinate), as in the example below for an Ed25519 public key.
+
+~~~~~~~~~~~
+   {
+     1:  1,
+    -1:  6,
+    -2:  h'38e5d54563c2b6a4ba26f3015f61bb70
+           6e5c2efdb556d2e1690b97fc3c6de149'
+   }
+~~~~~~~~~~~
+
+*  For signature public keys of type EC2, the CBOR map SHALL only include the parameters 1 (kty), -1 (crv), -2 (x-coordinate) and -3 (y-coordinate), as in the example below for a P-256 public key.
+
+~~~~~~~~~~~
+   {
+     1:  2,
+    -1:  1,
+    -2:  h'cd4177ba62433375ede279b5e18e8b91
+           bc3ed8f1e174474a26fc0edb44ea5373',
+    -3:  h'a0391de29c5c5badda610d4e301eaaa1
+           8422367722289cd18cbe6624e89b9cfd'    
+   }
+~~~~~~~~~~~
 
 If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}. For further details, see {{montgomery}}.
 
@@ -1516,6 +1542,8 @@ countersign_alg_capab : [c_1 : any, c_2 : any, ..., c_N : any]
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -11 to -12 ## {#sec-11-12}
+
+* Updated derivation of pairwise keys, with more security considerations.
 
 * Termination of ongoing observations as client, upon leaving or before re-joining the group.
 
