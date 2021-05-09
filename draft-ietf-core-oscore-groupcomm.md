@@ -152,6 +152,14 @@ informative:
     title: On the Joint Security of Encryption and Signature in EMV
     date: 2011-12
     target: https://eprint.iacr.org/2011/615
+  Thormarker:
+    author:
+      -
+        ins: E. Thormarker
+        name: Erik Thormarker
+    title: On using the same key pair for Ed25519 and an X25519 based KEM
+    date: 2021-04
+    target: https://eprint.iacr.org/2021/509
 
 --- abstract
 
@@ -317,8 +325,13 @@ Certain signature schemes, such as EdDSA and ECDSA, support a secure combined si
 Using the Group OSCORE Security Context (see {{sec-context}}), a group member can derive AEAD keys to protect point-to-point communication between itself and any other endpoint in the group. The same AEAD algorithm as in the group mode is used. The key derivation of these so-called pairwise keys follows the same construction as in Section 3.2.1 of {{RFC8613}}: 
 
 ~~~~~~~~~~~
-Pairwise Sender Key    = HKDF(Sender Key, Shared Secret, info, L)
-Pairwise Recipient Key = HKDF(Recipient Key, Shared Secret, info, L)
+Pairwise Sender Key    = HKDF(Sender Key, IKM-Sender, info, L)
+Pairwise Recipient Key = HKDF(Recipient Key, IKM-Recipient, info, L)
+
+where
+
+IKM-Sender = Sender Public Key || Recipient Public Key || Shared Secret
+IKM-Recipient = Recipient Public Key || Sender Public Key || Shared Secret
 ~~~~~~~~~~~
 
 where:
@@ -333,15 +346,34 @@ where:
 
 * The Recipient Key and the public key are from the Recipient Context associated to endpoint X. The Recipient Key is used as salt in the HKDF, when deriving the Pairwise Recipient Key.
  
-* The Shared Secret is computed as a static-static Diffie-Hellman shared secret {{NIST-800-56A}}, where the endpoint uses its private key and the public key of the other endpoint X. The Shared Secret is used as Input Keying Material (IKM) in the HKDF.
+* IKM-Sender - the Input Keying Material (IKM) used in HKDF for the derivation of the Pairwise Sender Key - is the concatenation of the endpoint's own signature public key, endpoint X's signature public key from the Recipient Context, and the Shared Secret
 
+* IKM-Recipient - the Input Keying Material (IKM) used in HKDF for the derivation of the Recipient Sender Key - is the concatenation of endpoint X's signature public key from the Recipient Context, the endpoint's own signature public key, and the Shared Secret.
+
+* The Shared Secret is computed as a cofactor Diffie-Hellman shared secret, see Section 5.7.1.2 of {{NIST-800-56A}}, where the endpoint uses its private key and the public key of the other endpoint X. Note the requirement of validation of public keys in {{ssec-crypto-considerations}}. For X25519 and X448, the procedure is described in Section 5 of {{RFC7748}} using public keys mapped to Montgomery coordinates, see {{montgomery}}.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
 * info and L are as defined in Section 3.2.1 of {{RFC8613}}. 
 
-If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}.
+If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in Sections 4.1 and 4.2 of {{RFC7748}}, before using the X25519 and X448 functions defined in Section 5 of {{RFC7748}}. For further details, see {{montgomery}}.
 
 After establishing a partially or completely new Security Context (see {{ssec-sec-context-persistence}} and {{sec-group-key-management}}), the old pairwise keys MUST be deleted. Since new Sender/Recipient Keys are derived from the new group keying material (see {{ssec-sender-recipient-context}}), every group member MUST use the new Sender/Recipient Keys when deriving new pairwise keys.
 
 As long as any two group members preserve the same asymmetric keys, their Diffie-Hellman shared secret does not change across updates of the group keying material.
+
+### ECDH with Montgomery Coordinates {#montgomery}
+
+#### Curve25519
+
+The y-coordinate of the other endpoint's Ed25519 public key is decoded as specified in Section 5.1.3 of {{RFC8032}}. The Curve25519 u-coordinate is recovered as u = (1 + y) / (1 - y) (mod p) following the map in Section 4.1 of {{RFC7748}}. Note that the mapping is not defined for y = 1, and that y = -1 maps to u = 0 which corresponds to the neutral group element and thus will result in a degenerate shared secret. Therefore implementations MUST abort if the y-coordinate of the other endpoint's Ed25519 public key is 1 or -1 (mod p). 
+
+The private signing key byte strings (= the lower 32 bytes used for generating the public key, see step 1 of Section 5.1.5 of {{RFC8032}}) are decoded the same way for signing in Ed25519 and scalar multiplication in X25519. Hence, to compute the shared secret the endpoint applies the X25519 function to the Ed25519 private signing key byte string and the encoded u-coordinate byte string as specified in Section 5 of {{RFC7748}}.
+
+#### Curve448
+
+The y-coordinate of the other endpoint's Ed448 public key is decoded as specified in Section 5.2.3. of {{RFC8032}}. The Curve448 u-coordinate is recovered as u = y^2 * (d * y^2 - 1) / (y^2 - 1) (mod p) following the map from "edwards448" in Section 4.2 of {{RFC7748}}, and also using the relation x^2 = (y^2 - 1)/(d * y^2 - 1) from the curve equation. Note that the mapping is not defined for y = 1 or -1. Therefore implementations MUST abort if the y-coordinate of the peer endpoint's Ed448 public key is 1 or -1 (mod p). 
+
+The private signing key byte strings (= the lower 57 bytes used for generating the public key, see step 1 of Section 5.2.5 of {{RFC8032}}) are decoded the same way for signing in Ed448 and scalar multiplication in X448. Hence, to compute the shared secret the endpoint applies the X448 function to the Ed448 private signing key byte string and the encoded u-coordinate byte string as specified in Section 5 of {{RFC7748}}.
+
 
 ### Usage of Sequence Numbers ### {#pairwise-seqno}
 
@@ -1170,13 +1202,26 @@ In order to renew its own Sender Context, the endpoint SHOULD inform the Group M
 
 Additionally, the same considerations from Section 12.6 of {{RFC8613}} hold for Group OSCORE, about building the AEAD nonce and the secrecy of the Security Context parameters.
 
-The EdDSA signature algorithm and the elliptic curve Ed25519 {{RFC8032}} are mandatory to implement. For endpoints that support the pairwise mode, the ECDH-SS + HKDF-256 algorithm specified in Section 6.3.1 of {{I-D.ietf-cose-rfc8152bis-algs}} and the X25519 curve {{RFC7748}} are also mandatory to implement. 
+The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. For endpoints that support the pairwise mode, the ECDH-SS + HKDF-256 algorithm specified in Section 6.3.1 of {{I-D.ietf-cose-rfc8152bis-algs}} and the X25519 algorithm {{RFC7748}} are also mandatory to implement. 
 
 Constrained IoT devices may alternatively represent Montgomery curves and (twisted) Edwards curves {{RFC7748}} in the short-Weierstrass form Wei25519, with which the algorithms ECDSA25519 and ECDH25519 can be used for signature operations and Diffie-Hellman secret calculation, respectively {{I-D.ietf-lwig-curve-representations}}.
 
 For many constrained IoT devices, it is problematic to support more than one signature algorithm or multiple whole cipher suites. As a consequence, some deployments using, for instance, ECDSA with NIST P-256 may not support the mandatory signature algorithm but that should not be an issue for local deployments.
 
-The derivation of pairwise keys defined in {{key-derivation-pairwise}} is compatible with ECDSA and EdDSA asymmetric keys, but is not compatible with RSA asymmetric keys. The security of using the same key pair for Diffie-Hellman and for signing is demonstrated in {{Degabriele}}. 
+The derivation of pairwise keys defined in {{key-derivation-pairwise}} is compatible with ECDSA and EdDSA asymmetric keys, but is not compatible with RSA asymmetric keys.
+
+For the public key translation from Ed25519 (Ed448) to X25519 (X448) specified in {{key-derivation-pairwise}}, variable time methods can be used since the translation operates on public information. Any byte string of appropriate length is accepted as a public key for X25519 (X448) in {{RFC7748}}, it is therefore not necessary for security to validate the translated public key (assuming the translation was successful).
+
+The security of using the same key pair for Diffie-Hellman and for signing (by considering the ECDH procedure in {{sec-derivation-pairwise}} as a Key Encapsulation Mechanism (KEM)) is demonstrated in {{Degabriele}} and {{Thormarker}}.
+
+Applications using ECDH (except X25519 and X448) based KEM in {{sec-derivation-pairwise}} are assumed to verify that a peer endpoint’s public key is on the expected curve and that the shared secret is not the point at infinity. The KEM in {{Degabriele}} checks that the shared secret is different from the point at infinity, as does the procedure in Section 5.7.1.2 of {{NIST-800-56A}} which is referenced in {{sec-derivation-pairwise}}.
+
+Extending Theorem 2 of {{Degabriele}}, {{Thormarker}} shows that the same key pair can be used with X25519 and Ed25519 (X448 and Ed448) for the KEM specified in {{sec-derivation-pairwise}}. By symmetry in the KEM used in this document, both endpoints can consider themselves to have the recipient role in the KEM – as discussed in Section 7 of {{Thormarker}} - and rely on the mentioned proofs for the security of their key pairs. 
+
+Theorem 3 in {{Degabriele}} shows that the same key pair can be used for an ECDH based KEM and ECDSA. The KEM uses a different KDF than in {{sec-derivation-pairwise}}, but the proof only depends on that the KDF has certain required properties, which are the typical assumptions about HKDF, e.g., that output keys are pseudorandom. In order to comply with the assumptions of Theorem 3, received public keys MUST be successfully validated, see Section 5.6.2.3.4 of {{NIST-800-56A}}. The validation MAY be performed by a trusted Group Manager. For {{Degabriele}} to apply as it is written, public keys need to be in the expected subgroup. For this we rely on cofactor DH, Section 5.7.1.2 of {{NIST-800-56A}} which is referenced in {{sec-derivation-pairwise}}.
+
+HashEdDSA variants of Ed25519 and Ed448 are not used by COSE, see Section 2.2 of {{I-D.ietf-cose-rfc8152bis-algs}}, and are not covered by the analysis in {{Thormarker}}, and hence MUST NOT be used with the public keys used with pairwise keys as specified in this document.
+
 
 ## Message Segmentation {#ssec-message-segmentation}
 
