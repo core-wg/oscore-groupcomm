@@ -505,7 +505,7 @@ All the group members need to acquire new Security Context parameters from the G
 
    - It re-initializes the Replay Window of each Recipient Context.
 
-   - It resets to 0 the sequence number of each ongoing observation where it is an observer client and that it wants to keep active.
+   - For each ongoing observation where it is an observer client and that it wants to keep active, it resets to 0 the Notification Number of each associated server (see {{sec-long-term-observations}}).
 
 From then on, it can resume processing new messages for the considered group. In particular:
 
@@ -795,9 +795,11 @@ The examples assume that the plaintext (see Section 5.3 of {{RFC8613}}) is 6 byt
 
 The requirements and properties described in Section 7 of {{RFC8613}} also apply to Group OSCORE. In particular, Group OSCORE provides message binding of responses to requests, which enables absolute freshness of responses that are not notifications, relative freshness of requests and notification responses, and replay protection of requests. In addition, the following holds for Group OSCORE.
 
-## Support for Long-Term Observations # {#sec-long-term-observations}
+## Supporting Observe # {#sec-long-term-observations}
 
-When Observe {{RFC7641}} is used, Group OSCORE allows to preserve a resource observation active indefinitely, even in case the group is rekeyed, with consequent change of ID Context, or in case the observer client obtains a new Sender ID.
+When Observe {{RFC7641}} is used, a client maintains for each ongoing observation one Notification Number for each different server. Then, separately for each server, the client uses the associated Notification Number to perform ordering and replay protection of notifications received from that server (see {{ssec-verify-response-observe}}).
+
+Group OSCORE allows to preserve an observation active indefinitely, even in case the group is rekeyed, with consequent change of ID Context, or in case the observer client obtains a new Sender ID.
 
 As defined in {{mess-processing}} when discussing support for Observe, this is achieved by the client and server(s) storing the 'kid' and 'kid context' used in the original Observe request, throughout the whole duration of the observation.
 
@@ -953,6 +955,8 @@ Note that a client may receive a response protected with a Security Context diff
 ### Supporting Observe ### {#ssec-verify-response-observe}
 
 If Observe {{RFC7641}} is supported, the following holds when verifying notifications for an ongoing observation.
+
+* The ordering and the replay protection of notifications received from a server are performed as per Sections 4.1.3.5.2 and 7.4.1 of RFC 8613, by using the Notification Number associated to that server for the observation in question.
 
 * The client MUST use the stored value of the 'kid' parameter from the original Observe request (see {{ssec-protect-request-observe}}), as value for the 'request\_kid' parameter in the external\_aad structure (see {{sec-cose-object-ext-aad}}).
 
@@ -1414,7 +1418,7 @@ To ameliorate this, the server may rather rely on a trade-off between the Sender
 
 The challenge-response approach described in this appendix provides an assurance of absolute message freshness. However, it can result in an impact on performance which is undesirable or unbearable, especially in large groups where many endpoints at the same time might join as new members or lose synchronization.
 
-Note that endpoints configured as silent servers are not able to perform the challenge-response described above, as they do not store a Sender Context to secure the 4.01 (Unauthorized) response to the client. Therefore, silent servers should adopt alternative approaches to achieve and maintain synchronization with sender sequence numbers of clients.
+Note that endpoints configured as silent servers are not able to perform the challenge-response described above, as they do not store a Sender Context to secure the 4.01 (Unauthorized) response to the client. Therefore, silent servers should adopt alternative approaches to achieve and maintain synchronization with Sender Sequence Numbers of clients.
 
 Since requests including the Echo Option are sent over unicast, a server can be a victim of the attack discussed in {{ssec-unicast-requests}}, when such requests are protected with the group mode of Group OSCORE, as described in {{ssec-protect-request}}.
 
@@ -1543,11 +1547,15 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -11 to -12 ## {#sec-11-12}
 
+* Clarifications about processing of notifications.
+
 * Updated derivation of pairwise keys, with more security considerations.
 
 * Termination of ongoing observations as client, upon leaving or before re-joining the group.
 
 * Recycling Group IDs by tracking the "Birth Gid" of each group member.
+
+* Fixes and editorial improvements.
 
 ## Version -10 to -11 ## {#sec-10-11}
 
