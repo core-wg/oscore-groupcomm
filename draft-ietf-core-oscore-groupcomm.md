@@ -956,7 +956,7 @@ Note that a client may receive a response protected with a Security Context diff
 
 If Observe {{RFC7641}} is supported, the following holds when verifying notifications for an ongoing observation.
 
-* The ordering and the replay protection of notifications received from a server are performed as per Sections 4.1.3.5.2 and 7.4.1 of RFC 8613, by using the Notification Number associated to that server for the observation in question.
+* The ordering and the replay protection of notifications received from a server are performed as per Sections 4.1.3.5.2 and 7.4.1 of {{RFC8613}}, by using the Notification Number associated to that server for the observation in question.
 
 * The client MUST use the stored value of the 'kid' parameter from the original Observe request (see {{ssec-protect-request-observe}}), as value for the 'request\_kid' parameter in the external\_aad structure (see {{sec-cose-object-ext-aad}}).
 
