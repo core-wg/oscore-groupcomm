@@ -941,19 +941,21 @@ Upon receiving a secure response message with the Group Flag set to 1, following
 
 Note that a client may receive a response protected with a Security Context different from the one used to protect the corresponding group request, and that, upon the establishment of a new Security Context, the client re-initializes its Replay Windows in its Recipient Contexts (see {{sec-group-key-management}}).
 
-* In step 2, the decoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, a 'kid' may not be present, if the response is a reply to a request protected in pairwise mode.
-
-   In case the request was protected in pairwise mode, the following also applies.
-   
-   - If the 'kid' parameter is not present in the response, the client assumes the response 'kid' to be exactly the one of the server to which the request was intended for.
-   
-   - If the 'kid' parameter is present in the response and it is different from exactly the one of the server to which the request was intended for, the client SHALL stop processing the response.
+* In step 2, the decoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, a 'kid' may not be present, if the response is a reply to a request protected in pairwise mode.  In such a case, the client assumes the response 'kid' to be exactly the one of the server to which the request protected in pairwise mode was intended for.
 
    If the response 'kid context' matches an existing ID Context (Gid) but the received/assumed 'kid' does not match any Recipient ID in this Security Context, then the client MAY create a new Recipient Context for this Recipient ID and initialize it according to Section 3 of {{RFC8613}}, and also retrieve the associated public key. If the application does not specify dynamic derivation of new Recipient Contexts, then the client SHALL stop processing the response.
 
 * In step 3, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
 
-* In step 5, the client also verifies the counter signature using the public key of the server from the associated Recipient Context. If the verification fails, the same steps are taken as if the decryption had failed.
+* In step 5, the client also verifies the counter signature using the public key of the server from the associated Recipient Context. If the verification of the counter signature fails, the same steps are taken as if the decryption had failed. 
+
+   After a successful verification, the client performs also the following actions if the response is not an Observe notification.
+
+   In case the request was protected in pairwise mode and the 'kid' parameter is present in the response, the client checks whether this received 'kid' is equal to the expected 'kid', i.e. the known Sender ID for the server to which the request was intended for.
+   
+   If this is not the case, the client checks whether the server that has sent the response is the same one to which the request was intended for. This can be done by checking that the public key used to verify the counter signature of the response is equal to the Recipient Public Key taken as input to derive the Pairwise Sender Key used for protecting the request (see {{key-derivation-pairwise}}).
+   
+   If the client determines that the response has come from a different server than the expected one, then the client SHALL discard the response and SHALL NOT deliver it to the application.
 
 * Additionally, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client MAY delete that Recipient Context. Such a configuration, which is specified by the application, mitigates attacks that aim at overloading the client's storage.
 
@@ -970,11 +972,11 @@ This ensures that the client can correctly verify notifications, even in case it
 
 * The ordering and the replay protection of notifications received from a server are performed as per Sections 4.1.3.5.2 and 7.4.1 of {{RFC8613}}, by using the Notification Number associated to that server for the observation in question. In addition, the client performs the following actions for each ongoing observation.
 
-   - When receiving the first valid notification from a server, the client MUST store the current Sender ID Sid1 of that server for the observation in question. If the 'kid' field is included in the OSCORE option of the notification, its value specifies Sid1. If the Observe request was protected with the pairwise mode (see {{sec-pairwise-protection-req}}), the 'kid' field may not be present in the OSCORE option of the notification (see {{sec-cose-object-kid}}). However, in this case the client already knew Sid1 when sending the Observe request, which only that server is able to correctly decrypt and verify.
+   - When receiving the first valid notification from a server, the client MUST store the current Sender ID Sid1 of that server for the observation in question. If the 'kid' field is included in the OSCORE option of the notification, its value specifies Sid1. If the Observe request was protected in pairwise mode (see {{sec-pairwise-protection-req}}), the 'kid' field may not be present in the OSCORE option of the notification (see {{sec-cose-object-kid}}). However, in this case the client already knew Sid1 when sending the Observe request, which only that server is able to correctly decrypt and verify.
 
    - When receiving another valid notification from the same server - which can be identified and recognized through the same public key used to verify the counter signature - the client MUST check whether the current Sender ID Sid2 of the server is equal to the stored Sid1. If Sid1 and Sid2 are different, the client MUST cancel or re-register the observation in question.
    
-      Note that, if Sid2 is different from Sid1 and the 'kid' field is omitted from the notification - which is possible if the Observe request was protected with the pairwise mode - then the client will fail to decrypt and verify the notification, as using the Pairwise Recipient Key for that server bound to Sid1.
+      Note that, if Sid2 is different from Sid1 and the 'kid' field is omitted from the notification - which is possible if the Observe request was protected in pairwise mode - then the client will fail to decrypt and verify the notification, as using the Pairwise Recipient Key for that server bound to Sid1.
 
 This ensures that the client remains able to correctly perform the ordering and replay protection of notifications, even in case a server legitimately starts using a new Sender ID, as received from the Group Manager when individually rekeyed (see {{new-sender-id}}) or when re-joining the group.
 
@@ -1044,11 +1046,11 @@ When using the pairwise mode, a response is protected as defined in Section 8.3 
 
 Upon receiving a response with the Group Flag set to 0, following the procedure in {{sec-message-reception}}, the client MUST process it as defined in Section 8.4 of {{RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following differences also apply.
 
-* The same as described in {{ssec-verify-response}} holds with respect to handling the 'kid' parameter of the response, when received as a reply to a request protected in pairwise mode.
+* The same as described in {{ssec-verify-response}} holds with respect to handling the 'kid' parameter of the response, when received as a reply to a request protected in pairwise mode. The client can also in this case check whether the replying server is the expected one, by relying on the server's public key. However, since the response is protected in pairwise mode, the public key is not used for verifying a counter signature as in {{ssec-verify-response}}, but rather as input to derive the Pairwise Recipient Key used to decrypt and verify the response (see {{key-derivation-pairwise}}).
 
 * If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}). The new Pairwise Sender/Recipient Keys are deleted if the Recipient Context is deleted as a result of the message not being successfully verified. 
 
-* If Observe {{RFC7641}} is supported, what defined in {{ssec-verify-response-observe}} of this document holds. The client can also in this case identify a server to be the same one across a change of Sender ID, by relying on the server's public key. However, since the notification is protected with the pairwise mode, the public key is not used for verifying a counter signature as in {{ssec-verify-response}}, but rather as input to derive the Pairwise Recipient Key used to decrypt and verify the notification (see {{key-derivation-pairwise}}).
+* If Observe {{RFC7641}} is supported, what defined in {{ssec-verify-response-observe}} of this document holds. The client can also in this case identify a server to be the same one across a change of Sender ID, by relying on the server's public key. However, since the notification is protected in pairwise mode, the public key is not used for verifying a counter signature as in {{ssec-verify-response}}, but rather as input to derive the Pairwise Recipient Key used to decrypt and verify the notification (see {{key-derivation-pairwise}}).
 
 # Security Considerations  # {#sec-security-considerations}
 
