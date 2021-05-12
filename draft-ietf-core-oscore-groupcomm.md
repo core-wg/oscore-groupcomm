@@ -956,13 +956,21 @@ Note that a client may receive a response protected with a Security Context diff
 
 If Observe {{RFC7641}} is supported, the following holds when verifying notifications for an ongoing observation.
 
-* The ordering and the replay protection of notifications received from a server are performed as per Sections 4.1.3.5.2 and 7.4.1 of {{RFC8613}}, by using the Notification Number associated to that server for the observation in question.
-
 * The client MUST use the stored value of the 'kid' parameter from the original Observe request (see {{ssec-protect-request-observe}}), as value for the 'request\_kid' parameter in the external\_aad structure (see {{sec-cose-object-ext-aad}}).
 
 * The client MUST use the stored value of the 'kid context' parameter from the original Observe request (see {{ssec-protect-request-observe}}), as value for the 'request\_kid\_context' parameter in the external\_aad structure (see {{sec-cose-object-ext-aad}}).
 
 This ensures that the client can correctly verify notifications, even in case it is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}), as well as when it installs a new Security Context with a new ID Context (Gid) following a group rekeying (see {{sec-group-key-management}}).
+
+* The ordering and the replay protection of notifications received from a server are performed as per Sections 4.1.3.5.2 and 7.4.1 of {{RFC8613}}, by using the Notification Number associated to that server for the observation in question. In addition, the client performs the following actions for each ongoing observation.
+
+   - When receiving the first valid notification from a server, the client MUST store the current Sender ID Sid1 of that server for the observation in question. If the 'kid' field is included in the OSCORE option of the notification, its value specifies Sid1. If the Observe request was protected with the pairwise mode (see {{sec-pairwise-protection-req}}), the 'kid' field may not be present in the OSCORE option of the notification (see {{sec-cose-object-kid}}). However, in this case the client already knew Sid1 when sending the Observe request, to which only that server is able to reply with a valid response.
+
+   - When receiving another valid notification from the same server - which can be identified and recognized through the same public key used to verify the counter signature - the client MUST check whether the current Sender ID Sid2 of the server is equal to the stored Sid1. If Sid1 and Sid2 are different, the client MUST cancel or re-register the observation in question.
+   
+      Note that, if Sid2 is different from Sid1 and the 'kid' field is omitted from the notification - which is possible if the Observe request was protected with the pairwise mode - then the client will fail to decrypt and verify the notification, as using the Pairwise Recipient Key for that server bound to Sid1.
+
+This ensures that the client remains able to correctly perform the ordering and replay protection of notifications, even in case a server legitimately starts using a new Sender ID, as received from the Group Manager when individually rekeyed (see {{new-sender-id}}) or when re-joining the group.
 
 # Message Processing in Pairwise Mode # {#sec-pairwise-protection}
 
@@ -1032,8 +1040,7 @@ Upon receiving a response with the Group Flag set to 0, following the procedure 
 
 * If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}). The new Pairwise Sender/Recipient Keys are deleted if the Recipient Context is deleted as a result of the message not being successfully verified. 
 
-* If Observe {{RFC7641}} is supported, what defined in {{ssec-verify-response-observe}} of this document holds.
-
+* If Observe {{RFC7641}} is supported, what defined in {{ssec-verify-response-observe}} of this document holds. The client can also in this case identify a server to be the same one across a change of Sender ID, by relying on the server's public key. However, since the notification is protected with the pairwise mode, the public key is not used for verifying a counter signature as in {{ssec-verify-response}}, but rather as input to derive the Pairwise Recipient Key used to decrypt and verify the notification (see {{key-derivation-pairwise}}).
 
 # Security Considerations  # {#sec-security-considerations}
 
