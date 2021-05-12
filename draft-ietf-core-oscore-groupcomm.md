@@ -941,7 +941,13 @@ Upon receiving a secure response message with the Group Flag set to 1, following
 
 Note that a client may receive a response protected with a Security Context different from the one used to protect the corresponding group request, and that, upon the establishment of a new Security Context, the client re-initializes its Replay Windows in its Recipient Contexts (see {{sec-group-key-management}}).
 
-* In step 2, the decoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, a 'kid' may not be present, if the response is a reply to a request protected in pairwise mode. In such a case, the client assumes the response 'kid' to be exactly the one of the server to which the request protected in pairwise mode was intended for.
+* In step 2, the decoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, a 'kid' may not be present, if the response is a reply to a request protected in pairwise mode.
+
+   In case the request was protected in pairwise mode, the following also applies.
+   
+   - If the 'kid' parameter is not present in the response, the client assumes the response 'kid' to be exactly the one of the server to which the request was intended for.
+   
+   - If the 'kid' parameter is present in the response and it is different from exactly the one of the server to which the request was intended for, the client SHALL stop processing the response.
 
    If the response 'kid context' matches an existing ID Context (Gid) but the received/assumed 'kid' does not match any Recipient ID in this Security Context, then the client MAY create a new Recipient Context for this Recipient ID and initialize it according to Section 3 of {{RFC8613}}, and also retrieve the associated public key. If the application does not specify dynamic derivation of new Recipient Contexts, then the client SHALL stop processing the response.
 
@@ -1037,6 +1043,8 @@ When using the pairwise mode, a response is protected as defined in Section 8.3 
 ## Verifying the Response {#sec-pairwise-verify-resp}
 
 Upon receiving a response with the Group Flag set to 0, following the procedure in {{sec-message-reception}}, the client MUST process it as defined in Section 8.4 of {{RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following differences also apply.
+
+* The same as described in {{ssec-verify-response}} holds with respect to handling the 'kid' parameter of the response, when received as a reply to a request protected in pairwise mode.
 
 * If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}). The new Pairwise Sender/Recipient Keys are deleted if the Recipient Context is deleted as a result of the message not being successfully verified. 
 
@@ -1554,7 +1562,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -11 to -12 ## {#sec-11-12}
 
-* Clarifications about processing of notifications.
+* Clarifications about processing of responses and notifications.
 
 * Updated derivation of pairwise keys, with more security considerations.
 
