@@ -585,7 +585,7 @@ aad_array = [
    options : bstr,
    request_kid_context : bstr,
    OSCORE_option: bstr,
-   sender_pk: any,
+   sender_public_key: any,
 ]
 ~~~~~~~~~~~
 {: #fig-ext-aad title="external_aad" artwork-align="center"}
@@ -598,7 +598,7 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
 
    - 'alg_signature_aead', which specifies Signature AEAD Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Signature AEAD Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this AEAD algorithm.
 
-   - 'alg_pairwise_key_agreement', which specifies Pairwise KDF Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Pairwise Key Agreement Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this KDF algorithm.
+   - 'alg_pairwise_key_agreement', which specifies Pairwise Key Agreement Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Pairwise Key Agreement Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this KDF algorithm.
    
 * The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}).
 
@@ -606,7 +606,7 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
 
 * The new element 'OSCORE_option', containing the value of the OSCORE Option present in the protected message, encoded as a binary string.
 
-* The new element 'sender_pk', containing the sender's public key. An X.509 certificates are byte strings, C509 certificates and CWTs are arrays but might be tagged.
+* The new element 'sender_public_key', containing the sender's public key. An X.509 certificates are byte strings, C509 certificates and CWTs are arrays but might be tagged.
 
    Note for implementation: this construction requires the OSCORE option of the message to be generated and finalized before computing the ciphertext of the COSE_Encrypt0 object (when using the group mode or the pairwise mode) and before calculating the counter signature (when using the group mode). Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
 
