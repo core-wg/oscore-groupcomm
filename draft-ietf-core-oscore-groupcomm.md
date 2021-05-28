@@ -604,7 +604,7 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
 
    In case Observe {{RFC7641}} is used, this enables endpoints to safely keep an observation active beyond a possible change of Gid, i.e. of ID Context, following a group rekeying (see {{sec-group-key-management}}). In fact, it ensures that every notification cryptographically matches with only one observation request, rather than with multiple ones that were protected with different keying material but share the same 'request_kid' and 'request_piv' values.
 
-* The new element 'OSCORE_option', containing the value of the OSCORE Option present in the protected message, encoded as a binary string.
+* The new element 'OSCORE_option', containing the value of the OSCORE Option present in the protected message, encoded as a byte string.
 
 * The new element 'sender_public_key', containing the sender's public key. An X.509 certificates are byte strings, C509 certificates and CWTs are arrays but might be tagged.
 
