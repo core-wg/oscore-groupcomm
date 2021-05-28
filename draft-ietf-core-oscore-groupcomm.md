@@ -212,11 +212,13 @@ This document refers also to the following terminology.
 
 This specification refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol (see {{terminology}}). Each endpoint which is member of a group maintains a Security Context as defined in Section 3 of {{RFC8613}}, extended as follows (see {{fig-additional-context-information}}):
 
-* One Common Context, shared by all the endpoints in the group. Two new parameters are included in the Common Context, namely Counter Signature Algorithm and Counter Signature Parameters. These relate to the computation of counter signatures, when messages are protected using the group mode (see {{mess-processing}}).
+* One Common Context, shared by all the endpoints in the group. One new parameter is included in the Common Context, namely a Public Key Algorithm. The format of the public key algorithm depends on the types of credentials used, with CWT it is a COSE key type and Key Parameters, in X.509 it is a SubjectPublicKeyInfoAlgorithm. The public key algorith would typically be stored with the keys.
+
+   If signature mode is supported, the Common context is further extended with two new parametes, nameley Counter Signature Algorithm, a Signature AEAD algorithm that is used together with the signature algorithm, and a public key algorithm. These relate to the computation of counter signatures, when messages are protected using the group mode (see {{mess-processing}}).
 
    If the pairwise mode is supported, the Common Context is further extended with two new parameters, namely Secret Derivation Algorithm and Secret Derivation Parameters. These relate to the derivation of a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
 
-* One Sender Context, extended with the endpoint's private key. The private key is used to sign the message in group mode, and for deriving the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). If the pairwise mode is supported, the Sender Context is also extended with the Pairwise Sender Keys associated to the other endpoints (see {{sec-derivation-pairwise}}). The Sender Context is omitted if the endpoint is configured exclusively as silent server. 
+* One Sender Context, extended with the endpoint's private key. The private key is used to sign the message in group mode, or for deriving the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). If the pairwise mode is supported, the Sender Context is also extended with the Pairwise Sender Keys associated to the other endpoints (see {{sec-derivation-pairwise}}). The Sender Context is omitted if the endpoint is configured exclusively as silent server. 
 
 * One Recipient Context for each endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated to endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the public key of the associated endpoint, used to verify the signature in group mode and for deriving the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). If the pairwise mode is supported, then the Recipient Context is also extended with the Pairwise Recipient Key associated to the other endpoint (see {{sec-derivation-pairwise}}).
 
@@ -224,10 +226,9 @@ This specification refers to a group as a set of endpoints sharing keying materi
 +-------------------+-----------------------------------------------+
 | Context Component | New Information Elements                      |
 +-------------------+-----------------------------------------------+
-| Common Context    | Counter Signature Algorithm                   |
-|                   | Counter Signature Parameters                  |
+| Common Context    | *Counter Signature Algorithm                   |
+|                   | *Signature AEAD Algorithm                      |
 |                   | *Secret Derivation Algorithm                  |
-|                   | *Secret Derivation Parameters                 |
 +-------------------+-----------------------------------------------+
 | Sender Context    | Endpoint's own private key                    |
 |                   | *Pairwise Sender Keys for the other endpoints |
@@ -252,47 +253,15 @@ The ID Context parameter (see Sections 3.3 and 5.1 of {{RFC8613}}) in the Common
 
 ### Counter Signature Algorithm ## {#ssec-common-context-cs-alg}
 
-Counter Signature Algorithm identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Sections 3.2 and 3.3 of {{I-D.ietf-cose-countersign}}), when messages are protected using the group mode (see {{mess-processing}}).
-
-This parameter is immutable once the Common Context is established. Counter Signature Algorithm MUST take value from the "Value" column of the "COSE Algorithms" Registry {{COSE.Algorithms}}. The value is associated to a COSE key type, as specified in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}}. COSE capabilities for algorithms are defined in Section 8 of {{I-D.ietf-cose-rfc8152bis-algs}}.
+Counter Signature Algorithm identifies the digital signature algorithm used to compute a counter signature on the COSE object (see Sections 3.2 and 3.3 of {{I-D.ietf-cose-countersign}}), when messages are protected using the group mode (see {{mess-processing}}). This parameter is immutable once the Common Context is established. 
 
 The EdDSA signature algorithm and the elliptic curve Ed25519 {{RFC8032}} are mandatory to implement. If elliptic curve signatures are used, it is RECOMMENDED to implement deterministic signatures with additional randomness as specified in {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
 
-### Counter Signature Parameters ## {#ssec-common-context-cs-params}
-
-Counter Signature Parameters identifies the parameters associated to the digital signature algorithm specified in Counter Signature Algorithm. This parameter is immutable once the Common Context is established.
-
-This parameter is a CBOR array including the following two elements, whose exact structure and value depend on the value of Counter Signature Algorithm:
-
-* The first element is the array of COSE capabilities for Counter Signature Algorithm, as specified for that algorithm in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}} (see Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}).
-
-* The second element is the array of COSE capabilities for the COSE key type associated to Counter Signature Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
-   
-Examples of Counter Signature Parameters are in {{sec-cs-params-ex}}.
-   
-This format is consistent with every counter signature algorithm currently considered in {{I-D.ietf-cose-rfc8152bis-algs}}, i.e. with algorithms that have only the COSE key type as their COSE capability. {{sec-future-cose-algs}} describes how Counter Signature Parameters can be generalized for possible future registered algorithms having a different set of COSE capabilities.
-   
 ### Secret Derivation Algorithm ## {#ssec-common-context-dh-alg}
 
-Secret Derivation Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
-
-This parameter is immutable once the Common Context is established. Secret Derivation Algorithm MUST take value from the "Value" column of the "COSE Algorithms" Registry {{COSE.Algorithms}}. The value is associated to a COSE key type, as specified in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}}. COSE capabilities for algorithms are defined in Section 8 of {{I-D.ietf-cose-rfc8152bis-algs}}.
+Secret Derivation Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}). This parameter is immutable once the Common Context is established. 
 
 For endpoints that support the pairwise mode, the ECDH-SS + HKDF-256 algorithm specified in Section 6.3.1 of {{I-D.ietf-cose-rfc8152bis-algs}} and the X25519 curve {{RFC7748}} are mandatory to implement.
-
-### Secret Derivation Parameters ## {#ssec-common-context-dh-params}
-
-Secret Derivation Parameters identifies the parameters associated to the elliptic curve Diffie-Hellman algorithm specified in Secret Derivation Algorithm. This parameter is immutable once the Common Context is established.
-
-This parameter is a CBOR array including the following two elements, whose exact structure and value depend on the value of Secret Derivation Algorithm:
-
-* The first element is the array of COSE capabilities for Secret Derivation Algorithm, as specified for that algorithm in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}} (see Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}).
-
-* The second element is the array of COSE capabilities for the COSE key type associated to Secret Derivation Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
-   
-Examples of Secret Derivation Parameters are in {{sec-cs-params-ex}}.
-
-This format is consistent with every elliptic curve Diffie-Hellman algorithm currently considered in {{I-D.ietf-cose-rfc8152bis-algs}}, i.e. with algorithms that have only the COSE key type as their COSE capability. {{sec-future-cose-algs}} describes how Secret Derivation Parameters can be generalized for possible future registered algorithms having a different set of COSE capabilities.
 
 ## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
@@ -308,11 +277,11 @@ An endpoint admits a maximum amount of Recipient Contexts for a same Security Co
 
 ## Pairwise Keys ## {#sec-derivation-pairwise}
 
-Certain signature schemes, such as EdDSA and ECDSA, support a secure combined signature and encryption scheme. This section specifies the derivation of "pairwise keys", for use in the pairwise mode defined in {{sec-pairwise-protection}}.
+Certain signature schemes, such as EdDSA and ECDSA, support a secure combined signature and encryption scheme. This section specifies the derivation of "pairwise keys", for use in the pairwise mode defined in {{sec-pairwise-protection}}. Group OSCORE keys used for both signature and encryption MUST NOT be used for any other purposes than Group OSCORE.
 
 ### Derivation of Pairwise Keys ### {#key-derivation-pairwise}
 
-Using the Group OSCORE Security Context (see {{sec-context}}), a group member can derive AEAD keys to protect point-to-point communication between itself and any other endpoint in the group. The same AEAD algorithm as in the group mode is used. The key derivation of these so-called pairwise keys follows the same construction as in Section 3.2.1 of {{RFC8613}}: 
+Using the Group OSCORE Security Context (see {{sec-context}}), a group member can derive AEAD keys to protect point-to-point communication between itself and any other endpoint in the group. The non-signature AEAD algorithm {{RFC8613}} is used. The key derivation of these so-called pairwise keys follows the same construction as in Section 3.2.1 of {{RFC8613}}: 
 
 ~~~~~~~~~~~
 Pairwise Sender Key    = HKDF(Sender Key, Shared Secret, info, L)
@@ -349,7 +318,7 @@ On the other hand, when combining group and pairwise communication modes, this m
 
 ### Security Context for Pairwise Mode  ### {#pairwise-implementation}
 
-If the pairwise mode is supported, the Security Context additionally includes Secret Derivation Algorithm, Secret Derivation Parameters and the pairwise keys, as described at the beginning of {{sec-context}}.
+If the pairwise mode is supported, the Security Context additionally includes Secret Derivation Algorithm and the pairwise keys, as described at the beginning of {{sec-context}}.
  
 The pairwise keys as well as the shared secrets used in their derivation (see {{key-derivation-pairwise}}) may be stored in memory or recomputed every time they are needed. The shared secret changes only when a public/private key pair used for its derivation changes, which results in the pairwise keys also changing. Additionally, the pairwise keys change if the Sender ID changes or if a new Security Context is established for the group (see {{sec-group-re-join}}). In order to optimize protocol performance, an endpoint may store the derived pairwise keys for easy retrieval. 
 
