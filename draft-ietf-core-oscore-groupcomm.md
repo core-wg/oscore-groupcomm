@@ -213,12 +213,12 @@ This document refers also to the following terminology.
 This specification refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol (see {{terminology}}). Each endpoint which is member of a group maintains a Security Context as defined in Section 3 of {{RFC8613}}, extended as follows (see {{fig-additional-context-information}}):
 
 * One Common Context, shared by all the endpoints in the group. Several new parameters are included in the Common Context:
-* 
-   If signature mode is supported, the Common context is further extended with two new parametes, nameley a Signature Algorithm and a Signature AEAD algorithm that is used together with the signature algorithm. These relate to the computation of counter signatures, when messages are protected using the group mode (see {{mess-processing}}).
+ 
+   If signature mode is supported, the Common context is further extended with two new parametes, nameley a Signature Algorithm and a Signature AEAD Algorithm used together with the signature algorithm. These relate to the computation of counter signatures, when messages are protected using the group mode (see {{mess-processing}}).
 
    If the pairwise mode is supported, the Common Context is extended with a Pairwise Key Agreement Algorithm used for agreement of a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
 
-* One Sender Context, extended with the endpoint's public and private key pair. The private key is used to sign the message in group mode, or for deriving the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). The public key is included in the external additional authenticated data. The format of the public and private key pair depends on the types of credentials used, with CWT it is a COSE key type and Key Parameters, in X.509 it is a SubjectPublicKeyInfoAlgorithm. The public and private key pair must the public key algorithm. If the pairwise mode is supported, the Sender Context is also extended with the Pairwise Sender Keys associated to the other endpoints (see {{sec-derivation-pairwise}}). The Sender Context is omitted if the endpoint is configured exclusively as silent server. 
+* One Sender Context, extended with the endpoint's public and private key pair. The private key is used to sign the message in group mode, or for deriving the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). The public key is included in the external additional authenticated data. The public and private key pair must include the public key algorithm. If CWTs are used, the public key algorithm is described by a COSE key type and Key Parameters, if X.509 it is described by the SubjectPublicKeyInfoAlgorithm structure. If the pairwise mode is supported, the Sender Context is also extended with the Pairwise Sender Keys associated to the other endpoints (see {{sec-derivation-pairwise}}). The Sender Context is omitted if the endpoint is configured exclusively as silent server. 
 
 * One Recipient Context for each endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated to endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the public key of the associated endpoint, used to verify the signature in group mode and for deriving the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). If the pairwise mode is supported, then the Recipient Context is also extended with the Pairwise Recipient Key associated to the other endpoint (see {{sec-derivation-pairwise}}).
 
@@ -318,7 +318,7 @@ On the other hand, when combining group and pairwise communication modes, this m
 
 ### Security Context for Pairwise Mode  ### {#pairwise-implementation}
 
-If the pairwise mode is supported, the Security Context additionally includes Secret Derivation Algorithm and the pairwise keys, as described at the beginning of {{sec-context}}.
+If the pairwise mode is supported, the Security Context additionally includes Pairwise Key Agreement Algorithm and the pairwise keys, as described at the beginning of {{sec-context}}.
  
 The pairwise keys as well as the shared secrets used in their derivation (see {{key-derivation-pairwise}}) may be stored in memory or recomputed every time they are needed. The shared secret changes only when a public/private key pair used for its derivation changes, which results in the pairwise keys also changing. Additionally, the pairwise keys change if the Sender ID changes or if a new Security Context is established for the group (see {{sec-group-re-join}}). In order to optimize protocol performance, an endpoint may store the derived pairwise keys for easy retrieval. 
 
