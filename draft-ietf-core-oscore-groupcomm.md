@@ -579,7 +579,7 @@ aad_array = [
    algorithms : [alg_aead : int / tstr,
                  alg_signature : int / tstr / null,
                  alg_signature_aead : int / tstr / null,
-                 alg_pairwise_kdf : int / tstr / null]
+                 alg_pairwise_key_agreement : int / tstr / null]
    request_kid : bstr,
    request_piv : bstr,
    options : bstr,
@@ -598,7 +598,7 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
 
    - 'alg_signature_aead', which specifies Signature AEAD Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Signature AEAD Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this AEAD algorithm.
 
-   - 'alg_pairwise_kdf', which specifies Pairwise KDF Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Pairwise KDF Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this KDF algorithm.
+   - 'lg_pairwise_key_agreement', which specifies Pairwise KDF Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Pairwise Key Agreement Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this KDF algorithm.
    
 * The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}).
 
@@ -606,7 +606,7 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
 
 * The new element 'OSCORE_option', containing the value of the OSCORE Option present in the protected message, encoded as a binary string.
 
-* The new element 'sender_pk', containing the sender's public key. An X.509 certificates are byte strings, C509 certificates and CWTs are typically arrays but might be tagged.
+* The new element 'sender_pk', containing the sender's public key. An X.509 certificates are byte strings, C509 certificates and CWTs are arrays but might be tagged.
 
    Note for implementation: this construction requires the OSCORE option of the message to be generated and finalized before computing the ciphertext of the COSE_Encrypt0 object (when using the group mode or the pairwise mode) and before calculating the counter signature (when using the group mode). Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
 
