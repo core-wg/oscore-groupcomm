@@ -569,7 +569,7 @@ The external_aad of the Additional Authenticated Data (AAD) is different compare
 
 The same external_aad structure is used in group mode and pairwise mode for encryption (see Section 5.3 of {{I-D.ietf-cose-rfc8152bis-struct}}), as well as in group mode for signing (see Section 4.4 of {{I-D.ietf-cose-rfc8152bis-struct}}).
 
-In particular, the external_aad includes also the signature algorithm, the value of the 'kid context' in the COSE object of the request, and the OSCORE option of the protected message.
+In particular, the external_aad includes also the signature algorithm, the signature AEAD algorithm, the pairwise key agreement algorithm, the value of the 'kid context' in the COSE object of the request, the OSCORE option of the protected message, and the senders public key.
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
