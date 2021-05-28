@@ -553,7 +553,7 @@ Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{I-D
 
 When protecting a message in group mode, the 'unprotected' field MUST additionally include the following parameter:
 
-* COSE_CounterSignature0: its value is set to the counter signature of the COSE object, computed by the sender as described in Sections 3.2 and 3.3 of {{I-D.ietf-cose-countersign}}, by using its private key and according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context.
+* COSE_CounterSignature0: its value is set to the counter signature of the COSE object, computed by the sender as described in Sections 3.2 and 3.3 of {{I-D.ietf-cose-countersign}}, by using its private key and according to the Signature Algorithm in the Security Context.
 
    In particular, the Countersign_structure contains the context text string "CounterSignature0", the external_aad as defined in {{sec-cose-object-ext-aad}} of this specification, and the ciphertext of the COSE object as payload.
 
@@ -569,7 +569,7 @@ The external_aad of the Additional Authenticated Data (AAD) is different compare
 
 The same external_aad structure is used in group mode and pairwise mode for encryption (see Section 5.3 of {{I-D.ietf-cose-rfc8152bis-struct}}), as well as in group mode for signing (see Section 4.4 of {{I-D.ietf-cose-rfc8152bis-struct}}).
 
-In particular, the external_aad includes also the counter signature algorithm and related signature parameters, the value of the 'kid context' in the COSE object of the request, and the OSCORE option of the protected message.
+In particular, the external_aad includes also the signature algorithm, the value of the 'kid context' in the COSE object of the request, and the OSCORE option of the protected message.
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
@@ -577,14 +577,15 @@ external_aad = bstr .cbor aad_array
 aad_array = [
    oscore_version : uint,
    algorithms : [alg_aead : int / tstr,
-                 alg_countersign : int / tstr,
-                 par_countersign : [countersign_alg_capab,
-                                    countersign_key_type_capab]],
+                 alg_signature : int / tstr / null,
+                 alg_signature_aead : int / tstr / null,
+                 alg_pairwise_kdf : int / tstr / null]
    request_kid : bstr,
    request_piv : bstr,
    options : bstr,
    request_kid_context : bstr,
-   OSCORE_option: bstr
+   OSCORE_option: bstr,
+   sender_pk: any,
 ]
 ~~~~~~~~~~~
 {: #fig-ext-aad title="external_aad" artwork-align="center"}
@@ -593,21 +594,19 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
 
 * The 'algorithms' array additionally includes:
 
-   - 'alg_countersign', which specifies Counter Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Counter Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this counter signature algorithm.
+   - 'alg_signature', which specifies Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this signature algorithm.
 
-   - 'par_countersign', which specifies the CBOR array Counter Signature Parameters from the Common Context (see {{ssec-common-context-cs-params}}). In particular:
+   - 'alg_signature_aead', which specifies Signature AEAD Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Signature AEAD Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this AEAD algorithm.
 
-      - 'countersign_alg_capab' is the array of COSE capabilities for the countersignature algorithm indicated in 'alg_countersign'. This is the first element of the CBOR array Counter Signature Parameters from the Common Context.
-
-      - 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type used by the countersignature algorithm indicated in 'alg_countersign'. This is the second element of the CBOR array Counter Signature Parameters from the Common Context.
-   
-      This format is consistent with every counter signature algorithm currently considered in {{I-D.ietf-cose-rfc8152bis-algs}}, i.e. with algorithms that have only the COSE key type as their COSE capability. {{sec-future-cose-algs}} describes how 'par_countersign' can be generalized for possible future registered algorithms having a different set of COSE capabilities.
+   - 'alg_pairwise_kdf', which specifies Pairwise KDF Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Pairwise KDF Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this KDF algorithm.
    
 * The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}).
 
    In case Observe {{RFC7641}} is used, this enables endpoints to safely keep an observation active beyond a possible change of Gid, i.e. of ID Context, following a group rekeying (see {{sec-group-key-management}}). In fact, it ensures that every notification cryptographically matches with only one observation request, rather than with multiple ones that were protected with different keying material but share the same 'request_kid' and 'request_piv' values.
 
-* The new element 'OSCORE_option', containing the value of the OSCORE Option present in the protected message, encoded as a binary string. This prevents the attack described in {{ssec-cross-group-injection}} when using the group mode, as further explained  in {{sssec-cross-group-injection-group-mode}}. 
+* The new element 'OSCORE_option', containing the value of the OSCORE Option present in the protected message, encoded as a binary string.
+
+* The new element 'sender_pk', containing the sender's public key. An X.509 certificates are byte strings, C509 certificates and CWTs are typically arrays but might be tagged.
 
    Note for implementation: this construction requires the OSCORE option of the message to be generated and finalized before computing the ciphertext of the COSE_Encrypt0 object (when using the group mode or the pairwise mode) and before calculating the counter signature (when using the group mode). Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
 
