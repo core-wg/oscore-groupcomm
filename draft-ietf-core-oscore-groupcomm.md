@@ -214,7 +214,7 @@ This specification refers to a group as a set of endpoints sharing keying materi
 
 * One Common Context, shared by all the endpoints in the group. Several new parameters are included in the Common Context:
  
-   If signature mode is supported, the Common context is further extended with two new parametes, nameley a Signature Algorithm and a Signature AEAD Algorithm used together with the signature algorithm. These relate to the computation of counter signatures, when messages are protected using the group mode (see {{mess-processing}}).
+   If signature mode is supported, the Common context is further extended with two new parametes, nameley a Signature Algorithm and a Signature Encryption Algorithm used together with the signature algorithm. These relate to the computation of counter signatures, when messages are protected using the group mode (see {{mess-processing}}).
 
    If the pairwise mode is supported, the Common Context is extended with a Pairwise Key Agreement Algorithm used for agreement of a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
 
@@ -227,7 +227,7 @@ This specification refers to a group as a set of endpoints sharing keying materi
 | Context Component | New Information Elements                      |
 +-------------------+-----------------------------------------------+
 | Common Context    | *Signature Algorithm                          |
-|                   | *Signature AEAD Algorithm                     |
+|                   | *Signature Encryption Algorithm               |
 |                   | *Pairwise Key Agreement Algorithm             |
 +-------------------+-----------------------------------------------+
 | Sender Context    | Endpoint's own public and private key pair    |
@@ -281,7 +281,7 @@ Certain signature schemes, such as EdDSA and ECDSA, support a secure combined si
 
 ### Derivation of Pairwise Keys ### {#key-derivation-pairwise}
 
-Using the Group OSCORE Security Context (see {{sec-context}}), a group member can derive AEAD keys to protect point-to-point communication between itself and any other endpoint in the group. The non-signature AEAD algorithm {{RFC8613}} is used. The key derivation of these so-called pairwise keys follows the same construction as in Section 3.2.1 of {{RFC8613}}: 
+Using the Group OSCORE Security Context (see {{sec-context}}), a group member can derive AEAD keys to protect point-to-point communication between itself and any other endpoint in the group. The AEAD algorithm {{RFC8613}} is used. The key derivation of these so-called pairwise keys follows the same construction as in Section 3.2.1 of {{RFC8613}}: 
 
 ~~~~~~~~~~~
 Pairwise Sender Key    = HKDF(Sender Key, Shared Secret, info, L)
