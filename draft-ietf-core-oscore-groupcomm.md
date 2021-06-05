@@ -12,7 +12,7 @@ wg: CoRE Working Group
 kw: Internet-Draft
 cat: std
 
-coding: us-ascii
+coding: utf-8
 pi:    # can use array (if all yes) or hash here
 
   toc: yes
@@ -31,7 +31,7 @@ author:
         email: marco.tiloca@ri.se
       -
         ins: G. Selander
-        name: Goeran Selander
+        name: Göran Selander
         org: Ericsson AB
         street: Torshamnsgatan 23
         city: Kista
@@ -1893,6 +1893,6 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 # Acknowledgments # {#acknowldegment}
 {: numbered="no"}
 
-The authors sincerely thank Christian Amsuess, Stefan Beck, Rolf Blom, Carsten Bormann, Esko Dijk, Martin Gunnarsson, Klaus Hartke, Rikard Hoeglund, Richard Kelsey, Dave Robin, Jim Schaad, Ludwig Seitz, Peter van der Stok and Erik Thormarker for their feedback and comments.
+The authors sincerely thank Christian Amsüss, Stefan Beck, Rolf Blom, Carsten Bormann, Esko Dijk, Martin Gunnarsson, Klaus Hartke, Rikard Höglund, Richard Kelsey, Dave Robin, Jim Schaad, Ludwig Seitz, Peter van der Stok and Erik Thormarker for their feedback and comments.
 
 The work on this document has been partly supported by VINNOVA and the Celtic-Next project CRITISEC; the H2020 project SIFIS-Home (Grant agreement 952652); the SSF project SEC4Factory under the grant RIT17-0032; and the EIT-Digital High Impact Initiative ACTIVE.
