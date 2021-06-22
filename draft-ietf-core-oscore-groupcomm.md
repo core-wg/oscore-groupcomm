@@ -817,6 +817,8 @@ Upon receiving a secure group request with the Group Flag set to 1, following th
 * In step 6, the server also verifies the counter signature using the public key of the client from the associated Recipient Context. In particular:
 
    - If the server does not have the public key of the client yet, the server MUST stop processing the request and MAY respond with a 5.03 (Service Unavailable) response. The response MAY include a Max-Age Option, indicating to the client the number of seconds after which to retry. If the Max-Age Option is not present, a retry time of 60 seconds will be assumed by the client, as default value defined in Section 5.10.5 of {{RFC7252}}.
+   
+   - The server MUST perform signature verification before decrypting the COSE object. Implementations that cannot perform the two steps in this order MUST ensure that no access to the plaintext is possible before a successful signature verification and MUST prevent any possible leak of time-related information that can yield side-channel attacks.
 
    - If the signature verification fails, the server SHALL stop processing the request and MAY respond with a 4.00 (Bad Request) response. The server MAY set an Outer Max-Age option with value zero. The diagnostic payload MAY contain a string, which, if present, MUST be "Decryption failed" as if the decryption had failed. Furthermore, the Replay Window MUST be updated only if both the signature verification and the decryption succeed.
 
@@ -877,7 +879,9 @@ Note that a client may receive a response protected with a Security Context diff
 
 * In step 3, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
 
-* In step 5, the client also verifies the counter signature using the public key of the server from the associated Recipient Context. If the verification of the counter signature fails, the same steps are taken as if the decryption had failed. 
+* In step 5, the client also verifies the counter signature using the public key of the server from the associated Recipient Context. If the verification of the counter signature fails, the same steps are taken as if the decryption had failed.
+
+   The client MUST perform signature verification before decrypting the COSE object. Implementations that cannot perform the two steps in this order MUST ensure that no access to the plaintext is possible before a successful signature verification and MUST prevent any possible leak of time-related information that can yield side-channel attacks.
 
    After a successful verification, the client performs also the following actions if the response is not an Observe notification.
 
@@ -1383,7 +1387,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Revised parameters of the Security Context, COSE object and external_aad.
 
-* Clarifications about processing of responses and notifications.
+* Clarifications about message processing, especially notifications.
 
 * Updated derivation of pairwise keys, with more security considerations.
 
