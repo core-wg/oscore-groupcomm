@@ -277,11 +277,7 @@ This parameter is a CBOR array including the following two elements, whose exact
 * The first element is the array of COSE capabilities for Counter Signature Algorithm, as specified for that algorithm in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}} (see Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}).
 
 * The second element is the array of COSE capabilities for the COSE key type associated to Counter Signature Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
-   
-Examples of Counter Signature Parameters are in {{sec-cs-params-ex}}.
-   
-This format is consistent with every counter signature algorithm currently considered in {{I-D.ietf-cose-rfc8152bis-algs}}, i.e. with algorithms that have only the COSE key type as their COSE capability. {{sec-future-cose-algs}} describes how Counter Signature Parameters can be generalized for possible future registered algorithms having a different set of COSE capabilities.
-   
+
 ### Secret Derivation Algorithm ## {#ssec-common-context-dh-alg}
 
 Secret Derivation Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
@@ -299,10 +295,6 @@ This parameter is a CBOR array including the following two elements, whose exact
 * The first element is the array of COSE capabilities for Secret Derivation Algorithm, as specified for that algorithm in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}} (see Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}).
 
 * The second element is the array of COSE capabilities for the COSE key type associated to Secret Derivation Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
-   
-Examples of Secret Derivation Parameters are in {{sec-cs-params-ex}}.
-
-This format is consistent with every elliptic curve Diffie-Hellman algorithm currently considered in {{I-D.ietf-cose-rfc8152bis-algs}}, i.e. with algorithms that have only the COSE key type as their COSE capability. {{sec-future-cose-algs}} describes how Secret Derivation Parameters can be generalized for possible future registered algorithms having a different set of COSE capabilities.
 
 ## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
@@ -663,8 +655,6 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
       - 'countersign_alg_capab' is the array of COSE capabilities for the countersignature algorithm indicated in 'alg_countersign'. This is the first element of the CBOR array Counter Signature Parameters from the Common Context.
 
       - 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type used by the countersignature algorithm indicated in 'alg_countersign'. This is the second element of the CBOR array Counter Signature Parameters from the Common Context.
-   
-      This format is consistent with every counter signature algorithm currently considered in {{I-D.ietf-cose-rfc8152bis-algs}}, i.e. with algorithms that have only the COSE key type as their COSE capability. {{sec-future-cose-algs}} describes how 'par_countersign' can be generalized for possible future registered algorithms having a different set of COSE capabilities.
    
 * The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}).
 
@@ -1446,121 +1436,6 @@ Since requests including the Echo Option are sent over unicast, a server can be 
 Instead, protecting requests with the Echo Option by using the pairwise mode of Group OSCORE as described in {{sec-pairwise-protection-req}} prevents the attack in {{ssec-unicast-requests}}. In fact, only the exact server involved in the Echo exchange is able to derive the correct pairwise key used by the client to protect the request including the Echo Option.
 
 In either case, an internal on-path adversary would not be able to mix up the Echo Option value of two different unicast requests, sent by a same client to any two different servers in the group. In fact, if the group mode was used, this would require the adversary to forge the client's countersignature in both such requests. As a consequence, each of the two servers remains able to selectively accept a request with the Echo Option only if it is waiting for that exact integrity-protected Echo Option value, and is thus the intended recipient.
-
-# No Verification of Signatures in Group Mode # {#sec-no-source-auth}
-
-There are some application scenarios using group communication that have particularly strict requirements. One example of this is the requirement of low message latency in non-emergency lighting applications {{I-D.somaraju-ace-multicast}}. For those applications which have tight performance constraints and relaxed security requirements, it can be inconvenient for some endpoints to verify digital signatures in order to assert source authenticity of received messages protected with the group mode. In other cases, the signature verification can be deferred or only checked for specific actions. For instance, a command to turn a bulb on where the bulb is already on does not need the signature to be checked. In such situations, the counter signature needs to be included anyway as part of a message protected with the group mode, so that an endpoint that needs to validate the signature for any reason has the ability to do so.
-
-In this specification, it is NOT RECOMMENDED that endpoints do not verify the counter signature of received messages protected with the group mode. However, it is recognized that there may be situations where it is not always required. The consequence of not doing the signature validation in messages protected with the group mode is that security in the group is based only on the group-authenticity of the shared keying material used for encryption. That is, endpoints in the group would have evidence that the received message has been originated by a group member, although not specifically identifiable in a secure way. This can violate a number of security requirements, as the compromise of any element in the group means that the attacker has the ability to control the entire group. Even worse, the group may not be limited in scope, and hence the same keying material might be used not only for light bulbs but for locks as well. Therefore, extreme care must be taken in situations where the security requirements are relaxed, so that deployment of the system will always be done safely.
-
-# Example Values with COSE Capabilities # {#sec-cs-params-ex}
-
-The table below provides examples of values for Counter Signature Parameters in the Common Context (see {{ssec-common-context-cs-params}}), for different values of Counter Signature Algorithm.
-
-~~~~~~~~~~~
-+-------------------+---------------------------------------------+
-| Counter Signature | Example Values for Counter                  |
-| Algorithm         | Signature Parameters                        |
-+-------------------+---------------------------------------------+
-|  (-8)   // EdDSA  | [1], [1, 6]  // 1: OKP ; 1: OKP, 6: Ed25519 |
-|  (-8)   // EdDSA  | [1], [1, 7]  // 1: OKP ; 1: OKP, 7: Ed448   |
-|  (-7)   // ES256  | [2], [2, 1]  // 2: EC2 ; 2: EC2, 1: P-256   |
-|  (-35)  // ES384  | [2], [2, 2]  // 2: EC2 ; 2: EC2, 2: P-384   |
-|  (-36)  // ES512  | [2], [2, 3]  // 2: EC2 ; 2: EC2, 3: P-521   |
-|  (-37)  // PS256  | [3], [3]     // 3: RSA ; 3: RSA             |
-|  (-38)  // PS384  | [3], [3]     // 3: RSA ; 3: RSA             |
-|  (-39)  // PS512  | [3], [3]     // 3: RSA ; 3: RSA             |
-+-------------------+---------------------------------------------+
-~~~~~~~~~~~
-{: #fig-examples-counter-signature-parameters title="Examples of Counter Signature Parameters" artwork-align="center"}
-
-The table below provides examples of values for Secret Derivation Parameters in the Common Context (see {{ssec-common-context-dh-params}}), for different values of Secret Derivation Algorithm.
-
-~~~~~~~~~~~
-+-----------------------+--------------------------------------------+
-| Secret Derivation     | Example Values for Secret                  |
-| Algorithm             | Derivation Parameters                      |
-+-----------------------+--------------------------------------------+
-|  (-27)  // ECDH-SS    | [1], [1, 4]  // 1: OKP ; 1: OKP, 4: X25519 |
-|         // + HKDF-256 |                                            |
-|  (-27)  // ECDH-SS    | [1], [1, 5]  // 1: OKP ; 1: OKP, 5: X448   |
-|         // + HKDF-256 |                                            |
-|  (-27)  // ECDH-SS    | [2], [2, 1]  // 2: EC2 ; 2: EC2, 1: P-256  |
-|         // + HKDF-256 |                                            |
-|  (-27)  // ECDH-SS    | [2], [2, 2]  // 2: EC2 ; 2: EC2, 2: P-384  |
-|         // + HKDF-256 |                                            |
-|  (-27)  // ECDH-SS    | [2], [2, 3]  // 2: EC2 ; 2: EC2, 3: P-512  |
-|         // + HKDF-256 |                                            |
-+-----------------------+--------------------------------------------+
-~~~~~~~~~~~
-{: #fig-examples-counter-dh-parameters title="Examples of Secret Derivation Parameters" artwork-align="center"}
-
-# Parameter Extensibility for Future COSE Algorithms # {#sec-future-cose-algs}
-
-As defined in Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}, future algorithms can be registered in the "COSE Algorithms" Registry {{COSE.Algorithms}} as specifying none or multiple COSE capabilities.
-
-To enable the seamless use of such future registered algorithms, this section defines a general, agile format for parameters of the Security Context (see {{ssec-common-context-cs-params}} and {{ssec-common-context-dh-params}}) and for related elements of the external_aad structure (see {{sec-cose-object-ext-aad}}).
-
-If any of the currently registered COSE algorithms is considered, using this general format yields the same structure defined in this document for the items above, thus ensuring retro-compatibility.
-
-## Counter Signature Parameters ## {#sec-future-cose-algs-csp}
-
-The definition of Counter Signature Parameters in the Common Context (see {{ssec-common-context-cs-params}}) is generalized as follows.
-
-Counter Signature Parameters is a CBOR array CS_PARAMS including N+1 elements, whose exact structure and value depend on the value of Counter Signature Algorithm.
-
-* The first element, i.e. CS_PARAMS\[0\], is the array of the N COSE capabilities for Counter Signature Algorithm, as specified for that algorithm in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}} (see Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}).
-
-* Each following element CS_PARAMS\[i\], i.e. with index i > 0, is the array of COSE capabilities for the algorithm capability specified in CS_PARAMS\[0\]\[i-1\].
-
-   For example, if CS_PARAMS\[0\]\[0\] specifies the key type as capability of the algorithm, then CS_PARAMS\[1\] is the array of COSE capabilities for the COSE key type associated to Counter Signature Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
-
-## Secret Derivation Parameters ## {#sec-future-cose-algs-sdp}
-
-The definition of Secret Derivation Parameters in the Common Context (see {{ssec-common-context-dh-params}}) is generalized as follows.
-
-Secret Derivation Parameters is a CBOR array SD_PARAMS including N+1 elements, whose exact structure and value depend on the value of Secret Derivation Algorithm.
-
-* The first element, i.e. SD_PARAMS\[0\], is the array of the N COSE capabilities for Secret Derivation Algorithm, as specified for that algorithm in the "Capabilities" column of the "COSE Algorithms" Registry {{COSE.Algorithms}} (see Section 8.1 of {{I-D.ietf-cose-rfc8152bis-algs}}).
-
-* Each following element SD_PARAMS\[i\], i.e. with index i > 0, is the array of COSE capabilities for the algorithm capability specified in SD_PARAMS\[0\]\[i-1\].
-
-   For example, if SD_PARAMS\[0\]\[0\] specifies the key type as capability of the algorithm, then SD_PARAMS\[1\] is the array of COSE capabilities for the COSE key type associated to Secret Derivation Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
-   
-## 'par_countersign' in the external_aad ## {#sec-future-cose-algs-aad}
-
-The definition of the 'par_countersign' element in the 'algorithms' array of the external_aad structure (see {{sec-cose-object-ext-aad}}) is generalized as follows.
-
-The 'par_countersign' element takes the CBOR array CS_PARAMS specified by Counter Signature Parameters in the Common Context (see {{ssec-common-context-cs-params}}), considering the format generalization in {{sec-future-cose-algs}}. In particular:
-
-- The first element 'countersign_alg_capab' is the array of COSE capabilities for the countersignature algorithm indicated in 'alg_countersign'. This is CS_PARAMS\[0\], i.e. the first element of the CBOR array CS_PARAMS specified by Counter Signature Parameters in the Common Context.
-
-- Each following element 'countersign_capab_i' (i = 1, ..., N) is the array of COSE capabilities for the algorithm capability specified in 'countersign_alg_capab'\[i-1\]. This algorithm capability is the element CS_PARAMS\[0\]\[i-1\] of the CBOR array CS_PARAMS specified by Counter Signature Parameters in the Common Context.
-
-   For example, if 'countersign_alg_capab'\[i-1\] specifies the key type as capability of the algorithm, then 'countersign_capab_i' is the array of COSE capabilities for the COSE key type associated to Counter Signature Algorithm, as specified for that key type in the "Capabilities" column of the "COSE Key Types" Registry {{COSE.Key.Types}} (see Section 8.2 of {{I-D.ietf-cose-rfc8152bis-algs}}).
-
-~~~~~~~~~~~ CDDL
-external_aad = bstr .cbor aad_array
-
-aad_array = [
-   oscore_version : uint,
-   algorithms : [alg_aead : int / tstr,
-                 alg_countersign : int / tstr,       
-                 par_countersign : [countersign_alg_capab,
-                                    countersign_capab_1,
-                                    countersign_capab_2,
-                                    ...,
-                                    countersign__capab_N]],
-   request_kid : bstr,
-   request_piv : bstr,
-   options : bstr,
-   request_kid_context : bstr,
-   OSCORE_option: bstr
-]
-
-countersign_alg_capab : [c_1 : any, c_2 : any, ..., c_N : any]
-~~~~~~~~~~~
-{: #fig-ext-aad-general title="external_aad with general 'par_countersign'" artwork-align="center"}
    
 # Document Updates # {#sec-document-updates}
 
@@ -1575,6 +1450,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Termination of ongoing observations as client, upon leaving or before re-joining the group.
 
 * Recycling Group IDs by tracking the "Birth Gid" of each group member.
+
+* Removed appendices on skipping signature verification and on COSE capabilities.
 
 * Fixes and editorial improvements.
 
