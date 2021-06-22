@@ -543,7 +543,7 @@ Building on Section 5 of {{RFC8613}}, this section defines how to use COSE {{I-D
 
 When protecting a message in group mode, the 'unprotected' field MUST additionally include the following parameter:
 
-* COSE_CounterSignature0: its value is set to the counter signature of the COSE object, computed by the sender as described in Sections 3.2 and 3.3 of {{I-D.ietf-cose-countersign}}, by using its private key and according to the Counter Signature Algorithm and Counter Signature Parameters in the Security Context.
+* COSE_CounterSignature0: its value is set to the counter signature of the COSE object, computed by the sender as described in Sections 3.2 and 3.3 of {{I-D.ietf-cose-countersign}}, by using its private key and according to the Signature Algorithm in the Security Context.
 
    In particular, the Countersign_structure contains the context text string "CounterSignature0", the external_aad as defined in {{sec-cose-object-ext-aad}} of this specification, and the ciphertext of the COSE object as payload.
 
@@ -559,7 +559,7 @@ The external_aad of the Additional Authenticated Data (AAD) is different compare
 
 The same external_aad structure is used in group mode and pairwise mode for encryption (see Section 5.3 of {{I-D.ietf-cose-rfc8152bis-struct}}), as well as in group mode for signing (see Section 4.4 of {{I-D.ietf-cose-rfc8152bis-struct}}).
 
-In particular, the external_aad includes also the counter signature algorithm and related signature parameters, the value of the 'kid context' in the COSE object of the request, and the OSCORE option of the protected message.
+In particular, the external_aad includes also the signature algorithm, the signature encryption algorithm, the pairwise key agreement algorithm, the value of the 'kid context' in the COSE object of the request, the OSCORE option of the protected message, and the sender's public key.
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
@@ -567,14 +567,15 @@ external_aad = bstr .cbor aad_array
 aad_array = [
    oscore_version : uint,
    algorithms : [alg_aead : int / tstr,
-                 alg_countersign : int / tstr,
-                 par_countersign : [countersign_alg_capab,
-                                    countersign_key_type_capab]],
+                 alg_signature : int / tstr / null,
+                 alg_signature_enc : int / tstr / null,
+                 alg_pairwise_key_agreement : int / tstr / null],
    request_kid : bstr,
    request_piv : bstr,
    options : bstr,
    request_kid_context : bstr,
-   OSCORE_option: bstr
+   OSCORE_option: bstr,
+   sender_public_key: any,
 ]
 ~~~~~~~~~~~
 {: #fig-ext-aad title="external_aad" artwork-align="center"}
@@ -583,13 +584,11 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
 
 * The 'algorithms' array additionally includes:
 
-   - 'alg_countersign', which specifies Counter Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Counter Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this counter signature algorithm.
-
-   - 'par_countersign', which specifies the CBOR array Counter Signature Parameters from the Common Context. In particular:
-
-      - 'countersign_alg_capab' is the array of COSE capabilities for the countersignature algorithm indicated in 'alg_countersign'. This is the first element of the CBOR array Counter Signature Parameters from the Common Context.
-
-      - 'countersign_key_type_capab' is the array of COSE capabilities for the COSE key type used by the countersignature algorithm indicated in 'alg_countersign'. This is the second element of the CBOR array Counter Signature Parameters from the Common Context.
+   - 'alg_signature', which specifies Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this signature algorithm.
+   
+   - 'alg_signature_enc', which specifies Signature Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Signature Encryption Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this AEAD algorithm.
+   
+   - 'alg_pairwise_key_agreement', which specifies Pairwise Key Agreement Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Pairwise Key Agreement Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this KDF algorithm.
    
 * The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}).
 
@@ -599,6 +598,8 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
 
    Note for implementation: this construction requires the OSCORE option of the message to be generated and finalized before computing the ciphertext of the COSE_Encrypt0 object (when using the group mode or the pairwise mode) and before calculating the counter signature (when using the group mode). Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
 
+* The new element 'sender_public_key', containing the sender's public key. An X.509 certificate is encoded as a CBOR byte string. A C509 certificate or a CWT is encoded as a CBOR array, and might be tagged.
+   
 # OSCORE Header Compression {#compression}
 
 The OSCORE header compression defined in Section 6 of {{RFC8613}} is used, with the following differences.
@@ -1380,7 +1381,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * No mode of operation is mandatory to support.
 
-* Revised parameters of the Security Context.
+* Revised parameters of the Security Context, COSE object and external_aad.
 
 * Clarifications about processing of responses and notifications.
 
