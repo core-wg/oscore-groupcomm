@@ -1440,6 +1440,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -11 to -12 ## {#sec-11-12}
 
+* No mode of operation is mandatory to support.
+
 * Clarifications about processing of responses and notifications.
 
 * Updated derivation of pairwise keys, with more security considerations.
