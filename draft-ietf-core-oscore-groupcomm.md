@@ -111,13 +111,17 @@ informative:
   I-D.ietf-core-observe-multicast-notifications:
   I-D.ietf-lwig-curve-representations:
   I-D.ietf-tls-dtls13:
+  I-D.ietf-cose-cbor-encoded-cert:
+  I-D.ietf-rats-uccs:
   RFC4944:
   RFC4949:
   RFC6282:
   RFC6347:
   RFC7228:
   RFC7641:
+  RFC7925:
   RFC7959:
+  RFC8392:
   Degabriele:
     author:
       -
@@ -204,15 +208,27 @@ This document refers also to the following terminology.
 
 # Security Context # {#sec-context}
 
-This specification refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol (see {{terminology}}). Each endpoint which is member of a group maintains a Security Context as defined in Section 3 of {{RFC8613}}, extended as follows (see {{fig-additional-context-information}}).
+This specification refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol (see {{terminology}}). Regardless of what it actually supports, each enpoint of a group is aware of whether the group uses the group mode, or the pairwise mode, or both.
+
+All members of a group maintain a Security Context as defined in Section 3 of {{RFC8613}} and extended as defined in this section. How the Security Context is established by the group members is out of scope for this specification, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to tell which Security Context was latest established.
+
+The default setting for how to manage information about the group, including the Security Context, is described in terms of a Group Manager (see {{group-manager}}). In particular, the Group Manager indicates whether the group uses the group mode, the pairwise mode, or both of them, as part of the group data provided to candidate group members when joining the group.
+
+The remainder of this section provides further details about the Security Context of Group OSCORE. In particular, each endpoint which is member of a group maintains a Security Context as defined in Section 3 of {{RFC8613}}, extended as follows (see {{fig-additional-context-information}}).
 
 * One Common Context, shared by all the endpoints in the group. Several new parameters are included in the Common Context.
 
    If the group uses the group mode, the Common context is extended with two new parameters, namely a Signature Algorithm and a Signature Encryption Algorithm used together with the Signature Algorithm. These relate to the computation of counter signatures, when messages are protected using the group mode (see {{mess-processing}}).
 
    If the group uses the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm used for agreement on a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
+   
+   If a Group Manager is used for maintaining the group, the Common Context is extended with the public key of the Group Manager. When processing a message, the public key of the Group Manager is included in the external additional authenticated data.
 
-* One Sender Context, extended with the endpoint's public and private key pair. The private key is used to sign messages in group mode, or for deriving pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). The public key is included in the external additional authenticated data. The public and private key pair MUST specify the public key algorithm. If CWTs are used as credentials, the public key algorithm is described by a COSE key type and related Key Type Parameters. If X.509 certificates are used as credentials, the public key algorithm is described by the SubjectPublicKeyInfoAlgorithm structure. If the endpoint supports the pairwise mode, the Sender Context is also extended with the Pairwise Sender Keys associated to the other endpoints (see {{sec-derivation-pairwise}}). The Sender Context is omitted if the endpoint is configured exclusively as silent server. 
+* One Sender Context, extended with the endpoint's public and private key pair. The private key is used to sign messages in group mode, or for deriving pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). When processing a message, the public key is included in the external additional authenticated data.
+
+   If the endpoint supports the pairwise mode, the Sender Context is also extended with the Pairwise Sender Keys associated to the other endpoints (see {{sec-derivation-pairwise}}).
+   
+   The Sender Context is omitted if the endpoint is configured exclusively as silent server. 
 
 * One Recipient Context for each endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated to endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the public key of the associated endpoint, used to verify the signature in group mode and for deriving the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). If the endpoint supports the pairwise mode, then the Recipient Context is also extended with the Pairwise Recipient Key associated to the other endpoint (see {{sec-derivation-pairwise}}).
 
@@ -223,6 +239,7 @@ This specification refers to a group as a set of endpoints sharing keying materi
 | Common Context    | * Signature Algorithm                          |
 |                   | * Signature Encryption Algorithm               |
 |                   | * Pairwise Key Agreement Algorithm             |
+|                   | * Group Manager Public Key                     |
 +-------------------+------------------------------------------------+
 | Sender Context    |   Endpoint's own public and private key pair   |
 |                   | * Pairwise Sender Keys for the other endpoints |
@@ -232,10 +249,6 @@ This specification refers to a group as a set of endpoints sharing keying materi
 +-------------------+------------------------------------------------+
 ~~~~~~~~~~~
 {: #fig-additional-context-information title="Additions to the OSCORE Security Context. Optional additions are labeled with an asterisk." artwork-align="center"}
-
-Further details about the Security Context of Group OSCORE are provided in the remainder of this section. How the Security Context is established by the group members is out of scope for this specification, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to tell which Security Context was latest established.
-
-The default setting for how to manage information about the group is described in terms of a Group Manager (see {{group-manager}}). In particular, the Group Manager indicates whether the group uses the group mode, the pairwise mode, or both of them, as part of the group data provided to candidate group members when joining the group.
 
 ## Common Context ## {#ssec-common-context}
 
@@ -257,6 +270,12 @@ Pairwise Key Agreement Algorithm identifies the elliptic curve Diffie-Hellman al
 
 For endpoints that support the pairwise mode, the ECDH-SS + HKDF-256 algorithm specified in Section 6.3.1 of {{I-D.ietf-cose-rfc8152bis-algs}} and the X25519 curve {{RFC7748}} are mandatory to implement.
 
+### Group Manager Public Key ## {#ssec-common-context-gm-pub-key}
+
+Group Manager Public Key specifies the public key of the Group Manager. This is included in the external additional authenticated data (see {{sec-cose-object-ext-aad}}), to protect messages with the group mode (see {{mess-processing}}) or with the pairwise mode (see {{sec-pairwise-protection}}).
+
+Each group member MUST obtain the public key of the Group Manager with a valid proof-of-possession of the corresponding private key, for instance when joining the group. Further details on the provisioning of the Group Manager's public key to the group members are out of the scope of this document.
+
 ## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
 OSCORE specifies the derivation of Sender Context and Recipient Context, specifically of Sender/Recipient Keys and Common IV, from a set of input parameters (see Section 3.2 of {{RFC8613}}). This derivation applies also to Group OSCORE, and the mandatory-to-implement HKDF and AEAD algorithms are the same as in {{RFC8613}}. The Sender ID SHALL be unique for each endpoint in a group with a fixed Master Secret, Master Salt and Group Identifier (see Section 3.3 of {{RFC8613}}).
@@ -268,6 +287,12 @@ With the exception of the public key of the sender endpoint and the possibly ass
 For severely constrained devices, it may be not feasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the sender endpoint's public key. Such devices can be configured to drop a received message for which there is no (complete) Recipient Context, and retrieve the sender endpoint's public key in order to have it available to verify subsequent messages from that endpoint.
 
 An endpoint admits a maximum amount of Recipient Contexts for a same Security Context, e.g. due to memory limitations. After reaching that limit, the creation of a new Recipient Context results in an overflow. When this happens, the endpoint has to delete a current Recipient Context to install the new one. It is up to the application to define policies for selecting the current Recipient Context to delete. A newly installed Recipient Context that has required to delete another Recipient Context is initialized with an invalid Replay Window, and accordingly requires the endpoint to take appropriate actions (see {{ssec-loss-mutable-context-overflow}}).
+
+## Format of Public Keys ## {#sec-pub-key-format}
+
+The public and private key pair of each endpoint in the group as well as the public key of the Group Manager for that group MUST have the same format and MUST specify the public key algorithm.
+
+If CWTs {{RFC8392}} or CWT claim sets {{I-D.ietf-rats-uccs}} are used as credentials, the public key algorithm is described by a COSE key type and related Key Type Parameters. If X.509 certificates {{RFC7925}} or C509 {{I-D.ietf-cose-cbor-encoded-cert}} certificates are used as credentials, the public key algorithm is described by the SubjectPublicKeyInfoAlgorithm structure. 
 
 ## Pairwise Keys ## {#sec-derivation-pairwise}
 
@@ -578,6 +603,7 @@ aad_array = [
    request_kid_context : bstr,
    OSCORE_option: bstr,
    sender_public_key: any,
+   gm_public_key: any
 ]
 ~~~~~~~~~~~
 {: #fig-ext-aad title="external_aad" artwork-align="center"}
@@ -604,7 +630,9 @@ Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differ
 
    Note for implementation: this construction requires the OSCORE option of the message to be generated and finalized before computing the ciphertext of the COSE_Encrypt0 object (when using the group mode or the pairwise mode) and before calculating the counter signature (when using the group mode). Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
 
-* The new element 'sender_public_key', containing the sender's public key. An X.509 certificate is encoded as a CBOR byte string. A C509 certificate or a CWT is encoded as a CBOR array, and might be tagged.
+* The new element 'sender_public_key', containing the sender's public key. An X.509 certificate is encoded as a CBOR byte string. A C509 certificate, a CWT, or a CWT claim set is encoded as a CBOR array, and might be tagged.
+
+* The new element 'gm_public_key', containing the Group Manager's public key. An X.509 certificate is encoded as a CBOR byte string. A C509 certificate, a CWT, or a CWT claim set is encoded as a CBOR array, and might be tagged. If no Group Manager is used for maintaining the group, this parameter MUST encode the CBOR simple value Null.
    
 # OSCORE Header Compression {#compression}
 
@@ -1401,6 +1429,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * No mode of operation is mandatory to support.
 
 * Revised parameters of the Security Context, COSE object and external_aad.
+
+* Added public key of the Group Manager as key material and protected data.
 
 * Clarifications about message processing, especially notifications.
 
