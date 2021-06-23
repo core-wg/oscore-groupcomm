@@ -204,17 +204,17 @@ This document refers also to the following terminology.
 
 # Security Context # {#sec-context}
 
-This specification refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol (see {{terminology}}). Each endpoint which is member of a group maintains a Security Context as defined in Section 3 of {{RFC8613}}, extended as follows (see {{fig-additional-context-information}}):
+This specification refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol (see {{terminology}}). Each endpoint which is member of a group maintains a Security Context as defined in Section 3 of {{RFC8613}}, extended as follows (see {{fig-additional-context-information}}).
 
 * One Common Context, shared by all the endpoints in the group. Several new parameters are included in the Common Context.
 
-   If the group mode is supported, the Common context is extended with two new parametes, namely a Signature Algorithm and a Signature Encryption Algorithm used together with the Signature Algorithm. These relate to the computation of counter signatures, when messages are protected using the group mode (see {{mess-processing}}).
+   If the group uses the group mode, the Common context is extended with two new parameters, namely a Signature Algorithm and a Signature Encryption Algorithm used together with the Signature Algorithm. These relate to the computation of counter signatures, when messages are protected using the group mode (see {{mess-processing}}).
 
-   If the pairwise mode is supported, the Common Context is extended with a Pairwise Key Agreement Algorithm used for agreement on a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
+   If the group uses the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm used for agreement on a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
 
-* One Sender Context, extended with the endpoint's public and private key pair. The private key is used to sign messages in group mode, or for deriving pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). The public key is included in the external additional authenticated data. The public and private key pair MUST specify the public key algorithm. If CWTs are used as credentials, the public key algorithm is described by a COSE key type and related Key Type Parameters. If X.509 certificates are used as credentials, the public key algorithm is described by the SubjectPublicKeyInfoAlgorithm structure. If the pairwise mode is supported, the Sender Context is also extended with the Pairwise Sender Keys associated to the other endpoints (see {{sec-derivation-pairwise}}). The Sender Context is omitted if the endpoint is configured exclusively as silent server. 
+* One Sender Context, extended with the endpoint's public and private key pair. The private key is used to sign messages in group mode, or for deriving pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). The public key is included in the external additional authenticated data. The public and private key pair MUST specify the public key algorithm. If CWTs are used as credentials, the public key algorithm is described by a COSE key type and related Key Type Parameters. If X.509 certificates are used as credentials, the public key algorithm is described by the SubjectPublicKeyInfoAlgorithm structure. If the endpoint supports the pairwise mode, the Sender Context is also extended with the Pairwise Sender Keys associated to the other endpoints (see {{sec-derivation-pairwise}}). The Sender Context is omitted if the endpoint is configured exclusively as silent server. 
 
-* One Recipient Context for each endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated to endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the public key of the associated endpoint, used to verify the signature in group mode and for deriving the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). If the pairwise mode is supported, then the Recipient Context is also extended with the Pairwise Recipient Key associated to the other endpoint (see {{sec-derivation-pairwise}}).
+* One Recipient Context for each endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated to endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the public key of the associated endpoint, used to verify the signature in group mode and for deriving the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). If the endpoint supports the pairwise mode, then the Recipient Context is also extended with the Pairwise Recipient Key associated to the other endpoint (see {{sec-derivation-pairwise}}).
 
 ~~~~~~~~~~~
 +-------------------+------------------------------------------------+
@@ -235,7 +235,7 @@ This specification refers to a group as a set of endpoints sharing keying materi
 
 Further details about the Security Context of Group OSCORE are provided in the remainder of this section. How the Security Context is established by the group members is out of scope for this specification, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to tell which Security Context was latest established.
 
-The default setting for how to manage information about the group is described in terms of a Group Manager (see {{group-manager}}).
+The default setting for how to manage information about the group is described in terms of a Group Manager (see {{group-manager}}). In particular, the Group Manager indicates whether the group uses the group mode, the pairwise mode, or both of them, as part of the group data provided to candidate group members when joining the group.
 
 ## Common Context ## {#ssec-common-context}
 
