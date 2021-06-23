@@ -568,7 +568,7 @@ external_aad = bstr .cbor aad_array
 
 aad_array = [
    oscore_version : uint,
-   algorithms : [alg_aead : int / tstr,
+   algorithms : [alg_aead : int / tstr / null,
                  alg_signature : int / tstr / null,
                  alg_signature_enc : int / tstr / null,
                  alg_pairwise_key_agreement : int / tstr / null],
@@ -584,13 +584,17 @@ aad_array = [
 
 Compared with Section 5.4 of {{RFC8613}}, the aad_array has the following differences.
 
-* The 'algorithms' array additionally includes:
+* The 'algorithms' array is extended as follows.
 
-   - 'alg_signature', which specifies Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this signature algorithm.
+   The parameter 'alg_aead' MUST be set to the CBOR simple value Null if the group does not use the pairwise mode, regardless whether the endpoint supports the pairwise mode. Otherwise, this parameter is set as per Section 5.4 of {{RFC8613}}.
+
+   Furthermore, the 'algorithms' array additionally includes.
+
+   - 'alg_signature', which specifies Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value Null if the group does not use the group mode, regardless whether the endpoint supports the group mode. Otherwise, this parameter MUST encode the value of Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this signature algorithm.
    
-   - 'alg_signature_enc', which specifies Signature Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Signature Encryption Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this AEAD algorithm.
+   - 'alg_signature_enc', which specifies Signature Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value Null if the group does not use the group mode, regardless whether the endpoint supports the group mode. Otherwise, this parameter MUST encode the value of Signature Encryption Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this AEAD algorithm.
    
-   - 'alg_pairwise_key_agreement', which specifies Pairwise Key Agreement Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST encode the value of Pairwise Key Agreement Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this KDF algorithm.
+   - 'alg_pairwise_key_agreement', which specifies Pairwise Key Agreement Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value Null if the group does not use the pairwise mode, regardless whether the endpoint supports the pairwise mode. Otherwise, this parameter MUST encode the value of Pairwise Key Agreement Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this KDF algorithm.
    
 * The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}).
 
