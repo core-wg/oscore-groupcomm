@@ -208,7 +208,7 @@ This document refers also to the following terminology.
 
 # Security Context # {#sec-context}
 
-This specification refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol (see {{terminology}}). Regardless of what it actually supports, each enpoint of a group is aware of whether the group uses the group mode, or the pairwise mode, or both.
+This specification refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol (see {{terminology}}). Regardless of what it actually supports, each endpoint of a group is aware of whether the group uses the group mode, or the pairwise mode, or both.
 
 All members of a group maintain a Security Context as defined in {{Section 3 of RFC8613}} and extended as defined in this section. How the Security Context is established by the group members is out of scope for this specification, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to tell which Security Context was latest established.
 
@@ -238,31 +238,43 @@ The remainder of this section provides further details about the Security Contex
 +-------------------+------------------------------------------------+
 | Common Context    | * Signature Algorithm                          |
 |                   | * Signature Encryption Algorithm               |
-|                   | * Pairwise Key Agreement Algorithm             |
-|                   | * Group Manager Public Key                     |
+|                   | ^ Pairwise Key Agreement Algorithm             |
+|                   |   Group Manager Public Key                     |
 +-------------------+------------------------------------------------+
 | Sender Context    |   Endpoint's own public and private key pair   |
-|                   | * Pairwise Sender Keys for the other endpoints |
+|                   | ^ Pairwise Sender Keys for the other endpoints |
 +-------------------+------------------------------------------------+
 | Each              |   Public key of the other endpoint             |
-| Recipient Context | * Pairwise Recipient Key of the other endpoint |
+| Recipient Context | ^ Pairwise Recipient Key of the other endpoint |
 +-------------------+------------------------------------------------+
 ~~~~~~~~~~~
-{: #fig-additional-context-information title="Additions to the OSCORE Security Context. Optional additions are labeled with an asterisk." artwork-align="center"}
+{: #fig-additional-context-information title="Additions to the OSCORE Security Context. The optional elements labeled with * (with ^) are present only if the group uses the group mode (the pairwise mode)." artwork-align="center"}
 
 ## Common Context ## {#ssec-common-context}
 
 The Common Context may be acquired from the Group Manager (see {{group-manager}}). The following sections define how the Common Context is extended, compared to {{RFC8613}}.
 
+### AEAD Algorithm ## {#ssec-common-context-aead-alg}
+
+AEAD Algorithm identifies the COSE AEAD algorithm to use for encryption, when messages are protected using the pairwise mode (see {{sec-pairwise-protection}}). This parameter is not relevant if the group uses only the group mode.
+
+For endpoints that support the pairwise mode, the AEAD algorithm AES-CCM-16-64-128 defined in {{Section 4.2 of I-D.ietf-cose-rfc8152bis-algs}} is mandatory to implement.
+
 ### ID Context ## {#ssec-common-context-id-context}
 
-The ID Context parameter (see {{Sections 3.3 and 5.1 of RFC8613}}) in the Common Context SHALL contain the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle potential collisions between Gids (see {{ssec-gid-collision}}).
+The ID Context parameter (see {{Sections 3.1 and 3.3 of RFC8613}}) in the Common Context SHALL contain the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle potential collisions between Gids (see {{ssec-gid-collision}}).
 
 ### Signature Algorithm ## {#ssec-common-context-cs-alg}
 
-Signature Algorithm identifies the digital signature algorithm used to compute a counter signature on the COSE object (see {{Sections 3.2 and 3.3 of I-D.ietf-cose-countersign}}), when messages are protected using the group mode (see {{mess-processing}}). This parameter is immutable once the Common Context is established.
+Signature Algorithm identifies the digital signature algorithm used to compute a counter signature on the COSE object (see {{Sections 3.2 and 3.3 of I-D.ietf-cose-countersign}}), When messages are protected using the group mode (see {{mess-processing}}). This parameter is immutable once the Common Context is established.
 
 For endpoints that support the group mode, the EdDSA signature algorithm and the elliptic curve Ed25519 {{RFC8032}} are mandatory to implement. If elliptic curve signatures are used, it is RECOMMENDED to implement deterministic signatures with additional randomness as specified in {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
+
+### Signature Encryption Algorithm ## {#ssec-common-context-cs-enc-alg}
+
+Signature Encryption Algorithm identifies the algorithm to use for enryption, when messages are protected using the group mode (see {{mess-processing}}). This parameter is immutable once the Common Context is established.
+
+For endpoints that support the group mode and uses authenticated encryption, the AEAD algorithm AES-CCM-16-64-128 defined in {{Section 4.2 of I-D.ietf-cose-rfc8152bis-algs}} is mandatory to implement.
 
 ### Pairwise Key Agreement Algorithm ## {#ssec-common-context-dh-alg}
 
@@ -278,7 +290,15 @@ Each group member MUST obtain the public key of the Group Manager with a valid p
 
 ## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
-OSCORE specifies the derivation of Sender Context and Recipient Context, specifically of Sender/Recipient Keys and Common IV, from a set of input parameters (see {{Section 3.2 of RFC8613}}). This derivation applies also to Group OSCORE, and the mandatory-to-implement HKDF and AEAD algorithms are the same as in {{RFC8613}}. The Sender ID SHALL be unique for each endpoint in a group with a fixed Master Secret, Master Salt and Group Identifier (see {{Section 3.3 of RFC8613}}).
+OSCORE specifies the derivation of Sender Context and Recipient Context, specifically of Sender/Recipient Keys and Common IV, from a set of input parameters (see {{Section 3.2 of RFC8613}}). Like in {{RFC8613}}, HKDF SHA-256 is the mandatory to implement HKDF.
+
+The derivation of Sender/Recipient Keys and Common IV defined in OSCORE applies also to Group OSCORE, with the following extensions compared to {{Section 3.2.1 of RFC8613}}.
+
+* If the group uses (also) the group mode, the 'alg_aead' element of the 'info' array takes the value of Signature Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}.
+
+* If the group uses only the pairwise mode, the 'alg_aead' element of the 'info' array takes the value of AEAD Algorithm from the Common Context.
+
+The Sender ID SHALL be unique for each endpoint in a group with a certain tuple (Master Secret, Master Salt, Group Identifier), see {{Section 3.3 of RFC8613}}.
 
 For Group OSCORE, the Sender Context and Recipient Context additionally contain asymmetric keys, as described previously in {{sec-context}}. The private/public key pair of the sender can, for example, be generated by the endpoint or provisioned during manufacturing. 
 
@@ -290,7 +310,7 @@ An endpoint admits a maximum amount of Recipient Contexts for a same Security Co
 
 ## Format of Public Keys ## {#sec-pub-key-format}
 
-The public and private key pair of each endpoint in the group as well as the public key of the Group Manager for that group MUST have the same format and MUST specify the public key algorithm.
+The public and private key pair of each endpoint in the group as well as the public key of the Group Manager for that group MUST have the same format and MUST specify the public key algorithm used in the group.
 
 If CWTs {{RFC8392}} or CWT claim sets {{I-D.ietf-rats-uccs}} are used as credentials, the public key algorithm is described by a COSE key type and related Key Type Parameters. If X.509 certificates {{RFC7925}} or C509 {{I-D.ietf-cose-cbor-encoded-cert}} certificates are used as credentials, the public key algorithm is described by the SubjectPublicKeyInfoAlgorithm structure. 
 
@@ -300,7 +320,7 @@ Certain signature schemes, such as EdDSA and ECDSA, support a secure combined si
 
 ### Derivation of Pairwise Keys ### {#key-derivation-pairwise}
 
-Using the Group OSCORE Security Context (see {{sec-context}}), a group member can derive AEAD keys to protect point-to-point communication between itself and any other endpoint in the group. The AEAD algorithm {{RFC8613}} from the Common Context is used. The key derivation of these so-called pairwise keys follows the same construction as in {{Section 3.2.1 of RFC8613}}: 
+Using the Group OSCORE Security Context (see {{sec-context}}), a group member can derive AEAD keys to protect point-to-point communication between itself and any other endpoint in the group. The AEAD Algorithm from the Common Context is used. The key derivation of these so-called pairwise keys follows the same construction as in {{Section 3.2.1 of RFC8613}}: 
 
 ~~~~~~~~~~~
 Pairwise Sender Key    = HKDF(Sender Key, IKM-Sender, info, L)
@@ -330,7 +350,11 @@ where:
 
 * The Shared Secret is computed as a cofactor Diffie-Hellman shared secret, see Section 5.7.1.2 of {{NIST-800-56A}}, using the Pairwise Key Agreement Algorithm. The endpoint uses its private key from the Sender Context and the public key of the other endpoint X from the associated Recipient Context. Note the requirement of validation of public keys in {{ssec-crypto-considerations}}. For X25519 and X448, the procedure is described in {{Section 5 of RFC7748}} using public keys mapped to Montgomery coordinates, see {{montgomery}}.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-* info and L are as defined in {{Section 3.2.1 of RFC8613}}.
+* info and L are as defined in {{Section 3.2.1 of RFC8613}}. That is:
+
+   - The 'alg_aead' element of the 'info' array takes the value of AEAD Algorithm from the Common Context.
+
+   - L  and the 'L' element of the 'info' array are the size of the key for the AEA Algorithm from the Common Context, in bytes.
 
 If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in {{Sections 4.1 and 4.2 of RFC7748}}, before using the X25519 and X448 functions defined in {{Section 5 of RFC7748}}. For further details, see {{montgomery}}. ECC assymetric keys in Montgomery or Weirstrass form are used directly in the key agreement algorithm without coordinate mapping.
 
@@ -612,7 +636,7 @@ Compared with {{Section 5.4 of RFC8613}}, the aad_array has the following differ
 
 * The 'algorithms' array is extended as follows.
 
-   The parameter 'alg_aead' MUST be set to the CBOR simple value Null if the group does not use the pairwise mode, regardless whether the endpoint supports the pairwise mode. Otherwise, this parameter is set as per {{Section 5.4 of RFC8613}}.
+   The parameter 'alg_aead' MUST be set to the CBOR simple value Null if the group does not use the pairwise mode, regardless whether the endpoint supports the pairwise mode. Otherwise, this parameter MUST encode the value of AEAD Algorithm from the Common Context, as per {{Section 5.4 of RFC8613}}.
 
    Furthermore, the 'algorithms' array additionally includes.
 
@@ -961,7 +985,7 @@ This ensures that the client remains able to correctly perform the ordering and 
 
 When using the pairwise mode of Group OSCORE, messages are protected and processed as in {{RFC8613}}, with the modifications described in this section. The security objectives of the pairwise mode are discussed in {{ssec-sec-objectives}}.
 
-The pairwise mode takes advantage of an existing Security Context for the group mode to establish a Security Context shared exclusively with any other member. In order to use the pairwise mode, the signature scheme of the group mode MUST support a combined signature and encryption scheme. This can be, for example, signature using ECDSA, and encryption using AES-CCM with a key derived with ECDH. For encryption and decryption operations, the AEAD algorithm {{RFC8613}} from the Common Context is used.
+The pairwise mode takes advantage of an existing Security Context for the group mode to establish a Security Context shared exclusively with any other member. In order to use the pairwise mode, the signature scheme of the group mode MUST support a combined signature and encryption scheme. This can be, for example, signature using ECDSA, and encryption using AES-CCM with a key derived with ECDH. For encryption and decryption operations, the AEAD Algorithm from the Common Context is used.
 
 The pairwise mode does not support the use of additional entities acting as verifiers of source authentication and integrity of group messages, such as intermediary gateways (see {{group-manager}}).
 
