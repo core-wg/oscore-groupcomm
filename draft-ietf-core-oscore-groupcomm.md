@@ -272,9 +272,9 @@ The ID Context parameter (see {{Sections 3.1 and 3.3 of RFC8613}}) in the Common
 
 ### Group Manager Public Key ## {#ssec-common-context-gm-pub-key}
 
-Group Manager Public Key specifies the public key of the Group Manager. This is included in the external additional authenticated data (see {{sec-cose-object-ext-aad}}), when processing messages protected with the group mode (see {{mess-processing}}) or with the pairwise mode (see {{sec-pairwise-protection}}).
+Group Manager Public Key specifies the public key of the Group Manager. This is included in the external additional authenticated data (see {{sec-cose-object-ext-aad}}).
 
-Each group member MUST obtain the public key of the Group Manager with a valid proof-of-possession of the corresponding private key, for instance when joining the group. Further details on the provisioning of the Group Manager's public key to the group members are out of the scope of this document.
+Each group member MUST obtain the public key of the Group Manager with a valid proof-of-possession of the corresponding private key, for instance from the Group Manager itself when joining the group. Further details on the provisioning of the Group Manager's public key to the group members are out of the scope of this document.
 
 ### Signature Encryption Algorithm ## {#ssec-common-context-cs-enc-alg}
 
@@ -331,6 +331,8 @@ An endpoint admits a maximum amount of Recipient Contexts for a same Security Co
 The public and private key pair of each endpoint in the group as well as the public key of the Group Manager for that group MUST have the same format and MUST specify the public key algorithm used in the group.
 
 If CWTs {{RFC8392}} or CWT claim sets {{I-D.ietf-rats-uccs}} are used as credentials, the public key algorithm is described by a COSE key type and related Key Type Parameters. If X.509 certificates {{RFC7925}} or C509 {{I-D.ietf-cose-cbor-encoded-cert}} certificates are used as credentials, the public key algorithm is described by the SubjectPublicKeyInfoAlgorithm structure. 
+
+Public keys are also used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data (see {{sec-cose-object-ext-aad}}). For both such cases, an endpoint MUST treat every involved public key as opaque data, without any re-coding of the binary representation made available to other endpoints, possibly through a designated trusted source (e.g., a Group Manager).
 
 ## Pairwise Keys ## {#sec-derivation-pairwise}
 
