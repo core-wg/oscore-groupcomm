@@ -653,7 +653,9 @@ info = [
 
    - id is the Sender ID of the endpoint that generated PIV.
 
-   - id_context is the Group Identifier (Gid) of the group.
+   - id_context is the ID Context (Gid) used when protecting M.
+   
+     Note that, in case of group rekeying, a server might use a different Gid when protecting a response, compared to the Gid that it used to verify (that the client used to protect) the request, see {{ssec-protect-response}}.
 
    - type is the CBOR simple value True (0xf5) if M is a request, or the CBOR simple value False (0xf4) otherwise.
 
