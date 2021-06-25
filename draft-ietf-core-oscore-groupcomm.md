@@ -262,7 +262,7 @@ The Common Context may be acquired from the Group Manager (see {{group-manager}}
 
 ### AEAD Algorithm ## {#ssec-common-context-aead-alg}
 
-AEAD Algorithm identifies the COSE AEAD algorithm to use for encryption, when messages are protected using the pairwise mode (see {{sec-pairwise-protection}}). This parameter is immutable once the Common Context is established, and it is not relevant if the group uses only the group mode.
+AEAD Algorithm identifies the COSE AEAD algorithm to use for encryption, when messages are protected using the pairwise mode (see {{sec-pairwise-protection}}). This algorithm MUST provide integrity protection. This parameter is immutable once the Common Context is established, and it is not relevant if the group uses only the group mode.
 
 For endpoints that support the pairwise mode, the AEAD algorithm AES-CCM-16-64-128 defined in {{Section 4.2 of I-D.ietf-cose-rfc8152bis-algs}} is mandatory to implement.
 
@@ -278,7 +278,7 @@ Each group member MUST obtain the public key of the Group Manager with a valid p
 
 ### Signature Encryption Algorithm ## {#ssec-common-context-cs-enc-alg}
 
-Signature Encryption Algorithm identifies the algorithm to use for enryption, when messages are protected using the group mode (see {{mess-processing}}). This parameter is immutable once the Common Context is established.
+Signature Encryption Algorithm identifies the algorithm to use for enryption, when messages are protected using the group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection. This parameter is immutable once the Common Context is established.
 
 For endpoints that support the group mode and uses authenticated encryption, the AEAD algorithm AES-CCM-16-64-128 defined in {{Section 4.2 of I-D.ietf-cose-rfc8152bis-algs}} is mandatory to implement.
 
@@ -294,7 +294,7 @@ Group Encryption Key specifies the encryption key for deriving a keystream to en
 
 The Group Encryption Key is derived as defined for Sender/Recipient Keys in {{Section 3.2.1 of RFC8613}}, with the following differences.
 
-* The 'alg_aead' element of the 'info' array takes the value of Signature Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}.
+* The 'alg_aead' element of the 'info' array takes the value of Signature Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}).
 
 * The 'type' element of the 'info' array is "Group Encryption Key". The label is an ASCII string and does not include a trailing NUL byte.
 
@@ -1536,6 +1536,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * No mode of operation is mandatory to support.
 
 * Revised parameters of the Security Context, COSE object and external_aad.
+
+* Admit encryption-only algorithms in group mode.
 
 * Encrypted counter signature through a keystream.
 
