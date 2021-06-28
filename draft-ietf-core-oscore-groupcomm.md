@@ -331,7 +331,9 @@ An endpoint admits a maximum amount of Recipient Contexts for a same Security Co
 
 ## Format of Public Keys ## {#sec-pub-key-format}
 
-The public and private key pair of each endpoint in the group as well as the public key of the Group Manager for that group MUST have the same format used in the group and MUST specify the public key algorithm used in the group.
+The public and private key pair of each endpoint in the group as well as the public key of the Group Manager for that group MUST have the same format used in the group, which MUST specify the public key algorithm used in the group. When applicable, they MUST work with the same curve.
+
+If the group uses (also) the group mode, the public key algorithm is the signature algorithm used in the group. If the group uses only the pairwise mode, the public key algorithm is the pairwise key agreement algorithm.
 
 If CWTs {{RFC8392}} or CWT claim sets {{I-D.ietf-rats-uccs}} are used as credential format, the public key algorithm is described by a COSE key type and related Key Type Parameters. If X.509 certificates {{RFC7925}} or C509 {{I-D.ietf-cose-cbor-encoded-cert}} certificates are used as credential format, the public key algorithm is described by the SubjectPublicKeyInfoAlgorithm structure. 
 
