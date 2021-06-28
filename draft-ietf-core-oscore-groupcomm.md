@@ -283,7 +283,7 @@ Each group member MUST obtain the public key of the Group Manager with a valid p
 
 Signature Encryption Algorithm identifies the algorithm to use for enryption, when messages are protected using the group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection. This parameter is immutable once the Common Context is established.
 
-For endpoints that support the group mode and uses authenticated encryption, the AEAD algorithm AES-CCM-16-64-128 defined in {{Section 4.2 of I-D.ietf-cose-rfc8152bis-algs}} is mandatory to implement.
+For endpoints that support the group mode and use authenticated encryption, the AEAD algorithm AES-CCM-16-64-128 defined in {{Section 4.2 of I-D.ietf-cose-rfc8152bis-algs}} is mandatory to implement.
 
 ### Signature Algorithm ## {#ssec-common-context-cs-alg}
 
