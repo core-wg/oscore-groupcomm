@@ -555,7 +555,7 @@ In order to establish a new Security Context for a group, the Group Manager MUST
 
 The specific group key management scheme used to distribute new keying material, is out of the scope of this document. However, it is RECOMMENDED that the Group Manager supports the Group Rekeying Process described in {{I-D.ietf-ace-key-groupcomm-oscore}}. When possible, the delivery of rekeying messages should use a reliable transport, in order to reduce chances of group members missing a rekeying instance.
 
-The Group Manager MUST rekey the group when one or more currently present endpoints leave the group, or in order to evict them as compromised or suspected so. In either case, this excludes such nodes from future communications in the group, and thus preserves forward security. If required by the application, the Group Manager MUST rekey the group also before one or more new joining endpoints are added to the group, thus preserving backward security.
+The group members should not be assumed as fixed, i.e., the group membership is subject to changes, possibly on a frequent basis. The Group Manager MUST rekey the group when one or more currently present endpoints leave the group, or in order to evict them as compromised or suspected so. In either case, this excludes such nodes from future communications in the group, and thus preserves forward security. If required by the application, the Group Manager MUST rekey the group also before one or more new joining endpoints are added to the group, thus preserving backward security.
 
 The establishment of the new Security Context for the group takes the following steps.
 
@@ -1225,7 +1225,9 @@ Upon receiving a response with the Group Flag set to 0, following the procedure 
 
 # Security Considerations  # {#sec-security-considerations}
 
-The same threat model discussed for OSCORE in Appendix D.1 of {{RFC8613}} holds for Group OSCORE. In addition, when using the group mode, source authentication of messages is explicitly ensured by means of counter signatures, as discussed in {{ssec-group-level-security}}.
+The same threat model discussed for OSCORE in Appendix D.1 of {{RFC8613}} holds for Group OSCORE. In addition, when using the group mode, source authentication of messages is explicitly ensured by means of counter signatures, as discussed in {{ssec-group-mode-security}}.
+
+Note that, even if an endpoint is authorized to be a group member and to take part in group communications, there is a risk that it behaves inappropriately. For instance, it can forward the content of messages in the group to unauthorized entities. However, in many use cases, the devices in the group belong to a common authority and are configured by a commissioner (see {{sec-use-cases}}), which results in a practically limited risk and enables a prompt detection/reaction in case of misbehaving.
 
 The same considerations on supporting Proxy operations discussed for OSCORE in Appendix D.2 of {{RFC8613}} hold for Group OSCORE.
 
@@ -1239,19 +1241,43 @@ As discussed in {{Section 6.2.3 of I-D.ietf-core-groupcomm-bis}}, Group OSCORE a
 
 The rest of this section first discusses security aspects to be taken into account when using Group OSCORE. Then it goes through aspects covered in the security considerations of OSCORE (see {{Section 12 of RFC8613}}), and discusses how they hold when Group OSCORE is used.
 
-## Group-level Security {#ssec-group-level-security}
+## Security of the Group Mode {#ssec-group-mode-security}
 
-The group mode described in {{mess-processing}} relies on commonly shared group keying material to protect communication within a group. This has the following implications.
+The group mode defined in {{mess-processing}} relies on commonly shared group keying material to protect communication within a group. Using the group mode has the implications discussed below. The following refers to group members as the endpoints in the group owning the latest version of the group keying material.
 
 * Messages are encrypted at a group level (group-level data confidentiality), i.e. they can be decrypted by any member of the group, but not by an external adversary or other external entities.
 
-* The AEAD algorithm provides only group authentication, i.e. it ensures that a message sent to a group has been sent by a member of that group, but not necessarily by the alleged sender. This is why source authentication of messages sent to a group is ensured through a counter signature, which is computed by the sender using its own private key and then appended to the message payload.
+* If the used encryption algorithm provides integrity protection, then it also ensures group authentication and proof of group membership, but not source authentication. That is, it ensures that a message sent to a group has been sent by a member of that group, but not necessarily by the alleged sender. In fact, any group member is able to derive the Sender Key used by the actual sender endpoint, and thus can compute a valid authentication tag. Therefore, the message content could originate from any of the current group members.
 
-Instead, the pairwise mode described in {{sec-pairwise-protection}} protects messages by using pairwise symmetric keys, derived from the static-static Diffie-Hellman shared secret computed from the asymmetric keys of the sender and recipient endpoint (see {{sec-derivation-pairwise}}). Therefore, in the pairwise mode, the AEAD algorithm provides both pairwise data-confidentiality and source authentication of messages, without using counter signatures.
+   Furthermore, if the used encryption algorithm does not provide integrity protection, then it does not ensure any level of message authentication or proof of group membership.
 
-The long-term storing of the Diffie-Hellman shared secret is a potential security issue. In fact, if the shared secret of two group members is leaked, a third group member can exploit it to impersonate any of those two group members, by deriving and using their pairwise key. The possibility of such leakage should be contemplated, as more likely to happen than the leakage of a private key, which could be rather protected at a significantly higher level than generic memory, e.g. by using a Trusted Platform Module. Therefore, there is a trade-off between the maximum amount of time a same shared secret is stored and the frequency of its re-computing.
+   On the other hand, proof of group membership is ensured by the strict management of the group keying material (see {{sec-group-key-management}}). That is, the group is rekeyed in case of nodes' leaving, and the current group members are informed of former group members. Thus, a current group member owning the latest group keying material does not own the public key of any former group member.
+   
+   This allows a recipient endpoint to rely on the owned public keys to confidently assert the group membership of a sender endpoint when processing an incoming message, i.e., to assert that the sender endpoint was a group member when it signed the message. In turn, this prevents a former group member to possibly re-sign and inject in the group a stored message that was protected with old keying material.
 
-Note that, even if an endpoint is authorized to be a group member and to take part in group communications, there is a risk that it behaves inappropriately. For instance, it can forward the content of messages in the group to unauthorized entities. However, in many use cases, the devices in the group belong to a common authority and are configured by a commissioner (see {{sec-use-cases}}), which results in a practically limited risk and enables a prompt detection/reaction in case of misbehaving.
+* Source authentication of messages sent to a group is ensured through a counter signature, which is computed by the sender using its own private key and then appended to the message payload. Also, the counter signature is encrypted by using a keystream derived from the group keying material (see {{sec-cose-object-unprotected-field}}). This ensures group privacy, i.e., an attacker cannot track an endpoint over two groups by linking messages between the two groups, unless being also a member of those groups.
+
+The security properties of the group mode are summarized below.
+
+1. Asymmetric source authentication, by means of a counter signature.
+
+2. Symmetric group authentication, by means of an authentication tag (only for encryption algorithms providing integrity protection).
+
+3. Symmetric group confidentiality, by means of symmetric encryption.
+
+4. Proof of group membership, by strictly managing the group keying material, as well as by means of integrity tags when using an encryption algorithm that provides also integrity protection.
+
+5. Group privacy, by encrypting the counter signature.
+
+The group mode fulfills the security properties above while also displaying the following benefits. First, the use of encryption algorithm that does not provide integrity protection results in a minimal communication overhead, by limiting the message payload to the ciphertext and the encrypted counter signature. Second, it is possible to deploy semi-trusted principals such as signature checkers (see {{sec-additional-principals}}), which can break property 5, but cannot break properties 1, 2 and 3.
+
+## Security of the Pairwise Mode {#ssec-pairwise-mode-security}
+
+The pairwise mode defined in {{sec-pairwise-protection}} protects messages by using pairwise symmetric keys, derived from the static-static Diffie-Hellman shared secret computed from the asymmetric keys of the sender and recipient endpoint (see {{sec-derivation-pairwise}}).
+
+The used encryption algorithm MUST provide integrity protection. Therefore, the pairwise mode ensures both pairwise data-confidentiality and source authentication of messages, without using counter signatures. Furthermore, the recipient endpoint achieves proof of group membership for the sender endpoint, since only current group members have the required keying material to derive a valid Pairwise Sender/Recipient Key.
+
+The long-term storing of the Diffie-Hellman shared secret is a potential security issue. In fact, if the shared secret of two group members is leaked, a third group member can exploit it to impersonate any of those two group members, by deriving and using their pairwise key. The possibility of such leakage should be contemplated, as more likely to happen than the leakage of a private key, which could be rather protected at a significantly higher level than generic memory, e.g., by using a Trusted Platform Module. Therefore, there is a trade-off between the maximum amount of time a same shared secret is stored and the frequency of its re-computing.
 
 ## Uniqueness of (key, nonce) {#ssec-key-nonce-uniqueness}
 
@@ -1267,7 +1293,7 @@ As a consequence, each message encrypted/decrypted with the same Sender Key is p
 
 ## Management of Group Keying Material # {#sec-cons-group-key-management}
 
-The approach described in this specification should take into account the risk of compromise of group members. In particular, this document specifies that a key management scheme for secure revocation and renewal of Security Contexts and group keying material should be adopted.
+The approach described in this specification should take into account the risk of compromise of group members. In particular, this document specifies that a key management scheme for secure revocation and renewal of Security Contexts and group keying material MUST be adopted.
 
 {{I-D.ietf-ace-key-groupcomm-oscore}} provides a simple rekeying scheme for renewing the Security Context in a group.
 
@@ -1420,7 +1446,11 @@ In order to renew its own Sender Context, the endpoint SHOULD inform the Group M
 
 Additionally, the same considerations from {{Section 12.6 of RFC8613}} hold for Group OSCORE, about building the AEAD nonce and the secrecy of the Security Context parameters.
 
-The EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. For endpoints that support the pairwise mode, the ECDH-SS + HKDF-256 algorithm specified in {{Section 6.3.1 of I-D.ietf-cose-rfc8152bis-algs}} and the X25519 algorithm {{RFC7748}} are also mandatory to implement. 
+For endpoints that support the group mode, the EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. The group mode uses the "encrypt-then-sign" construction, i.e., the counter signature is computed over the COSE_Encrypt0 object (see {{sec-cose-object-unprotected-field}}). This is motivated by enabling additional principals acting as signature checkers (see {{sec-additional-principals}}), which do not join a group as members but are allowed to verify counter signatures of messages protected in group mode without being able to decrypt them (see {{sec-processing-signature-checker}}).
+   
+If the encryption algorithm used in group mode provides integrity protection, counter signatures of COSE_Encrypt0 with short authentication tags do not provide the security properties associated with the same algorithm used in COSE_Sign (see {{Section 6 of I-D.ietf-cose-countersign}}). To provide 128-bit security against collision attacks, the tag length MUST be at least 256-bits. A counter signature of a COSE_Encrypt0 with AES-CCM-16-64-128 provides at most 32 bits of integrity protection.
+
+For endpoints that support the pairwise mode, the ECDH-SS + HKDF-256 algorithm specified in {{Section 6.3.1 of I-D.ietf-cose-rfc8152bis-algs}} and the X25519 algorithm {{RFC7748}} are also mandatory to implement. 
 
 Constrained IoT devices may alternatively represent Montgomery curves and (twisted) Edwards curves {{RFC7748}} in the short-Weierstrass form Wei25519, with which the algorithms ECDSA25519 and ECDH25519 can be used for signature operations and Diffie-Hellman secret calculation, respectively {{I-D.ietf-lwig-curve-representations}}.
 
@@ -1447,7 +1477,9 @@ The same considerations from {{Section 12.7 of RFC8613}} hold for Group OSCORE.
 
 ## Privacy Considerations {#ssec-privacy}
 
-Group OSCORE ensures end-to-end integrity protection and encryption of the message payload and all options that are not used for proxy operations. In particular, options are processed according to the same class U/I/E that they have for OSCORE. Therefore, the same privacy considerations from {{Section 12.8 of RFC8613}} hold for Group OSCORE.
+Group OSCORE ensures end-to-end integrity protection and encryption of the message payload and all options that are not used for proxy operations. In particular, options are processed according to the same class U/I/E that they have for OSCORE. Therefore, the same privacy considerations from {{Section 12.8 of RFC8613}} hold for Group OSCORE, with the following addition.
+
+* When protecting a message in group mode, the counter signature is encrypted by using a keystream derived from the group keying material (see {{sec-cose-object-unprotected-field}} and {{sssec-encrypted-signature-keystream}}). This ensures group privacy. That is, an attacker cannot track an endpoint over two groups by linking messages between the two groups, unless being also a member of those groups.
 
 Furthermore, the following privacy considerations hold about the OSCORE option, which may reveal information on the communicating endpoints.
 
@@ -1502,7 +1534,7 @@ The following points are assumed to be already addressed and are out of the scop
 
     In a 1-to-N communication model, only a single client transmits data to the CoAP group, in the form of request messages; in an M-to-N communication model (where M and N do not necessarily have the same value), M clients transmit data to the CoAP group. According to {{I-D.ietf-core-groupcomm-bis}}, any possible proxy entity is supposed to know about the clients. Also, every client expects and is able to handle multiple response messages associated to a same request sent to the CoAP group.
     
-* Group size: security solutions for group communication should be able to adequately support different and possibly large security groups. The group size is the current number of members in a security group. In the use cases mentioned in this document, the number of clients (normally the controlling devices) is expected to be much smaller than the number of servers (i.e. the controlled devices). A security solution for group communication that supports 1 to 50 clients would be able to properly cover the group sizes required for most use cases that are relevant for this document. The maximum group size is expected to be in the range of 2 to 100 devices. Security groups larger than that should be divided into smaller independent groups.
+* Group size: security solutions for group communication should be able to adequately support different and possibly large security groups. The group size is the current number of members in a security group. In the use cases mentioned in this document, the number of clients (normally the controlling devices) is expected to be much smaller than the number of servers (i.e. the controlled devices). A security solution for group communication that supports 1 to 50 clients would be able to properly cover the group sizes required for most use cases that are relevant for this document. The maximum group size is expected to be in the range of 2 to 100 devices. Security groups larger than that should be divided into smaller independent groups. One should not assume that the members of a security group remains fixed. That is, the group membership is subject to changes, possibly on a frequent basis.
 
 * Communication with the Group Manager: an endpoint must use a secure dedicated channel when communicating with the Group Manager, also when not registered as a member of the security group.
 
@@ -1643,6 +1675,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Termination of ongoing observations as client, upon leaving or before re-joining the group.
 
 * Recycling Group IDs by tracking the "Birth Gid" of each group member.
+
+* Expanded security and privacy considerations about the group mode.
 
 * Removed appendices on skipping signature verification and on COSE capabilities.
 
