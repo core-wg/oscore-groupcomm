@@ -78,6 +78,7 @@ normative:
   RFC7748:
   RFC8032:
   RFC8174:
+  RFC8610:
   RFC8613:
   RFC8949:
   NIST-800-56A:
@@ -703,7 +704,7 @@ The input parameters of HKDF are as follows.
 
 * IKM is the Group Encryption Key from the Common Context (see {{ssec-common-context-group-enc-key}}).
 
-* info is the serialization of a CBOR array consisting of:
+* info is the serialization of a CBOR array consisting of (the notation follows {{RFC8610}}):
 
 ~~~~~~~~~~~ CDDL
 info = [
@@ -742,11 +743,13 @@ The value of the 'kid context' parameter in the 'unprotected' field of requests 
 
 ## external_aad # {#sec-cose-object-ext-aad}
 
-The external_aad of the Additional Authenticated Data (AAD) is different compared to OSCORE, and is defined in this section.
+The external_aad of the Additional Authenticated Data (AAD) is different compared to OSCORE {{RFC8613}}, and is defined in this section.
 
 The same external_aad structure is used in group mode and pairwise mode for authenticated encryption/decryption (see {{Section 5.3 of I-D.ietf-cose-rfc8152bis-struct}}), as well as in group mode for computing and verifying the countersignature (see {{Section 4.4 of I-D.ietf-cose-rfc8152bis-struct}}).
 
 In particular, the external_aad includes also the signature algorithm, the signature encryption algorithm, the pairwise key agreement algorithm, the value of the 'kid context' in the COSE object of the request, the OSCORE option of the protected message, the sender's public key, and the Group Manager's public key.
+
+The external_aad SHALL be a CBOR array wrapped in a bstr object as defined below, following the notation of {{RFC8610}}:
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
