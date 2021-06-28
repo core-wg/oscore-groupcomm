@@ -742,9 +742,9 @@ The value of the 'kid context' parameter in the 'unprotected' field of requests 
 
 The external_aad of the Additional Authenticated Data (AAD) is different compared to OSCORE, and is defined in this section.
 
-The same external_aad structure is used in group mode and pairwise mode for encryption (see {{Section 5.3 of I-D.ietf-cose-rfc8152bis-struct}}), as well as in group mode for signing (see {{Section 4.4 of I-D.ietf-cose-rfc8152bis-struct}}).
+The same external_aad structure is used in group mode and pairwise mode for authenticated encryption/decryption (see {{Section 5.3 of I-D.ietf-cose-rfc8152bis-struct}}), as well as in group mode for computing and verifying the countersignature (see {{Section 4.4 of I-D.ietf-cose-rfc8152bis-struct}}).
 
-In particular, the external_aad includes also the signature algorithm, the signature encryption algorithm, the pairwise key agreement algorithm, the value of the 'kid context' in the COSE object of the request, the OSCORE option of the protected message, and the sender's public key.
+In particular, the external_aad includes also the signature algorithm, the signature encryption algorithm, the pairwise key agreement algorithm, the value of the 'kid context' in the COSE object of the request, the OSCORE option of the protected message, the sender's public key, and the Group Manager's public key.
 
 ~~~~~~~~~~~ CDDL
 external_aad = bstr .cbor aad_array
