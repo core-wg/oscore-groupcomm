@@ -336,9 +336,11 @@ The public and private key pair of each endpoint in the group as well as the pub
 
 If the group uses (also) the group mode, the public key algorithm is the signature algorithm used in the group. If the group uses only the pairwise mode, the public key algorithm is the pairwise key agreement algorithm.
 
-If CWTs {{RFC8392}} or CWT claim sets {{I-D.ietf-rats-uccs}} are used as credential format, the public key algorithm is described by a COSE key type and related Key Type Parameters. If X.509 certificates {{RFC7925}} or C509 {{I-D.ietf-cose-cbor-encoded-cert}} certificates are used as credential format, the public key algorithm is described by the SubjectPublicKeyInfoAlgorithm structure. 
+If CWTs {{RFC8392}} or CWT claim sets {{I-D.ietf-rats-uccs}} are used as credential format, the public key algorithm is described by a COSE key type and related Key Type Parameters. If X.509 certificates {{RFC7925}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}} are used as credential format, the public key algorithm is described by the SubjectPublicKeyInfoAlgorithm structure. 
 
-Public keys are also used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data (see {{sec-cose-object-ext-aad}}). For both such cases, an endpoint MUST treat every involved public key as opaque data, without any re-coding of the binary representation made available to other endpoints, possibly through a designated trusted source (e.g., a Group Manager).
+Public keys are also used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data (see {{sec-cose-object-ext-aad}}). For both such cases, an endpoint MUST treat every involved public key as opaque data, i.e., by considering the same binary representation made available to other endpoints, possibly through a designated trusted source (e.g., a Group Manager).
+
+For example, an X.509 certificate would be provided as its direct binary serialization. If C509 certificates or CWTs are used as credential format, they would be provided as binary serialization of a (possibly tagged) CBOR array. If a CWT claim set is used as credential format, it would be provided as binary serialization of a CBOR map.
 
 ## Pairwise Keys ## {#sec-derivation-pairwise}
 
@@ -765,8 +767,8 @@ aad_array = [
    options : bstr,
    request_kid_context : bstr,
    OSCORE_option: bstr,
-   sender_public_key: any,
-   gm_public_key: any
+   sender_public_key: bstr,
+   gm_public_key: bstr
 ]
 ~~~~~~~~~~~
 {: #fig-ext-aad title="external_aad" artwork-align="center"}
@@ -793,10 +795,10 @@ Compared with {{Section 5.4 of RFC8613}}, the aad_array has the following differ
 
    Note for implementation: this construction requires the OSCORE option of the message to be generated and finalized before computing the ciphertext of the COSE_Encrypt0 object (when using the group mode or the pairwise mode) and before calculating the countersignature (when using the group mode). Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
 
-* The new element 'sender_public_key', containing the sender's public key. An X.509 certificate is encoded as a CBOR byte string. A C509 certificate, a CWT, or a CWT claim set is encoded as a CBOR array, and might be tagged.
+* The new element 'sender_public_key', containing the sender's public key. This parameter MUST be set to a CBOR byte string, which encodes the sender's public key in its original binary representation made available to other endpoints (see {{sec-pub-key-format}}).
 
-* The new element 'gm_public_key', containing the Group Manager's public key. An X.509 certificate is encoded as a CBOR byte string. A C509 certificate, a CWT, or a CWT claim set is encoded as a CBOR array, and might be tagged. If no Group Manager is used for maintaining the group, this parameter MUST encode the CBOR simple value Null.
-   
+* The new element 'gm_public_key', containing the Group Manager's public key. If no Group Manager is used for maintaining the group, this parameter MUST encode the CBOR simple value Null. Otherwise, this parameter MUST be set to a CBOR byte string, which encodes the Group Manager's public key in its original binary representation made available to other endpoints (see {{sec-pub-key-format}}).
+
 # OSCORE Header Compression {#compression}
 
 The OSCORE header compression defined in {{Section 6 of RFC8613}} is used, with the following differences.
