@@ -338,7 +338,7 @@ If the group uses (also) the group mode, the public key algorithm is the signatu
 
 If CWTs {{RFC8392}} or CWT claim sets {{I-D.ietf-rats-uccs}} are used as credential format, the public key algorithm is described by a COSE key type and related Key Type Parameters. If X.509 certificates {{RFC7925}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}} are used as credential format, the public key algorithm is described by the SubjectPublicKeyInfoAlgorithm structure. 
 
-Public keys are also used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data (see {{sec-cose-object-ext-aad}}). For both such cases, an endpoint MUST treat every involved public key as opaque data, i.e., by considering the same binary representation made available to other endpoints, possibly through a designated trusted source (e.g., a Group Manager).
+Public keys are also used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data (see {{sec-cose-object-ext-aad}}). In both cases, an endpoint in a group MUST treat every involved public key as opaque data, i.e., by considering the same binary representation made available to other endpoints in the group, possibly through a designated trusted source (e.g., a Group Manager).
 
 For example, an X.509 certificate would be provided as its direct binary serialization. If C509 certificates or CWTs are used as credential format, they would be provided as binary serialization of a (possibly tagged) CBOR array. If a CWT claim set is used as credential format, it would be provided as binary serialization of a CBOR map.
 
@@ -795,10 +795,10 @@ Compared with {{Section 5.4 of RFC8613}}, the aad_array has the following differ
 
    Note for implementation: this construction requires the OSCORE option of the message to be generated and finalized before computing the ciphertext of the COSE_Encrypt0 object (when using the group mode or the pairwise mode) and before calculating the countersignature (when using the group mode). Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
 
-* The new element 'sender_public_key', containing the sender's public key. This parameter MUST be set to a CBOR byte string, which encodes the sender's public key in its original binary representation made available to other endpoints (see {{sec-pub-key-format}}).
+* The new element 'sender_public_key', containing the sender's public key. This parameter MUST be set to a CBOR byte string, which encodes the sender's public key in its original binary representation made available to other endpoints in the group (see {{sec-pub-key-format}}).
 
-* The new element 'gm_public_key', containing the Group Manager's public key. If no Group Manager is used for maintaining the group, this parameter MUST encode the CBOR simple value Null. Otherwise, this parameter MUST be set to a CBOR byte string, which encodes the Group Manager's public key in its original binary representation made available to other endpoints (see {{sec-pub-key-format}}).
-
+* The new element 'gm_public_key', containing the Group Manager's public key. If no Group Manager maintains the group, this parameter MUST encode the CBOR simple value Null. Otherwise, this parameter MUST be set to a CBOR byte string, which encodes the Group Manager's public key in its original binary representation made available to other endpoints in the group (see {{sec-pub-key-format}}). This prevents the attack described in {{ssec-group-cloning}}.
+   
 # OSCORE Header Compression {#compression}
 
 The OSCORE header compression defined in {{Section 6 of RFC8613}} is used, with the following differences.
@@ -1391,6 +1391,22 @@ Also, the following attack simplifications would hold, since Z is able to derive
 Since the Partial IV is 5 bytes in size, this requires 2^40 operations to test all the Partial IVs, which can be done in real-time. The probability that a single given message M1 can be used to forge a response M2 for a given request would be equal to 2^-24, since there are more MAC values (8 bytes in size) than Partial IV values (5 bytes in size).
 
 Note that, by changing the Partial IV as discussed above, any member of G1 would also be able to forge a valid signed response message M2 to be injected in the same group G1.
+
+## Prevention of Group Cloning Attack {#ssec-group-cloning}
+
+Both when using the group mode and the pairwise mode, the message protection covers also the Group Manager's public key. This public key is included in the Additional Authenticated Data used in the signing process and/or in the integrity-protected encryption process (see {{sec-cose-object-ext-aad}}).
+
+By doing so, an endpoint X member of a group G1 cannot perform the following attack.
+
+1. X sets up a group G2 where it acts as Group Manager.
+
+2. X makes G2 a "clone" of G1, i.e., G1 and G2 use the same algorithms and have the same Master Secret, Master Salt and ID Context.
+
+3. X collects a message M sent to G1 and injects it in G2.
+
+4. Members of G2 accept M and believe it to be originated in G2.
+
+The attack above is effectively prevented, since message M is protected by including the public key of G1's Group Manager in the Additional Authenticated Data. Therefore, members of G2 do not successfully verify and decrypt M, since they correctly use the public key of X as Group Manager of G2 when attempting to.
 
 ## Group OSCORE for Unicast Requests {#ssec-unicast-requests}
 
