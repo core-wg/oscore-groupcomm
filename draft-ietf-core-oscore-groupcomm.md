@@ -336,7 +336,7 @@ The public and private key pair of each endpoint in the group as well as the pub
 
 If the group uses (also) the group mode, the public key algorithm is the signature algorithm used in the group. If the group uses only the pairwise mode, the public key algorithm is the pairwise key agreement algorithm.
 
-If CWTs {{RFC8392}} or CWT claim sets {{I-D.ietf-rats-uccs}} are used as credential format, the public key algorithm is described by a COSE key type and related Key Type Parameters. If X.509 certificates {{RFC7925}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}} are used as credential format, the public key algorithm is described by the SubjectPublicKeyInfoAlgorithm structure. 
+If CWTs {{RFC8392}} or unprotected CWT claim sets {{I-D.ietf-rats-uccs}} are used as credential format, the public key algorithm is described by a COSE key type and related Key Type Parameters. If X.509 certificates {{RFC7925}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}} are used as credential format, the public key algorithm is described by the SubjectPublicKeyInfoAlgorithm structure. 
 
 Public keys are also used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data (see {{sec-cose-object-ext-aad}}). In both cases, an endpoint in a group MUST treat every involved public key as opaque data, i.e., by considering the same binary representation made available to other endpoints in the group, possibly through a designated trusted source (e.g., a Group Manager).
 
