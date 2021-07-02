@@ -332,15 +332,21 @@ An endpoint admits a maximum amount of Recipient Contexts for a same Security Co
 
 ## Format of Public Keys ## {#sec-pub-key-format}
 
-The public and private key pair of each endpoint in the group as well as the public key of the Group Manager for that group MUST have the same format used in the group, which MUST specify the public key algorithm used in the group. When applicable, they MUST work with the same curve.
+In a group, the following MUST hold for the public key of each endpoint as well as for the public key of the Group Manager.
+
+* All public keys MUST be encoded according to the same format used in the group. The format MUST provide the full set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).
+
+* All public keys MUST be for the public key algorithm used in the group and aligned with the possible associated parameters used in the group, e.g., the used elliptic curve (when applicable).
 
 If the group uses (also) the group mode, the public key algorithm is the signature algorithm used in the group. If the group uses only the pairwise mode, the public key algorithm is the pairwise key agreement algorithm.
 
-If CWTs {{RFC8392}} or unprotected CWT claim sets {{I-D.ietf-rats-uccs}} are used as credential format, the public key algorithm is described by a COSE key type and related Key Type Parameters. If X.509 certificates {{RFC7925}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}} are used as credential format, the public key algorithm is described by the SubjectPublicKeyInfoAlgorithm structure. 
+If CWTs {{RFC8392}} or unprotected CWT claim sets {{I-D.ietf-rats-uccs}} are used as public key format, the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.
 
-Public keys are also used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data (see {{sec-cose-object-ext-aad}}). In both cases, an endpoint in a group MUST treat every involved public key as opaque data, i.e., by considering the same binary representation made available to other endpoints in the group, possibly through a designated trusted source (e.g., a Group Manager).
+If X.509 certificates {{RFC7925}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}} are used as public key format, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
 
-For example, an X.509 certificate would be provided as its direct binary serialization. If C509 certificates or CWTs are used as credential format, they would be provided as binary serialization of a (possibly tagged) CBOR array. If a CWT claim set is used as credential format, it would be provided as binary serialization of a CBOR map.
+Public keys are also used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data (see {{sec-cose-object-ext-aad}}). In both of these cases, an endpoint in a group MUST treat public keys as opaque data, i.e., by considering the same binary representation made available to other endpoints in the group, possibly through a designated trusted source (e.g., the Group Manager).
+
+For example, an X.509 certificate is provided as its direct binary serialization. If C509 certificates or CWTs are used as credential format, they are provided as the binary serialization of a (possibly tagged) CBOR array. If a CWT claim set is used as credential format, it is provided as the binary serialization of a CBOR map.
 
 ## Pairwise Keys ## {#sec-derivation-pairwise}
 
