@@ -596,19 +596,21 @@ The establishment of the new Security Context for the group takes the following 
 
 When receiving the new group keying materal, a group member MUST delete all its Recipient Contexts whose corresponding Recipient ID is included in the received set of stale Sender IDs. After that, the group member installs the new keying material and derives the corresponding new Security Context.
 
-A group member might miss one group rekeying or more consecutive instances. As a result, the group member will retain old group keying material with Key Generation Number GEN\_OLD. Eventually, the group member can notice the discrepancy, e.g., by repeatedly failing to verify incoming messages, or by explicitly querying the Group Manager for the current Key Generation Number. Once the group member has knowledge to have missed a group rekeying, it proceed as follows.
+A group member might miss one group rekeying or more consecutive instances. As a result, the group member will retain old group keying material with Key Generation Number GEN\_OLD. Eventually, the group member can notice the discrepancy, e.g., by repeatedly failing to verify incoming messages, or by explicitly querying the Group Manager for the current Key Generation Number. Once the group member has knowledge to have missed a group rekeying, it MUST delete the old keying material it owns.
 
-1. The group member retrieves from the Group Manager the current group keying material, together the current with Key Generation Number GEN\_NEW. The group member MUST NOT install the obtained group keying material yet.
+Then, the group member proceeds as follows.
+
+1. The group member retrieves from the Group Manager the current group keying material, together with the current with Key Generation Number GEN\_NEW. The group member MUST NOT install the obtained group keying material yet.
 
 2. The group member asks the Group Manager which Recipient Contexts it should delete, as related to endpoints that are not current group members. Following the indications from the Group Manager, the group member MUST delete such Recipient Contexts. If no exact indication can be obtained from the Group Manager, the group member MUST delete all its Recipient Contexts.
 
 3. The group member installs the current group keying material, and derives the corresponding new Security Context.
 
-Alternatively, the group member can more simply re-join the group. In such a case, the group member MUST take one of the following two actions.
+Alternatively, the group member can re-join the group. In such a case, the group member MUST take one of the following two actions.
 
 * Before re-joining, the group member asks the Group Manager which Recipient Contexts it should delete, as related to endpoints that are not current group members. Then, the group member deletes such Recipient Contexts, or all its Recipient Contexts if no exact indication can be obtained from the Group Manager.
 
-* Upon re-joining, the group member asks the Group Manager for the public keys of all the group members. Then, it deletes each of its Recipient Contexts that does not include any of the public keys received from the Group Manager.
+* The group member re-joins with the same roles it currently has in the group, and, during the re-joining process, it asks the Group Manager for the public keys of all the current group members. Then, it deletes each of its Recipient Contexts that does not include any of the public keys received from the Group Manager.
 
 By deleting stale Recipient Contexts and public keys associated to former group members, it is ensured that a recipient endpoint owning the latest group keying material does not store the public keys of sender endpoints that are not current group members. This in turn allows group members to rely on owned public keys to confidently assert the group membership of sender endpoints, when receiving incoming messages protected in group mode (see {{mess-processing}}).
 
