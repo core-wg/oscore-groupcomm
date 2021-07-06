@@ -624,7 +624,7 @@ Alternatively, the group member can re-join the group. In such a case, the group
 
    Then, given Z the set of public keys received from the Group Manager, the group member removes every public key which is not in Z from its list of group members' public keys, and deletes each of its Recipient Contexts that does not include any of the public keys in Z.
 
-By removing public keys associated to former group members and deleting Recipient Contexts associated to those group member, it is ensured that a recipient endpoint owning the latest group keying material does not store the public keys of sender endpoints that are not current group members. This in turn allows group members to rely on owned public keys to confidently assert the group membership of sender endpoints, when receiving incoming messages protected in group mode (see {{mess-processing}}).
+By removing public keys and deleting Recipient Contexts associated to stale Sender IDs, it is ensured that a recipient endpoint owning the latest group keying material does not store the public keys of sender endpoints that are not current group members. This in turn allows group members to rely on owned public keys to confidently assert the group membership of sender endpoints, when receiving incoming messages protected in group mode (see {{mess-processing}}).
 
 ### Recycling of Identifiers
    
