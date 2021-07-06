@@ -596,9 +596,9 @@ The establishment of the new Security Context for the group takes the following 
 
 When receiving the new group keying materal, a group member considers the received stale Sender IDs and performs the following actions.
 
-* The group member MUST remove every public key associated to a stale Sender ID from its list of group members' public keys.
+* The group member MUST remove every public key associated to a stale Sender ID from its list of group members' public keys used in the group.
 
-* The group member MUST delete each of its Recipient Contexts whose corresponding Recipient ID is a stale Sender ID.
+* The group member MUST delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.
 
 After that, the group member installs the new keying material and derives the corresponding new Security Context.
 
@@ -610,9 +610,9 @@ Then, the group member proceeds according to the following steps.
 
 2. The group member asks the Group Manager for the set of stale Sender IDs.
 
-3. If no exact indication can be obtained from the Group Manager, the group member MUST remove all public keys from its list of group members' public keys and MUST delete all its Recipient Contexts.
+3. If no exact indication can be obtained from the Group Manager, the group member MUST remove all the public keys from its list of group members' public keys used in the group and MUST delete all its Recipient Contexts used in the group.
 
-   Otherwise, the group member MUST remove every public key associated to a stale Sender ID from its list of group members' public keys, and MUST delete each of its Recipient Contexts whose corresponding Recipient ID is a stale Sender ID.
+   Otherwise, the group member MUST remove every public key associated to a stale Sender ID from its list of group members' public keys used in the group, and MUST delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.
 
 4. The group member installs the current group keying material, and derives the corresponding new Security Context.
 
