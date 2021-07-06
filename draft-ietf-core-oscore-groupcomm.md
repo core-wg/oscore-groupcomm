@@ -608,7 +608,7 @@ Then, the group member proceeds according to the following steps.
 
 1. The group member retrieves from the Group Manager the current group keying material, together with the current Key Generation Number GEN\_NEW. The group member MUST NOT install the obtained group keying material yet.
 
-2. The group member asks the Group Manager for the set of stale Sender IDs, as related to endpoints that are not current group members.
+2. The group member asks the Group Manager for the set of stale Sender IDs.
 
 3. If no exact indication can be obtained from the Group Manager, the group member MUST remove all public keys from its list of group members' public keys and MUST delete all its Recipient Contexts.
 
