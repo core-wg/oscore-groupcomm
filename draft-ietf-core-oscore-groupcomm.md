@@ -687,7 +687,7 @@ The Group Manager is responsible for performing the following tasks:
 
 11. Acting as key repository, in order to handle the public keys of the members of its OSCORE groups, and providing such public keys to other members of the same group upon request. The actual storage of public keys may be entrusted to a separate secure storage device or service.
 
-12. Validating that the format and parameters of public keys of group members are consistent with the countersignature algorithm and related parameters used in the respective OSCORE group.
+12. Validating that the format and parameters of public keys of group members are consistent with the public key algorithm and related parameters used in the respective OSCORE group.
 
 The Group Manager described in {{I-D.ietf-ace-key-groupcomm-oscore}} provides these functionalities.
 
@@ -970,7 +970,7 @@ If the application requires message freshness, e.g., according to time- or event
 
 Upon receiving a protected message, a recipient endpoint retrieves a Security Context as in {{RFC8613}}. An endpoint MUST be able to distinguish between a Security Context to process OSCORE messages as in {{RFC8613}} and a Group OSCORE Security Context to process Group OSCORE messages as defined in this document.
 
-To this end, an endpoint can take into account the different structure of the Security Context defined in {{sec-context}}, for example based on the presence of Countersignature Algorithm in the Common Context. Alternatively implementations can use an additional parameter in the Security Context, to explicitly signal that it is intended for processing Group OSCORE messages.
+To this end, an endpoint can take into account the different structure of the Security Context defined in {{sec-context}}, for example based on the presence of Signature Algorithm and/or Pairwise Key Agreement Algorithm in the Common Context. Alternatively implementations can use an additional parameter in the Security Context, to explicitly signal that it is intended for processing Group OSCORE messages.
 
 If either of the following conditions holds, a recipient endpoint MUST discard the incoming protected message:
    
