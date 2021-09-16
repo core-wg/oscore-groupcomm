@@ -298,11 +298,13 @@ Group Encryption Key specifies the encryption key for deriving a keystream to en
 
 The Group Encryption Key is derived as defined for Sender/Recipient Keys in {{Section 3.2.1 of RFC8613}}, with the following differences.
 
+* The 'id' element of the 'info' array is the empty byte string.
+
 * The 'alg_aead' element of the 'info' array takes the value of Signature Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}).
 
 * The 'type' element of the 'info' array is "Group Encryption Key". The label is an ASCII string and does not include a trailing NUL byte.
 
-* L and the 'L' element of the 'info' array are the size of the output of the HKDF Algorithm from the Common Context (see {{Section 3.2 of RFC8613}}), in bytes.
+* L and the 'L' element of the 'info' array are the size of the key for the Signature Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}), in bytes.
 
 ### Pairwise Key Agreement Algorithm ## {#ssec-common-context-dh-alg}
 
@@ -1700,6 +1702,10 @@ In either case, an internal on-path adversary would not be able to mix up the Ec
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
+
+## Version -12 to -13 ## {#sec-12-13}
+
+* Fixes in the derivation of the Group Encryption Key.
 
 ## Version -11 to -12 ## {#sec-11-12}
 
