@@ -113,7 +113,6 @@ informative:
   I-D.ietf-lwig-curve-representations:
   I-D.ietf-tls-dtls13:
   I-D.ietf-cose-cbor-encoded-cert:
-  I-D.ietf-rats-uccs:
   I-D.amsuess-core-cachable-oscore:
   RFC4944:
   RFC4949:
@@ -342,7 +341,7 @@ In a group, the following MUST hold for the public key of each endpoint as well 
 
 If the group uses (also) the group mode, the public key algorithm is the Signature Algorithm used in the group. If the group uses only the pairwise mode, the public key algorithm is the Pairwise Key Agreement Algorithm used in the group.
 
-If CWTs {{RFC8392}} or unprotected CWT claim sets {{I-D.ietf-rats-uccs}} are used as public key format, the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.
+If CBOR Web Tokens (CWTs) or CWT Claims Sets (CCSs) {{RFC8392}} are used as public key format, the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.
 
 If X.509 certificates {{RFC7925}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}} are used as public key format, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
 
@@ -1706,6 +1705,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -12 to -13 ## {#sec-12-13}
 
 * Fixes in the derivation of the Group Encryption Key.
+
+* Changed UCCS to CCS.
 
 ## Version -11 to -12 ## {#sec-11-12}
 
