@@ -1553,7 +1553,7 @@ This document has the following actions for IANA.
 
 ## OSCORE Flag Bits Registry {#iana-cons-flag-bits}
 
-IANA is asked to add the following value entry to the "OSCORE Flag Bits" subregistry defined in {{Section 13.7 of RFC8613}} as part of the "CoRE Parameters" registry.
+IANA is asked to add the following value entry to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
 
 ~~~~~~~~~~~
 +--------------+------------+-----------------------------+-----------+
