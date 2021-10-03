@@ -1033,15 +1033,15 @@ Upon receiving a secure group request with the Group Flag set to 1, following th
 
    - If the server does not have the public key of the client yet, the server MUST stop processing the request and MAY respond with a 5.03 (Service Unavailable) response. The response MAY include a Max-Age Option, indicating to the client the number of seconds after which to retry. If the Max-Age Option is not present, a retry time of 60 seconds will be assumed by the client, as default value defined in {{Section 5.10.5 of RFC7252}}.
    
+   - The server MUST perform signature verification before decrypting the COSE object, as defined below. Implementations that cannot perform the two steps in this order MUST ensure that no access to the plaintext is possible before a successful signature verification and MUST prevent any possible leak of time-related information that can yield side-channel attacks.
+   
    - The server retrieves the encrypted countersignature ENC_SIGNATURE from the message payload, and computes the original countersignature SIGNATURE as
    
       SIGNATURE = ENC_SIGNATURE XOR KEYSTREAM
    
       where KEYSTREAM is derived as per {{sssec-encrypted-signature-keystream}}.
       
-      The following verification applies to the original countersignature SIGNATURE.
-   
-   - The server MUST perform signature verification before decrypting the COSE object. Implementations that cannot perform the two steps in this order MUST ensure that no access to the plaintext is possible before a successful signature verification and MUST prevent any possible leak of time-related information that can yield side-channel attacks.
+      The server verifies the original countersignature SIGNATURE.
 
    - If the signature verification fails, the server SHALL stop processing the request, SHALL NOT update the Replay Window, and MAY respond with a 4.00 (Bad Request) response. The server MAY set an Outer Max-Age option with value zero. The diagnostic payload MAY contain a string, which, if present, MUST be "Decryption failed" as if the decryption had failed.
    
@@ -1108,7 +1108,7 @@ Note that a client may receive a response protected with a Security Context diff
 
 * In step 5, the client also verifies the countersignature using the public key of the server from the associated Recipient Context. In particular:
 
-   - The client MUST perform signature verification before decrypting the COSE object. Implementations that cannot perform the two steps in this order MUST ensure that no access to the plaintext is possible before a successful signature verification and MUST prevent any possible leak of time-related information that can yield side-channel attacks.
+   - The client MUST perform signature verification before decrypting the COSE object, as defined below. Implementations that cannot perform the two steps in this order MUST ensure that no access to the plaintext is possible before a successful signature verification and MUST prevent any possible leak of time-related information that can yield side-channel attacks.
    
     - The client retrieves the encrypted countersignature ENC_SIGNATURE from the message payload, and computes the original countersignature SIGNATURE as
 
@@ -1116,7 +1116,7 @@ Note that a client may receive a response protected with a Security Context diff
 
        where KEYSTREAM is derived as per {{sssec-encrypted-signature-keystream}}.
     
-       The following verification applies to the original countersignature SIGNATURE.
+       The client verifies the original countersignature SIGNATURE.
    
    - If the verification of the countersignature fails, the server SHALL stop processing the response, and SHALL NOT update the Notification Number associated to the server if the response is an Observe notification {{RFC7641}}.
 
