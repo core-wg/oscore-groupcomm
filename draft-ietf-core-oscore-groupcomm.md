@@ -267,8 +267,6 @@ The Common Context may be acquired from the Group Manager (see {{group-manager}}
 
 AEAD Algorithm identifies the COSE AEAD algorithm to use for encryption, when messages are protected using the pairwise mode (see {{sec-pairwise-protection}}). This algorithm MUST provide integrity protection. This parameter is immutable once the Common Context is established, and it is not relevant if the group uses only the group mode.
 
-For endpoints that support the pairwise mode, the AEAD algorithm AES-CCM-16-64-128 defined in {{Section 4.2 of I-D.ietf-cose-rfc8152bis-algs}} is mandatory to implement.
-
 ### ID Context ## {#ssec-common-context-id-context}
 
 The ID Context parameter (see {{Sections 3.1 and 3.3 of RFC8613}}) in the Common Context SHALL contain the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle potential collisions between Gids (see {{ssec-gid-collision}}).
@@ -283,13 +281,9 @@ Each group member MUST obtain the public key of the Group Manager with a valid p
 
 Signature Encryption Algorithm identifies the algorithm to use for enryption, when messages are protected using the group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection. This parameter is immutable once the Common Context is established.
 
-For endpoints that support the group mode and use authenticated encryption, the AEAD algorithm AES-CCM-16-64-128 defined in {{Section 4.2 of I-D.ietf-cose-rfc8152bis-algs}} is mandatory to implement.
-
 ### Signature Algorithm ## {#ssec-common-context-cs-alg}
 
 Signature Algorithm identifies the digital signature algorithm used to compute a countersignature on the COSE object (see {{Sections 3.2 and 3.3 of I-D.ietf-cose-countersign}}), when messages are protected using the group mode (see {{mess-processing}}). This parameter is immutable once the Common Context is established.
-
-For endpoints that support the group mode, the EdDSA signature algorithm and the elliptic curve Ed25519 {{RFC8032}} are mandatory to implement. If elliptic curve signatures are used, it is RECOMMENDED to implement deterministic signatures with additional randomness as specified in {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
 
 ### Group Encryption Key ## {#ssec-common-context-group-enc-key}
 
@@ -309,11 +303,9 @@ The Group Encryption Key is derived as defined for Sender/Recipient Keys in {{Se
 
 Pairwise Key Agreement Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}). This parameter is immutable once the Common Context is established.
 
-For endpoints that support the pairwise mode, the ECDH-SS + HKDF-256 algorithm specified in {{Section 6.3.1 of I-D.ietf-cose-rfc8152bis-algs}} and the X25519 curve {{RFC7748}} are mandatory to implement.
-
 ## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
-OSCORE specifies the derivation of Sender Context and Recipient Context, specifically of Sender/Recipient Keys and Common IV, from a set of input parameters (see {{Section 3.2 of RFC8613}}). Like in {{RFC8613}}, HKDF SHA-256 is the mandatory to implement HKDF.
+OSCORE specifies the derivation of Sender Context and Recipient Context, specifically of Sender/Recipient Keys and Common IV, from a set of input parameters (see {{Section 3.2 of RFC8613}}).
 
 The derivation of Sender/Recipient Keys and Common IV defined in OSCORE applies also to Group OSCORE, with the following extensions compared to {{Section 3.2.1 of RFC8613}}.
 
@@ -1259,6 +1251,38 @@ Upon receiving a response with the Group Flag set to 0, following the procedure 
 
 * If Observe {{RFC7641}} is supported, what defined in {{ssec-verify-response-observe}} of this document holds. The client can also in this case identify a server to be the same one across a change of Sender ID, by relying on the server's public key. However, since the notification is protected in pairwise mode, the public key is not used for verifying a countersignature as in {{ssec-verify-response}}, but rather as input to derive the Pairwise Recipient Key used to decrypt and verify the notification (see {{key-derivation-pairwise}}).
 
+# Mandatory-to-Implement Compliance Requirements
+
+Like in {{RFC8613}}, HKDF SHA-256 is the mandatory to implement HKDF.
+
+An endpoint may support only the group mode, or only the pairwise mode, or both.
+
+For endpoints that support the group mode, the following applies.
+
+* For endpoints that use authenticated encryption, the AEAD algorithm AES-CCM-16-64-128 defined in {{Section 4.2 of I-D.ietf-cose-rfc8152bis-algs}} is mandatory to implement as Signature Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}).
+
+* For many constrained IoT devices it is problematic to support more than one signature algorithm. Existing devices can be expected to support either EdDSA or ECDSA. In order to enable as much interoperability as we can reasonably achieve, the following applies with respect to the Signature Algorithm (see {{ssec-common-context-cs-alg}}).
+
+   Less constrained endpoints SHOULD implement both: the EdDSA signature algorithm together with the elliptic curve Ed25519 {{RFC8032}}; and the ECDSA signature algorithm together with the elliptic curve P-256.
+   
+   Constrained endpoints SHOULD implement: the EdDSA signature algorithm together with the elliptic curve Ed25519 {{RFC8032}}; or the ECDSA signature algorithm together with the elliptic curve P-256.
+
+* If elliptic curve signatures are used, it is RECOMMENDED to implement deterministic signatures with additional randomness as specified in {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
+
+For endpoints that support the pairwise mode, the following applies.
+
+* The AEAD algorithm AES-CCM-16-64-128 defined in {{Section 4.2 of I-D.ietf-cose-rfc8152bis-algs}} is mandatory to implement as AEAD Algorithm (see {{ssec-common-context-aead-alg}}).
+
+* The ECDH-SS + HKDF-256 algorithm specified in {{Section 6.3.1 of I-D.ietf-cose-rfc8152bis-algs}} is mandatory to implement as Pairwise Key Agreement Algorithm (see {{ssec-common-context-dh-alg}}).
+
+* In order to enable as much interoperability as we can reasonably achieve in the presence of constrained devices (see above), the following applies.
+
+   Less constrained endpoints SHOULD implement both the X25519 curve {{RFC7748}} and the P-256 curve as ECDH curves.
+   
+   Constrained endpoints SHOULD implement the X25519 curve {{RFC7748}} or the P-256 curve as ECDH curve.
+
+Constrained IoT devices may alternatively represent Montgomery curves and (twisted) Edwards curves {{RFC7748}} in the short-Weierstrass form Wei25519, with which the algorithms ECDSA25519 and ECDH25519 can be used for signature operations and Diffie-Hellman secret calculation, respectively {{I-D.ietf-lwig-curve-representations}}.
+
 # Security Considerations  # {#sec-security-considerations}
 
 The same threat model discussed for OSCORE in Appendix D.1 of {{RFC8613}} holds for Group OSCORE. In addition, when using the group mode, source authentication of messages is explicitly ensured by means of countersignatures, as discussed in {{ssec-group-mode-security}}.
@@ -1498,15 +1522,9 @@ In order to renew its own Sender Context, the endpoint SHOULD inform the Group M
 
 Additionally, the same considerations from {{Section 12.6 of RFC8613}} hold for Group OSCORE, about building the AEAD nonce and the secrecy of the Security Context parameters.
 
-For endpoints that support the group mode, the EdDSA signature algorithm Ed25519 {{RFC8032}} is mandatory to implement. The group mode uses the "encrypt-then-sign" construction, i.e., the countersignature is computed over the COSE_Encrypt0 object (see {{sec-cose-object-unprotected-field}}). This is motivated by enabling additional principals acting as signature checkers (see {{sec-additional-principals}}), which do not join a group as members but are allowed to verify countersignatures of messages protected in group mode without being able to decrypt them (see {{sec-processing-signature-checker}}).
-   
+The group mode uses the "encrypt-then-sign" construction, i.e., the countersignature is computed over the COSE_Encrypt0 object (see {{sec-cose-object-unprotected-field}}). This is motivated by enabling additional principals acting as signature checkers (see {{sec-additional-principals}}), which do not join a group as members but are allowed to verify countersignatures of messages protected in group mode without being able to decrypt them (see {{sec-processing-signature-checker}}).
+
 If the encryption algorithm used in group mode provides integrity protection, countersignatures of COSE_Encrypt0 with short authentication tags do not provide the security properties associated with the same algorithm used in COSE_Sign (see {{Section 6 of I-D.ietf-cose-countersign}}). To provide 128-bit security against collision attacks, the tag length MUST be at least 256-bits. A countersignature of a COSE_Encrypt0 with AES-CCM-16-64-128 provides at most 32 bits of integrity protection.
-
-For endpoints that support the pairwise mode, the ECDH-SS + HKDF-256 algorithm specified in {{Section 6.3.1 of I-D.ietf-cose-rfc8152bis-algs}} and the X25519 algorithm {{RFC7748}} are also mandatory to implement. 
-
-Constrained IoT devices may alternatively represent Montgomery curves and (twisted) Edwards curves {{RFC7748}} in the short-Weierstrass form Wei25519, with which the algorithms ECDSA25519 and ECDH25519 can be used for signature operations and Diffie-Hellman secret calculation, respectively {{I-D.ietf-lwig-curve-representations}}.
-
-For many constrained IoT devices, it is problematic to support more than one signature algorithm or multiple whole cipher suites. As a consequence, some deployments using, for instance, ECDSA with NIST P-256 may not support the mandatory signature algorithm but that should not be an issue for local deployments.
 
 The derivation of pairwise keys defined in {{key-derivation-pairwise}} is compatible with ECDSA and EdDSA asymmetric keys, but is not compatible with RSA asymmetric keys.
 
@@ -1521,7 +1539,6 @@ Extending Theorem 2 of {{Degabriele}}, {{Thormarker}} shows that the same key pa
 Theorem 3 in {{Degabriele}} shows that the same key pair can be used for an ECDH based KEM and ECDSA. The KEM uses a different KDF than in {{sec-derivation-pairwise}}, but the proof only depends on that the KDF has certain required properties, which are the typical assumptions about HKDF, e.g., that output keys are pseudorandom. In order to comply with the assumptions of Theorem 3, received public keys MUST be successfully validated, see Section 5.6.2.3.4 of {{NIST-800-56A}}. The validation MAY be performed by a trusted Group Manager. For {{Degabriele}} to apply as it is written, public keys need to be in the expected subgroup. For this we rely on cofactor DH, Section 5.7.1.2 of {{NIST-800-56A}} which is referenced in {{sec-derivation-pairwise}}.
 
 HashEdDSA variants of Ed25519 and Ed448 are not used by COSE, see {{Section 2.2 of I-D.ietf-cose-rfc8152bis-algs}}, and are not covered by the analysis in {{Thormarker}}, and hence MUST NOT be used with the public keys used with pairwise keys as specified in this document.
-
 
 ## Message Segmentation {#ssec-message-segmentation}
 
@@ -1705,6 +1722,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -12 to -13 ## {#sec-12-13}
 
 * Fixes in the derivation of the Group Encryption Key.
+
+* Added Mandatory-to-Implement compliance requirements.
 
 * Changed UCCS to CCS.
 
