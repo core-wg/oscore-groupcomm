@@ -1048,8 +1048,8 @@ Upon receiving a secure group request with the Group Flag set to 1, following th
    - When decrypting the COSE object using the Recipient Key, the Signature Encryption Algorithm from the Common Context MUST be used.
 
 * Additionally, if the used Recipient Context was created upon receiving this group request and the message is not verified successfully, the server MAY delete that Recipient Context. Such a configuration, which is specified by the application, mitigates attacks that aim at overloading the server's storage.
-    
-A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. For an example where this is not fulfilled, see {{Sections 7.2.1 and 7.2.4 of I-D.ietf-core-observe-multicast-notifications}}.
+
+A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. For an example where this is not fulfilled, see {{Section 7.2.1 of I-D.ietf-core-observe-multicast-notifications}}.
 
 ### Supporting Observe ### {#ssec-verify-request-observe}
 
@@ -1369,7 +1369,7 @@ In particular, a server may first get a request protected with the old Security 
 
 The client will process that response using the new Security Context, provided that it has installed the new security parameters and keying material before the message processing.
 
-In case block-wise transfer {{RFC7959}} is used, the same considerations from {{Section 10.2 of I-D.ietf-ace-key-groupcomm}} hold.
+In case block-wise transfer {{RFC7959}} is used, the same considerations from {{Section 10.3 of I-D.ietf-ace-key-groupcomm}} hold.
 
 Furthermore, as described below, a group rekeying may temporarily result in misaligned Security Contexts between the sender and recipient of a same message.
 
@@ -1473,7 +1473,7 @@ This is due to the fact that the client is not able to indicate the single inten
 
 The impact of such an attack depends especially on the REST method of the request, i.e., the Inner CoAP Code of the OSCORE request message. In particular, safe methods such as GET and FETCH would trigger (several) unintended responses from the targeted server(s), while not resulting in destructive behavior. On the other hand, non safe methods such as PUT, POST and PATCH/iPATCH would result in the target server(s) taking active actions on their resources and possible cyber-physical environment, with the risk of destructive consequences and possible implications for safety.
 
-A client can instead use the pairwise mode as defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. A client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast, instead of using the group mode. For an example where this is not fulfilled, see {{Sections 7.2.1 and 7.2.4 of I-D.ietf-core-observe-multicast-notifications}}.
+A client can instead use the pairwise mode as defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. A client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast, instead of using the group mode. For an example where this is not fulfilled, see {{Section 7.2.1 of I-D.ietf-core-observe-multicast-notifications}}.
 
 With particular reference to block-wise transfers {{RFC7959}}, {{Section 3.8 of I-D.ietf-core-groupcomm-bis}} points out that, while an initial request including the CoAP Block2 option can be sent over multicast, any other request in a transfer has to occur over unicast, individually addressing the servers in the group.
 
