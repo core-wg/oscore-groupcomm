@@ -212,7 +212,7 @@ This document refers also to the following terminology.
 
 # Security Context # {#sec-context}
 
-This document refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol (see {{terminology}}). Regardless of what it actually supports, each endpoint of a group is aware of whether the group uses the group mode, or the pairwise mode, or both.
+As per the terminology in {{terminology}}, this document refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol. Regardless of what it actually supports, each endpoint of a group is aware of whether the group uses the group mode, or the pairwise mode, or both.
 
 All members of a group maintain a Security Context as defined in {{Section 3 of RFC8613}} and extended as defined in this section. How the Security Context is established by the group members is out of scope for this document, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to tell which Security Context was latest established.
 
@@ -347,7 +347,7 @@ Certain signature schemes, such as EdDSA and ECDSA, support a secure combined si
 
 ### Derivation of Pairwise Keys ### {#key-derivation-pairwise}
 
-Using the Group OSCORE Security Context (see {{sec-context}}), a group member can derive AEAD keys, to protect point-to-point communication between itself and any other endpoint in the group by means of the AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}). The key derivation of these so-called pairwise keys follows the same construction as in {{Section 3.2.1 of RFC8613}}: 
+Using the Group OSCORE Security Context (see {{sec-context}}), a group member can derive AEAD keys, to protect point-to-point communication between itself and any other endpoint X in the group by means of the AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}). The key derivation of these so-called pairwise keys follows the same construction as in {{Section 3.2.1 of RFC8613}}: 
 
 ~~~~~~~~~~~
 Pairwise Sender Key    = HKDF(Sender Key, IKM-Sender, info, L)
@@ -370,12 +370,16 @@ where:
 * The Sender Key from the Sender Context is used as salt in the HKDF, when deriving the Pairwise Sender Key.
 
 * The Recipient Key from the Recipient Context associated to endpoint X is used as salt in the HKDF, when deriving the Pairwise Recipient Key.
- 
-* IKM-Sender is the Input Keying Material (IKM) used in the HKDF for the derivation of the Pairwise Sender Key. IKM-Sender is the byte string concatenation of the endpoint's own (signature) public key, the endpoint X's (signature) public key from the Recipient Context, and the Shared Secret. The two (signature) public keys are binary encoded as defined in {{sec-pub-key-format}}.
 
-* IKM-Recipient is the Input Keying Material (IKM) used in the HKDF for the derivation of the Recipient Sender Key. IKM-Recipient is the byte string concatenation of the endpoint X's (signature) public key from the Recipient Context, the endpoint's own (signature) public key, and the Shared Secret. The two (signature) public keys are binary encoded as defined in {{sec-pub-key-format}}.
+* The Sender Pub Key is the endpoint's own (signature) public key from the Sender Context.
 
-* The Shared Secret is computed as a cofactor Diffie-Hellman shared secret, see Section 5.7.1.2 of {{NIST-800-56A}}, using the Pairwise Key Agreement Algorithm. The endpoint uses its private key from the Sender Context and the public key of the other endpoint X from the associated Recipient Context. Note the requirement of validation of public keys in {{ssec-crypto-considerations}}. For X25519 and X448, the procedure is described in {{Section 5 of RFC7748}} using public keys mapped to Montgomery coordinates, see {{montgomery}}.
+* The Recipient Pub Key is the endpoint X's (signature) public key from the Recipient Context associated to the endpoint X.
+
+* The Shared Secret is computed as a cofactor Diffie-Hellman shared secret, see Section 5.7.1.2 of {{NIST-800-56A}}, using the Pairwise Key Agreement Algorithm. The endpoint uses its private key from the Sender Context and the Recipient Pub Key. Note the requirement of validation of public keys in {{ssec-crypto-considerations}}. For X25519 and X448, the procedure is described in {{Section 5 of RFC7748}} using public keys mapped to Montgomery coordinates, see {{montgomery}}.
+
+* IKM-Sender is the Input Keying Material (IKM) used in the HKDF for the derivation of the Pairwise Sender Key. IKM-Sender is the byte string concatenation of the Sender Pub Key, the Recipient Pub Key, and the Shared Secret. The Sender Pub Key and the Recipient Pub Key are binary encoded as defined in {{sec-pub-key-format}}.
+
+* IKM-Recipient is the Input Keying Material (IKM) used in the HKDF for the derivation of the Pairwise Recipient Key. IKM-Recipient is the byte string concatenation of the Recipient Pub Key, the Sender Pub Key, and the Shared Secret. The Recipient Pub Key and the Sender Pub Key are binary encoded as defined in {{sec-pub-key-format}}.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 * info and L are as defined in {{Section 3.2.1 of RFC8613}}. That is:
 
@@ -504,7 +508,7 @@ All the group members need to acquire new Security Context parameters from the G
 
    - It re-derives the keying material stored in its Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise.
 
-   - It resets to 0 its Sender Sequence Number in its Sender Context.
+   - It resets its Sender Sequence Number in its Sender Context to 0.
 
    - It re-initializes the Replay Window of each Recipient Context.
 
@@ -521,7 +525,7 @@ The distribution of a new Gid and Master Secret may result in temporarily misali
 
 # The Group Manager # {#group-manager}
 
-As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant Security Context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s). This document is based on the existence of an entity called Group Manager and responsible for the group, but it does not mandate how the Group Manager interacts with the group members. The responsibilities of the Group Manager are compiled together in {{sec-group-manager}}.
+As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant Security Context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s). This document is based on the existence of an entity called Group Manager and responsible for the group, but it does not mandate how the Group Manager interacts with the group members. The list of responsibilities of the Group Manager is compiled in {{sec-group-manager}}.
 
 It is RECOMMENDED to use a Group Manager as described in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for authentication and authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}.
 
@@ -559,11 +563,15 @@ In order to establish a new Security Context for a group, the Group Manager MUST
 
 The specific group key management scheme used to distribute new keying material, is out of the scope of this document. However, it is RECOMMENDED that the Group Manager supports the Group Rekeying Process described in {{I-D.ietf-ace-key-groupcomm-oscore}}. When possible, the delivery of rekeying messages should use a reliable transport, in order to reduce chances of group members missing a rekeying instance.
 
-The set of group members should not be assumed as fixed, i.e., the group membership is subject to changes, possibly on a frequent basis. The Group Manager MUST rekey the group when one or more currently present endpoints leave the group, or in order to evict them as compromised or suspected so. In either case, this excludes such nodes from future communications in the group, and thus preserves forward security. If required by the application, the Group Manager MUST rekey the group also before one or more new joining endpoints are added to the group, thus preserving backward security.
+The set of group members should not be assumed as fixed, i.e., the group membership is subject to changes, possibly on a frequent basis.
+
+The Group Manager MUST rekey the group when one or more endpoints leave the group. An endpoint may leave the group at own initiative, or may be evicted from the group by the Group Manager, e.g., in case an endpoint is compromised, or is suspected to be compromised. In either case, rekeying the group excludes such nodes from future communications in the group, and thus preserves forward security.
+
+If required by the application, the Group Manager MUST rekey the group also before one or more new joining endpoints are added to the group, thus preserving backward security.
 
 The establishment of the new Security Context for the group takes the following steps.
 
-1. The Group Manager MUST increment by 1 the Key Generation Number for the group.
+1. The Group Manager MUST increment the Key Generation Number for the group by 1.
 
 2. The Group Manager MUST check if the new Gid to be distributed coincides with the Birth Gid of any of the current group members. If any of such "elder members" is found in the group, then:
 
@@ -989,7 +997,7 @@ During all the steps of the message processing, an endpoint MUST use the same Se
 
 The group mode MUST be used to protect group requests intended for multiple recipients or for the whole group. This includes both requests directly addressed to multiple recipients, e.g., sent by the client over multicast, as well as requests sent by the client over unicast to a proxy, that forwards them to the intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}. For encryption and decryption operations, the Signature Encryption Algorithm from the Common Context is used.
 
-As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-Confirmable, and thus are not retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a predefined, sufficient amount of time, in order to correctly perform possible retransmissions at the application layer. According to {{Section 5.2.3 of RFC7252}}, responses to Non-Confirmable group requests SHOULD also be Non-Confirmable, but endpoints MUST be prepared to receive Confirmable responses in reply to a Non-Confirmable group request. Confirmable group requests are acknowledged in non-multicast environments, as specified in {{RFC7252}}.
+As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-confirmable, and thus are not retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a predefined, sufficient amount of time, in order to correctly perform potential retransmissions at the application layer. According to {{Section 5.2.3 of RFC7252}}, responses to Non-confirmable group requests SHOULD also be Non-confirmable, but endpoints MUST be prepared to receive Confirmable responses in reply to a Non-confirmable group request. Confirmable group requests are acknowledged when sent over non-multicast transports, as specified in {{RFC7252}}.
 
 Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{RFC8613}}. However, a recipient MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}} of this document, or which is not cryptographically validated in a successful way. In either case, it is RECOMMENDED that the recipient does not send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the network.
 
@@ -1213,7 +1221,7 @@ The pairwise mode protects messages between two members of a group, essentially 
 
 When using the pairwise mode, the request is protected as defined in {{Section 8.1 of RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following difference also applies.
 
-* If Observe {{RFC7641}} is supported, what defined in {{ssec-protect-request-observe}} of this document holds.
+* If Observe {{RFC7641}} is supported, what is defined in {{ssec-protect-request-observe}} of this document holds.
 
 ## Verifying the Request {#sec-pairwise-verify-req}
 
@@ -1223,7 +1231,7 @@ Upon receiving a request with the Group Flag set to 0, following the procedure i
 
 * If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}). The new Pairwise Sender/Recipient Keys are deleted if the Recipient Context is deleted as a result of the message not being successfully verified. 
 
-* If Observe {{RFC7641}} is supported, what defined in {{ssec-verify-request-observe}} of this document holds.
+* If Observe {{RFC7641}} is supported, what is defined in {{ssec-verify-request-observe}} of this document holds.
 
 ## Protecting the Response {#sec-pairwise-protection-resp}
 
@@ -1237,7 +1245,7 @@ When using the pairwise mode, a response is protected as defined in {{Section 8.
 
    That is, when responding to a request protected in pairwise mode, the server SHOULD include the 'kid' parameter in a response protected in pairwise mode, if it is replying to that client for the first time since the assignment of its new Sender ID.
 
-* If Observe {{RFC7641}} is supported, what defined in {{ssec-protect-response-observe}} of this document holds.
+* If Observe {{RFC7641}} is supported, what is defined in {{ssec-protect-response-observe}} of this document holds.
 
 ## Verifying the Response {#sec-pairwise-verify-resp}
 
@@ -1249,7 +1257,7 @@ Upon receiving a response with the Group Flag set to 0, following the procedure 
 
 * If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}). The new Pairwise Sender/Recipient Keys are deleted if the Recipient Context is deleted as a result of the message not being successfully verified. 
 
-* If Observe {{RFC7641}} is supported, what defined in {{ssec-verify-response-observe}} of this document holds. The client can also in this case identify a server to be the same one across a change of Sender ID, by relying on the server's public key. However, since the notification is protected in pairwise mode, the public key is not used for verifying a countersignature as in {{ssec-verify-response}}, but rather as input to derive the Pairwise Recipient Key used to decrypt and verify the notification (see {{key-derivation-pairwise}}).
+* If Observe {{RFC7641}} is supported, what is defined in {{ssec-verify-response-observe}} of this document holds. The client can also in this case identify a server to be the same one across a change of Sender ID, by relying on the server's public key. However, since the notification is protected in pairwise mode, the public key is not used for verifying a countersignature as in {{ssec-verify-response}}, but rather as input to derive the Pairwise Recipient Key used to decrypt and verify the notification (see {{key-derivation-pairwise}}).
 
 # Mandatory-to-Implement Compliance Requirements
 
@@ -1329,7 +1337,7 @@ The security properties of the group mode are summarized below.
 
 5. Group privacy, by encrypting the countersignature.
 
-The group mode fulfills the security properties above while also displaying the following benefits. First, the use of encryption algorithm that does not provide integrity protection results in a minimal communication overhead, by limiting the message payload to the ciphertext and the encrypted countersignature. Second, it is possible to deploy semi-trusted principals such as signature checkers (see {{sec-additional-principals}}), which can break property 5, but cannot break properties 1, 2 and 3.
+The group mode fulfills the security properties above while also displaying the following benefits. First, the use of an encryption algorithm that does not provide integrity protection results in a minimal communication overhead, by limiting the message payload to the ciphertext and the encrypted countersignature. Second, it is possible to deploy semi-trusted principals such as signature checkers (see {{sec-additional-principals}}), which can break property 5, but cannot break properties 1, 2 and 3.
 
 ## Security of the Pairwise Mode {#ssec-pairwise-mode-security}
 
@@ -1357,7 +1365,7 @@ The approach described in this document should take into account the risk of com
 
 {{I-D.ietf-ace-key-groupcomm-oscore}} provides a simple rekeying scheme for renewing the Security Context in a group.
 
-Alternative rekeying schemes which are more scalable with the group size may be needed in dynamic, large-scale groups where endpoints can join and leave at any time, in order to limit the impact on performance due to the Security Context and keying material update.
+Alternative rekeying schemes which are more scalable with the group size may be needed in dynamic, large groups where endpoints can join and leave at any time, in order to limit the impact on performance due to the Security Context and keying material update.
 
 ## Update of Security Context and Key Rotation {#ssec-key-rotation}
 
@@ -1379,7 +1387,7 @@ In this case, the sender protects a message using the old Security Context, i.e.
 
 A possible way to ameliorate this issue is to preserve the old, recent, Security Context for a maximum amount of time defined by the application. By doing so, the recipient can still try to process the received message using the old retained Security Context as a second attempt. This makes particular sense when the recipient is a client, that would hence be able to process incoming responses protected with the old, recent, Security Context used to protect the associated group request. Instead, a recipient server would better and more simply discard an incoming group request which is not successfully processed with the new Security Context.
 
-This tolerance preserves the processing of secure messages throughout a long-lasting key rotation, as group rekeying processes may likely take a long time to complete, especially in large scale groups. On the other hand, a former (compromised) group member can abusively take advantage of this, and send messages protected with the old retained Security Context. Therefore, a conservative application policy should not admit the retention of old Security Contexts.
+This tolerance preserves the processing of secure messages throughout a long-lasting key rotation, as group rekeying processes may likely take a long time to complete, especially in large groups. On the other hand, a former (compromised) group member can abusively take advantage of this, and send messages protected with the old retained Security Context. Therefore, a conservative application policy should not admit the retention of old Security Contexts.
 
 ### Late Update on the Recipient {#ssec-key-rotation-late-recipient}
 
@@ -1647,7 +1655,7 @@ Group Communication for CoAP {{I-D.ietf-core-groupcomm-bis}} provides the necess
 
 * Commissioning of Low-power and Lossy Network (LLN) systems: a commissioning device is responsible for querying all devices in the local network or a selected subset of them, in order to discover their presence, and be aware of their capabilities, default configuration, and operating conditions. Queried devices displaying similarities in their capabilities and features, or sharing a common physical location can be configured as members of a single application group and corresponding CoAP group. Queried devices are expected to reply back to the commissioning device, in order to notify their presence, and provide the requested information and their current operational status.
 
-* Emergency multicast: a particular emergency related information (e.g., natural disaster) is generated and multicast by an emergency notifier, and relayed to multiple devices. The latter may reply back to the emergency notifier, in order to provide their feedback and local information related to the ongoing emergency. This kind of setups should additionally rely on a fault tolerance multicast algorithm, such as Multicast Protocol for Low-Power and Lossy Networks (MPL).
+* Emergency multicast: a particular emergency related information (e.g., natural disaster) is generated and multicast by an emergency notifier, and relayed to multiple devices. The latter may reply back to the emergency notifier, in order to provide their feedback and local information related to the ongoing emergency. This kind of setups should additionally rely on a fault-tolerance multicast algorithm, such as Multicast Protocol for Low-Power and Lossy Networks (MPL).
 
 # Example of Group Identifier Format {#gid-ex}
 
@@ -1718,6 +1726,10 @@ In either case, an internal on-path adversary would not be able to mix up the Ec
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
+
+## Version -13 to -14 ## {#sec-13-14}
+
+* Editorial improvements and fixes.
 
 ## Version -12 to -13 ## {#sec-12-13}
 
@@ -1883,7 +1895,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Note for implementation about the external_aad for signing (Sectino 4.3.2).
 
-* Retransmission by the application for group requests over multicast as Non-Confirmable (Section 7).
+* Retransmission by the application for group requests over multicast as Non-confirmable (Section 7).
 
 * A server MUST use its own Partial IV in a response, if protecting it with a different context than the one used for the request (Section 7.3).
 
@@ -2011,7 +2023,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Extended scope of Section 5, now titled " Message Binding, Sequence Numbers, Freshness and Replay Protection".
 
-* Clarifications about Non-Confirmable messages in Section 5.1 "Synchronization of Sender Sequence Numbers".
+* Clarifications about Non-confirmable messages in Section 5.1 "Synchronization of Sender Sequence Numbers".
 
 * Clarifications about error handling in Section 6 "Message Processing".
 
