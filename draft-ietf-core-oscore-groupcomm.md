@@ -653,8 +653,9 @@ Components changed in lockstep
 |                            |              key rollover
 | The Key Generation Number  |
 | is incremented by 1        |            * After changing Group ID, an
-|                            |              unused kid can be assigned
-+----------------------------+
+|                            |              unused kid can be assigned,
++----------------------------+              even if it was used before
+                                            the Group ID change
 ~~~~~~~~~~~
 {: #fig-key-material-diagram title="Relations among keying material components." artwork-align="center"}
 
