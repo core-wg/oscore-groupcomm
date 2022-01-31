@@ -75,6 +75,7 @@ normative:
   RFC2119:
   RFC4086:
   RFC7252:
+  RFC7641:
   RFC7748:
   RFC8032:
   RFC8174:
@@ -120,7 +121,6 @@ informative:
   RFC6282:
   RFC6347:
   RFC7228:
-  RFC7641:
   RFC7925:
   RFC7959:
   RFC8392:
