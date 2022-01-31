@@ -1000,7 +1000,15 @@ The group mode MUST be used to protect group requests intended for multiple reci
 
 As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-confirmable, and thus are not retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a predefined, sufficient amount of time, in order to correctly perform potential retransmissions at the application layer. According to {{Section 5.2.3 of RFC7252}}, responses to Non-confirmable group requests SHOULD also be Non-confirmable, but endpoints MUST be prepared to receive Confirmable responses in reply to a Non-confirmable group request. Confirmable group requests are acknowledged when sent over non-multicast transports, as specified in {{RFC7252}}.
 
-Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{RFC8613}}. However, a recipient MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}} of this document, or which is not cryptographically validated in a successful way. In either case, it is RECOMMENDED that the recipient does not send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the network.
+Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{RFC8613}}. However, a recipient MUST stop processing and reject any message which is malformed and does not follow the format specified in {{sec-cose-object}} of this document, or which is not cryptographically validated in a successful way.
+
+In either case, it is RECOMMENDED that a server does not send back any error message in reply to a received request, if any of the two following conditions holds:
+
+* The server is not able to identify the received request as a group request, i.e., as sent to all servers in the group.
+
+* The server identifies the received request as a group request.
+
+This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the network.
 
 ## Protecting the Request ## {#ssec-protect-request}
 
@@ -1733,6 +1741,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Replaced "node" with "endpoint" where appropriate.
 
 * Replaced CBOR simple value "null" with "nil".
+
+* Fine-grained suppression of error responses.
 
 * Clarifications and editorial improvements.
 
