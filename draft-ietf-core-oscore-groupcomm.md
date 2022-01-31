@@ -177,7 +177,7 @@ Group OSCORE defines two modes of operation, that can be used independently or t
 
 Both modes provide source authentication of CoAP messages. The application decides what mode to use, potentially on a per-message basis. Such decisions can be based, for instance, on pre-configured policies or dynamic assessing of the target recipient and/or resource, among other things. One important case is when requests are protected with the group mode, and responses with the pairwise mode. Since such responses convey shorter integrity tags instead of bigger, full-fledged signatures, this significantly reduces the message overhead in case of many responses to one request.
 
-A special deployment of Group OSCORE is to use pairwise mode only. For example, consider the case of a constrained-node network {{RFC7228}} with a large number of CoAP endpoints and the objective to establish secure communication between any pair of endpoints with a small provisioning effort and message overhead. Since the total number of security associations that needs to be established grows with the square of the number of nodes, it is desirable to restrict the amount of secret keying material provided to each node. Moreover, a key establishment protocol would need to be executed for each security association. One solution to this is to deploy Group OSCORE, with the endpoints being part of a group, and use the pairwise mode. This solution assumes a trusted third party called Group Manager (see {{group-manager}}). However, it has the benefit of providing a single shared secret, while distributing only the public keys of group members or a subset of those. After that, a CoAP endpoint can locally derive the OSCORE Security Context for the other endpoint in the group, and protect CoAP communications with very low overhead {{I-D.ietf-lwig-security-protocol-comparison}}.
+A special deployment of Group OSCORE is to use pairwise mode only. For example, consider the case of a constrained-node network {{RFC7228}} with a large number of CoAP endpoints and the objective to establish secure communication between any pair of endpoints with a small provisioning effort and message overhead. Since the total number of security associations that needs to be established grows with the square of the number of endpoints, it is desirable to restrict the amount of secret keying material provided to each endpoint. Moreover, a key establishment protocol would need to be executed for each security association. One solution to this is to deploy Group OSCORE, with the endpoints being part of a group, and use the pairwise mode. This solution assumes a trusted third party called Group Manager (see {{group-manager}}). However, it has the benefit of providing a single shared secret, while distributing only the public keys of group members or a subset of those. After that, a CoAP endpoint can locally derive the OSCORE Security Context for the other endpoint in the group, and protect CoAP communications with very low overhead {{I-D.ietf-lwig-security-protocol-comparison}}.
 
 ## Terminology ## {#terminology}
 
@@ -533,9 +533,9 @@ The Group Manager assigns an integer Key Generation Number to each of its groups
 
 The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. Also, for each group, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. According to a hierarchical approach, the Gid value assigned to a group is associated to a dedicated space for the values of Sender ID and Recipient ID of the members of that group.
 
-When a node (re-)joins a group, it is provided also with the current Gid to use in the group, namely the Birth Gid of that node for that group. For each group member, the Group Manager MUST store the latest corresponding Birth Gid until that member leaves the group. In case the node has in fact re-joined the group, the newly determined Birth Gid overwrites the one currently stored.
+When an endpoint (re-)joins a group, it is provided also with the current Gid to use in the group, namely the Birth Gid of that endpoint for that group. For each group member, the Group Manager MUST store the latest corresponding Birth Gid until that member leaves the group. In case the endpoint has in fact re-joined the group, the newly determined Birth Gid overwrites the one currently stored.
 
-The Group Manager maintains records of the public keys of endpoints in a group, and provides information about the group and its members to other group members and to external principals with selected roles (see {{sec-additional-principals}}). Upon nodes' joining, the Group Manager collects such public keys and MUST verify proof-of-possession of the respective private key.
+The Group Manager maintains records of the public keys of endpoints in a group, and provides information about the group and its members to other group members and to external principals with selected roles (see {{sec-additional-principals}}). Upon endpoints' joining, the Group Manager collects such public keys and MUST verify proof-of-possession of the respective private key.
 
 An endpoint acquires group data such as the Gid and OSCORE input parameters including its own Sender ID from the Group Manager, and provides information about its public key to the Group Manager, for example upon joining the group. 
 
@@ -565,7 +565,7 @@ The specific group key management scheme used to distribute new keying material,
 
 The set of group members should not be assumed as fixed, i.e., the group membership is subject to changes, possibly on a frequent basis.
 
-The Group Manager MUST rekey the group when one or more endpoints leave the group. An endpoint may leave the group at own initiative, or may be evicted from the group by the Group Manager, e.g., in case an endpoint is compromised, or is suspected to be compromised. In either case, rekeying the group excludes such nodes from future communications in the group, and thus preserves forward security.
+The Group Manager MUST rekey the group when one or more endpoints leave the group. An endpoint may leave the group at own initiative, or may be evicted from the group by the Group Manager, e.g., in case an endpoint is compromised, or is suspected to be compromised. In either case, rekeying the group excludes such endpoints from future communications in the group, and thus preserves forward security.
 
 If required by the application, the Group Manager MUST rekey the group also before one or more new joining endpoints are added to the group, thus preserving backward security.
 
@@ -1319,7 +1319,7 @@ The group mode defined in {{mess-processing}} relies on commonly shared group ke
 
    Furthermore, if the used encryption algorithm does not provide integrity protection, then it does not ensure any level of message authentication or proof of group membership.
 
-   On the other hand, proof of group membership is always ensured by construction through the strict management of the group keying material (see {{sec-group-key-management}}). That is, the group is rekeyed in case of nodes' leaving, and the current group members are informed of former group members. Thus, a current group member owning the latest group keying material does not own the public key of any former group member.
+   On the other hand, proof of group membership is always ensured by construction through the strict management of the group keying material (see {{sec-group-key-management}}). That is, the group is rekeyed in case of members' leaving, and the current group members are informed of former group members. Thus, a current group member owning the latest group keying material does not own the public key of any former group member.
    
    This allows a recipient endpoint to rely on the owned public keys, in order to always confidently assert the group membership of a sender endpoint when processing an incoming message, i.e., to assert that the sender endpoint was a group member when it signed the message. In turn, this prevents a former group member to possibly re-sign and inject in the group a stored message that was protected with old keying material.
 
@@ -1728,6 +1728,8 @@ In either case, an internal on-path adversary would not be able to mix up the Ec
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -13 to -14 ## {#sec-13-14}
+
+* Replaced "node" with "endpoint" where appropriate.
 
 * Replaced CBOR simple value "null" with "nil".
 
