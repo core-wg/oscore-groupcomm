@@ -1692,7 +1692,7 @@ The Group Manager must verify that the joining endpoint is authorized to join th
 
 In case of successful authorization check, the Group Manager generates a Sender ID assigned to the joining endpoint, before proceeding with the rest of the join process. That is, the Group Manager provides the joining endpoint with the keying material and parameters to initialize the Security Context, including its own public key (see {{sec-context}}). The actual provisioning of keying material and parameters to the joining endpoint is out of the scope of this document.
 
-It is RECOMMENDED that the join process adopts the approach described in {{I-D.ietf-ace-key-groupcomm-oscore}} and based on the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. 
+It is recommended that the join process adopts the approach described in {{I-D.ietf-ace-key-groupcomm-oscore}} and based on the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. 
 
 # Challenge-Response Synchronization # {#sec-synch-challenge-response}
 
