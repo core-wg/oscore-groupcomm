@@ -1268,7 +1268,7 @@ Upon receiving a response with the Group Flag set to 0, following the procedure 
 
 * If Observe {{RFC7641}} is supported, what is defined in {{ssec-verify-response-observe}} of this document holds. The client can also in this case identify a server to be the same one across a change of Sender ID, by relying on the server's public key. However, since the notification is protected in pairwise mode, the public key is not used for verifying a countersignature as in {{ssec-verify-response}}, but rather as input to derive the Pairwise Recipient Key used to decrypt and verify the notification (see {{key-derivation-pairwise}}).
 
-# Mandatory-to-Implement Compliance Requirements
+# Implementation Compliance
 
 Like in {{RFC8613}}, HKDF SHA-256 is the mandatory to implement HKDF.
 
@@ -1743,6 +1743,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Replaced CBOR simple value "null" with "nil".
 
 * Fine-grained suppression of error responses.
+
+* Changed section title "Mandatory-to-Implement Compliance Requirements" to "Implementation Compliance".
 
 * Clarifications and editorial improvements.
 
