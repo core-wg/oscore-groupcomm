@@ -68,6 +68,7 @@ author:
 
 normative:
 
+  I-D.ietf-core-echo-request-tag:
   I-D.ietf-core-groupcomm-bis:
   I-D.ietf-cose-rfc8152bis-struct:
   I-D.ietf-cose-rfc8152bis-algs:
@@ -107,7 +108,6 @@ informative:
   I-D.ietf-ace-key-groupcomm:
   I-D.ietf-ace-key-groupcomm-oscore:
   I-D.ietf-ace-oauth-authz:
-  I-D.ietf-core-echo-request-tag:
   I-D.mattsson-cfrg-det-sigs-with-noise:
   I-D.ietf-lwig-security-protocol-comparison:
   I-D.ietf-core-observe-multicast-notifications:
@@ -1749,6 +1749,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Fine-grained suppression of error responses.
 
 * Changed section title "Mandatory-to-Implement Compliance Requirements" to "Implementation Compliance".
+
+* RFC 7641 and draft-ietf-core-echo-request-tag as normative references.
 
 * Clarifications and editorial improvements.
 
