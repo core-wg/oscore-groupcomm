@@ -603,7 +603,7 @@ When receiving the new group keying materal, a group member considers the receiv
 
 After that, the group member installs the new keying material and derives the corresponding new Security Context.
 
-A group member might miss one group rekeying or more consecutive instances. As a result, the group member will retain old group keying material with Key Generation Number GEN\_OLD. Eventually, the group member can notice the discrepancy, e.g., by repeatedly failing to verify incoming messages, or by explicitly querying the Group Manager for the current Key Generation Number. Once the group member gains knowledge of having missed a group rekeying, it MUST delete the old keying material it owns.
+A group member might miss one group rekeying or more consecutive instances. As a result, the group member will retain old group keying material with Key Generation Number GEN\_OLD. Eventually, the group member can notice the discrepancy, e.g., by repeatedly failing to verify incoming messages, or by explicitly querying the Group Manager for the current Key Generation Number. Once the group member gains knowledge of having missed a group rekeying, it MUST delete the old keying material it stores.
 
 Then, the group member proceeds according to the following steps.
 
@@ -625,7 +625,7 @@ Alternatively, the group member can re-join the group. In such a case, the group
 
    Then, given Z the set of public keys received from the Group Manager, the group member removes every public key which is not in Z from its list of group members' public keys used in the group, and deletes each of its Recipient Contexts used in the group that does not include any of the public keys in Z.
 
-By removing public keys and deleting Recipient Contexts associated to stale Sender IDs, it is ensured that a recipient endpoint owning the latest group keying material does not store the public keys of sender endpoints that are not current group members. This in turn allows group members to rely on owned public keys to confidently assert the group membership of sender endpoints, when receiving incoming messages protected in group mode (see {{mess-processing}}).
+By removing public keys and deleting Recipient Contexts associated to stale Sender IDs, it is ensured that a recipient endpoint storing the latest group keying material does not store the public keys of sender endpoints that are not current group members. This in turn allows group members to rely on stored public keys to confidently assert the group membership of sender endpoints, when receiving incoming messages protected in group mode (see {{mess-processing}}).
 
 ### Recycling of Identifiers
    
@@ -1320,7 +1320,7 @@ The rest of this section first discusses security aspects to be taken into accou
 
 ## Security of the Group Mode {#ssec-group-mode-security}
 
-The group mode defined in {{mess-processing}} relies on commonly shared group keying material to protect communication within a group. Using the group mode has the implications discussed below. The following refers to group members as the endpoints in the group owning the latest version of the group keying material.
+The group mode defined in {{mess-processing}} relies on commonly shared group keying material to protect communication within a group. Using the group mode has the implications discussed below. The following refers to group members as the endpoints in the group storing the latest version of the group keying material.
 
 * Messages are encrypted at a group level (group-level data confidentiality), i.e., they can be decrypted by any member of the group, but not by an external adversary or other external entities.
 
@@ -1328,9 +1328,9 @@ The group mode defined in {{mess-processing}} relies on commonly shared group ke
 
    Furthermore, if the used encryption algorithm does not provide integrity protection, then it does not ensure any level of message authentication or proof of group membership.
 
-   On the other hand, proof of group membership is always ensured by construction through the strict management of the group keying material (see {{sec-group-key-management}}). That is, the group is rekeyed in case of members' leaving, and the current group members are informed of former group members. Thus, a current group member owning the latest group keying material does not own the public key of any former group member.
+   On the other hand, proof of group membership is always ensured by construction through the strict management of the group keying material (see {{sec-group-key-management}}). That is, the group is rekeyed in case of members' leaving, and the current group members are informed of former group members. Thus, a current group member storing the latest group keying material does not store the public key of any former group member.
    
-   This allows a recipient endpoint to rely on the owned public keys, in order to always confidently assert the group membership of a sender endpoint when processing an incoming message, i.e., to assert that the sender endpoint was a group member when it signed the message. In turn, this prevents a former group member to possibly re-sign and inject in the group a stored message that was protected with old keying material.
+   This allows a recipient endpoint to rely on the stored public keys, in order to always confidently assert the group membership of a sender endpoint when processing an incoming message, i.e., to assert that the sender endpoint was a group member when it signed the message. In turn, this prevents a former group member to possibly re-sign and inject in the group a stored message that was protected with old keying material.
 
 * Source authentication of messages sent to a group is ensured through a countersignature, which is computed by the sender using its own private key and then appended to the message payload. Also, the countersignature is encrypted by using a keystream derived from the group keying material (see {{sec-cose-object-unprotected-field}}). This ensures group privacy, i.e., an attacker cannot track an endpoint over two groups by linking messages between the two groups, unless being also a member of those groups.
 
@@ -1739,6 +1739,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -13 to -14 ## {#sec-13-14}
 
 * Replaced "node" with "endpoint" where appropriate.
+
+* Replaced "owning" with "storing" (of keying material).
 
 * Replaced CBOR simple value "null" with "nil".
 
