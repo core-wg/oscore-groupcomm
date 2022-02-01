@@ -527,7 +527,7 @@ The distribution of a new Gid and Master Secret may result in temporarily misali
 
 As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant Security Context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s). This document is based on the existence of an entity called Group Manager and responsible for the group, but it does not mandate how the Group Manager interacts with the group members. The list of responsibilities of the Group Manager is compiled in {{sec-group-manager}}.
 
-It is RECOMMENDED to use a Group Manager as described in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for authentication and authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}.
+A possible Group Manager to use is specified in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for authentication and authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}.
 
 The Group Manager assigns an integer Key Generation Number to each of its groups, identifying the current version of the keying material used in that group. The first Key Generation Number assigned to every group MUST be 0. Separately for each group, the value of the Key Generation Number increases strictly monotonically, each time the Group Manager distributes new keying material to that group (see {{sec-group-key-management}}). That is, if the current Key Generation Number for a group is X, then X+1 will denote the keying material distributed and used in that group immediately after the current one.
 
@@ -561,7 +561,7 @@ A signature checker MUST be authorized before it can retrieve such information. 
 
 In order to establish a new Security Context for a group, the Group Manager MUST generate and assign to the group a new Group Identifier (Gid) and a new value for the Master Secret parameter. When doing so, a new value for the Master Salt parameter MAY also be generated and assigned to the group. When establishing the new Security Context, the Group Manager should preserve the current value of the Sender ID of each group member.
 
-The specific group key management scheme used to distribute new keying material, is out of the scope of this document. However, it is RECOMMENDED that the Group Manager supports the Group Rekeying Process described in {{I-D.ietf-ace-key-groupcomm-oscore}}. When possible, the delivery of rekeying messages should use a reliable transport, in order to reduce chances of group members missing a rekeying instance.
+The specific group key management scheme used to distribute new keying material is out of the scope of this document. A simple group key management scheme is defined in {{I-D.ietf-ace-key-groupcomm-oscore}}. When possible, the delivery of rekeying messages should use a reliable transport, in order to reduce chances of group members missing a rekeying instance.
 
 The set of group members should not be assumed as fixed, i.e., the group membership is subject to changes, possibly on a frequent basis.
 
@@ -691,7 +691,7 @@ The Group Manager is responsible for performing the following tasks:
 
 12. Validating that the format and parameters of public keys of group members are consistent with the public key algorithm and related parameters used in the respective OSCORE group.
 
-The Group Manager described in {{I-D.ietf-ace-key-groupcomm-oscore}} provides these functionalities.
+The Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}} provides these functionalities.
 
 
 # The COSE Object # {#sec-cose-object}
@@ -1372,7 +1372,7 @@ As a consequence, each message encrypted/decrypted with the same Sender Key is p
 
 The approach described in this document should take into account the risk of compromise of group members. In particular, this document specifies that a key management scheme for secure revocation and renewal of Security Contexts and group keying material MUST be adopted.
 
-{{I-D.ietf-ace-key-groupcomm-oscore}} provides a simple rekeying scheme for renewing the Security Context in a group.
+{{I-D.ietf-ace-key-groupcomm-oscore}} specifies a simple rekeying scheme for renewing the Security Context in a group.
 
 Alternative rekeying schemes which are more scalable with the group size may be needed in dynamic, large groups where endpoints can join and leave at any time, in order to limit the impact on performance due to the Security Context and keying material update.
 
@@ -1692,7 +1692,7 @@ The Group Manager must verify that the joining endpoint is authorized to join th
 
 In case of successful authorization check, the Group Manager generates a Sender ID assigned to the joining endpoint, before proceeding with the rest of the join process. That is, the Group Manager provides the joining endpoint with the keying material and parameters to initialize the Security Context, including its own public key (see {{sec-context}}). The actual provisioning of keying material and parameters to the joining endpoint is out of the scope of this document.
 
-As mentioned in {{group-manager}}, the Group Manager and the join process can be as defined in {{I-D.ietf-ace-key-groupcomm-oscore}}.
+As mentioned in {{group-manager}}, the Group Manager and the join process can be as specified in {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
 # Challenge-Response Synchronization # {#sec-synch-challenge-response}
 
