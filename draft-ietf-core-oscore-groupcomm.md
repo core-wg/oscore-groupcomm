@@ -1496,7 +1496,7 @@ A client can instead use the pairwise mode as defined in {{sec-pairwise-protecti
 
 With particular reference to block-wise transfers {{RFC7959}}, {{Section 3.8 of I-D.ietf-core-groupcomm-bis}} points out that, while an initial request including the CoAP Block2 option can be sent over multicast, any other request in a transfer has to occur over unicast, individually addressing the servers in the group.
 
-Additional considerations are discussed in {{sec-synch-challenge-response}}, with respect to requests including a CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} that has to be sent over unicast, as a challenge-response method for servers to achieve synchronization of clients' Sender Sequence Number.
+Additional considerations are discussed in {{sec-synch-challenge-response}}, with respect to requests including a CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} that have to be sent over unicast, as a challenge-response method for servers to achieve synchronization of clients' Sender Sequence Number.
 
 ## End-to-end Protection {#ssec-e2e-protection}
 
@@ -1577,9 +1577,9 @@ Furthermore, the following privacy considerations hold about the OSCORE option, 
 
 When receiving a group request, each of the recipient endpoints can reply with a response that includes its Sender ID as 'kid' parameter. All these responses will be matchable with the request through the Token. Thus, even if these responses do not include a 'kid context' parameter, it becomes possible to understand that the responder endpoints are in the same group of the requester endpoint.
 
-Furthermore, using the mechanisms described in {{sec-synch-challenge-response}} to achieve Sender Sequence Number synchronization with a client may reveal when a server device goes through a reboot. This can be mitigated by the server device storing the precise state of the Replay Window of each known client on a clean shutdown.
+Furthermore, using the approach described in {{sec-synch-challenge-response}} to achieve Sender Sequence Number synchronization with a client may reveal when a server device goes through a reboot. This can be mitigated by the server device storing the precise state of the Replay Window of each known client on a clean shutdown.
 
-Finally, the mechanism described in {{ssec-gid-collision}} to prevent collisions of Group Identifiers from different Group Managers may reveal information about events in the respective OSCORE groups. In particular, a Group Identifier changes when the corresponding group is rekeyed. Thus, Group Managers might use the shared list of Group Identifiers to infer the rate and patterns of group membership changes triggering a group rekeying, e.g., due to newly joined members or evicted (compromised) members. In order to alleviate this privacy concern, it should be hidden from the Group Managers which exact Group Manager has currently assigned which Group Identifiers in its OSCORE groups.
+Finally, the approach described in {{ssec-gid-collision}} to prevent collisions of Group Identifiers from different Group Managers may reveal information about events in the respective OSCORE groups. In particular, a Group Identifier changes when the corresponding group is rekeyed. Thus, Group Managers might use the shared list of Group Identifiers to infer the rate and patterns of group membership changes triggering a group rekeying, e.g., due to newly joined members or evicted (compromised) members. In order to alleviate this privacy concern, it should be hidden from the Group Managers which exact Group Manager has currently assigned which Group Identifiers in its OSCORE groups.
 
 # IANA Considerations # {#iana}
 
