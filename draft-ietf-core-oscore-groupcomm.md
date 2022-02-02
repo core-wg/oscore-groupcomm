@@ -75,6 +75,7 @@ normative:
   I-D.ietf-cose-countersign:
   RFC2119:
   RFC4086:
+  RFC6979:
   RFC7252:
   RFC7641:
   RFC7748:
@@ -1322,7 +1323,7 @@ For endpoints that support the group mode, the following applies.
    
    Constrained endpoints SHOULD implement: the EdDSA signature algorithm together with the elliptic curve Ed25519 {{RFC8032}}; or the ECDSA signature algorithm together with the elliptic curve P-256.
 
-* If elliptic curve signatures are used, it is RECOMMENDED to implement deterministic signatures with additional randomness as specified in {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
+* Endpoints that implement the ECDSA signature algorithm MAY use "deterministic ECDSA" as specified in {{RFC6979}}. Pure deterministic elliptic-curve signature algorithms such as deterministic ECDSA and EdDSA have the advantage of not requiring access to a source of high-quality randomness. However, these signature algorithms have been shown vulnerable to some side-channel and fault injection attacks due to their determinism, which can result in extracting a device's private key. As suggested in {{Section 2.1.1 of I-D.ietf-cose-rfc8152bis-algs}}, this can be addressed by combining both randomness and determinism {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
 
 For endpoints that support the pairwise mode, the following applies.
 
