@@ -351,6 +351,8 @@ Authentication credentials are also used to derive pairwise keys (see {{key-deri
 
 For example, an X.509 certificate is provided as its direct binary serialization. If C509 certificates or CWTs are used as authentication credentials, each is provided as the binary serialization of a (possibly tagged) CBOR array. If CCSs are used as authentication credentials, each is provided as the binary serialization of a CBOR map.
 
+If the originally provided authentication credential associated to an endpoint is a chain or bag of certificates, then the actual authentication credential used in Group OSCORE as associated to that endpoint is just the end-entity X.509 or C509 certificate / CWT.
+
 ## Pairwise Keys ## {#sec-derivation-pairwise}
 
 Certain signature schemes, such as EdDSA and ECDSA, support a secure combined signature and encryption scheme. This section specifies the derivation of "pairwise keys", for use in the pairwise mode defined in {{sec-pairwise-protection}}. Group OSCORE keys used for both signature and encryption MUST NOT be used for any other purposes than Group OSCORE.
