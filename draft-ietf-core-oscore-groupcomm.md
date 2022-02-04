@@ -351,7 +351,7 @@ Authentication credentials are also used to derive pairwise keys (see {{key-deri
 
 For example, an X.509 certificate is provided as its direct binary serialization. If C509 certificates or CWTs are used as authentication credentials, each is provided as the binary serialization of a (possibly tagged) CBOR array. If CCSs are used as authentication credentials, each is provided as the binary serialization of a CBOR map.
 
-If the originally provided authentication credential associated to an endpoint is a chain or a bag, then the authentication credential associated to that endpoint as stored in a Security Context (see {{sec-context}}) and to be used with Group OSCORE is just the end-entity X.509 or C509 certificate / CWT.
+If the originally provided authentication credential associated to an entity is a chain or a bag, then the authentication credential associated to that entity as stored in a Security Context (see {{sec-context}}) and to be used with Group OSCORE is just the end-entity X.509 or C509 certificate / CWT.
 
 ## Pairwise Keys ## {#sec-derivation-pairwise}
 
@@ -562,6 +562,8 @@ In order to verify countersignatures of messages in a group, a signature checker
 * The current ID Context (Gid) used in the group.
 
 * The authentication credentials of the group members and the authentication credential of the Group Manager.
+
+  If the authentication credential associated to an entity and provided to the signature checker is a chain or a bag, then the authentication credential associated to that entity that the signature checker stores and uses is just the end-entity X.509 or C509 certificate / CWT.
 
 * The current Group Encryption Key (see {{ssec-common-context-group-enc-key}}).
 
