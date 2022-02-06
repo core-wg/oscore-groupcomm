@@ -343,15 +343,25 @@ In a group, the following MUST hold for the authentication credential of each en
 
    If the group uses (also) the group mode, the public key algorithm is the Signature Algorithm used in the group. If the group uses only the pairwise mode, the public key algorithm is the Pairwise Key Agreement Algorithm used in the group.
 
-   If authentication credentials are CBOR Web Tokens (CWTs) or CWT Claims Sets (CCSs) {{RFC8392}}, the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.
-
    If the authentication credentials are X.509 certificates {{RFC7925}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
+
+   If authentication credentials are CBOR Web Tokens (CWTs) or CWT Claims Sets (CCSs) {{RFC8392}}, the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.
 
 Authentication credentials are used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data when processing messages (see {{sec-cose-object-ext-aad}}). In both these cases, an endpoint in a group MUST treat authentication credentials as opaque data, i.e., by considering the same binary representation made available to other endpoints in the group, possibly through a designated trusted source (e.g., the Group Manager).
 
 For example, an X.509 certificate is provided as its direct binary serialization. If C509 certificates or CWTs are used as authentication credentials, each is provided as the binary serialization of a (possibly tagged) CBOR array. If CCSs are used as authentication credentials, each is provided as the binary serialization of a CBOR map.
 
-If authentication credentials are X.509 / C509 certificates or CWTs and the authentication credential associated to an entity is provided within a chain or a bag, then only the end-entity certificate / CWT is stored in the Security Context and used as authentication credential for that entity.
+If authentication credentials are CWTs, then the untagged CWT associated to an entity is stored in the Security Context and used as authentication credential for that entity.
+
+If authentication credentials are X.509 / C509 certificates or CWTs and the authentication credential associated to an entity is provided within a chain or a bag, then only the end-entity certificate or end-entity untagged CWT is stored in the Security Context and used as authentication credential for that entity.
+
+Storing whole authentication credentials rather than only a subset of those may result in a non-negligible storage overhead. On the other hand, it also ensures that authentication credentials are correctly used in a simple, flexible and non-error-prone way, also taking into account future credential formats as entirely new or extending existing ones. In particular, it is ensured that:
+
+* When used to derive pairwise keys and when included in the external additional authenticated data, authentication credentials can also specify possible metadata and parameters related to the included public key. Besides the public key algorithm, these comprise other relevant pieces of information such as key usage, expiration time, issuer and subject.
+   
+* All endpoints using another endpoint's authentication credential use exactly the same binary serialization, as obtained and distributed by the credential provider (e.g., the Group Manager) and as originally crafted by the credential issuer. In turn, this does not require to define and maintain canonical subsets of authentication credentials and their corresponding encoding, and spares endpoints from error-prone re-encoding operations.
+
+Depending on the particular deployment and the intended group size, limiting the storage overhead of endpoints in a group can be an incentive for system/network administrators to prefer using a compact format of authentication credentials in the first place.
 
 ## Pairwise Keys ## {#sec-derivation-pairwise}
 
@@ -563,7 +573,9 @@ In order to verify countersignatures of messages in a group, a signature checker
 
 * The authentication credentials of the group members and the authentication credential of the Group Manager.
 
-  If the signature checker is provided with a chain or a bag of X.509 / C509 certificates or CWTs for a given entity, then the authentication credential associated to that entity that the signature checker stores and uses is just the end-entity certificate / CWT.
+  If the signature checker is provided with a CWT for a given entity, then the authentication credential associated to that entity that the signature checker stores and uses is the untagged CWT.
+
+  If the signature checker is provided with a chain or a bag of X.509 / C509 certificates or of CWTs for a given entity, then the authentication credential associated to that entity that the signature checker stores and uses is just the end-entity certificate or end-entity untagged CWT.
 
 * The current Group Encryption Key (see {{ssec-common-context-group-enc-key}}).
 
@@ -1759,6 +1771,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Replaced CBOR simple value "null" with "nil".
 
 * Distinction between "authentication credential" and "public key".
+
+* Considerations on storing whole authentication credentials.
 
 * Fine-grained suppression of error responses.
 
