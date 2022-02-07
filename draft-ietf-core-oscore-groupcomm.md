@@ -553,9 +553,7 @@ A possible Group Manager to use is specified in {{I-D.ietf-ace-key-groupcomm-osc
 
 The Group Manager assigns an integer Key Generation Number to each of its groups, identifying the current version of the keying material used in that group. The first Key Generation Number assigned to every group MUST be 0. Separately for each group, the value of the Key Generation Number increases strictly monotonically, each time the Group Manager distributes new keying material to that group (see {{sec-group-key-management}}). That is, if the current Key Generation Number for a group is X, then X+1 will denote the keying material distributed and used in that group immediately after the current one.
 
-The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. Also, for each group, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. According to a hierarchical approach, the Gid value assigned to a group is associated to a dedicated space for the values of Sender ID and Recipient ID of the members of that group.
-
-When an endpoint (re-)joins a group, it is provided also with the current Gid to use in the group, namely the Birth Gid of that endpoint for that group. For each group member, the Group Manager MUST store the latest corresponding Birth Gid until that member leaves the group. In case the endpoint has in fact re-joined the group, the newly determined Birth Gid overwrites the one currently stored.
+The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. Also, for each group, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. According to a hierarchical approach, the Gid value assigned to a group is associated to a dedicated space for the values of Sender ID and Recipient ID of the members of that group. When an endpoint (re-)joins a group, it is provided also with the current Gid to use in the group.
 
 The Group Manager maintains records of the authentication credentials of endpoints in a group, and provides information about the group and its members to other group members and to external entities with selected roles (see {{sec-additional-entities}}). Upon endpoints' joining, the Group Manager collects such authentication credentials and MUST verify proof-of-possession of the respective private key.
 
@@ -599,25 +597,19 @@ The establishment of the new Security Context for the group takes the following 
 
 1. The Group Manager MUST increment the Key Generation Number for the group by 1.
 
-2. The Group Manager MUST check if the new Gid to be distributed coincides with the Birth Gid of any of the current group members. If any of such "elder members" is found in the group, then:
-
-   * The Group Manager MUST evict the elder members from the group. That is, the Group Manager MUST terminate their membership and MUST rekey the group in such a way that the new keying material is not provided to those evicted elder members. This ensures that an Observe notification {{RFC7641}} can never successfully match against the Observe requests of two different observations.
-
-   * Until a further following group rekeying, the Group Manager MUST store the list of those latest-evicted elder members. If any of those endpoints re-joins the group before a further following group rekeying occurs, the Group Manager MUST NOT rekey the group upon their re-joining. When one of those endpoints re-joins the group, the Group Manager can rely, e.g., on the ongoing secure communication association to recognize the endpoint as included in the stored list.
-
-3. The Group Manager MUST build a set of stale Sender IDs including:
+2. The Group Manager MUST build a set of stale Sender IDs including:
 
    - The Sender IDs that, during the current Gid, were both assigned to an endpoint and subsequently relinquished (see {{new-sender-id}}).
    
    - The current Sender IDs of the group members that the upcoming group rekeying aims to exclude from future group communications, if any.
 
-4. The Group Manager rekeys the group, by distributing:
+3. The Group Manager rekeys the group, by distributing:
 
    - The new keying material, i.e., the new Master Secret, the new Gid and (optionally) the new Master Salt.
    
    - The new Key Generation Number from step 1.
    
-   - The set of stale Sender IDs from step 3.
+   - The set of stale Sender IDs from step 2.
 
    Further information may be distributed, depending on the specific group key management scheme used in the group.
 
@@ -653,15 +645,43 @@ Alternatively, the group member can re-join the group. In such a case, the group
 
 By removing authentication credentials and deleting Recipient Contexts associated to stale Sender IDs, it is ensured that a recipient endpoint storing the latest group keying material does not store the authentication credentials of sender endpoints that are not current group members. This in turn allows group members to rely on stored authentication credentials to confidently assert the group membership of sender endpoints, when receiving incoming messages protected in group mode (see {{mess-processing}}).
 
-### Recycling of Identifiers
+### Recycling of Identifiers ###
+
+This section specifies how the Group Manager handles and possibly reassigns Gid values and Sender ID values in a group.
+
+#### Recycling of Group Identifiers ### {#sec-gid-recycling}
+
+Since the Gid value changes every time a group is rekeyed, it can happen that, after several rekeying instances, the whole space of Gid values has been used for the group in question. When this happens, the Group Manager has no available Gid values to use that have never been assigned to the group during the group's lifetime.
+
+The occurrence of such an event and how long it would take to occur depend on the format and encoding of Gid values used in the group (see, e.g., {{gid-ex}}), as well as on the frequency of rekeying instances yielding a change of Gid value. Independently for each group under its control, the Group Manager can take one of the two following approaches.
+
+* The Group Manager does not reassign Gid values. That is, once the whole space of Gid values has been used for a group, the Group Manager terminates the group and may re-establish a new group.
+
+* While the Gid value changes every time a group is rekeyed, the Group Manager can reassign Gid values previously used during a group's lifetime. By doing so, the group can continue to exist even once the whole space of Gid values has been used.
+
+   The Group Manager MAY support and use this approach. In such a case, the Group Manager MUST take additional actions when handling Gid values and rekeying the group, as specified below.
    
-Although the Gid value changes every time a group is rekeyed, the Group Manager can reassign a Gid to the same group over that group's lifetime. This would happen, for instance, once the whole space of Gid values has been used for the group in question.
+   When a node (re-)joins the group and it is provided with the current Gid to use in the group, the Group Manager considers such a Gid as the Birth Gid of that endpoint for that group. For each group member, the Group Manager MUST store the latest corresponding Birth Gid until that member leaves the group. In case the endpoint has in fact re-joined the group, the newly determined Birth Gid overwrites the one currently stored.
+   
+   When establishing a new Security Context for the group, the Group Manager takes the additional following step between steps 1 and 2 of {{sec-group-key-management}}.
+
+   A. The Group Manager MUST check if the new Gid to be distributed is equal to the Birth Gid of any of the current group members. If any of such "elder members" is found in the group, then:
+
+    * The Group Manager MUST evict the elder members from the group. That is, the Group Manager MUST terminate their membership and MUST rekey the group in such a way that the new keying material is not provided to those evicted elder members.
+    
+       This ensures that an Observe notification {{RFC7641}} can never successfully match against the Observe requests of two different observations. In fact, the excluded elder members would eventually re-join the group, thus terminating any of their ongoing (long-lasting) observations (see {{sec-long-term-observations}}). Therefore, it is ensured by construction that no observer client can have two different ongoing observations such that the two respective Observe requests were protected using the same Partial IV, Gid and Sender ID.
+
+    * Until a further following group rekeying, the Group Manager MUST store the list of those latest-evicted elder members. If any of those endpoints re-joins the group before a further following group rekeying occurs, the Group Manager MUST NOT rekey the group upon their re-joining. When one of those endpoints re-joins the group, the Group Manager can rely, e.g., on the ongoing secure communication association to recognize the endpoint as included in the stored list.
+
+#### Recycling of Sender IDs ### {#sec-sid-recycling}
 
 From the moment when a Gid is assigned to a group until the moment a new Gid is assigned to that same group, the Group Manager MUST NOT reassign a Sender ID within the group. This prevents to reuse a Sender ID ('kid') with the same Gid, Master Secret and Master Salt. Within this restriction, the Group Manager can assign a Sender ID used under an old Gid value (including under a same, recycled Gid value), thus avoiding Sender ID values to irrecoverably grow in size.
 
 Even when an endpoint joining a group is recognized as a current member of that group, e.g., through the ongoing secure communication association, the Group Manager MUST assign a new Sender ID different than the one currently used by the endpoint in the group, unless the group is rekeyed first and a new Gid value is established.
 
-{{fig-key-material-diagram}} overviews the different keying material components, considering their relation and possible reuse across group rekeying.
+#### Relation between Identifiers and Keying Material
+
+{{fig-key-material-diagram}} overviews the different identifiers and keying material components, considering their relation and possible reuse across group rekeying.
 
 ~~~~~~~~~~~
 Components changed in lockstep
@@ -689,7 +709,7 @@ Components changed in lockstep
 
 The Group Manager is responsible for performing the following tasks:
 
-1. Creating and managing OSCORE groups. This includes the assignment of a Gid to every newly created group, ensuring uniqueness of Gids within the set of its OSCORE groups, and tracking the Birth Gids of current group members in each group.
+1. Creating and managing OSCORE groups. This includes the assignment of a Gid to every newly created group, ensuring uniqueness of Gids within the set of its OSCORE groups and, optionally, the secure recycling of Gids.
 
 2. Defining policies for authorizing the joining of its OSCORE groups.
 
@@ -1742,7 +1762,7 @@ The Group Epoch is set to 0 upon the group's initialization, and is incremented 
 
 As an example, a 3-byte Gid can be composed of: i) a 1-byte Group Prefix '0xb1' interpreted as a raw byte string; and ii) a 2-byte Group Epoch interpreted as an unsigned integer ranging from 0 to 65535. Then, after having established the Common Context 61532 times in the group, its Gid will assume value '0xb1f05c'.
 
-Using an immutable Group Prefix for a group assumes that enough time elapses before all possible Group Epoch values are used, i.e., before the Group Manager starts reassigning Gid values to the same group (see {{sec-group-key-management}}). Thus, the expected highest rate for addition/removal of group members and consequent group rekeying should be taken into account for a proper dimensioning of the Group Epoch size.
+Using an immutable Group Prefix for a group assumes that enough time elapses before all possible Group Epoch values are used, i.e., before the Group Manager terminates the group or starts reassigning Gid values to the group (see {{sec-group-key-management}}). Thus, the expected highest rate for addition/removal of group members and consequent group rekeying should be taken into account for a proper dimensioning of the Group Epoch size.
 
 As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple groups managed by different non-synchronized Group Managers, it is possible that Group Identifiers of different groups coincide at some point in time. In this case, a recipient has to handle coinciding Group Identifiers, and has to try using different Security Contexts to process an incoming message, until the right one is found and the message is correctly verified. Therefore, it is favorable that Group Identifiers from different Group Managers have a size that result in a small probability of collision. How small this probability should be is up to system designers.
 
@@ -1773,6 +1793,9 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Distinction between "authentication credential" and "public key".
 
 * Considerations on storing whole authentication credentials.
+
+*  Recycling of Group IDs by tracking the "Birth Gid" of each group
+member is now optional to support and use for the Group Manager.
 
 * Fine-grained suppression of error responses.
 
