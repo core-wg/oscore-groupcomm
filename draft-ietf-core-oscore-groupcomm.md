@@ -468,6 +468,8 @@ From then on, the endpoint MUST use the latest installed Sender Context to prote
 
 If not able to establish an updated Sender Context, e.g., because of lack of connectivity with the Group Manager, the endpoint MUST NOT protect further messages using the current Security Context and MUST NOT accept incoming messages from other group members, as currently unable to detect possible replays.
 
+An adversary may leverage the above to perform a Denial of Service attack and prevent some group members from communicating altogether. That is, the adversary can first block the communication path between the Group Manager and some individual group members. This can be achieved, for instance, by injecting fake responses to DNS queries for the Group Manager hostname, or by removing a network link used for routing traffic towards the Group Manager. Then, the adversary can trigger a short power outage, which can result in a mass power-cycle and reboot for some endpoints in the group. After that, such endpoints that have lost their Sender Context and/or Recipient Contexts following the reboot would not be able to obtain new Security Context parameters from the Group Manager as specified above. Thus, they would not be able to further communicate in the group until connectivity with the Group Manager is restored.
+
 #### Overflow of Recipient Contexts {#ssec-loss-mutable-context-overflow}
 
 After reaching the maximum amount of Recipient Contexts, an endpoint will experience an overflow when installing a new Recipient Context, as it requires to first delete an existing one (see {{ssec-sender-recipient-context}}).
@@ -1793,6 +1795,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Distinction between "authentication credential" and "public key".
 
 * Considerations on storing whole authentication credentials.
+
+* Considerations on Denial of Service.
 
 *  Recycling of Group IDs by tracking the "Birth Gid" of each group
 member is now optional to support and use for the Group Manager.
