@@ -68,7 +68,6 @@ author:
 
 normative:
 
-  I-D.ietf-core-echo-request-tag:
   I-D.ietf-core-groupcomm-bis:
   I-D.ietf-cose-rfc8152bis-struct:
   I-D.ietf-cose-rfc8152bis-algs:
@@ -84,6 +83,7 @@ normative:
   RFC8610:
   RFC8613:
   RFC8949:
+  RFC9175:
   NIST-800-56A:
     author:
       -
@@ -480,7 +480,7 @@ If it is not configured as silent server, the endpoint MUST either:
 
 * Retrieve new Security Context parameters from the Group Manager and derive a new Sender Context, as defined in {{ssec-loss-mutable-context-total}}; or
 
-* When receiving a first request to process with the new Recipient Context, use the approach specified in {{sec-synch-challenge-response}} and based on the Echo Option for CoAP {{I-D.ietf-core-echo-request-tag}}, if supported. In particular, the endpoint MUST use its Partial IV when generating the AEAD nonce and MUST include the Partial IV in the response message conveying the Echo Option. If the endpoint supports the CoAP Echo Option, it is RECOMMENDED to take this approach.
+* When receiving a first request to process with the new Recipient Context, use the approach specified in {{sec-synch-challenge-response}} and based on the Echo Option for CoAP {{RFC9175}}, if supported. In particular, the endpoint MUST use its Partial IV when generating the AEAD nonce and MUST include the Partial IV in the response message conveying the Echo Option. If the endpoint supports the CoAP Echo Option, it is RECOMMENDED to take this approach.
 
 If it is configured exclusively as silent server, the endpoint MUST wait for the next group rekeying to occur, in order to derive a new Security Context and re-initialize the Replay Window of each Recipient Contexts as valid.
 
@@ -1014,7 +1014,7 @@ When receiving a request from a client for the first time, the server is not syn
 
 During its operations in the group, the server may also lose synchronization with a client's Sender Sequence Number. This can happen, for instance, if the server has rebooted or has deleted its previously synchronized version of the Recipient Context for that client (see {{ssec-loss-mutable-context}}).
 
-If the application requires message freshness, e.g., according to time- or event-based policies, the server has to (re-)synchronize with a client's Sender Sequence Number before delivering request messages from that client to the application. To this end, the server can use the approach in {{sec-synch-challenge-response}} based on the Echo Option for CoAP {{I-D.ietf-core-echo-request-tag}}, as a variant of the approach defined in Appendix B.1.2 of {{RFC8613}} applicable to Group OSCORE.
+If the application requires message freshness, e.g., according to time- or event-based policies, the server has to (re-)synchronize with a client's Sender Sequence Number before delivering request messages from that client to the application. To this end, the server can use the approach in {{sec-synch-challenge-response}} based on the Echo Option for CoAP {{RFC9175}}, as a variant of the approach defined in Appendix B.1.2 of {{RFC8613}} applicable to Group OSCORE.
 
 # Message Reception # {#sec-message-reception}
 
@@ -1248,7 +1248,7 @@ The pairwise mode does not support the use of additional entities acting as veri
 
 An endpoint implementing only a silent server does not support the pairwise mode.
 
-If the signature algorithm used in the group supports ECDH (e.g., ECDSA, EdDSA), the pairwise mode MUST be supported by endpoints that use the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}, for instance for responses after the first block-wise request, which possibly targets all servers in the group and includes the CoAP Block2 option (see {{Section 3.8 of I-D.ietf-core-groupcomm-bis}}). This prevents the attack described in {{ssec-unicast-requests}}, which leverages requests sent over unicast to a single group member and protected with the group mode.
+If the signature algorithm used in the group supports ECDH (e.g., ECDSA, EdDSA), the pairwise mode MUST be supported by endpoints that use the CoAP Echo Option {{RFC9175}} and/or block-wise transfers {{RFC7959}}, for instance for responses after the first block-wise request, which possibly targets all servers in the group and includes the CoAP Block2 option (see {{Section 3.8 of I-D.ietf-core-groupcomm-bis}}). This prevents the attack described in {{ssec-unicast-requests}}, which leverages requests sent over unicast to a single group member and protected with the group mode.
 
 Senders cannot use the pairwise mode to protect a message intended for multiple recipients. In fact, the pairwise mode is defined only between two endpoints and the keying material is thus only available to one recipient.
 
@@ -1318,7 +1318,7 @@ Upon receiving a response with the Group Flag set to 0, following the procedure 
 
 # Challenge-Response Synchronization # {#sec-synch-challenge-response}
 
-This section describes how a server endpoint can synchronize with Sender Sequence Numbers of client endpoints in the group. Similarly to what is defined in {{Section B.1.2 of RFC8613}}, the server performs a challenge-response exchange with a client, by using the Echo Option for CoAP specified in {{Section 2 of I-D.ietf-core-echo-request-tag}}.
+This section describes how a server endpoint can synchronize with Sender Sequence Numbers of client endpoints in the group. Similarly to what is defined in {{Section B.1.2 of RFC8613}}, the server performs a challenge-response exchange with a client, by using the Echo Option for CoAP specified in {{Section 2 of RFC9175}}.
 
 Upon receiving a request from a particular client for the first time, the server processes the message as described in this document, but, even if valid, does not deliver it to the application. Instead, the server replies to the client with an OSCORE protected 4.01 (Unauthorized) response message, including only the Echo Option and no diagnostic payload. The Echo option value SHOULD NOT be reused; when it is reused, it MUST be highly unlikely to have been recently used with this client. Since this response is protected with the Security Context used in the group, the client will consider the response valid upon successfully decrypting and verifying it.
 
@@ -1582,7 +1582,7 @@ A client can instead use the pairwise mode as defined in {{sec-pairwise-protecti
 
 With particular reference to block-wise transfers {{RFC7959}}, {{Section 3.8 of I-D.ietf-core-groupcomm-bis}} points out that, while an initial request including the CoAP Block2 option can be sent over multicast, any other request in a transfer has to occur over unicast, individually addressing the servers in the group.
 
-Additional considerations are discussed in {{sec-synch-challenge-response}}, with respect to requests including a CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} that have to be sent over unicast, as a challenge-response method for servers to achieve synchronization of clients' Sender Sequence Number.
+Additional considerations are discussed in {{sec-synch-challenge-response}}, with respect to requests including a CoAP Echo Option {{RFC9175}} that have to be sent over unicast, as a challenge-response method for servers to achieve synchronization of clients' Sender Sequence Number.
 
 ## End-to-end Protection {#ssec-e2e-protection}
 
@@ -1611,11 +1611,11 @@ As discussed in {{sec-synch-seq-num}}, a Replay Window may be initialized as not
 
 As discussed in {{sec-freshness}}, a server may not be able to assert whether an incoming request is fresh, in case it does not have or has lost synchronization with the client's Sender Sequence Number.
 
-If freshness is relevant for the application, the server may (re-)synchronize with the client's Sender Sequence Number at any time, by using the approach described in {{sec-synch-challenge-response}} and based on the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}}, as a variant of the approach defined in Appendix B.1.2 of {{RFC8613}} applicable to Group OSCORE.
+If freshness is relevant for the application, the server may (re-)synchronize with the client's Sender Sequence Number at any time, by using the approach described in {{sec-synch-challenge-response}} and based on the CoAP Echo Option {{RFC9175}}, as a variant of the approach defined in Appendix B.1.2 of {{RFC8613}} applicable to Group OSCORE.
 
 ## Client Aliveness {#ssec-client-aliveness}
 
-Building on {{Section 12.5 of RFC8613}}, a server may use the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} to verify the aliveness of the client that originated a received request, by using the approach described in {{sec-synch-challenge-response}} of this document.
+Building on {{Section 12.5 of RFC8613}}, a server may use the CoAP Echo Option {{RFC9175}} to verify the aliveness of the client that originated a received request, by using the approach described in {{sec-synch-challenge-response}} of this document.
 
 ## Cryptographic Considerations {#ssec-crypto-considerations}
 
