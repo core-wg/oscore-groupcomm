@@ -74,13 +74,16 @@ normative:
   I-D.ietf-cose-countersign:
   RFC2119:
   RFC4086:
+  RFC6979:
   RFC7252:
+  RFC7641:
   RFC7748:
   RFC8032:
   RFC8174:
   RFC8610:
   RFC8613:
   RFC8949:
+  RFC9175:
   NIST-800-56A:
     author:
       -
@@ -106,7 +109,6 @@ informative:
   I-D.ietf-ace-key-groupcomm:
   I-D.ietf-ace-key-groupcomm-oscore:
   I-D.ietf-ace-oauth-authz:
-  I-D.ietf-core-echo-request-tag:
   I-D.mattsson-cfrg-det-sigs-with-noise:
   I-D.ietf-lwig-security-protocol-comparison:
   I-D.ietf-core-observe-multicast-notifications:
@@ -120,7 +122,6 @@ informative:
   RFC6282:
   RFC6347:
   RFC7228:
-  RFC7641:
   RFC7925:
   RFC7959:
   RFC8392:
@@ -167,7 +168,7 @@ Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} descri
 
 This document defines Group OSCORE, a security protocol for Group communication for CoAP {{I-D.ietf-core-groupcomm-bis}}, providing the same end-to-end security properties as OSCORE in the case where CoAP requests have multiple recipients. In particular, the described approach defines how OSCORE is used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with any other member of the group for pairwise OSCORE communication. Just like OSCORE, Group OSCORE is independent of the transport layer and works wherever CoAP does.
 
-As with OSCORE, it is possible to combine Group OSCORE with communication security on other layers. One example is the use of transport layer security, such as DTLS {{RFC6347}}{{I-D.ietf-tls-dtls13}}, between one client and one proxy (and vice versa), or between one proxy and one server (and vice versa), in order to protect the routing information of packets from observers. Note that DTLS does not define how to secure messages sent over IP multicast.
+As with OSCORE, it is possible to combine Group OSCORE with communication security on other layers. One example is the use of transport layer security, such as DTLS {{RFC6347}}{{I-D.ietf-tls-dtls13}}, between one client and one proxy (and vice versa), or between one proxy and one server (and vice versa). This prevents observers from accessing addressing information conveyed in CoAP options that would not be protected by Group OSCORE, but would be protected by DTLS. These options include Uri-Host, Uri-Port and Proxy-Uri. Note that DTLS does not define how to secure messages sent over IP multicast.
 
 Group OSCORE defines two modes of operation, that can be used independently or together:
 
@@ -177,7 +178,7 @@ Group OSCORE defines two modes of operation, that can be used independently or t
 
 Both modes provide source authentication of CoAP messages. The application decides what mode to use, potentially on a per-message basis. Such decisions can be based, for instance, on pre-configured policies or dynamic assessing of the target recipient and/or resource, among other things. One important case is when requests are protected with the group mode, and responses with the pairwise mode. Since such responses convey shorter integrity tags instead of bigger, full-fledged signatures, this significantly reduces the message overhead in case of many responses to one request.
 
-A special deployment of Group OSCORE is to use pairwise mode only. For example, consider the case of a constrained-node network {{RFC7228}} with a large number of CoAP endpoints and the objective to establish secure communication between any pair of endpoints with a small provisioning effort and message overhead. Since the total number of security associations that needs to be established grows with the square of the number of nodes, it is desirable to restrict the provisioned keying material. Moreover, a key establishment protocol would need to be executed for each security association. One solution to this is to deploy Group OSCORE, with the endpoints being part of a group, and use the pairwise mode. This solution assumes a trusted third party called Group Manager (see {{group-manager}}), but has the benefit of restricting the symmetric keying material while distributing only the public key of each group member. After that, a CoAP endpoint can locally derive the OSCORE Security Context for the other endpoint in the group, and protect CoAP communications with very low overhead {{I-D.ietf-lwig-security-protocol-comparison}}.
+A special deployment of Group OSCORE is to use pairwise mode only. For example, consider the case of a constrained-node network {{RFC7228}} with a large number of CoAP endpoints and the objective to establish secure communication between any pair of endpoints with a small provisioning effort and message overhead. Since the total number of security associations that needs to be established grows with the square of the number of endpoints, it is desirable to restrict the amount of secret keying material provided to each endpoint. Moreover, a key establishment protocol would need to be executed for each security association. One solution to this is to deploy Group OSCORE, with the endpoints being part of a group, and use the pairwise mode. This solution assumes a trusted third party called Group Manager (see {{group-manager}}). However, it has the benefit of providing a single shared secret, while distributing only the public keys of group members or a subset of those. After that, a CoAP endpoint can locally derive the OSCORE Security Context for the other endpoint in the group, and protect CoAP communications with very low overhead {{I-D.ietf-lwig-security-protocol-comparison}}.
 
 ## Terminology ## {#terminology}
 
@@ -192,6 +193,8 @@ Terminology for constrained environments, such as "constrained device" and "cons
 This document refers also to the following terminology.
 
 * Keying material: data that is necessary to establish and maintain secure communication among endpoints. This includes, for instance, keys and IVs {{RFC4949}}.
+
+* Authentication credential: set of information associated with an entity, including that entity's public key and parameters associated with the public key. Examples of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) {{RFC8392}}, X.509 certificates {{RFC7925}} and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}. Further details about authentication credentials are provided in {{sec-pub-key-format}}.
 
 * Group: a set of endpoints that share group keying material and security parameters (Common Context, see {{sec-context}}). That is, unless otherwise specified, the term group used in this document refers to a "security group" (see {{Section 2.1 of I-D.ietf-core-groupcomm-bis}}), not to be confused with "CoAP group" or "application group".
 
@@ -212,7 +215,7 @@ This document refers also to the following terminology.
 
 # Security Context # {#sec-context}
 
-As per the terminology in {{terminology}}, this document refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol. Regardless of what it actually supports, each endpoint of a group is aware of whether the group uses the group mode, or the pairwise mode, or both.
+As per the terminology in {{terminology}}, this document refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol. Each endpoint of a group is aware of whether the group uses the group mode, or the pairwise mode, or both. Then, an endpoint can use any mode it supports if also used in the group.
 
 All members of a group maintain a Security Context as defined in {{Section 3 of RFC8613}} and extended as defined in this section. How the Security Context is established by the group members is out of scope for this document, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to tell which Security Context was latest established.
 
@@ -222,7 +225,7 @@ The remainder of this section provides further details about the Security Contex
 
 * One Common Context, shared by all the endpoints in the group. Several new parameters are included in the Common Context.
 
-   If a Group Manager is used for maintaining the group, the Common Context is extended with the public key of the Group Manager. When processing a message, the public key of the Group Manager is included in the external additional authenticated data.
+   If a Group Manager is used for maintaining the group, the Common Context is extended with the authentication credential of the Group Manager, including the Group Manager's public key. When processing messages, the authentication credential of the Group Manager is included in the external additional authenticated data (see {{sec-cose-object-ext-aad}}).
 
    If the group uses the group mode, the Common context is extended with the following new parameters.
    
@@ -232,30 +235,37 @@ The remainder of this section provides further details about the Security Contex
 
    If the group uses the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm used for agreement on a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
 
-* One Sender Context, extended with the endpoint's public and private key pair. The private key is used to sign messages in group mode, or for deriving pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). When processing a message, the public key is included in the external additional authenticated data.
+* One Sender Context, extended with the endpoint's private key and authentication credential including the endpoint's public key.
 
-   If the endpoint supports the pairwise mode, the Sender Context is also extended with the Pairwise Sender Keys associated to the other endpoints (see {{sec-derivation-pairwise}}).
+   The private key is used to sign messages protected with the group mode, or for deriving pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). The authentication credential is used for deriving pairwise keys in pairwise mode, and is included in the external additional authenticated data when processing outgoing messages (see {{sec-pairwise-protection}}).
+
+   If the endpoint supports the pairwise mode, the Sender Context is also extended with the Pairwise Sender Keys associated with the other endpoints (see {{sec-derivation-pairwise}}).
    
    The Sender Context is omitted if the endpoint is configured exclusively as silent server. 
 
-* One Recipient Context for each endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated to endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the public key of the associated endpoint, used to verify the signature in group mode and for deriving the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). If the endpoint supports the pairwise mode, then the Recipient Context is also extended with the Pairwise Recipient Key associated to the other endpoint (see {{sec-derivation-pairwise}}).
+* One Recipient Context for each other endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated with endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the authentication credential of the other endpoint, including that endpoint's public key.
+
+   The public key is used to verify the signature of messages protected with the group mode from the other endpoint and for deriving the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). The authentication credential is used for deriving pairwise keys in pairwise mode, and is included in the external additional authenticated data when processing incoming messages from the other endpoint (see {{sec-pairwise-protection}}).
+
+   If the endpoint supports the pairwise mode, then the Recipient Context is also extended with the Pairwise Recipient Key associated with the other endpoint (see {{sec-derivation-pairwise}}).
 
 ~~~~~~~~~~~
-+-------------------+------------------------------------------------+
-| Context Component | New Information Elements                       |
-+-------------------+------------------------------------------------+
-| Common Context    |   Group Manager Public Key                     |
-|                   | * Signature Encryption Algorithm               |
-|                   | * Signature Algorithm                          |
-|                   | * Group Encryption Key                         |
-|                   | ^ Pairwise Key Agreement Algorithm             |
-+-------------------+------------------------------------------------+
-| Sender Context    |   Endpoint's own public and private key pair   |
-|                   | ^ Pairwise Sender Keys for the other endpoints |
-+-------------------+------------------------------------------------+
-| Each              |   Public key of the other endpoint             |
-| Recipient Context | ^ Pairwise Recipient Key of the other endpoint |
-+-------------------+------------------------------------------------+
++-------------------+-------------------------------------------------+
+| Context Component | New Information Elements                        |
++-------------------+-------------------------------------------------+
+| Common Context    |   Group Manager Authentication Credential       |
+|                   | * Signature Encryption Algorithm                |
+|                   | * Signature Algorithm                           |
+|                   | * Group Encryption Key                          |
+|                   | ^ Pairwise Key Agreement Algorithm              |
++-------------------+-------------------------------------------------+
+| Sender Context    |   Endpoint's own private key                    |
+|                   |   Endpoint's own authentication credential      |
+|                   | ^ Pairwise Sender Keys for the other endpoints  |
++-------------------+-------------------------------------------------+
+| Each              |   Other endpoint's authentication credential    |
+| Recipient Context | ^ Pairwise Recipient Key for the other endpoint |
++-------------------+-------------------------------------------------+
 ~~~~~~~~~~~
 {: #fig-additional-context-information title="Additions to the OSCORE Security Context. The optional elements labeled with * (with ^) are present only if the group uses the group mode (the pairwise mode)." artwork-align="center"}
 
@@ -271,15 +281,17 @@ AEAD Algorithm identifies the COSE AEAD algorithm to use for encryption, when me
 
 The ID Context parameter (see {{Sections 3.1 and 3.3 of RFC8613}}) in the Common Context SHALL contain the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle potential collisions between Gids (see {{ssec-gid-collision}}).
 
-### Group Manager Public Key ## {#ssec-common-context-gm-pub-key}
+### Group Manager Authentication Credential ## {#ssec-common-context-gm-pub-key}
 
-Group Manager Public Key specifies the public key of the Group Manager. This is included in the external additional authenticated data (see {{sec-cose-object-ext-aad}}).
+Group Manager Authentication Credential specifies the authentication credential of the Group Manager, including the Group Manager's public key. This is included in the external additional authenticated data when processing messages (see {{sec-cose-object-ext-aad}}).
 
-Each group member MUST obtain the public key of the Group Manager with a valid proof-of-possession of the corresponding private key, for instance from the Group Manager itself when joining the group. Further details on the provisioning of the Group Manager's public key to the group members are out of the scope of this document.
+Each group member MUST obtain the authentication credential of the Group Manager with a valid proof-of-possession of the corresponding private key, for instance from the Group Manager itself when joining the group. Further details on the provisioning of the Group Manager's authentication credential to the group members are out of the scope of this document.
 
 ### Signature Encryption Algorithm ## {#ssec-common-context-cs-enc-alg}
 
-Signature Encryption Algorithm identifies the algorithm to use for enryption, when messages are protected using the group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection. This parameter is immutable once the Common Context is established.
+Signature Encryption Algorithm identifies the algorithm to use for encryption, when messages are protected using the group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection. This parameter is immutable once the Common Context is established.
+
+This algorithm is not used to encrypt the countersignature in messages protected using the group mode, for which the method defined in {{sec-cose-object-unprotected-field}} is used.
 
 ### Signature Algorithm ## {#ssec-common-context-cs-alg}
 
@@ -315,35 +327,49 @@ The derivation of Sender/Recipient Keys and Common IV defined in OSCORE applies 
 
 The Sender ID SHALL be unique for each endpoint in a group with a certain tuple (Master Secret, Master Salt, Group Identifier), see {{Section 3.3 of RFC8613}}.
 
-For Group OSCORE, the Sender Context and Recipient Context additionally contain asymmetric keys, as described previously in {{sec-context}}. The private/public key pair of the sender can, for example, be generated by the endpoint or provisioned during manufacturing. 
+For Group OSCORE, the Sender Context and Recipient Context additionally contain asymmetric keys, as described previously in {{sec-context}}. The private key of the sender and the authentication credential including the corresponding public key can, for example, be generated by the endpoint or provisioned during manufacturing. 
 
-With the exception of the public key of the sender endpoint and the possibly associated pairwise keys, a receiver endpoint can derive a complete Security Context from a received Group OSCORE message and the Common Context. The public keys in the Recipient Contexts can be retrieved from the Group Manager (see {{group-manager}}) upon joining the group. A public key can alternatively be acquired from the Group Manager at a later time, for example the first time a message is received from a particular endpoint in the group (see {{ssec-verify-request}} and {{ssec-verify-response}}).
+With the exception of the authentication credential of the sender endpoint and the possibly associated pairwise keys, a receiver endpoint can derive a complete Security Context from a received Group OSCORE message and the Common Context. The authentication credentials in the Recipient Contexts can be retrieved from the Group Manager (see {{group-manager}}) upon joining the group. An authentication credential can alternatively be acquired from the Group Manager at a later time, for example the first time a message is received from a particular endpoint in the group (see {{ssec-verify-request}} and {{ssec-verify-response}}).
 
-For severely constrained devices, it may be not feasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the sender endpoint's public key. Such devices can be configured to drop a received message for which there is no (complete) Recipient Context, and retrieve the sender endpoint's public key in order to have it available to verify subsequent messages from that endpoint.
+For severely constrained devices, it may be not feasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the sender endpoint's authentication credential. Such devices can be configured to drop a received message for which there is no (complete) Recipient Context, and retrieve the sender endpoint's authentication credential in order to have it available to verify subsequent messages from that endpoint.
 
-An endpoint admits a maximum amount of Recipient Contexts for a same Security Context, e.g., due to memory limitations. After reaching that limit, the creation of a new Recipient Context results in an overflow. When this happens, the endpoint has to delete a current Recipient Context to install the new one. It is up to the application to define policies for selecting the current Recipient Context to delete. A newly installed Recipient Context that has required to delete another Recipient Context is initialized with an invalid Replay Window, and accordingly requires the endpoint to take appropriate actions (see {{ssec-loss-mutable-context-overflow}}).
+An endpoint admits a maximum amount of Recipient Contexts for a same Security Context, e.g., due to memory limitations. After reaching that limit, the creation of a new Recipient Context results in an overflow. When this happens, the endpoint has to delete a current Recipient Context to install the new one. It is up to the application to define policies for selecting the current Recipient Context to delete. If the new Recipient Context has been installed after the endpoint has experienced the overflow above, then the Recipient Context is initialized with an invalid Replay Window, and accordingly requires the endpoint to take appropriate actions (see {{ssec-loss-mutable-context-overflow}}).
 
-## Format of Public Keys ## {#sec-pub-key-format}
+## Authentication Credentials ## {#sec-pub-key-format}
 
-In a group, the following MUST hold for the public key of each endpoint as well as for the public key of the Group Manager.
+In a group, the following MUST hold for the authentication credential of each endpoint as well as for the authentication credential of the Group Manager.
 
-* All public keys MUST be encoded according to the same format used in the group. The format MUST provide the full set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).
+* All authentication credentials MUST be encoded according to the same format used in the group. The used format MUST provide the public key as well as the comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).
 
-* All public keys MUST be for the public key algorithm used in the group and aligned with the possible associated parameters used in the group, e.g., the used elliptic curve (when applicable).
+* All authentication credentials and the public key specified therein MUST be for the public key algorithm used in the group and aligned with the possible associated parameters used in the group, e.g., the used elliptic curve (when applicable).
 
-If the group uses (also) the group mode, the public key algorithm is the Signature Algorithm used in the group. If the group uses only the pairwise mode, the public key algorithm is the Pairwise Key Agreement Algorithm used in the group.
+   If the group uses (also) the group mode, the public key algorithm is the Signature Algorithm used in the group. If the group uses only the pairwise mode, the public key algorithm is the Pairwise Key Agreement Algorithm used in the group.
 
-If CBOR Web Tokens (CWTs) or CWT Claims Sets (CCSs) {{RFC8392}} are used as public key format, the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.
+   If the authentication credentials are X.509 certificates {{RFC7925}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
 
-If X.509 certificates {{RFC7925}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}} are used as public key format, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
+   If authentication credentials are CBOR Web Tokens (CWTs) or CWT Claims Sets (CCSs) {{RFC8392}}, the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.
 
-Public keys are also used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data (see {{sec-cose-object-ext-aad}}). In both of these cases, an endpoint in a group MUST treat public keys as opaque data, i.e., by considering the same binary representation made available to other endpoints in the group, possibly through a designated trusted source (e.g., the Group Manager).
+Authentication credentials are used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data when processing messages (see {{sec-cose-object-ext-aad}}). In both these cases, an endpoint in a group MUST treat authentication credentials as opaque data, i.e., by considering the same binary representation made available to other endpoints in the group, possibly through a designated trusted source (e.g., the Group Manager).
 
-For example, an X.509 certificate is provided as its direct binary serialization. If C509 certificates or CWTs are used as credential format, they are provided as the binary serialization of a (possibly tagged) CBOR array. If a CWT claim set is used as credential format, it is provided as the binary serialization of a CBOR map.
+For example, an X.509 certificate is provided as its direct binary serialization. If C509 certificates or CWTs are used as authentication credentials, each is provided as the binary serialization of a (possibly tagged) CBOR array. If CCSs are used as authentication credentials, each is provided as the binary serialization of a CBOR map.
+
+If authentication credentials are CWTs, then the untagged CWT associated with an entity is stored in the Security Context and used as authentication credential for that entity.
+
+If authentication credentials are X.509 / C509 certificates or CWTs and the authentication credential associated with an entity is provided within a chain or a bag, then only the end-entity certificate or end-entity untagged CWT is stored in the Security Context and used as authentication credential for that entity.
+
+Storing whole authentication credentials rather than only a subset of those may result in a non-negligible storage overhead. On the other hand, it also ensures that authentication credentials are correctly used in a simple, flexible and non-error-prone way, also taking into account future credential formats as entirely new or extending existing ones. In particular, it is ensured that:
+
+* When used to derive pairwise keys and when included in the external additional authenticated data, authentication credentials can also specify possible metadata and parameters related to the included public key. Besides the public key algorithm, these comprise other relevant pieces of information such as key usage, expiration time, issuer and subject.
+   
+* All endpoints using another endpoint's authentication credential use exactly the same binary serialization, as obtained and distributed by the credential provider (e.g., the Group Manager) and as originally crafted by the credential issuer. In turn, this does not require to define and maintain canonical subsets of authentication credentials and their corresponding encoding, and spares endpoints from error-prone re-encoding operations.
+
+Depending on the particular deployment and the intended group size, limiting the storage overhead of endpoints in a group can be an incentive for system/network administrators to prefer using a compact format of authentication credentials in the first place.
 
 ## Pairwise Keys ## {#sec-derivation-pairwise}
 
-Certain signature schemes, such as EdDSA and ECDSA, support a secure combined signature and encryption scheme. This section specifies the derivation of "pairwise keys", for use in the pairwise mode defined in {{sec-pairwise-protection}}. Group OSCORE keys used for both signature and encryption MUST NOT be used for any other purposes than Group OSCORE.
+Certain signature schemes, such as EdDSA and ECDSA, support a secure combined signature and encryption scheme. This section specifies the derivation of "pairwise keys", for use in the pairwise mode defined in {{sec-pairwise-protection}}.
+
+Group OSCORE keys used for both signature and encryption MUST be used only for purposes related to Group OSCORE. These include the processing of messages with Group OSCORE, as well as performing proof-of-possession of private keys, e.g., upon joining a group through the Group Manager (see {{group-manager}}).
 
 ### Derivation of Pairwise Keys ### {#key-derivation-pairwise}
 
@@ -355,8 +381,8 @@ Pairwise Recipient Key = HKDF(Recipient Key, IKM-Recipient, info, L)
 
 with
 
-IKM-Sender    = Sender Pub Key | Recipient Pub Key | Shared Secret
-IKM-Recipient = Recipient Pub Key | Sender Pub Key | Shared Secret
+IKM-Sender    = Sender Auth Cred | Recipient Auth Cred | Shared Secret
+IKM-Recipient = Recipient Auth Cred | Sender Auth Cred | Shared Secret
 ~~~~~~~~~~~
 
 where:
@@ -369,17 +395,17 @@ where:
 
 * The Sender Key from the Sender Context is used as salt in the HKDF, when deriving the Pairwise Sender Key.
 
-* The Recipient Key from the Recipient Context associated to endpoint X is used as salt in the HKDF, when deriving the Pairwise Recipient Key.
+* The Recipient Key from the Recipient Context associated with endpoint X is used as salt in the HKDF, when deriving the Pairwise Recipient Key.
 
-* The Sender Pub Key is the endpoint's own (signature) public key from the Sender Context.
+* Sender Auth Cred is the endpoint's own authentication credential from the Sender Context.
 
-* The Recipient Pub Key is the endpoint X's (signature) public key from the Recipient Context associated to the endpoint X.
+* Recipient Auth Cred is the endpoint X's authentication credential from the Recipient Context associated with the endpoint X.
 
-* The Shared Secret is computed as a cofactor Diffie-Hellman shared secret, see Section 5.7.1.2 of {{NIST-800-56A}}, using the Pairwise Key Agreement Algorithm. The endpoint uses its private key from the Sender Context and the Recipient Pub Key. Note the requirement of validation of public keys in {{ssec-crypto-considerations}}. For X25519 and X448, the procedure is described in {{Section 5 of RFC7748}} using public keys mapped to Montgomery coordinates, see {{montgomery}}.
+* The Shared Secret is computed as a cofactor Diffie-Hellman shared secret, see Section 5.7.1.2 of {{NIST-800-56A}}, using the Pairwise Key Agreement Algorithm. The endpoint uses its private key from the Sender Context and the other endpoint's public key included in Recipient Auth Cred. Note the requirement of validation of public keys in {{ssec-crypto-considerations}}. For X25519 and X448, the procedure is described in {{Section 5 of RFC7748}} using public keys mapped to Montgomery coordinates, see {{montgomery}}.
 
-* IKM-Sender is the Input Keying Material (IKM) used in the HKDF for the derivation of the Pairwise Sender Key. IKM-Sender is the byte string concatenation of the Sender Pub Key, the Recipient Pub Key, and the Shared Secret. The Sender Pub Key and the Recipient Pub Key are binary encoded as defined in {{sec-pub-key-format}}.
+* IKM-Sender is the Input Keying Material (IKM) used in the HKDF for the derivation of the Pairwise Sender Key. IKM-Sender is the byte string concatenation of Sender Auth Cred, Recipient Auth Cred and the Shared Secret. The authentication credentials Sender Auth Cred and Recipient Auth Cred are binary encoded as defined in {{sec-pub-key-format}}.
 
-* IKM-Recipient is the Input Keying Material (IKM) used in the HKDF for the derivation of the Pairwise Recipient Key. IKM-Recipient is the byte string concatenation of the Recipient Pub Key, the Sender Pub Key, and the Shared Secret. The Recipient Pub Key and the Sender Pub Key are binary encoded as defined in {{sec-pub-key-format}}.
+* IKM-Recipient is the Input Keying Material (IKM) used in the HKDF for the derivation of the Pairwise Recipient Key. IKM-Recipient is the byte string concatenation of Recipient Auth Cred, Sender Auth Cred and the Shared Secret. The authentication credentials Recipient Auth Cred and Sender Auth Cred are binary encoded as defined in {{sec-pub-key-format}}.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 * info and L are as defined in {{Section 3.2.1 of RFC8613}}. That is:
 
@@ -412,7 +438,7 @@ The private signing key byte strings (= the lower 57 bytes used for generating t
 
 When using any of its Pairwise Sender Keys, a sender endpoint including the 'Partial IV' parameter in the protected message MUST use the current fresh value of the Sender Sequence Number from its Sender Context (see {{ssec-sender-recipient-context}}). That is, the same Sender Sequence Number space is used for all outgoing messages protected with Group OSCORE, thus limiting both storage and complexity.
 
-On the other hand, when combining group and pairwise communication modes, this may result in the Partial IV values moving forward more often. This can happen when a client engages in frequent or long sequences of one-to-one exchanges with servers in the group, by sending requests over unicast.
+On the other hand, when combining group and pairwise communication modes, this may result in the Partial IV values moving forward more often. This can happen when a client engages in frequent or long sequences of one-to-one exchanges with servers in the group, by sending requests over unicast. In turn, this contributes to a sooner exhaustion of the Sender Sequence Number space of the client, which would then require to take actions for deriving a new Sender Context before resuming communications in the group (see {{ssec-wrap-around-partial-iv}}).
 
 ### Security Context for Pairwise Mode  ### {#pairwise-implementation}
 
@@ -420,7 +446,7 @@ If the pairwise mode is supported, the Security Context additionally includes Pa
 
 The pairwise keys as well as the shared secrets used in their derivation (see {{key-derivation-pairwise}}) may be stored in memory or recomputed every time they are needed. The shared secret changes only when a public/private key pair used for its derivation changes, which results in the pairwise keys also changing. Additionally, the pairwise keys change if the Sender ID changes or if a new Security Context is established for the group (see {{sec-group-re-join}}). In order to optimize protocol performance, an endpoint may store the derived pairwise keys for easy retrieval. 
 
-In the pairwise mode, the Sender Context includes the Pairwise Sender Keys to use with the other endpoints (see {{fig-additional-context-information}}). In order to identify the right key to use, the Pairwise Sender Key for endpoint X may be associated to the Recipient ID of endpoint X, as defined in the Recipient Context (i.e., the Sender ID from the point of view of endpoint X). In this way, the Recipient ID can be used to lookup for the right Pairwise Sender Key. This association may be implemented in different ways, e.g., by storing the pair (Recipient ID, Pairwise Sender Key) or linking a Pairwise Sender Key to a Recipient Context.
+In the pairwise mode, the Sender Context includes the Pairwise Sender Keys to use with the other endpoints (see {{fig-additional-context-information}}). In order to identify the right key to use, the Pairwise Sender Key for endpoint X may be associated with the Recipient ID of endpoint X, as defined in the Recipient Context (i.e., the Sender ID from the point of view of endpoint X). In this way, the Recipient ID can be used to lookup for the right Pairwise Sender Key. This association may be implemented in different ways, e.g., by storing the pair (Recipient ID, Pairwise Sender Key) or linking a Pairwise Sender Key to a Recipient Context.
 
 ## Update of Security Context {#ssec-sec-context-persistence} 
 
@@ -446,17 +472,19 @@ From then on, the endpoint MUST use the latest installed Sender Context to prote
 
 If not able to establish an updated Sender Context, e.g., because of lack of connectivity with the Group Manager, the endpoint MUST NOT protect further messages using the current Security Context and MUST NOT accept incoming messages from other group members, as currently unable to detect possible replays.
 
+An adversary may leverage the above to perform a Denial of Service attack and prevent some group members from communicating altogether. That is, the adversary can first block the communication path between the Group Manager and some individual group members. This can be achieved, for instance, by injecting fake responses to DNS queries for the Group Manager hostname, or by removing a network link used for routing traffic towards the Group Manager. Then, the adversary can induce a reboot for some endpoints in the group, e.g., by triggering a short power outage. After that, such endpoints that have lost their Sender Context and/or Recipient Contexts following the reboot would not be able to obtain new Security Context parameters from the Group Manager, as specified above. Thus, they would not be able to further communicate in the group until connectivity with the Group Manager is restored.
+
 #### Overflow of Recipient Contexts {#ssec-loss-mutable-context-overflow}
 
 After reaching the maximum amount of Recipient Contexts, an endpoint will experience an overflow when installing a new Recipient Context, as it requires to first delete an existing one (see {{ssec-sender-recipient-context}}).
 
-Every time this happens, the Replay Window of the new Recipient Context is initialized as not valid. Therefore, the endpoint MUST take the following actions, before accepting request messages from the client associated to the new Recipient Context.
+Every time this happens, the Replay Window of the new Recipient Context is initialized as not valid. Therefore, the endpoint MUST take the following actions, before accepting request messages from the client associated with the new Recipient Context.
 
 If it is not configured as silent server, the endpoint MUST either:
 
 * Retrieve new Security Context parameters from the Group Manager and derive a new Sender Context, as defined in {{ssec-loss-mutable-context-total}}; or
 
-* When receiving a first request to process with the new Recipient Context, use the approach specified in {{sec-synch-challenge-response}} and based on the Echo Option for CoAP {{I-D.ietf-core-echo-request-tag}}, if supported. In particular, the endpoint MUST use its Partial IV when generating the AEAD nonce and MUST include the Partial IV in the response message conveying the Echo Option. If the endpoint supports the CoAP Echo Option, it is RECOMMENDED to take this approach.
+* When receiving a first request to process with the new Recipient Context, use the approach specified in {{sec-synch-challenge-response}} and based on the Echo Option for CoAP {{RFC9175}}, if supported. In particular, the endpoint MUST use its Partial IV when generating the AEAD nonce and MUST include the Partial IV in the response message conveying the Echo Option. If the endpoint supports the CoAP Echo Option, it is RECOMMENDED to take this approach.
 
 If it is configured exclusively as silent server, the endpoint MUST wait for the next group rekeying to occur, in order to derive a new Security Context and re-initialize the Replay Window of each Recipient Contexts as valid.
 
@@ -478,9 +506,9 @@ The Group Manager can assist an endpoint with an incomplete Sender Context to re
 
 As group membership changes, or as group members get new Sender IDs (see {{new-sender-id}}) so do the relevant Recipient IDs that the other endpoints need to keep track of. As a consequence, group members may end up retaining stale Recipient Contexts, that are no longer useful to verify incoming secure messages. 
 
-The Recipient ID ('kid') SHOULD NOT be considered as a persistent and reliable indicator of a group member. Such an indication can be achieved only by using that member's public key, when verifying countersignatures of received messages (in group mode), or when verifying messages integrity-protected with pairwise keying material derived from asymmetric keys (in pairwise mode).
+The Recipient ID ('kid') SHOULD NOT be considered as a persistent and reliable identifier of a group member. Such an indication can be achieved only by using that member's public key, when verifying countersignatures of received messages (in group mode), or when verifying messages integrity-protected with pairwise keying material derived from authentication credentials and associated asymmetric keys (in pairwise mode).
 
-Furthermore, applications MAY define policies to: i) delete (long-)unused Recipient Contexts and reduce the impact on storage space; as well as ii) check with the Group Manager that a public key is currently the one associated to a 'kid' value, after a number of consecutive failed verifications.
+Furthermore, applications MAY define policies to: i) delete (long-)unused Recipient Contexts and reduce the impact on storage space; as well as ii) check with the Group Manager that an authentication credential with the public key included therein is currently the one associated with a 'kid' value, after a number of consecutive failed verifications.
 
 #### New Sender ID for the Endpoint {#new-sender-id}
 
@@ -527,29 +555,31 @@ The distribution of a new Gid and Master Secret may result in temporarily misali
 
 As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant Security Context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s). This document is based on the existence of an entity called Group Manager and responsible for the group, but it does not mandate how the Group Manager interacts with the group members. The list of responsibilities of the Group Manager is compiled in {{sec-group-manager}}.
 
-It is RECOMMENDED to use a Group Manager as described in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for authentication and authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}.
+A possible Group Manager to use is specified in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for authentication and authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}.
 
 The Group Manager assigns an integer Key Generation Number to each of its groups, identifying the current version of the keying material used in that group. The first Key Generation Number assigned to every group MUST be 0. Separately for each group, the value of the Key Generation Number increases strictly monotonically, each time the Group Manager distributes new keying material to that group (see {{sec-group-key-management}}). That is, if the current Key Generation Number for a group is X, then X+1 will denote the keying material distributed and used in that group immediately after the current one.
 
-The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. Also, for each group, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. According to a hierarchical approach, the Gid value assigned to a group is associated to a dedicated space for the values of Sender ID and Recipient ID of the members of that group.
+The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. Also, for each group, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. According to a hierarchical approach, the Gid value assigned to a group is associated with a dedicated space for the values of Sender ID and Recipient ID of the members of that group. When an endpoint (re-)joins a group, it is provided also with the current Gid to use in the group.
 
-When a node (re-)joins a group, it is provided also with the current Gid to use in the group, namely the Birth Gid of that node for that group. For each group member, the Group Manager MUST store the latest corresponding Birth Gid until that member leaves the group. In case the node has in fact re-joined the group, the newly determined Birth Gid overwrites the one currently stored.
+The Group Manager maintains records of the authentication credentials of endpoints in a group, and provides information about the group and its members to other group members and to external entities with selected roles (see {{sec-additional-entities}}). Upon endpoints' joining, the Group Manager collects such authentication credentials and MUST verify proof-of-possession of the respective private key.
 
-The Group Manager maintains records of the public keys of endpoints in a group, and provides information about the group and its members to other group members and to external principals with selected roles (see {{sec-additional-principals}}). Upon nodes' joining, the Group Manager collects such public keys and MUST verify proof-of-possession of the respective private key.
+An endpoint acquires group data such as the Gid and OSCORE input parameters including its own Sender ID from the Group Manager, and provides information about its authentication credential to the Group Manager, for example upon joining the group. 
 
-An endpoint acquires group data such as the Gid and OSCORE input parameters including its own Sender ID from the Group Manager, and provides information about its public key to the Group Manager, for example upon joining the group. 
+Furthermore, when joining the group or later on as a group member, an endpoint can retrieve from the Group Manager the authentication credential of the Group Manager as well as the authentication credential and other information associated with other members of the group, with which it can derive the corresponding Recipient Context. Together with the requested authentication credentials, the Group Manager MUST provide the Sender ID of the associated group members and the current Key Generation Number in the group. An application can configure a group member to asynchronously retrieve information about Recipient Contexts, e.g., by Observing {{RFC7641}} a resource at the Group Manager to get updates on the group membership.
 
-Furthermore, when joining the group or later on as a group member, an endpoint can retrieve from the Group Manager the public key of the Group Manager as well as the public key and other information associated to other members of the group, with which it can derive the corresponding Recipient Context. Together with the requested public keys, the Group Manager MUST provide the Sender ID of the associated group members and the current Key Generation Number in the group. An application can configure a group member to asynchronously retrieve information about Recipient Contexts, e.g., by Observing {{RFC7641}} a resource at the Group Manager to get updates on the group membership.
+## Support for Additional Entities # {#sec-additional-entities}
 
-## Support for Additional Principals # {#sec-additional-principals}
-
-The Group Manager MAY serve additional principals acting as signature checkers, e.g., intermediary gateways. These principals do not join a group as members, but can retrieve public keys of group members and other selected group data from the Group Manager, in order to solely verify countersignatures of messages protected in group mode (see {{sec-processing-signature-checker}}).
+The Group Manager MAY serve additional entities acting as signature checkers, e.g., intermediary gateways. These entities do not join a group as members, but can retrieve authentication credentials of group members and other selected group data from the Group Manager, in order to solely verify countersignatures of messages protected in group mode (see {{sec-processing-signature-checker}}).
 
 In order to verify countersignatures of messages in a group, a signature checker needs to retrieve the following information about that group from the Group Manager.
 
 * The current ID Context (Gid) used in the group.
 
-* The public keys of the group members and the public key of the Group Manager.
+* The authentication credentials of the group members and the authentication credential of the Group Manager.
+
+  If the signature checker is provided with a CWT for a given entity, then the authentication credential associated with that entity that the signature checker stores and uses is the untagged CWT.
+
+  If the signature checker is provided with a chain or a bag of X.509 / C509 certificates or of CWTs for a given entity, then the authentication credential associated with that entity that the signature checker stores and uses is just the end-entity certificate or end-entity untagged CWT.
 
 * The current Group Encryption Key (see {{ssec-common-context-group-enc-key}}).
 
@@ -561,11 +591,11 @@ A signature checker MUST be authorized before it can retrieve such information. 
 
 In order to establish a new Security Context for a group, the Group Manager MUST generate and assign to the group a new Group Identifier (Gid) and a new value for the Master Secret parameter. When doing so, a new value for the Master Salt parameter MAY also be generated and assigned to the group. When establishing the new Security Context, the Group Manager should preserve the current value of the Sender ID of each group member.
 
-The specific group key management scheme used to distribute new keying material, is out of the scope of this document. However, it is RECOMMENDED that the Group Manager supports the Group Rekeying Process described in {{I-D.ietf-ace-key-groupcomm-oscore}}. When possible, the delivery of rekeying messages should use a reliable transport, in order to reduce chances of group members missing a rekeying instance.
+The specific group key management scheme used to distribute new keying material is out of the scope of this document. A simple group key management scheme is defined in {{I-D.ietf-ace-key-groupcomm-oscore}}. When possible, the delivery of rekeying messages should use a reliable transport, in order to reduce chances of group members missing a rekeying instance.
 
 The set of group members should not be assumed as fixed, i.e., the group membership is subject to changes, possibly on a frequent basis.
 
-The Group Manager MUST rekey the group when one or more endpoints leave the group. An endpoint may leave the group at own initiative, or may be evicted from the group by the Group Manager, e.g., in case an endpoint is compromised, or is suspected to be compromised. In either case, rekeying the group excludes such nodes from future communications in the group, and thus preserves forward security.
+The Group Manager MUST rekey the group when one or more endpoints leave the group. An endpoint may leave the group at own initiative, or may be evicted from the group by the Group Manager, e.g., in case an endpoint is compromised, or is suspected to be compromised. In either case, rekeying the group excludes such endpoints from future communications in the group, and thus preserves forward security. If a network node is compromised or suspected to be compromised, the Group Manager MUST evict from the group all the endpoints hosted by that node that are member of the group and rekey the group accordingly.
 
 If required by the application, the Group Manager MUST rekey the group also before one or more new joining endpoints are added to the group, thus preserving backward security.
 
@@ -573,37 +603,31 @@ The establishment of the new Security Context for the group takes the following 
 
 1. The Group Manager MUST increment the Key Generation Number for the group by 1.
 
-2. The Group Manager MUST check if the new Gid to be distributed coincides with the Birth Gid of any of the current group members. If any of such "elder members" is found in the group, then:
-
-   * The Group Manager MUST evict the elder members from the group. That is, the Group Manager MUST terminate their membership and MUST rekey the group in such a way that the new keying material is not provided to those evicted elder members. This ensures that an Observe notification {{RFC7641}} can never successfully match against the Observe requests of two different observations.
-
-   * Until a further following group rekeying, the Group Manager MUST store the list of those latest-evicted elder members. If any of those endpoints re-joins the group before a further following group rekeying occurs, the Group Manager MUST NOT rekey the group upon their re-joining. When one of those endpoints re-joins the group, the Group Manager can rely, e.g., on the ongoing secure communication association to recognize the endpoint as included in the stored list.
-
-3. The Group Manager MUST build a set of stale Sender IDs including:
+2. The Group Manager MUST build a set of stale Sender IDs including:
 
    - The Sender IDs that, during the current Gid, were both assigned to an endpoint and subsequently relinquished (see {{new-sender-id}}).
    
    - The current Sender IDs of the group members that the upcoming group rekeying aims to exclude from future group communications, if any.
 
-4. The Group Manager rekeys the group, by distributing:
+3. The Group Manager rekeys the group, by distributing:
 
    - The new keying material, i.e., the new Master Secret, the new Gid and (optionally) the new Master Salt.
    
    - The new Key Generation Number from step 1.
    
-   - The set of stale Sender IDs from step 3.
+   - The set of stale Sender IDs from step 2.
 
    Further information may be distributed, depending on the specific group key management scheme used in the group.
 
 When receiving the new group keying materal, a group member considers the received stale Sender IDs and performs the following actions.
 
-* The group member MUST remove every public key associated to a stale Sender ID from its list of group members' public keys used in the group.
+* The group member MUST remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group.
 
 * The group member MUST delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.
 
 After that, the group member installs the new keying material and derives the corresponding new Security Context.
 
-A group member might miss one group rekeying or more consecutive instances. As a result, the group member will retain old group keying material with Key Generation Number GEN\_OLD. Eventually, the group member can notice the discrepancy, e.g., by repeatedly failing to verify incoming messages, or by explicitly querying the Group Manager for the current Key Generation Number. Once the group member gains knowledge of having missed a group rekeying, it MUST delete the old keying material it owns.
+A group member might miss one group rekeying or more consecutive instances. As a result, the group member will retain old group keying material with Key Generation Number GEN\_OLD. Eventually, the group member can notice the discrepancy, e.g., by repeatedly failing to verify incoming messages, or by explicitly querying the Group Manager for the current Key Generation Number. Once the group member gains knowledge of having missed a group rekeying, it MUST delete the old keying material it stores.
 
 Then, the group member proceeds according to the following steps.
 
@@ -611,9 +635,9 @@ Then, the group member proceeds according to the following steps.
 
 2. The group member asks the Group Manager for the set of stale Sender IDs.
 
-3. If no exact indication can be obtained from the Group Manager, the group member MUST remove all the public keys from its list of group members' public keys used in the group and MUST delete all its Recipient Contexts used in the group.
+3. If no exact indication can be obtained from the Group Manager, the group member MUST remove all the authentication credentials from its list of group members' authentication credentials used in the group and MUST delete all its Recipient Contexts used in the group.
 
-   Otherwise, the group member MUST remove every public key associated to a stale Sender ID from its list of group members' public keys used in the group, and MUST delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.
+   Otherwise, the group member MUST remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group, and MUST delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.
 
 4. The group member installs the current group keying material, and derives the corresponding new Security Context.
 
@@ -621,21 +645,49 @@ Alternatively, the group member can re-join the group. In such a case, the group
 
 * The group member performs steps 2 and 3 above. Then, the group member re-joins the group.
 
-* The group member re-joins the group with the same roles it currently has in the group, and, during the re-joining process, it asks the Group Manager for the public keys of all the current group members.
+* The group member re-joins the group with the same roles it currently has in the group, and, during the re-joining process, it asks the Group Manager for the authentication credentials of all the current group members.
 
-   Then, given Z the set of public keys received from the Group Manager, the group member removes every public key which is not in Z from its list of group members' public keys used in the group, and deletes each of its Recipient Contexts used in the group that does not include any of the public keys in Z.
+   Then, given Z the set of authentication credentials received from the Group Manager, the group member removes every authentication credential which is not in Z from its list of group members' authentication credentials used in the group, and deletes each of its Recipient Contexts used in the group that does not include any of the authentication credentials in Z.
 
-By removing public keys and deleting Recipient Contexts associated to stale Sender IDs, it is ensured that a recipient endpoint owning the latest group keying material does not store the public keys of sender endpoints that are not current group members. This in turn allows group members to rely on owned public keys to confidently assert the group membership of sender endpoints, when receiving incoming messages protected in group mode (see {{mess-processing}}).
+By removing authentication credentials and deleting Recipient Contexts associated with stale Sender IDs, it is ensured that a recipient endpoint storing the latest group keying material does not store the authentication credentials of sender endpoints that are not current group members. This in turn allows group members to rely on stored authentication credentials to confidently assert the group membership of sender endpoints, when receiving incoming messages protected in group mode (see {{mess-processing}}).
 
-### Recycling of Identifiers
+### Recycling of Identifiers ###
+
+This section specifies how the Group Manager handles and possibly reassigns Gid values and Sender ID values in a group.
+
+#### Recycling of Group Identifiers ### {#sec-gid-recycling}
+
+Since the Gid value changes every time a group is rekeyed, it can happen that, after several rekeying instances, the whole space of Gid values has been used for the group in question. When this happens, the Group Manager has no available Gid values to use that have never been assigned to the group during the group's lifetime.
+
+The occurrence of such an event and how long it would take to occur depend on the format and encoding of Gid values used in the group (see, e.g., {{gid-ex}}), as well as on the frequency of rekeying instances yielding a change of Gid value. Independently for each group under its control, the Group Manager can take one of the two following approaches.
+
+* The Group Manager does not reassign Gid values. That is, once the whole space of Gid values has been used for a group, the Group Manager terminates the group and may re-establish a new group.
+
+* While the Gid value changes every time a group is rekeyed, the Group Manager can reassign Gid values previously used during a group's lifetime. By doing so, the group can continue to exist even once the whole space of Gid values has been used.
+
+   The Group Manager MAY support and use this approach. In such a case, the Group Manager MUST take additional actions when handling Gid values and rekeying the group, as specified below.
    
-Although the Gid value changes every time a group is rekeyed, the Group Manager can reassign a Gid to the same group over that group's lifetime. This would happen, for instance, once the whole space of Gid values has been used for the group in question.
+   When a node (re-)joins the group and it is provided with the current Gid to use in the group, the Group Manager considers such a Gid as the Birth Gid of that endpoint for that group. For each group member, the Group Manager MUST store the latest corresponding Birth Gid until that member leaves the group. In case the endpoint has in fact re-joined the group, the newly determined Birth Gid overwrites the one currently stored.
+   
+   When establishing a new Security Context for the group, the Group Manager takes the additional following step between steps 1 and 2 of {{sec-group-key-management}}.
+
+   A. The Group Manager MUST check if the new Gid to be distributed is equal to the Birth Gid of any of the current group members. If any of such "elder members" is found in the group, then:
+
+    * The Group Manager MUST evict the elder members from the group. That is, the Group Manager MUST terminate their membership and MUST rekey the group in such a way that the new keying material is not provided to those evicted elder members.
+    
+       This ensures that an Observe notification {{RFC7641}} can never successfully match against the Observe requests of two different observations. In fact, the excluded elder members would eventually re-join the group, thus terminating any of their ongoing (long-lasting) observations (see {{sec-long-term-observations}}). Therefore, it is ensured by construction that no observer client can have two different ongoing observations such that the two respective Observe requests were protected using the same Partial IV, Gid and Sender ID.
+
+    * Until a further following group rekeying, the Group Manager MUST store the list of those latest-evicted elder members. If any of those endpoints re-joins the group before a further following group rekeying occurs, the Group Manager MUST NOT rekey the group upon their re-joining. When one of those endpoints re-joins the group, the Group Manager can rely, e.g., on the ongoing secure communication association to recognize the endpoint as included in the stored list.
+
+#### Recycling of Sender IDs ### {#sec-sid-recycling}
 
 From the moment when a Gid is assigned to a group until the moment a new Gid is assigned to that same group, the Group Manager MUST NOT reassign a Sender ID within the group. This prevents to reuse a Sender ID ('kid') with the same Gid, Master Secret and Master Salt. Within this restriction, the Group Manager can assign a Sender ID used under an old Gid value (including under a same, recycled Gid value), thus avoiding Sender ID values to irrecoverably grow in size.
 
 Even when an endpoint joining a group is recognized as a current member of that group, e.g., through the ongoing secure communication association, the Group Manager MUST assign a new Sender ID different than the one currently used by the endpoint in the group, unless the group is rekeyed first and a new Gid value is established.
 
-{{fig-key-material-diagram}} overviews the different keying material components, considering their relation and possible reuse across group rekeying.
+#### Relation between Identifiers and Keying Material
+
+{{fig-key-material-diagram}} overviews the different identifiers and keying material components, considering their relation and possible reuse across group rekeying.
 
 ~~~~~~~~~~~
 Components changed in lockstep
@@ -653,8 +705,9 @@ Components changed in lockstep
 |                            |              key rollover
 | The Key Generation Number  |
 | is incremented by 1        |            * After changing Group ID, an
-|                            |              unused kid can be assigned
-+----------------------------+
+|                            |              unused kid can be assigned,
++----------------------------+              even if it was used before
+                                            the Group ID change
 ~~~~~~~~~~~
 {: #fig-key-material-diagram title="Relations among keying material components." artwork-align="center"}
 
@@ -662,7 +715,7 @@ Components changed in lockstep
 
 The Group Manager is responsible for performing the following tasks:
 
-1. Creating and managing OSCORE groups. This includes the assignment of a Gid to every newly created group, ensuring uniqueness of Gids within the set of its OSCORE groups, and tracking the Birth Gids of current group members in each group.
+1. Creating and managing OSCORE groups. This includes the assignment of a Gid to every newly created group, ensuring uniqueness of Gids within the set of its OSCORE groups and, optionally, the secure recycling of Gids.
 
 2. Defining policies for authorizing the joining of its OSCORE groups.
 
@@ -684,13 +737,13 @@ The Group Manager is responsible for performing the following tasks:
 
 9. Providing the management keying material that a new endpoint requires to participate in the rekeying process, consistently with the key management scheme used in the group joined by the new endpoint.
 
-10. Assisting a group member that has missed a group rekeying instance to understand which public keys and Recipient Contexts to delete, as associated to former group members.
+10. Assisting a group member that has missed a group rekeying instance to understand which authentication credentials and Recipient Contexts to delete, as associated with former group members.
 
-11. Acting as key repository, in order to handle the public keys of the members of its OSCORE groups, and providing such public keys to other members of the same group upon request. The actual storage of public keys may be entrusted to a separate secure storage device or service.
+11. Acting as key repository, in order to handle the authentication credentials of the members of its OSCORE groups, and providing such authentication credentials to other members of the same group upon request. The actual storage of authentication credentials may be entrusted to a separate secure storage device or service.
 
-12. Validating that the format and parameters of public keys of group members are consistent with the public key algorithm and related parameters used in the respective OSCORE group.
+12. Validating that the format and parameters of authentication credentials of group members are consistent with the public key algorithm and related parameters used in the respective OSCORE group.
 
-The Group Manager described in {{I-D.ietf-ace-key-groupcomm-oscore}} provides these functionalities.
+The Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}} provides these functionalities.
 
 
 # The COSE Object # {#sec-cose-object}
@@ -746,17 +799,17 @@ info = [
    
      Note that, in case of group rekeying, a server might use a different Gid when protecting a response, compared to the Gid that it used to verify (that the client used to protect) the request, see {{ssec-protect-response}}.
 
-   - type is the CBOR simple value True (0xf5) if M is a request, or the CBOR simple value False (0xf4) otherwise.
+   - type is the CBOR simple value "true" (0xf5) if M is a request, or the CBOR simple value "false" (0xf4) otherwise.
 
    - L is the size of the countersignature, as per Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}), in bytes.
    
 ### Clarifications on Using a Countersignature
    
-Note that the literature commonly refers to a countersignature as a signature computed by a principal A over a document already protected by a different principal B.
+Note that the literature commonly refers to a countersignature as a signature computed by an entity A over a document already protected by a different entity B.
 
 However, the COSE_Countersignature0 structure belongs to the set of abbreviated countersignatures defined in {{Sections 3.2 and 3.3 of I-D.ietf-cose-countersign}}, which were designed primarily to deal with the problem of encrypted group messaging, but where it is required to know who originated the message.
 
-Since the parameters for computing or verifying the abbreviated countersignature generated by A are provided by the same context used to describe the security processing performed by B and to be countersigned, these structures are applicable also when the two principals A and B are actually the same one, like the sender of a Group OSCORE message protected in group mode.
+Since the parameters for computing or verifying the abbreviated countersignature generated by A are provided by the same context used to describe the security processing performed by B and to be countersigned, these structures are applicable also when the two entities A and B are actually the same one, like the sender of a Group OSCORE message protected in group mode.
    
 ## The 'kid' and 'kid context' parameters # {#sec-cose-object-kid}
 
@@ -770,7 +823,7 @@ The external_aad of the Additional Authenticated Data (AAD) is different compare
 
 The same external_aad structure is used in group mode and pairwise mode for authenticated encryption/decryption (see {{Section 5.3 of I-D.ietf-cose-rfc8152bis-struct}}), as well as in group mode for computing and verifying the countersignature (see {{Section 4.4 of I-D.ietf-cose-rfc8152bis-struct}}).
 
-In particular, the external_aad includes also the Signature Algorithm, the Signature Encryption Algorithm, the Pairwise Key Agreement Algorithm, the value of the 'kid context' in the COSE object of the request, the OSCORE option of the protected message, the sender's public key, and the Group Manager's public key.
+In particular, the external_aad includes also the Signature Algorithm, the Signature Encryption Algorithm, the Pairwise Key Agreement Algorithm, the value of the 'kid context' in the COSE object of the request, the OSCORE option of the protected message, the sender's authentication credential, and the Group Manager's authentication credential.
 
 The external_aad SHALL be a CBOR array wrapped in a bstr object as defined below, following the notation of {{RFC8610}}:
 
@@ -788,8 +841,8 @@ aad_array = [
    options : bstr,
    request_kid_context : bstr,
    OSCORE_option: bstr,
-   sender_public_key: bstr,
-   gm_public_key: bstr / null
+   sender_cred: bstr,
+   gm_cred: bstr / null
 ]
 ~~~~~~~~~~~
 {: #fig-ext-aad title="external_aad" artwork-align="center"}
@@ -798,15 +851,15 @@ Compared with {{Section 5.4 of RFC8613}}, the aad_array has the following differ
 
 * The 'algorithms' array is extended as follows.
 
-   The parameter 'alg_aead' MUST be set to the CBOR simple value Null if the group does not use the pairwise mode, regardless whether the endpoint supports the pairwise mode or not. Otherwise, this parameter MUST encode the value of AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}), as per {{Section 5.4 of RFC8613}}.
+   The parameter 'alg_aead' MUST be set to the CBOR simple value "null" (0xf6) if the group does not use the pairwise mode, regardless whether the endpoint supports the pairwise mode or not. Otherwise, this parameter MUST encode the value of AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}), as per {{Section 5.4 of RFC8613}}.
 
    Furthermore, the 'algorithms' array additionally includes:
 
-   - 'alg_signature_enc', which specifies Signature Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value Null if the group does not use the group mode, regardless whether the endpoint supports the group mode or not. Otherwise, this parameter MUST encode the value of Signature Encryption Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this AEAD algorithm.
+   - 'alg_signature_enc', which specifies Signature Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value "null" (0xf6) if the group does not use the group mode, regardless whether the endpoint supports the group mode or not. Otherwise, this parameter MUST encode the value of Signature Encryption Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this AEAD algorithm.
    
-   - 'alg_signature', which specifies Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value Null if the group does not use the group mode, regardless whether the endpoint supports the group mode or not. Otherwise, this parameter MUST encode the value of Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this signature algorithm.
+   - 'alg_signature', which specifies Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value "null" (0xf6) if the group does not use the group mode, regardless whether the endpoint supports the group mode or not. Otherwise, this parameter MUST encode the value of Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this signature algorithm.
    
-   - 'alg_pairwise_key_agreement', which specifies Pairwise Key Agreement Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value Null if the group does not use the pairwise mode, regardless whether the endpoint supports the pairwise mode or not. Otherwise, this parameter MUST encode the value of Pairwise Key Agreement Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this HKDF algorithm.
+   - 'alg_pairwise_key_agreement', which specifies Pairwise Key Agreement Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value "null" (0xf6) if the group does not use the pairwise mode, regardless whether the endpoint supports the pairwise mode or not. Otherwise, this parameter MUST encode the value of Pairwise Key Agreement Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this HKDF algorithm.
    
 * The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}).
 
@@ -816,9 +869,9 @@ Compared with {{Section 5.4 of RFC8613}}, the aad_array has the following differ
 
    Note for implementation: this construction requires the OSCORE option of the message to be generated and finalized before computing the ciphertext of the COSE_Encrypt0 object (when using the group mode or the pairwise mode) and before calculating the countersignature (when using the group mode). Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
 
-* The new element 'sender_public_key', containing the sender's public key. This parameter MUST be set to a CBOR byte string, which encodes the sender's public key in its original binary representation made available to other endpoints in the group (see {{sec-pub-key-format}}).
+* The new element 'sender_cred', containing the sender's authentication credential. This parameter MUST be set to a CBOR byte string, which encodes the sender's authentication credential in its original binary representation made available to other endpoints in the group (see {{sec-pub-key-format}}).
 
-* The new element 'gm_public_key', containing the Group Manager's public key. If no Group Manager maintains the group, this parameter MUST encode the CBOR simple value Null. Otherwise, this parameter MUST be set to a CBOR byte string, which encodes the Group Manager's public key in its original binary representation made available to other endpoints in the group (see {{sec-pub-key-format}}). This prevents the attack described in {{ssec-group-cloning}}.
+* The new element 'gm_cred', containing the Group Manager's authentication credential. If no Group Manager maintains the group, this parameter MUST encode the CBOR simple value "null" (0xf6). Otherwise, this parameter MUST be set to a CBOR byte string, which encodes the Group Manager's authentication credential in its original binary representation made available to other endpoints in the group (see {{sec-pub-key-format}}). This prevents the attack described in {{ssec-group-cloning}}.
    
 # OSCORE Header Compression {#compression}
 
@@ -955,7 +1008,7 @@ Upon leaving the group or before re-joining the group, a group member MUST termi
 
 Sender Sequence Numbers seen by a server as Partial IV values in request messages can spontaneously increase at a fast pace, for example when a client exchanges unicast messages with other servers using the Group OSCORE Security Context. As in OSCORE {{RFC8613}}, a server always needs to accept such increases and accordingly updates the Replay Window in each of its Recipient Contexts.
 
-As discussed in {{ssec-loss-mutable-context}}, a newly created Recipient Context would have an invalid Replay Window, if its installation has required to delete another Recipient Context. Hence, the server is not able to verify if a request from the client associated to the new Recipient Context is a replay. When this happens, the server MUST validate the Replay Window of the new Recipient Context, before accepting messages from the associated client (see {{ssec-loss-mutable-context}}).
+As discussed in {{ssec-loss-mutable-context}}, a newly created Recipient Context would have an invalid Replay Window, if its installation has required to delete another Recipient Context. Hence, the server is not able to verify if a request from the client associated with the new Recipient Context is a replay. When this happens, the server MUST validate the Replay Window of the new Recipient Context, before accepting messages from the associated client (see {{ssec-loss-mutable-context}}).
 
 Furthermore, when the Group Manager establishes a new Security Context for the group (see {{new-sec-context}}), every server re-initializes the Replay Window in each of its Recipient Contexts.
 
@@ -965,7 +1018,7 @@ When receiving a request from a client for the first time, the server is not syn
 
 During its operations in the group, the server may also lose synchronization with a client's Sender Sequence Number. This can happen, for instance, if the server has rebooted or has deleted its previously synchronized version of the Recipient Context for that client (see {{ssec-loss-mutable-context}}).
 
-If the application requires message freshness, e.g., according to time- or event-based policies, the server has to (re-)synchronize with a client's Sender Sequence Number before delivering request messages from that client to the application. To this end, the server can use the approach in {{sec-synch-challenge-response}} based on the Echo Option for CoAP {{I-D.ietf-core-echo-request-tag}}, as a variant of the approach defined in Appendix B.1.2 of {{RFC8613}} applicable to Group OSCORE.
+If the application requires message freshness, e.g., according to time- or event-based policies, the server has to (re-)synchronize with a client's Sender Sequence Number before delivering request messages from that client to the application. To this end, the server can use the approach in {{sec-synch-challenge-response}} based on the Echo Option for CoAP {{RFC9175}}, as a variant of the approach defined in Appendix B.1.2 of {{RFC8613}} applicable to Group OSCORE.
 
 # Message Reception # {#sec-message-reception}
 
@@ -975,17 +1028,17 @@ To this end, an endpoint can take into account the different structure of the Se
 
 If either of the following conditions holds, a recipient endpoint MUST discard the incoming protected message:
    
-   - The Group Flag is set to 0, and the recipient endpoint retrieves a Security Context which is both valid to process the message and also associated to an OSCORE group, but the endpoint does not support the pairwise mode.
+   - The Group Flag is set to 0, and the recipient endpoint retrieves a Security Context which is both valid to process the message and also associated with an OSCORE group, but the endpoint does not support the pairwise mode.
    
-   - The Group Flag is set to 1, and the recipient endpoint retrieves a Security Context which is both valid to process the message and also associated to an OSCORE group, but the endpoint does not support the group mode.
+   - The Group Flag is set to 1, and the recipient endpoint retrieves a Security Context which is both valid to process the message and also associated with an OSCORE group, but the endpoint does not support the group mode.
    
-   - The Group Flag is set to 1, and the recipient endpoint can not retrieve a Security Context which is both valid to process the message and also associated to an OSCORE group.
+   - The Group Flag is set to 1, and the recipient endpoint can not retrieve a Security Context which is both valid to process the message and also associated with an OSCORE group.
     
-      As per {{Section 6.1 of RFC8613}}, this holds also when retrieving a Security Context which is valid but not associated to an OSCORE group. Future specifications may define how to process incoming messages protected with a Security Contexts as in {{RFC8613}}, when the Group Flag bit is set to 1.
+      As per {{Section 6.1 of RFC8613}}, this holds also when retrieving a Security Context which is valid but not associated with an OSCORE group. Future specifications may define how to process incoming messages protected with a Security Contexts as in {{RFC8613}}, when the Group Flag bit is set to 1.
 
-Otherwise, if a Security Context associated to an OSCORE group and valid to process the message is retrieved, the recipient endpoint processes the message with Group OSCORE, using the group mode (see {{mess-processing}}) if the Group Flag is set to 1, or the pairwise mode (see {{sec-pairwise-protection}}) if the Group Flag is set to 0.
+Otherwise, if a Security Context associated with an OSCORE group and valid to process the message is retrieved, the recipient endpoint processes the message with Group OSCORE, using the group mode (see {{mess-processing}}) if the Group Flag is set to 1, or the pairwise mode (see {{sec-pairwise-protection}}) if the Group Flag is set to 0.
    
-Note that, if the Group Flag is set to 0, and the recipient endpoint retrieves a Security Context which is valid to process the message but is not associated to an OSCORE group, then the message is processed according to {{RFC8613}}.
+Note that, if the Group Flag is set to 0, and the recipient endpoint retrieves a Security Context which is valid to process the message but is not associated with an OSCORE group, then the message is processed according to {{RFC8613}}.
 
 # Message Processing in Group Mode # {#mess-processing}
 
@@ -999,7 +1052,15 @@ The group mode MUST be used to protect group requests intended for multiple reci
 
 As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-confirmable, and thus are not retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a predefined, sufficient amount of time, in order to correctly perform potential retransmissions at the application layer. According to {{Section 5.2.3 of RFC7252}}, responses to Non-confirmable group requests SHOULD also be Non-confirmable, but endpoints MUST be prepared to receive Confirmable responses in reply to a Non-confirmable group request. Confirmable group requests are acknowledged when sent over non-multicast transports, as specified in {{RFC7252}}.
 
-Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{RFC8613}}. However, a recipient MUST stop processing and silently reject any message which is malformed and does not follow the format specified in {{sec-cose-object}} of this document, or which is not cryptographically validated in a successful way. In either case, it is RECOMMENDED that the recipient does not send back any error message. This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the network.
+Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{RFC8613}}. However, a recipient MUST stop processing and reject any message which is malformed and does not follow the format specified in {{sec-cose-object}} of this document, or which is not cryptographically validated in a successful way.
+
+In either case, it is RECOMMENDED that a server does not send back any error message in reply to a received request, if any of the two following conditions holds:
+
+* The server is not able to identify the received request as a group request, i.e., as sent to all servers in the group.
+
+* The server identifies the received request as a group request.
+
+This prevents servers from replying with multiple error messages to a client sending a group request, so avoiding the risk of flooding and possibly congesting the network.
 
 ## Protecting the Request ## {#ssec-protect-request}
 
@@ -1015,11 +1076,11 @@ A client transmits a secure group request as described in {{Section 8.1 of RFC86
 
 If Observe {{RFC7641}} is supported, the following holds for each newly started observation.
 
-* If the client intends to keep the observation active beyond a possible change of Sender ID, the client MUST store the value of the 'kid' parameter from the original Observe request, and retain it for the whole duration of the observation. Even in case the client is individually rekeyed and receives a new Sender ID from the Group Manager (see {{new-sender-id}}), the client MUST NOT update the stored value associated to a particular Observe request.
+* If the client intends to keep the observation active beyond a possible change of Sender ID, the client MUST store the value of the 'kid' parameter from the original Observe request, and retain it for the whole duration of the observation. Even in case the client is individually rekeyed and receives a new Sender ID from the Group Manager (see {{new-sender-id}}), the client MUST NOT update the stored value associated with a particular Observe request.
 
 * If the client intends to keep the observation active beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}), then the following applies.
 
-   - The client MUST store the value of the 'kid context' parameter from the original Observe request, and retain it for the whole duration of the observation. Upon establishing a new Security Context with a new Gid as ID Context (see {{new-sec-context}}), the client MUST NOT update the stored value associated to a particular Observe request.
+   - The client MUST store the value of the 'kid context' parameter from the original Observe request, and retain it for the whole duration of the observation. Upon establishing a new Security Context with a new Gid as ID Context (see {{new-sec-context}}), the client MUST NOT update the stored value associated with a particular Observe request.
    
    - The client MUST store an invariant identifier of the group, which is immutable even in case the Security Context of the group is re-established. For example, this invariant identifier can be the "group name" in {{I-D.ietf-ace-key-groupcomm-oscore}}, where it is used for joining the group and retrieving the current group keying material from the Group Manager.
    
@@ -1031,13 +1092,13 @@ Upon receiving a secure group request with the Group Flag set to 1, following th
 
 * In step 2, the decoding of the compressed COSE object follows {{compression}} of this document. In particular:
 
-   - If the server discards the request due to not retrieving a Security Context associated to the OSCORE group, the server MAY respond with a 4.01 (Unauthorized) error message. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
+   - If the server discards the request due to not retrieving a Security Context associated with the OSCORE group, the server MAY respond with a 4.01 (Unauthorized) error message. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
 
-   - If the received 'kid context' matches an existing ID Context (Gid) but the received 'kid' does not match any Recipient ID in this Security Context, then the server MAY create a new Recipient Context for this Recipient ID and initialize it according to {{Section 3 of RFC8613}}, and also retrieve the associated public key. Such a configuration is application specific. If the application does not specify dynamic derivation of new Recipient Contexts, then the server SHALL stop processing the request.
+   - If the received 'kid context' matches an existing ID Context (Gid) but the received 'kid' does not match any Recipient ID in this Security Context, then the server MAY create a new Recipient Context for this Recipient ID and initialize it according to {{Section 3 of RFC8613}}, and also retrieve the authentication credential associated with the Recipient ID to be stored in the new Recipient Context. Such a configuration is application specific. If the application does not specify dynamic derivation of new Recipient Contexts, then the server SHALL stop processing the request.
 
 * In step 4, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
 
-* In step 6, the server also verifies the countersignature using the public key of the client from the associated Recipient Context. In particular:
+* In step 6, the server also verifies the countersignature, by using the public key from the client's authentication credential stored in the associated Recipient Context. In particular:
 
    - If the server does not have the public key of the client yet, the server MUST stop processing the request and MAY respond with a 5.03 (Service Unavailable) response. The response MAY include a Max-Age Option, indicating to the client the number of seconds after which to retry. If the Max-Age Option is not present, a retry time of 60 seconds will be assumed by the client, as default value defined in {{Section 5.10.5 of RFC7252}}.
    
@@ -1063,9 +1124,9 @@ A server SHOULD NOT process a request if the received Recipient ID ('kid') is eq
 
 If Observe {{RFC7641}} is supported, the following holds for each newly started observation.
 
-* The server MUST store the value of the 'kid' parameter from the original Observe request, and retain it for the whole duration of the observation. The server MUST NOT update the stored value of a 'kid' parameter associated to a particular Observe request, even in case the observer client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}).
+* The server MUST store the value of the 'kid' parameter from the original Observe request, and retain it for the whole duration of the observation. The server MUST NOT update the stored value of a 'kid' parameter associated with a particular Observe request, even in case the observer client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}).
 
-* The server MUST store the value of the 'kid context' parameter from the original Observe request, and retain it for the whole duration of the observation, beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}). That is, upon establishing a new Security Context with a new Gid as ID Context (see {{new-sec-context}}), the server MUST NOT update the stored value associated to the ongoing observation.
+* The server MUST store the value of the 'kid context' parameter from the original Observe request, and retain it for the whole duration of the observation, beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}). That is, upon establishing a new Security Context with a new Gid as ID Context (see {{new-sec-context}}), the server MUST NOT update the stored value associated with the ongoing observation.
 
 ## Protecting the Response ## {#ssec-protect-response}
 
@@ -1110,11 +1171,11 @@ Note that a client may receive a response protected with a Security Context diff
 
 * In step 2, the decoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, a 'kid' may not be present, if the response is a reply to a request protected in pairwise mode. In such a case, the client assumes the response 'kid' to be the Recipient ID for the server to which the request protected in pairwise mode was intended for.
 
-   If the response 'kid context' matches an existing ID Context (Gid) but the received/assumed 'kid' does not match any Recipient ID in this Security Context, then the client MAY create a new Recipient Context for this Recipient ID and initialize it according to {{Section 3 of RFC8613}}, and also retrieve the associated public key. If the application does not specify dynamic derivation of new Recipient Contexts, then the client SHALL stop processing the response.
+   If the response 'kid context' matches an existing ID Context (Gid) but the received/assumed 'kid' does not match any Recipient ID in this Security Context, then the client MAY create a new Recipient Context for this Recipient ID and initialize it according to {{Section 3 of RFC8613}}, and also retrieve the authentication credential associated with the Recipient ID to be stored in the new Recipient Context. If the application does not specify dynamic derivation of new Recipient Contexts, then the client SHALL stop processing the response.
 
 * In step 3, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
 
-* In step 5, the client also verifies the countersignature using the public key of the server from the associated Recipient Context. In particular:
+* In step 5, the client also verifies the countersignature, by using the public key from the server's authentication credential stored in the associated Recipient Context. In particular:
 
    - The client MUST perform signature verification before decrypting the COSE object, as defined below. Implementations that cannot perform the two steps in this order MUST ensure that no access to the plaintext is possible before a successful signature verification and MUST prevent any possible leak of time-related information that can yield side-channel attacks.
    
@@ -1126,15 +1187,15 @@ Note that a client may receive a response protected with a Security Context diff
     
        The client verifies the original countersignature SIGNATURE.
    
-   - If the verification of the countersignature fails, the server SHALL stop processing the response, and SHALL NOT update the Notification Number associated to the server if the response is an Observe notification {{RFC7641}}.
+   - If the verification of the countersignature fails, the server SHALL stop processing the response, and SHALL NOT update the Notification Number associated with the server if the response is an Observe notification {{RFC7641}}.
 
    - After a successful verification of the countersignature, the client performs also the following actions if the response is not an Observe notification.
 
       - In case the request was protected in pairwise mode and the 'kid' parameter is present in the response, the client checks whether this received 'kid' is equal to the expected 'kid', i.e., the known Recipient ID for the server to which the request was intended for.
    
-      - If this is not the case, the client checks whether the server that has sent the response is the same one to which the request was intended for. This can be done by checking that the public key used to verify the countersignature of the response is equal to the Recipient Public Key taken as input to derive the Pairwise Sender Key used for protecting the request (see {{key-derivation-pairwise}}).
+      - In case the request was protected in pairwise mode and the 'kid' parameter is not present in the response, the client checks whether the server that has sent the response is the same one to which the request was intended for. This can be done by checking that the public key used to verify the countersignature of the response is equal to the public key included in the authentication credential Recipient Auth Cred, which was taken as input to derive the Pairwise Sender Key used for protecting the request (see {{key-derivation-pairwise}}).
    
-      - If the client determines that the response has come from a different server than the expected one, then the client SHALL discard the response and SHALL NOT deliver it to the application. Otherwise, the client hereafter considers the received 'kid' as the current Recipient ID for the server.
+      In either case, if the client determines that the response has come from a different server than the expected one, then the client SHALL discard the response and SHALL NOT deliver it to the application. Otherwise, the client hereafter considers the received 'kid' as the current Recipient ID for the server.
    
    - When decrypting the COSE object using the Recipient Key, the Signature Encryption Algorithm from the Common Context MUST be used.
 
@@ -1151,11 +1212,11 @@ If Observe {{RFC7641}} is supported, the following holds when verifying notifica
 
 This ensures that the client can correctly verify notifications, even in case it is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}), as well as when it installs a new Security Context with a new ID Context (Gid) following a group rekeying (see {{sec-group-key-management}}).
 
-* The ordering and the replay protection of notifications received from a server are performed as per {{Sections 4.1.3.5.2 and 7.4.1 of RFC8613}}, by using the Notification Number associated to that server for the observation in question. In addition, the client performs the following actions for each ongoing observation.
+* The ordering and the replay protection of notifications received from a server are performed as per {{Sections 4.1.3.5.2 and 7.4.1 of RFC8613}}, by using the Notification Number associated with that server for the observation in question. In addition, the client performs the following actions for each ongoing observation.
 
    - When receiving the first valid notification from a server, the client MUST store the current kid "kid1" of that server for the observation in question. If the 'kid' field is included in the OSCORE option of the notification, its value specifies "kid1". If the Observe request was protected in pairwise mode (see {{sec-pairwise-protection-req}}), the 'kid' field may not be present in the OSCORE option of the notification (see {{sec-cose-object-kid}}). In this case, the client assumes "kid1" to be the Recipient ID for the server to which the Observe request was intended for.
 
-   - When receiving another valid notification from the same server - which can be identified and recognized through the same public key used to verify the countersignature - the client determines the current kid "kid2" of the server as above for "kid1", and MUST check whether "kid2" is equal to the stored "kid1". If "kid1" and "kid2" are different, the client MUST cancel or re-register the observation in question.
+   - When receiving another valid notification from the same server - which can be identified and recognized through the same public key used to verify the countersignature and included in the server's authentication credential - the client determines the current kid "kid2" of the server as above for "kid1", and MUST check whether "kid2" is equal to the stored "kid1". If "kid1" and "kid2" are different, the client MUST cancel or re-register the observation in question.
    
       Note that, if "kid2" is different from "kid1" and the 'kid' field is omitted from the notification - which is possible if the Observe request was protected in pairwise mode - then the client will compute a wrong keystream to decrypt the countersignature (i.e., by using "kid1" rather than "kid2" in the 'id' field of the 'info' array in {{sssec-encrypted-signature-keystream}}), thus subsequently failing to verify the countersignature and discarding the notification.
 
@@ -1163,7 +1224,7 @@ This ensures that the client remains able to correctly perform the ordering and 
 
 ## External Signature Checkers # {#sec-processing-signature-checker}
 
-When receiving a message protected in group mode, a signature checker (see {{sec-additional-principals}}) proceeds as follows.
+When receiving a message protected in group mode, a signature checker (see {{sec-additional-entities}}) proceeds as follows.
 
 * The signature checker retrieves the encrypted countersignature ENC_SIGNATURE from the message payload, and computes the original countersignature SIGNATURE as
 
@@ -1171,13 +1232,13 @@ When receiving a message protected in group mode, a signature checker (see {{sec
 
    where KEYSTREAM is derived as per {{sssec-encrypted-signature-keystream}}.
 
-* The signature checker verifies the original countersignature SIGNATURE, by using the public key of the sender endpoint. The signature checker determines the public key to use based on the ID Context (Gid) and the Sender ID of the sender endpoint.
+* The signature checker verifies the original countersignature SIGNATURE, by using the public key of the sender endpoint as included in that endpoint's authentication credential. The signature checker determines the right authentication credential based on the ID Context (Gid) and the Sender ID of the sender endpoint.
 
 Note that the following applies when attempting to verify the countersignature of a response message.
 
 * The response may not include a Partial IV and/or an ID Context. In such a case, the signature checker considers the same values from the corresponding request, i.e., the request matching with the response by CoAP Token value.
 
-* The response may not include a Sender ID. This can happen when the response protected in group mode matches a request protected in pairwise mode (see {{ssec-pre-conditions}}), with a case in point provided by {{I-D.amsuess-core-cachable-oscore}}. In such a case, the signature checker needs to use other means (e.g., source addressing information of the server endpoint) to identify the correct public key to use for verifying the countersignature of the response.
+* The response may not include a Sender ID. This can happen when the response protected in group mode matches a request protected in pairwise mode (see {{ssec-pre-conditions}}), with a case in point provided by {{I-D.amsuess-core-cachable-oscore}}. In such a case, the signature checker needs to use other means (e.g., source addressing information of the server endpoint) to identify the correct authentication credential including the public key to use for verifying the countersignature of the response.
 
 The particular actions following a successful or unsuccessful verification of the countersignature are application specific and out of the scope of this document.
 
@@ -1191,7 +1252,7 @@ The pairwise mode does not support the use of additional entities acting as veri
 
 An endpoint implementing only a silent server does not support the pairwise mode.
 
-If the signature algorithm used in the group supports ECDH (e.g., ECDSA, EdDSA), the pairwise mode MUST be supported by endpoints that use the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} and/or block-wise transfers {{RFC7959}}, for instance for responses after the first block-wise request, which possibly targets all servers in the group and includes the CoAP Block2 option (see {{Section 3.8 of I-D.ietf-core-groupcomm-bis}}). This prevents the attack described in {{ssec-unicast-requests}}, which leverages requests sent over unicast to a single group member and protected with the group mode.
+If the signature algorithm used in the group supports ECDH (e.g., ECDSA, EdDSA), the pairwise mode MUST be supported by endpoints that use the CoAP Echo Option {{RFC9175}} and/or block-wise transfers {{RFC7959}}, for instance for responses after the first block-wise request, which possibly targets all servers in the group and includes the CoAP Block2 option (see {{Section 3.8 of I-D.ietf-core-groupcomm-bis}}). This prevents the attack described in {{ssec-unicast-requests}}, which leverages requests sent over unicast to a single group member and protected with the group mode.
 
 Senders cannot use the pairwise mode to protect a message intended for multiple recipients. In fact, the pairwise mode is defined only between two endpoints and the keying material is thus only available to one recipient.
 
@@ -1201,9 +1262,9 @@ The Group Manager indicates that the group uses (also) the pairwise mode, as par
 
 ## Pre-Conditions ## {#ssec-pre-conditions}
 
-In order to protect an outgoing message in pairwise mode, the sender needs to know the public key and the Recipient ID for the recipient endpoint, as stored in the Recipient Context associated to that endpoint (see {{pairwise-implementation}}).
+In order to protect an outgoing message in pairwise mode, the sender needs to know the authentication credential and the Recipient ID for the recipient endpoint, as stored in the Recipient Context associated with that endpoint (see {{pairwise-implementation}}).
 
-Furthermore, the sender needs to know the individual address of the recipient endpoint. This information may not be known at any given point in time. For instance, right after having joined the group, a client may know the public key and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.
+Furthermore, the sender needs to know the individual address of the recipient endpoint. This information may not be known at any given point in time. For instance, right after having joined the group, a client may know the authentication credential and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.
 
 To make addressing information of individual endpoints available, servers in the group MAY expose a resource to which a client can send a group request targeting a set of servers, identified by their 'kid' values specified in the request payload. The specified set may be empty, hence identifying all the servers in the group. Further details of such an interface are out of scope for this document.
 
@@ -1227,7 +1288,7 @@ When using the pairwise mode, the request is protected as defined in {{Section 8
 
 Upon receiving a request with the Group Flag set to 0, following the procedure in {{sec-message-reception}}, the server MUST process it as defined in {{Section 8.2 of RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following differences also apply.
 
-* If the server discards the request due to not retrieving a Security Context associated to the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.01 (Unauthorized) error message or a 4.02 (Bad Option) error message, respectively. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
+* If the server discards the request due to not retrieving a Security Context associated with the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.01 (Unauthorized) error message or a 4.02 (Bad Option) error message, respectively. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
 
 * If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}). The new Pairwise Sender/Recipient Keys are deleted if the Recipient Context is deleted as a result of the message not being successfully verified. 
 
@@ -1251,15 +1312,53 @@ When using the pairwise mode, a response is protected as defined in {{Section 8.
 
 Upon receiving a response with the Group Flag set to 0, following the procedure in {{sec-message-reception}}, the client MUST process it as defined in {{Section 8.4 of RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following differences also apply.
 
-* The client may receive a response protected with a Security Context different from the one used to protect the corresponding request. Also, upon the establishment of a new Security Context, the client re-initializes its Replay Windows in its Recipient Contexts (see {{sec-group-key-management}}).
+* The client may receive a response protected with a Security Context different from the one used to protect the corresponding request. Also, upon the establishment of a new Security Context, the client re-initializes its Replay Windows in its Recipient Contexts (see {{ssec-sender-recipient-context}}).
 
-* The same as described in {{ssec-verify-response}} holds with respect to handling the 'kid' parameter of the response, when received as a reply to a request protected in pairwise mode. The client can also in this case check whether the replying server is the expected one, by relying on the server's public key. However, since the response is protected in pairwise mode, the public key is not used for verifying a countersignature as in {{ssec-verify-response}}, but rather as input to derive the Pairwise Recipient Key used to decrypt and verify the response (see {{key-derivation-pairwise}}).
+* The same as described in {{ssec-verify-response}} holds with respect to handling the 'kid' parameter of the response, when received as a reply to a request protected in pairwise mode. The client can also in this case check whether the replying server is the expected one, by relying on the server's public key. However, since the response is protected in pairwise mode, the public key is not used for verifying a countersignature as in {{ssec-verify-response}}. Instead, the expected server's authentication credential - namely Recipient Auth Cred and including the server's public key - was taken as input to derive the Pairwise Recipient Key used to decrypt and verify the response (see {{key-derivation-pairwise}}).
 
 * If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}). The new Pairwise Sender/Recipient Keys are deleted if the Recipient Context is deleted as a result of the message not being successfully verified. 
 
-* If Observe {{RFC7641}} is supported, what is defined in {{ssec-verify-response-observe}} of this document holds. The client can also in this case identify a server to be the same one across a change of Sender ID, by relying on the server's public key. However, since the notification is protected in pairwise mode, the public key is not used for verifying a countersignature as in {{ssec-verify-response}}, but rather as input to derive the Pairwise Recipient Key used to decrypt and verify the notification (see {{key-derivation-pairwise}}).
+* If Observe {{RFC7641}} is supported, what is defined in {{ssec-verify-response-observe}} of this document holds. The client can also in this case identify a server to be the same one across a change of Sender ID, by relying on the server's public key. As to the expected server's authentication credential, the same holds as specified above for non-notification responses.
 
-# Mandatory-to-Implement Compliance Requirements
+# Challenge-Response Synchronization # {#sec-synch-challenge-response}
+
+This section describes how a server endpoint can synchronize with Sender Sequence Numbers of client endpoints in the group. Similarly to what is defined in {{Section B.1.2 of RFC8613}}, the server performs a challenge-response exchange with a client, by using the Echo Option for CoAP specified in {{Section 2 of RFC9175}}.
+
+Upon receiving a request from a particular client for the first time, the server processes the message as described in this document, but, even if valid, does not deliver it to the application. Instead, the server replies to the client with an OSCORE protected 4.01 (Unauthorized) response message, including only the Echo Option and no diagnostic payload. The Echo option value SHOULD NOT be reused; when it is reused, it MUST be highly unlikely to have been recently used with this client. Since this response is protected with the Security Context used in the group, the client will consider the response valid upon successfully decrypting and verifying it.
+
+The server stores the Echo Option value included in the response together with the pair (gid,kid), where 'gid' is the Group Identifier of the OSCORE group and 'kid' is the Sender ID of the client in the group. These are specified in the 'kid context' and 'kid' fields of the OSCORE Option of the request, respectively. After a group rekeying has been completed and a new Security Context has been established in the group, which results also in a new Group Identifier (see {{sec-group-key-management}}), the server MUST delete all the stored Echo values associated with members of the group.
+
+Upon receiving a 4.01 (Unauthorized) response that includes an Echo Option and originates from a verified group member, the client sends a request as a unicast message addressed to the same server, echoing the Echo Option value. The client MUST NOT send the request including the Echo Option over multicast.
+
+If the group uses also the group mode and the used Signature Algorithm supports ECDH (e.g., ECDSA, EdDSA), the client MUST use the pairwise mode to protect the request, as per {{sec-pairwise-protection-req}}. Note that, as defined in {{sec-pairwise-protection}}, endpoints that are members of such a group and that use the Echo Option MUST support the pairwise mode.
+
+The client does not necessarily resend the same group request, but can instead send a more recent one, if the application permits it. This allows the client to not retain previously sent group requests for full retransmission, unless the application explicitly requires otherwise. In either case, the client uses a fresh Sender Sequence Number value from its own Sender Context. If the client stores group requests for possible retransmission with the Echo Option, it should not store a given request for longer than a preconfigured time interval. Note that the unicast request echoing the Echo Option is correctly treated and processed, since the 'kid context' field including the Group Identifier of the OSCORE group is still present in the OSCORE Option as part of the COSE object (see {{sec-cose-object}}).
+
+Upon receiving the unicast request including the Echo Option, the server performs the following verifications.
+
+* If the server does not store an Echo Option value for the pair (gid,kid), it considers: i) the time t1 when it has established the Security Context used to protect the received request; and ii) the time t2 when the request has been received. Since a valid request cannot be older than the Security Context used to protect it, the server verifies that (t2 - t1) is less than the largest amount of time acceptable to consider the request fresh.
+
+* If the server stores an Echo Option value for the pair (gid,kid) associated with that same client in the same group, the server verifies that the option value equals that same stored value previously sent to that client. 
+
+If the verifications above fail, the server MUST NOT process the request further and MAY send a 4.01 (Unauthorized) response including an Echo Option, hence performing a new challenge-response exchange.
+
+If the verifications above are successful, the server proceeds as follows. In case the Replay Window in the Recipient Context associated with the client has not been set yet, the server updates the Replay Window to mark the current Sender Sequence Number from the latest received request as seen (but all newer ones as new), and delivers the message as fresh to the application. Otherwise, the server discards the verification result and treats the message as fresh or as a replay, according to the existing Replay Window.
+
+A server should not deliver requests from a given client to the application until one valid request from that same client has been verified as fresh, as conveying an echoed Echo Option. A server may perform the challenge-response described above at any time, if synchronization with Sender Sequence Numbers of clients is lost, e.g., after a device reboot. A client has to be ready to perform the challenge-response based on the Echo Option if a server starts it.
+
+It is the role of the server application to define under what circumstances Sender Sequence Numbers lose synchronization. This can include experiencing a "large enough" gap D = (SN2 - SN1), between the Sender Sequence Number SN1 of the latest accepted group request from a client and the Sender Sequence Number SN2 of a group request just received from that client. However, a client may send several unicast requests to different group members as protected with the pairwise mode, which may result in the server experiencing the gap D in a relatively short time. This would induce the server to perform more challenge-response exchanges than actually needed.
+
+In order to ameliorate this, the server may rely on a trade-off between the Sender Sequence Number gap D and a time gap T = (t2 - t1), where t1 is the time when the latest group request from a client was accepted and t2 is the time when the latest group request from that client has been received, respectively. Then, the server can start a challenge-response when experiencing a time gap T larger than a given, preconfigured threshold. Also, the server can start a challenge-response when experiencing a Sender Sequence Number gap D greater than a different threshold, computed as a monotonically increasing function of the currently experienced time gap T.
+
+The challenge-response approach described in this section provides an assurance of absolute message freshness. However, it can result in an impact on performance which is undesirable or unbearable, especially in large groups where many endpoints at the same time might join as new members or lose synchronization.
+
+Endpoints configured as silent servers are not able to perform the challenge-response described above, as they do not store a Sender Context to secure the 4.01 (Unauthorized) response to the client. Thus, silent servers should adopt alternative approaches to achieve and maintain synchronization with Sender Sequence Numbers of clients.
+
+Since requests including the Echo Option are sent over unicast, a server can be victim of the attack discussed in {{ssec-unicast-requests}}, in case such requests are protected with the group mode. Instead, protecting those requests with the pairwise mode prevents the attack above. In fact, only the exact server involved in the challenge-response exchange is able to derive the pairwise key used by the client to protect the request including the Echo Option.
+
+In either case, an internal on-path adversary would not be able to mix up the Echo Option value of two different unicast requests, sent by a same client to any two different servers in the group. In fact, even if the group mode was used, this would require the adversary to forge the countersignature of both requests. As a consequence, each of the two servers remains able to selectively accept a request with the Echo Option only if it is waiting for that exact integrity-protected Echo Option value, and is thus the intended recipient.
+
+# Implementation Compliance
 
 Like in {{RFC8613}}, HKDF SHA-256 is the mandatory to implement HKDF.
 
@@ -1275,7 +1374,7 @@ For endpoints that support the group mode, the following applies.
    
    Constrained endpoints SHOULD implement: the EdDSA signature algorithm together with the elliptic curve Ed25519 {{RFC8032}}; or the ECDSA signature algorithm together with the elliptic curve P-256.
 
-* If elliptic curve signatures are used, it is RECOMMENDED to implement deterministic signatures with additional randomness as specified in {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
+* Endpoints that implement the ECDSA signature algorithm MAY use "deterministic ECDSA" as specified in {{RFC6979}}. Pure deterministic elliptic-curve signature algorithms such as deterministic ECDSA and EdDSA have the advantage of not requiring access to a source of high-quality randomness. However, these signature algorithms have been shown vulnerable to some side-channel and fault injection attacks due to their determinism, which can result in extracting a device's private key. As suggested in {{Section 2.1.1 of I-D.ietf-cose-rfc8152bis-algs}}, this can be addressed by combining both randomness and determinism {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
 
 For endpoints that support the pairwise mode, the following applies.
 
@@ -1311,7 +1410,7 @@ The rest of this section first discusses security aspects to be taken into accou
 
 ## Security of the Group Mode {#ssec-group-mode-security}
 
-The group mode defined in {{mess-processing}} relies on commonly shared group keying material to protect communication within a group. Using the group mode has the implications discussed below. The following refers to group members as the endpoints in the group owning the latest version of the group keying material.
+The group mode defined in {{mess-processing}} relies on commonly shared group keying material to protect communication within a group. Using the group mode has the implications discussed below. The following refers to group members as the endpoints in the group storing the latest version of the group keying material.
 
 * Messages are encrypted at a group level (group-level data confidentiality), i.e., they can be decrypted by any member of the group, but not by an external adversary or other external entities.
 
@@ -1319,9 +1418,9 @@ The group mode defined in {{mess-processing}} relies on commonly shared group ke
 
    Furthermore, if the used encryption algorithm does not provide integrity protection, then it does not ensure any level of message authentication or proof of group membership.
 
-   On the other hand, proof of group membership is always ensured by construction through the strict management of the group keying material (see {{sec-group-key-management}}). That is, the group is rekeyed in case of nodes' leaving, and the current group members are informed of former group members. Thus, a current group member owning the latest group keying material does not own the public key of any former group member.
+   On the other hand, proof of group membership is always ensured by construction through the strict management of the group keying material (see {{sec-group-key-management}}). That is, the group is rekeyed in case of members' leaving, and the current group members are informed of former group members. Thus, a current group member storing the latest group keying material does not store the authentication credential of any former group member.
    
-   This allows a recipient endpoint to rely on the owned public keys, in order to always confidently assert the group membership of a sender endpoint when processing an incoming message, i.e., to assert that the sender endpoint was a group member when it signed the message. In turn, this prevents a former group member to possibly re-sign and inject in the group a stored message that was protected with old keying material.
+   This allows a recipient endpoint to rely on the stored authentication credentials and public keys included therin, in order to always confidently assert the group membership of a sender endpoint when processing an incoming message, i.e., to assert that the sender endpoint was a group member when it signed the message. In turn, this prevents a former group member to possibly re-sign and inject in the group a stored message that was protected with old keying material.
 
 * Source authentication of messages sent to a group is ensured through a countersignature, which is computed by the sender using its own private key and then appended to the message payload. Also, the countersignature is encrypted by using a keystream derived from the group keying material (see {{sec-cose-object-unprotected-field}}). This ensures group privacy, i.e., an attacker cannot track an endpoint over two groups by linking messages between the two groups, unless being also a member of those groups.
 
@@ -1337,7 +1436,7 @@ The security properties of the group mode are summarized below.
 
 5. Group privacy, by encrypting the countersignature.
 
-The group mode fulfills the security properties above while also displaying the following benefits. First, the use of an encryption algorithm that does not provide integrity protection results in a minimal communication overhead, by limiting the message payload to the ciphertext and the encrypted countersignature. Second, it is possible to deploy semi-trusted principals such as signature checkers (see {{sec-additional-principals}}), which can break property 5, but cannot break properties 1, 2 and 3.
+The group mode fulfills the security properties above while also displaying the following benefits. First, the use of an encryption algorithm that does not provide integrity protection results in a minimal communication overhead, by limiting the message payload to the ciphertext and the encrypted countersignature. Second, it is possible to deploy semi-trusted entities such as signature checkers (see {{sec-additional-entities}}), which can break property 5, but cannot break properties 1, 2 and 3.
 
 ## Security of the Pairwise Mode {#ssec-pairwise-mode-security}
 
@@ -1363,7 +1462,7 @@ As a consequence, each message encrypted/decrypted with the same Sender Key is p
 
 The approach described in this document should take into account the risk of compromise of group members. In particular, this document specifies that a key management scheme for secure revocation and renewal of Security Contexts and group keying material MUST be adopted.
 
-{{I-D.ietf-ace-key-groupcomm-oscore}} provides a simple rekeying scheme for renewing the Security Context in a group.
+{{I-D.ietf-ace-key-groupcomm-oscore}} specifies a simple rekeying scheme for renewing the Security Context in a group.
 
 Alternative rekeying schemes which are more scalable with the group size may be needed in dynamic, large groups where endpoints can join and leave at any time, in order to limit the impact on performance due to the Security Context and keying material update.
 
@@ -1403,11 +1502,11 @@ In case endpoints are deployed in multiple groups managed by different non-synch
 
 This does not impair the security of the AEAD algorithm. In fact, as long as the Master Secret is different for different groups and this condition holds over time, AEAD keys are different among different groups.
 
-The entity assigning an IP multicast address may help limiting the chances to experience such collisions of Group Identifiers. In particular, it may allow the Group Managers of groups using the same IP multicast address to share their respective list of assigned Group Identifiers currently in use.
+In case multiple groups use the same IP multicast address, the entity assigning that address may help limiting the chances to experience such collisions of Group Identifiers. In particular, it may allow the Group Managers of those groups using the same IP multicast address to share their respective list of assigned Group Identifiers currently in use.
 
 ## Cross-group Message Injection {#ssec-cross-group-injection}
 
-A same endpoint is allowed to and would likely use the same public/private key pair in multiple OSCORE groups, possibly administered by different Group Managers.
+A same endpoint is allowed to and would likely use the same pair (private key, authentication credential) in multiple OSCORE groups, possibly administered by different Group Managers.
 
 When a sender endpoint sends a message protected in pairwise mode to a recipient endpoint in an OSCORE group, a malicious group member may attempt to inject the message to a different OSCORE group also including the same endpoints (see {{ssec-cross-group-injection-attack}}).
 
@@ -1421,9 +1520,9 @@ Let us consider:
 
 * Two OSCORE groups G1 and G2, with ID Context (Group ID) Gid1 and Gid2, respectively. Both G1 and G2 use the AEAD cipher AES-CCM-16-64-128, i.e., the MAC of the ciphertext is 8 bytes in size.
 
-* A sender endpoint X which is member of both G1 and G2, and uses the same public/private key pair in both groups. The endpoint X has Sender ID Sid1 in G1 and Sender ID Sid2 in G2. The pairs (Sid1, Gid1) and (Sid2, Gid2) identify the same public key of X in G1 and G2, respectively.
+* A sender endpoint X which is member of both G1 and G2, and uses the same pair (private key, authentication credential) in both groups. The endpoint X has Sender ID Sid1 in G1 and Sender ID Sid2 in G2. The pairs (Sid1, Gid1) and (Sid2, Gid2) identify the same authentication credential of X in G1 and G2, respectively.
 
-* A recipient endpoint Y which is member of both G1 and G2, and uses the same public/private key pair in both groups. The endpoint Y has Sender ID Sid3 in G1 and Sender ID Sid4 in G2. The pairs (Sid3, Gid1) and (Sid4, Gid2) identify the same public key of Y in G1 and G2, respectively.
+* A recipient endpoint Y which is member of both G1 and G2, and uses the same pair (private key, authentication credential) in both groups. The endpoint Y has Sender ID Sid3 in G1 and Sender ID Sid4 in G2. The pairs (Sid3, Gid1) and (Sid4, Gid2) identify the same authentication credential of Y in G1 and G2, respectively.
 
 * A malicious endpoint Z is also member of both G1 and G2. Hence, Z is able to derive the Sender Keys used by X in G1 and G2.
 
@@ -1431,7 +1530,7 @@ When X sends a message M1 addressed to Y in G1 and protected in pairwise mode, Z
 
 More in detail, Z intercepts and stops message M1, and forges a message M2 by changing the value of the OSCORE option from M1 as follows: the 'kid context' is set to G2 (rather than G1); and the 'kid' is set to Sid2 (rather than Sid1). Then, Z injects message M2 as addressed to Y in G2. 
 
-Upon receiving M2, there is a probability equal to 2^-64 that Y successfully verifies the same unchanged MAC by using the Pairwise Recipient Key associated to X in G2.
+Upon receiving M2, there is a probability equal to 2^-64 that Y successfully verifies the same unchanged MAC by using the Pairwise Recipient Key associated with X in G2.
 
 Note that Z does not know the pairwise keys of X and Y, since it does not know and is not able to compute their shared Diffie-Hellman secret. Therefore, Z is not able to check offline if a performed forgery is actually valid, before sending the forged message to G2.
 
@@ -1445,17 +1544,19 @@ Since the signing process takes as input also the ciphertext of the COSE_Encrypt
 
 This makes it practically infeasible to perform the attack described in {{ssec-cross-group-injection-attack}}, since it would require the adversary to additionally forge a valid countersignature that replaces the original one in the forged message M2.
 
-If the countersignature did not cover the OSCORE option, the attack would still be possible against response messages protected in group mode, since the same unchanged countersignature from message M1 would be also valid in message M2.
+If, hypothetically, the countersignature did not cover the OSCORE option:
 
-Also, the following attack simplifications would hold, since Z is able to derive the Sender/Recipient Keys of X and Y in G1 and G2. That is, Z can also set a convenient Partial IV in the response, until the same unchanged MAC is successfully verified by using G2 as 'request_kid_context', Sid2 as 'request_kid', and the symmetric key associated to X in G2.
+* The attack described in {{ssec-cross-group-injection-attack}} would still be possible against response messages protected in group mode, since the same unchanged countersignature from message M1 would be also valid in message M2.
 
-Since the Partial IV is 5 bytes in size, this requires 2^40 operations to test all the Partial IVs, which can be done in real-time. The probability that a single given message M1 can be used to forge a response M2 for a given request would be equal to 2^-24, since there are more MAC values (8 bytes in size) than Partial IV values (5 bytes in size).
+* A simplification would also be possible in performing the attack, since Z is able to derive the Sender/Recipient Keys of X and Y in G1 and G2. That is, Z can also set a convenient Partial IV in the response, until the same unchanged MAC is successfully verified by using G2 as 'request_kid_context', Sid2 as 'request_kid', and the symmetric key associated with X in G2.
 
-Note that, by changing the Partial IV as discussed above, any member of G1 would also be able to forge a valid signed response message M2 to be injected in the same group G1.
+   Since the Partial IV is 5 bytes in size, this requires 2^40 operations to test all the Partial IVs, which can be done in real-time. The probability that a single given message M1 can be used to forge a response M2 for a given request would be equal to 2^-24, since there are more MAC values (8 bytes in size) than Partial IV values (5 bytes in size).
+
+   Note that, by changing the Partial IV as discussed above, any member of G1 would also be able to forge a valid signed response message M2 to be injected in the same group G1.
 
 ## Prevention of Group Cloning Attack {#ssec-group-cloning}
 
-Both when using the group mode and the pairwise mode, the message protection covers also the Group Manager's public key. This public key is included in the Additional Authenticated Data used in the signing process and/or in the integrity-protected encryption process (see {{sec-cose-object-ext-aad}}).
+Both when using the group mode and the pairwise mode, the message protection covers also the Group Manager's authentication credential. This is included in the Additional Authenticated Data used in the signing process and/or in the integrity-protected encryption process (see {{sec-cose-object-ext-aad}}).
 
 By doing so, an endpoint X member of a group G1 cannot perform the following attack.
 
@@ -1467,7 +1568,7 @@ By doing so, an endpoint X member of a group G1 cannot perform the following att
 
 4. Members of G2 accept M and believe it to be originated in G2.
 
-The attack above is effectively prevented, since message M is protected by including the public key of G1's Group Manager in the Additional Authenticated Data. Therefore, members of G2 do not successfully verify and decrypt M, since they correctly use the public key of X as Group Manager of G2 when attempting to.
+The attack above is effectively prevented, since message M is protected by including the authentication credential of G1's Group Manager in the Additional Authenticated Data. Therefore, members of G2 do not successfully verify and decrypt M, since they correctly use the authentication credential of X as Group Manager of G2 when attempting to.
 
 ## Group OSCORE for Unicast Requests {#ssec-unicast-requests}
 
@@ -1485,7 +1586,7 @@ A client can instead use the pairwise mode as defined in {{sec-pairwise-protecti
 
 With particular reference to block-wise transfers {{RFC7959}}, {{Section 3.8 of I-D.ietf-core-groupcomm-bis}} points out that, while an initial request including the CoAP Block2 option can be sent over multicast, any other request in a transfer has to occur over unicast, individually addressing the servers in the group.
 
-Additional considerations are discussed in {{sec-synch-challenge-response}}, with respect to requests including a CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} that has to be sent over unicast, as a challenge-response method for servers to achieve synchronization of clients' Sender Sequence Number.
+Additional considerations are discussed in {{sec-synch-challenge-response}}, with respect to requests including a CoAP Echo Option {{RFC9175}} that have to be sent over unicast, as a challenge-response method for servers to achieve synchronization of clients' Sender Sequence Number.
 
 ## End-to-end Protection {#ssec-e2e-protection}
 
@@ -1514,11 +1615,11 @@ As discussed in {{sec-synch-seq-num}}, a Replay Window may be initialized as not
 
 As discussed in {{sec-freshness}}, a server may not be able to assert whether an incoming request is fresh, in case it does not have or has lost synchronization with the client's Sender Sequence Number.
 
-If freshness is relevant for the application, the server may (re-)synchronize with the client's Sender Sequence Number at any time, by using the approach described in {{sec-synch-challenge-response}} and based on the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}}, as a variant of the approach defined in Appendix B.1.2 of {{RFC8613}} applicable to Group OSCORE.
+If freshness is relevant for the application, the server may (re-)synchronize with the client's Sender Sequence Number at any time, by using the approach described in {{sec-synch-challenge-response}} and based on the CoAP Echo Option {{RFC9175}}, as a variant of the approach defined in Appendix B.1.2 of {{RFC8613}} applicable to Group OSCORE.
 
 ## Client Aliveness {#ssec-client-aliveness}
 
-Building on {{Section 12.5 of RFC8613}}, a server may use the CoAP Echo Option {{I-D.ietf-core-echo-request-tag}} to verify the aliveness of the client that originated a received request, by using the approach described in {{sec-synch-challenge-response}} of this document.
+Building on {{Section 12.5 of RFC8613}}, a server may use the CoAP Echo Option {{RFC9175}} to verify the aliveness of the client that originated a received request, by using the approach described in {{sec-synch-challenge-response}} of this document.
 
 ## Cryptographic Considerations {#ssec-crypto-considerations}
 
@@ -1530,7 +1631,7 @@ In order to renew its own Sender Context, the endpoint SHOULD inform the Group M
 
 Additionally, the same considerations from {{Section 12.6 of RFC8613}} hold for Group OSCORE, about building the AEAD nonce and the secrecy of the Security Context parameters.
 
-The group mode uses the "encrypt-then-sign" construction, i.e., the countersignature is computed over the COSE_Encrypt0 object (see {{sec-cose-object-unprotected-field}}). This is motivated by enabling additional principals acting as signature checkers (see {{sec-additional-principals}}), which do not join a group as members but are allowed to verify countersignatures of messages protected in group mode without being able to decrypt them (see {{sec-processing-signature-checker}}).
+The group mode uses the "encrypt-then-sign" construction, i.e., the countersignature is computed over the COSE_Encrypt0 object (see {{sec-cose-object-unprotected-field}}). This is motivated by enabling additional entities acting as signature checkers (see {{sec-additional-entities}}), which do not join a group as members but are allowed to verify countersignatures of messages protected in group mode without being able to decrypt them (see {{sec-processing-signature-checker}}).
 
 If the encryption algorithm used in group mode provides integrity protection, countersignatures of COSE_Encrypt0 with short authentication tags do not provide the security properties associated with the same algorithm used in COSE_Sign (see {{Section 6 of I-D.ietf-cose-countersign}}). To provide 128-bit security against collision attacks, the tag length MUST be at least 256-bits. A countersignature of a COSE_Encrypt0 with AES-CCM-16-64-128 provides at most 32 bits of integrity protection.
 
@@ -1546,7 +1647,7 @@ Extending Theorem 2 of {{Degabriele}}, {{Thormarker}} shows that the same key pa
 
 Theorem 3 in {{Degabriele}} shows that the same key pair can be used for an ECDH based KEM and ECDSA. The KEM uses a different KDF than in {{sec-derivation-pairwise}}, but the proof only depends on that the KDF has certain required properties, which are the typical assumptions about HKDF, e.g., that output keys are pseudorandom. In order to comply with the assumptions of Theorem 3, received public keys MUST be successfully validated, see Section 5.6.2.3.4 of {{NIST-800-56A}}. The validation MAY be performed by a trusted Group Manager. For {{Degabriele}} to apply as it is written, public keys need to be in the expected subgroup. For this we rely on cofactor DH, Section 5.7.1.2 of {{NIST-800-56A}} which is referenced in {{sec-derivation-pairwise}}.
 
-HashEdDSA variants of Ed25519 and Ed448 are not used by COSE, see {{Section 2.2 of I-D.ietf-cose-rfc8152bis-algs}}, and are not covered by the analysis in {{Thormarker}}, and hence MUST NOT be used with the public keys used with pairwise keys as specified in this document.
+HashEdDSA variants of Ed25519 and Ed448 are not used by COSE, see {{Section 2.2 of I-D.ietf-cose-rfc8152bis-algs}}, and are not covered by the analysis in {{Thormarker}}. Hence, they MUST NOT be used with the public keys used to derive pairwise keys as specified in this document.
 
 ## Message Segmentation {#ssec-message-segmentation}
 
@@ -1566,9 +1667,9 @@ Furthermore, the following privacy considerations hold about the OSCORE option, 
 
 When receiving a group request, each of the recipient endpoints can reply with a response that includes its Sender ID as 'kid' parameter. All these responses will be matchable with the request through the Token. Thus, even if these responses do not include a 'kid context' parameter, it becomes possible to understand that the responder endpoints are in the same group of the requester endpoint.
 
-Furthermore, using the mechanisms described in {{sec-synch-challenge-response}} to achieve Sender Sequence Number synchronization with a client may reveal when a server device goes through a reboot. This can be mitigated by the server device storing the precise state of the Replay Window of each known client on a clean shutdown.
+Furthermore, using the approach described in {{sec-synch-challenge-response}} to achieve Sender Sequence Number synchronization with a client may reveal when a server device goes through a reboot. This can be mitigated by the server device storing the precise state of the Replay Window of each known client on a clean shutdown.
 
-Finally, the mechanism described in {{ssec-gid-collision}} to prevent collisions of Group Identifiers from different Group Managers may reveal information about events in the respective OSCORE groups. In particular, a Group Identifier changes when the corresponding group is rekeyed. Thus, Group Managers might use the shared list of Group Identifiers to infer the rate and patterns of group membership changes triggering a group rekeying, e.g., due to newly joined members or evicted (compromised) members. In order to alleviate this privacy concern, it should be hidden from the Group Managers which exact Group Manager has currently assigned which Group Identifiers in its OSCORE groups.
+Finally, the approach described in {{ssec-gid-collision}} to prevent collisions of Group Identifiers from different Group Managers may reveal information about events in the respective OSCORE groups. In particular, a Group Identifier changes when the corresponding group is rekeyed. Thus, Group Managers might use the shared list of Group Identifiers to infer the rate and patterns of group membership changes triggering a group rekeying, e.g., due to newly joined members or evicted (compromised) members. In order to alleviate this privacy concern, it should be hidden from the Group Managers which exact Group Manager has currently assigned which Group Identifiers in its OSCORE groups.
 
 # IANA Considerations # {#iana}
 
@@ -1609,7 +1710,7 @@ The following points are assumed to be already addressed and are out of the scop
 
 * Multicast communication topology: this document considers both 1-to-N (one sender and multiple recipients) and M-to-N (multiple senders and multiple recipients) communication topologies. The 1-to-N communication topology is the simplest group communication scenario that would serve the needs of a typical Low-power and Lossy Network (LLN). Examples of use cases that benefit from secure group communication are provided in {{sec-use-cases}}.
 
-    In a 1-to-N communication model, only a single client transmits data to the CoAP group, in the form of request messages; in an M-to-N communication model (where M and N do not necessarily have the same value), M clients transmit data to the CoAP group. According to {{I-D.ietf-core-groupcomm-bis}}, any possible proxy entity is supposed to know about the clients. Also, every client expects and is able to handle multiple response messages associated to a same request sent to the CoAP group.
+    In a 1-to-N communication model, only a single client transmits data to the CoAP group, in the form of request messages; in an M-to-N communication model (where M and N do not necessarily have the same value), M clients transmit data to the CoAP group. According to {{I-D.ietf-core-groupcomm-bis}}, any possible proxy entity is supposed to know about the clients. Also, every client expects and is able to handle multiple response messages associated with a same request sent to the CoAP group.
     
 * Group size: security solutions for group communication should be able to adequately support different and possibly large security groups. The group size is the current number of members in a security group. In the use cases mentioned in this document, the number of clients (normally the controlling devices) is expected to be much smaller than the number of servers (i.e., the controlled devices). A security solution for group communication that supports 1 to 50 clients would be able to properly cover the group sizes required for most use cases that are relevant for this document. The maximum group size is expected to be in the range of 2 to 100 devices. Security groups larger than that should be divided into smaller independent groups. One should not assume that the set of members of a security group remains fixed. That is, the group membership is subject to changes, possibly on a frequent basis.
 
@@ -1617,7 +1718,7 @@ The following points are assumed to be already addressed and are out of the scop
 
 * Provisioning and management of Security Contexts: a Security Context must be established among the members of the security group. A secure mechanism must be used to generate, revoke and (re-)distribute keying material, communication policies and security parameters in the security group. The actual provisioning and management of the Security Context is out of the scope of this document.
 
-* Multicast data security ciphersuite: all members of a security group must agree on a ciphersuite to provide authenticity, integrity and confidentiality of messages in the group. The ciphersuite is specified as part of the Security Context.
+* Multicast data security ciphersuite: all members of a security group must use the same ciphersuite to provide authenticity, integrity and confidentiality of messages in the group. The ciphersuite is specified as part of the Security Context.
 
 * Backward security: a new device joining the security group should not have access to any old Security Contexts used before its joining. This ensures that a new member of the security group is not able to decrypt confidential data sent before it has joined the security group. The adopted key management scheme should ensure that the Security Context is updated to ensure backward confidentiality. The actual mechanism to update the Security Context and renew the group keying material in the security group upon a new member's joining has to be defined as part of the group key management scheme.
 
@@ -1661,13 +1762,13 @@ Group Communication for CoAP {{I-D.ietf-core-groupcomm-bis}} provides the necess
 
 This section provides an example of how the Group Identifier (Gid) can be specifically formatted. That is, the Gid can be composed of two parts, namely a Group Prefix and a Group Epoch.
 
-For each group, the Group Prefix is constant over time and is uniquely defined in the set of all the groups associated to the same Group Manager. The choice of the Group Prefix for a given group's Security Context is application specific. The size of the Group Prefix directly impact on the maximum number of distinct groups under the same Group Manager.
+For each group, the Group Prefix is constant over time and is uniquely defined in the set of all the groups associated with the same Group Manager. The choice of the Group Prefix for a given group's Security Context is application specific. The size of the Group Prefix directly impact on the maximum number of distinct groups under the same Group Manager.
 
 The Group Epoch is set to 0 upon the group's initialization, and is incremented by 1 each time new keying material, together with a new Gid, is distributed to the group in order to establish a new Security Context (see {{sec-group-key-management}}).
 
 As an example, a 3-byte Gid can be composed of: i) a 1-byte Group Prefix '0xb1' interpreted as a raw byte string; and ii) a 2-byte Group Epoch interpreted as an unsigned integer ranging from 0 to 65535. Then, after having established the Common Context 61532 times in the group, its Gid will assume value '0xb1f05c'.
 
-Using an immutable Group Prefix for a group assumes that enough time elapses before all possible Group Epoch values are used, i.e., before the Group Manager starts reassigning Gid values to the same group (see {{sec-group-key-management}}). Thus, the expected highest rate for addition/removal of group members and consequent group rekeying should be taken into account for a proper dimensioning of the Group Epoch size.
+Using an immutable Group Prefix for a group assumes that enough time elapses before all possible Group Epoch values are used, i.e., before the Group Manager terminates the group or starts reassigning Gid values to the group (see {{sec-group-key-management}}). Thus, the expected highest rate for addition/removal of group members and consequent group rekeying should be taken into account for a proper dimensioning of the Group Epoch size.
 
 As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple groups managed by different non-synchronized Group Managers, it is possible that Group Identifiers of different groups coincide at some point in time. In this case, a recipient has to handle coinciding Group Identifiers, and has to try using different Security Contexts to process an incoming message, until the right one is found and the message is correctly verified. Therefore, it is favorable that Group Identifiers from different Group Managers have a size that result in a small probability of collision. How small this probability should be is up to system designers.
 
@@ -1679,49 +1780,9 @@ Communications between a joining endpoint and the Group Manager rely on the CoAP
 
 The Group Manager must verify that the joining endpoint is authorized to join the group. To this end, the Group Manager can directly authorize the joining endpoint, or expect it to provide authorization evidence previously obtained from a trusted entity. Further details about the authorization of joining endpoints are out of scope.
 
-In case of successful authorization check, the Group Manager generates a Sender ID assigned to the joining endpoint, before proceeding with the rest of the join process. That is, the Group Manager provides the joining endpoint with the keying material and parameters to initialize the Security Context, including its own public key (see {{sec-context}}). The actual provisioning of keying material and parameters to the joining endpoint is out of the scope of this document.
+In case of successful authorization check, the Group Manager generates a Sender ID assigned to the joining endpoint, before proceeding with the rest of the join process. That is, the Group Manager provides the joining endpoint with the keying material and parameters to initialize the Security Context, including its own authentication credential (see {{sec-context}}). The actual provisioning of keying material and parameters to the joining endpoint is out of the scope of this document.
 
-It is RECOMMENDED that the join process adopts the approach described in {{I-D.ietf-ace-key-groupcomm-oscore}} and based on the ACE framework for Authentication and Authorization in constrained environments {{I-D.ietf-ace-oauth-authz}}. 
-
-# Challenge-Response Synchronization # {#sec-synch-challenge-response}
-
-This section describes a possible approach that a server endpoint can use to synchronize with Sender Sequence Numbers of client endpoints in the group. In particular, the server performs a challenge-response exchange with a client, by using the Echo Option for CoAP described in {{Section 2 of I-D.ietf-core-echo-request-tag}} and according to {{Section B.1.2 of RFC8613}}.
-
-That is, upon receiving a request from a particular client for the first time, the server processes the message as described in this document, but, even if valid, does not deliver it to the application. Instead, the server replies to the client with an OSCORE protected 4.01 (Unauthorized) response message, including only the Echo Option and no diagnostic payload. The Echo option value SHOULD NOT be reused; when it is reused, it MUST be highly unlikely to have been used with this client recently. Since this response is protected with the Security Context used in the group, the client will consider the response valid upon successfully decrypting and verifying it.
-
-The server stores the Echo Option value included therein, together with the pair (gid,kid), where 'gid' is the Group Identifier of the OSCORE group and 'kid' is the Sender ID of the client in the group, as specified in the 'kid context' and 'kid' fields of the OSCORE Option of the request, respectively. After a group rekeying has been completed and a new Security Context has been established in the group, which results also in a new Group Identifier (see {{sec-group-key-management}}), the server MUST delete all the stored Echo values associated to members of that group.
-
-Upon receiving a 4.01 (Unauthorized) response that includes an Echo Option and originates from a verified group member, the client sends a request as a unicast message addressed to the same server, echoing the Echo Option value. The client MUST NOT send the request including the Echo Option over multicast.
-
-If the group uses also the group mode and the used Signature Algorithm supports ECDH (e.g., ECDSA, EdDSA), the client MUST use the pairwise mode of Group OSCORE to protect the request, as described in {{sec-pairwise-protection-req}}. Note that, as defined in {{sec-pairwise-protection}}, members of such a group and that use the Echo Option MUST support the pairwise mode.
-
-The client does not necessarily resend the same group request, but can instead send a more recent one, if the application permits it. This makes it possible for the client to not retain previously sent group requests for full retransmission, unless the application explicitly requires otherwise. In either case, the client uses a fresh Sender Sequence Number value from its own Sender Context. If the client stores group requests for possible retransmission with the Echo Option, it should not store a given request for longer than a preconfigured time interval. Note that the unicast request echoing the Echo Option is correctly treated and processed as a message, since the 'kid context' field including the Group Identifier of the OSCORE group is still present in the OSCORE Option as part of the COSE object (see {{sec-cose-object}}).
-
-Upon receiving the unicast request including the Echo Option, the server performs the following verifications.
-
-* If the server does not store an Echo Option value for the pair (gid,kid), it considers: i) the time t1 when it has established the Security Context used to protect the received request; and ii) the time t2 when the request has been received. Since a valid request cannot be older than the Security Context used to protect it, the server verifies that (t2 - t1) is less than the largest amount of time acceptable to consider the request fresh.
-
-* If the server stores an Echo Option value for the pair (gid,kid) associated to that same client in the same group, the server verifies that the option value equals that same stored value previously sent to that client. 
-
-If the verifications above fail, the server MUST NOT process the request further and MAY send a 4.01 (Unauthorized) response including an Echo Option.
-
-If the verifications above are successful and the Replay Window has not been set yet, the server updates its Replay Window to mark the current Sender Sequence Number from the latest received request as seen (but all newer ones as new), and delivers the message as fresh to the application. Otherwise, it discards the verification result and treats the message as fresh or as a replay, according to the existing Replay Window.
-
-A server should not deliver requests from a given client to the application until one valid request from that same client has been verified as fresh, as conveying an echoed Echo Option {{I-D.ietf-core-echo-request-tag}}. Also, a server may perform the challenge-response described above at any time, if synchronization with Sender Sequence Numbers of clients is lost, for instance after a device reboot. A client has to be always ready to perform the challenge-response based on the Echo Option in case a server starts it.
-
-It is the role of the server application to define under what circumstances Sender Sequence Numbers lose synchronization. This can include experiencing a "large enough" gap D = (SN2 - SN1), between the Sender Sequence Number SN1 of the latest accepted group request from a client and the Sender Sequence Number SN2 of a group request just received from that client. However, a client may send several unicast requests to different group members as protected with the pairwise mode (see {{sec-pairwise-protection-req}}), which may result in the server experiencing the gap D in a relatively short time. This would induce the server to perform more challenge-response exchanges than actually needed.
-
-To ameliorate this, the server may rather rely on a trade-off between the Sender Sequence Number gap D and a time gap T = (t2 - t1), where t1 is the time when the latest group request from a client was accepted and t2 is the time when the latest group request from that client has been received, respectively. Then, the server can start a challenge-response when experiencing a time gap T larger than a given, preconfigured threshold. Also, the server can start a challenge-response when experiencing a Sender Sequence Number gap D greater than a different threshold, computed as a monotonically increasing function of the currently experienced time gap T.
-
-The challenge-response approach described in this appendix provides an assurance of absolute message freshness. However, it can result in an impact on performance which is undesirable or unbearable, especially in large groups where many endpoints at the same time might join as new members or lose synchronization.
-
-Note that endpoints configured as silent servers are not able to perform the challenge-response described above, as they do not store a Sender Context to secure the 4.01 (Unauthorized) response to the client. Therefore, silent servers should adopt alternative approaches to achieve and maintain synchronization with Sender Sequence Numbers of clients.
-
-Since requests including the Echo Option are sent over unicast, a server can be a victim of the attack discussed in {{ssec-unicast-requests}}, when such requests are protected with the group mode of Group OSCORE, as described in {{ssec-protect-request}}.
-
-Instead, protecting requests with the Echo Option by using the pairwise mode of Group OSCORE as described in {{sec-pairwise-protection-req}} prevents the attack in {{ssec-unicast-requests}}. In fact, only the exact server involved in the Echo exchange is able to derive the correct pairwise key used by the client to protect the request including the Echo Option.
-
-In either case, an internal on-path adversary would not be able to mix up the Echo Option value of two different unicast requests, sent by a same client to any two different servers in the group. In fact, if the group mode was used, this would require the adversary to forge the client's countersignature in both such requests. As a consequence, each of the two servers remains able to selectively accept a request with the Echo Option only if it is waiting for that exact integrity-protected Echo Option value, and is thus the intended recipient.
+As mentioned in {{group-manager}}, the Group Manager and the join process can be as specified in {{I-D.ietf-ace-key-groupcomm-oscore}}.
    
 # Document Updates # {#sec-document-updates}
 
@@ -1729,7 +1790,28 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 ## Version -13 to -14 ## {#sec-13-14}
 
-* Editorial improvements and fixes.
+* Replaced "node" with "endpoint" where appropriate.
+
+* Replaced "owning" with "storing" (of keying material).
+
+* Distinction between "authentication credential" and "public key".
+
+* Considerations on storing whole authentication credentials.
+
+* Considerations on Denial of Service.
+
+*  Recycling of Group IDs by tracking the "Birth Gid" of each group
+member is now optional to support and use for the Group Manager.
+
+* Fine-grained suppression of error responses.
+
+* Changed section title "Mandatory-to-Implement Compliance Requirements" to "Implementation Compliance".
+
+* "Challenge-Response Synchronization" moved to the document body.
+
+* RFC 7641 and draft-ietf-core-echo-request-tag as normative references.
+
+* Clarifications and editorial improvements.
 
 ## Version -12 to -13 ## {#sec-12-13}
 
@@ -1993,7 +2075,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Added the new 'par_countersign' to the aad_array of the external_aad (see Section 3.1).
 
-* Clarified non reliability of 'kid' as identity indicator for a group member (see Section 2.1).
+* Clarified non reliability of 'kid' as identity identifier for a group member (see Section 2.1).
 
 * Described possible provisioning of new Sender ID in case of Partial IV wrap-around (see Section 2.2).
 
