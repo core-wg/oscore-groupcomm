@@ -1050,7 +1050,7 @@ The Group Manager indicates that the group uses (also) the group mode, as part o
 
 During all the steps of the message processing, an endpoint MUST use the same Security Context for the considered group. That is, an endpoint MUST NOT install a new Security Context for that group (see {{new-sec-context}}) until the message processing is completed.
 
-The group mode MUST be used to protect group requests intended for multiple recipients or for the whole group. This includes both requests directly addressed to multiple recipients, e.g., sent by the client over multicast, as well as requests sent by the client over unicast to a proxy, that forwards them to the intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}. For encryption and decryption operations, the Signature Encryption Algorithm from the Common Context is used.
+The group mode SHOULD be used to protect group requests intended for multiple recipients or for the whole group. For an example where this is not fulfilled, see {{I-D.amsuess-core-cachable-oscore}}. This applies to both requests directly addressed to multiple recipients, e.g., sent by the client over multicast, as well as requests sent by the client over unicast to a proxy, that forwards them to the intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}. For encryption and decryption operations, the Signature Encryption Algorithm from the Common Context is used.
 
 As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-confirmable, and thus are not retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a predefined, sufficient amount of time, in order to correctly perform potential retransmissions at the application layer. According to {{Section 5.2.3 of RFC7252}}, responses to Non-confirmable group requests SHOULD also be Non-confirmable, but endpoints MUST be prepared to receive Confirmable responses in reply to a Non-confirmable group request. Confirmable group requests are acknowledged when sent over non-multicast transports, as specified in {{RFC7252}}.
 
@@ -1789,6 +1789,10 @@ As mentioned in {{group-manager}}, the Group Manager and the join process can be
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
+
+## Version -15 to -16 ## {#sec-15-16}
+
+* Clients "SHOULD" use the group mode for one-to-many requests.
 
 ## Version -14 to -15 ## {#sec-14-15}
 
