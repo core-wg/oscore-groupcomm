@@ -111,11 +111,11 @@ normative:
 informative:
   I-D.ietf-ace-key-groupcomm:
   I-D.ietf-ace-key-groupcomm-oscore:
-  I-D.mattsson-cfrg-det-sigs-with-noise:
   I-D.ietf-lwig-security-protocol-comparison:
   I-D.ietf-core-observe-multicast-notifications:
   I-D.ietf-lwig-curve-representations:
   I-D.ietf-cose-cbor-encoded-cert:
+  I-D.irtf-cfrg-det-sigs-with-noise:
   I-D.amsuess-core-cachable-oscore:
   RFC4944:
   RFC4949:
@@ -1513,7 +1513,7 @@ For endpoints that support the group mode, the following applies.
 
    Constrained endpoints SHOULD implement: the EdDSA signature algorithm together with the elliptic curve Ed25519 {{RFC8032}}; or the ECDSA signature algorithm together with the elliptic curve P-256.
 
-* Endpoints that implement the ECDSA signature algorithm MAY use "deterministic ECDSA" as specified in {{RFC6979}}. Pure deterministic elliptic-curve signature algorithms such as deterministic ECDSA and EdDSA have the advantage of not requiring access to a source of high-quality randomness. However, these signature algorithms have been shown vulnerable to some side-channel and fault injection attacks due to their determinism, which can result in extracting a device's private key. As suggested in {{Section 2.1.1 of RFC9053}}, this can be addressed by combining both randomness and determinism {{I-D.mattsson-cfrg-det-sigs-with-noise}}.
+* Endpoints that implement the ECDSA signature algorithm MAY use "deterministic ECDSA" as specified in {{RFC6979}}. Pure deterministic elliptic-curve signature algorithms such as deterministic ECDSA and EdDSA have the advantage of not requiring access to a source of high-quality randomness. However, these signature algorithms have been shown vulnerable to some side-channel and fault injection attacks due to their determinism, which can result in extracting a device's private key. As suggested in {{Section 2.1.1 of RFC9053}}, this can be addressed by combining both randomness and determinism {{I-D.irtf-cfrg-det-sigs-with-noise}}.
 
 For endpoints that support the pairwise mode, the following applies.
 
