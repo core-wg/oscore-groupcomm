@@ -1001,7 +1001,7 @@ The examples assume that the plaintext (see {{Section 5.3 of RFC8613}}) is 6 byt
 
 # Message Binding, Sequence Numbers, Freshness and Replay Protection
 
-Like OSCORE, also Group OSCORE provides message binding of responses to requests, as well as uniquess of AEAD (key, nonce) pair (see {{Sections 7.1 and 7.2 of RFC8613}}, respectively).
+Like OSCORE, also Group OSCORE provides message binding of responses to requests, as well as uniqueness of AEAD (key, nonce) pair (see {{Sections 7.1 and 7.2 of RFC8613}}, respectively).
 
 Furthermore, the following also holds for Group OSCORE.
 
@@ -1015,7 +1015,7 @@ Group OSCORE allows to preserve a Non-Notification Group Exchange and an observa
 
 As defined in {{mess-processing}}, this is achieved by the client and server(s) storing the 'kid' and 'kid context' used in the original request, throughout the whole duration of the Non-Notification Group Exchange or of the observation.
 
-Upon leaving the group or before re-joining the group, a group member MUST terminate all the ongoing Non-Notification Group Exchanges and observations that it has started in the group as a client.
+Upon leaving the group or before re-joining the group, a group member MUST terminate all the ongoing Non-Notification Group Exchanges and observations that it has started in the group as a client, and hence free up the CoAP Token associated with the corresponding request.
 
 ## Update of Replay Window # {#sec-synch-seq-num}
 
@@ -1252,7 +1252,7 @@ For each ongoing observation, the server can help the client to synchronize, by 
 
 If there is a known upper limit to the duration of a group rekeying, the server SHOULD include the 'kid context' parameter during that time. Otherwise, the server SHOULD include it until the Max-Age has expired for the last notification sent before the installation of the new Security Context.
 
-As per {{sec-replay-protection-non-notifications}}, the server MUST NOT reply to a group request with 2.xx responses of which some are notifications and some are not. That is, if the server receives an observation request and does not register the observation, then any following 2.xx response from the server to that request MUST NOT be a notification. Also, if the server receives an observation request and registers the observation, then any following 2.xx response from the server to that request MUST be a notification.
+As per {{sec-replay-protection-non-notifications}}, the server MUST NOT reply to a group request with 2.xx responses of which some are notifications and some are not. That is, if the server receives an observation request and registers the observation, then any following 2.xx response from the server to that request MUST be a notification. Also, if the server receives an observation request and registers the observation, then any following 2.xx response from the server to that request MUST be a notification.
 
 ## Verifying the Response ## {#ssec-verify-response}
 
@@ -1936,6 +1936,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Revised presentation of security properties.
 
 * Improved listing of operations defined for the group mode that are inherited by the pairwise mode.
+
+* Editorial improvements.
 
 ## Version -14 to -15 ## {#sec-14-15}
 
