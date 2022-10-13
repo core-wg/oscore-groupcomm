@@ -1015,7 +1015,7 @@ Group OSCORE allows to preserve a Non-Notification Group Exchange and an observa
 
 As defined in {{mess-processing}}, this is achieved by the client and server(s) storing the 'kid' and 'kid context' used in the original request, throughout the whole duration of the Non-Notification Group Exchange or of the observation.
 
-Upon leaving the group or before re-joining the group, a group member MUST terminate all the ongoing Non-Notification Group Exchanges and observations that it has started in the group as a client, and hence free up the CoAP Token associated with the corresponding request.
+Upon leaving the group or before re-joining the group, a group member MUST terminate all the ongoing Non-Notification Group Exchanges and observations that it has started in the group as a client, and hence frees up the CoAP Token associated with the corresponding request.
 
 ## Update of Replay Window # {#sec-synch-seq-num}
 
