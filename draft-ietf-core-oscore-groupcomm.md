@@ -158,6 +158,9 @@ informative:
     date: 2021-04
     target: https://eprint.iacr.org/2021/509
 
+entity:
+  SELF: "[RFC-XXXX]"
+
 --- abstract
 
 This document defines Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of CoAP messages exchanged between members of a group, e.g., sent over IP multicast. In particular, the described approach defines how OSCORE is used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with any other member of the group for pairwise OSCORE communication.
@@ -927,7 +930,6 @@ The examples assume that the plaintext (see {{Section 5.3 of RFC8613}}) is 6 byt
 
       Payload: 0xaea0155667924dff8a24e4cb35b9 de9e ... f1
       (14 bytes + size of the encrypted countersignature)
-
 ~~~~~~~~~~~
 
 
@@ -1835,28 +1837,28 @@ Finally, the approach described in {{ssec-gid-collision}} to prevent collisions 
 
 # IANA Considerations # {#iana}
 
-Note to RFC Editor: Please replace "\[This Document\]" with the RFC number of this document and delete this paragraph.
+Note to RFC Editor: Please replace "{{&SELF}}" with the RFC number of this document and delete this paragraph.
 
 This document has the following actions for IANA.
 
 ## OSCORE Flag Bits Registry {#iana-cons-flag-bits}
 
-IANA is asked to add the following value entry to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
+IANA is asked to add the following entry to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
 
 ~~~~~~~~~~~
-+--------------+------------+-----------------------------+-----------+
-| Bit Position |    Name    |         Description         | Reference |
-+--------------+------------+-----------------------------+-----------+
-|       2      | Group Flag | For using a Group OSCORE    | [This     |
-|              |            | Security Context, set to 1  | Document] |
-|              |            | if the message is protected |           |
-|              |            | with the group mode         |           |
-+--------------+------------+-----------------------------+-----------+
++--------------+-------+-----------------------------+------------+
+| Bit Position | Name  | Description                 | Reference  |
++--------------+-------+-----------------------------+------------+
+|       2      | Group | For using a Group OSCORE    | [RFC-XXXX] |
+|              | Flag  | Security Context, set to 1  |            |
+|              |       | if the message is protected |            |
+|              |       | with the group mode         |            |
++--------------+-------+-----------------------------+------------+
 ~~~~~~~~~~~
 
 ## Target Attributes Registry ## {#iana-target-attributes}
 
-IANA is asked to register the following entry in the "Target Attributes" registry within the "CoRE Parameters" registry group.
+IANA is asked to add the following entry to the "Target Attributes" registry within the "CoRE Parameters" registry group.
 
 ~~~~~~~~~~~
 Attribute Name: gosc
@@ -1965,6 +1967,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -16 to -17 ## {#sec-16-17}
 
 * Definition and registration of the target attribute "gosc".
+
+* Editorial fixes.
 
 ## Version -15 to -16 ## {#sec-15-16}
 
