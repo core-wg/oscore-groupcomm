@@ -81,6 +81,7 @@ normative:
   RFC7748:
   RFC8032:
   RFC8174:
+  RFC8288:
   RFC8610:
   RFC8613:
   RFC8949:
@@ -121,6 +122,7 @@ informative:
   RFC4949:
   RFC5869:
   RFC6282:
+  RFC6690:
   RFC7228:
   RFC7925:
   RFC7959:
@@ -155,6 +157,9 @@ informative:
     title: On using the same key pair for Ed25519 and an X25519 based KEM
     date: 2021-04
     target: https://eprint.iacr.org/2021/509
+
+entity:
+  SELF: "[RFC-XXXX]"
 
 --- abstract
 
@@ -925,7 +930,6 @@ The examples assume that the plaintext (see {{Section 5.3 of RFC8613}}) is 6 byt
 
       Payload: 0xaea0155667924dff8a24e4cb35b9 de9e ... f1
       (14 bytes + size of the encrypted countersignature)
-
 ~~~~~~~~~~~
 
 
@@ -1529,6 +1533,27 @@ For endpoints that support the pairwise mode, the following applies.
 
 Constrained IoT devices may alternatively represent Montgomery curves and (twisted) Edwards curves {{RFC7748}} in the short-Weierstrass form Wei25519, with which the algorithms ECDSA25519 and ECDH25519 can be used for signature operations and Diffie-Hellman secret calculation, respectively {{I-D.ietf-lwig-curve-representations}}.
 
+# Web Linking # {#web-linking}
+
+The use of Group OSCORE or OSCORE {{RFC8613}} MAY be indicated by a target "gosc" attribute in a web link {{RFC8288}} to a resource, e.g., using a link-format document {{RFC6690}} if the resource is accessible over CoAP.
+
+The "gosc" attribute is a hint indicating that the destination of that link is only accessible using Group OSCORE or OSCORE, and unprotected access to it is not supported. Note that this is simply a hint, it does not include any security context material or any other information required to run Group OSCORE or OSCORE.
+
+A value MUST NOT be given for the "gosc" attribute; any present value MUST be ignored by parsers. The "gosc" attribute MUST NOT appear more than once in a given link-value; occurrences after the first MUST be ignored by parsers.
+
+When a link-value includes the "gosc" attribute, the link-value MUST also include the "osc" attribute defined in {{Section 9 of RFC8613}}. If the endpoint parsing the link-value supports Group OSCORE and understands the "gosc" attribute, then the parser MUST ignore the "osc" attribute, which is overshadowed by the "gosc" attribute.
+
+The example in {{fig-web-link-example}} shows a use of the "gosc" attribute: the client does resource discovery on a server and gets back a list of resources, one of which includes the "gosc" attribute indicating that the resource is protected with Group OSCORE or OSCORE. The link-format notation (see {{Section 5 of RFC6690}}) is used.
+
+~~~~~~~~~~~~~~~~~
+REQ: GET /.well-known/core
+
+RES: 2.05 Content
+    </sensors/temp>;gosc;osc,
+    </sensors/light>;if="sensor"
+~~~~~~~~~~~~~~~~~
+{: #fig-web-link-example title="Example of using the \"gosc\" attribute in a web link." artwork-align="center"}
+
 # Security Considerations  # {#sec-security-considerations}
 
 The same threat model discussed for OSCORE in {{Section D.1 of RFC8613}} holds for Group OSCORE. In addition, when using the group mode, source authentication of messages is explicitly ensured by means of countersignatures, as discussed in {{ssec-group-mode-security}}.
@@ -1812,23 +1837,35 @@ Finally, the approach described in {{ssec-gid-collision}} to prevent collisions 
 
 # IANA Considerations # {#iana}
 
-Note to RFC Editor: Please replace "\[This Document\]" with the RFC number of this document and delete this paragraph.
+Note to RFC Editor: Please replace "{{&SELF}}" with the RFC number of this document and delete this paragraph.
 
 This document has the following actions for IANA.
 
 ## OSCORE Flag Bits Registry {#iana-cons-flag-bits}
 
-IANA is asked to add the following value entry to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
+IANA is asked to add the following entry to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
 
 ~~~~~~~~~~~
-+--------------+------------+-----------------------------+-----------+
-| Bit Position |    Name    |         Description         | Reference |
-+--------------+------------+-----------------------------+-----------+
-|       2      | Group Flag | For using a Group OSCORE    | [This     |
-|              |            | Security Context, set to 1  | Document] |
-|              |            | if the message is protected |           |
-|              |            | with the group mode         |           |
-+--------------+------------+-----------------------------+-----------+
++--------------+-------+-----------------------------+------------+
+| Bit Position | Name  | Description                 | Reference  |
++--------------+-------+-----------------------------+------------+
+|       2      | Group | For using a Group OSCORE    | [RFC-XXXX] |
+|              | Flag  | Security Context, set to 1  |            |
+|              |       | if the message is protected |            |
+|              |       | with the group mode         |            |
++--------------+-------+-----------------------------+------------+
+~~~~~~~~~~~
+
+## Target Attributes Registry ## {#iana-target-attributes}
+
+IANA is asked to add the following entry to the "Target Attributes" registry within the "CoRE Parameters" registry group.
+
+~~~~~~~~~~~
+Attribute Name: gosc
+Brief Description: Hint: resource only accessible
+                   using Group OSCORE or OSCORE
+Change Controller: IESG
+Reference: [RFC-XXXX]
 ~~~~~~~~~~~
 
 --- back
@@ -1926,6 +1963,12 @@ As mentioned in {{group-manager}}, the Group Manager and the join process can be
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
+
+## Version -16 to -17 ## {#sec-16-17}
+
+* Definition and registration of the target attribute "gosc".
+
+* Editorial fixes.
 
 ## Version -15 to -16 ## {#sec-15-16}
 
