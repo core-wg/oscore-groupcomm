@@ -1552,7 +1552,7 @@ RES: 2.05 Content
     </sensors/temp>;gosc;osc,
     </sensors/light>;if="sensor"
 ~~~~~~~~~~~~~~~~~
-{: #fig-web-link-example title="The Web Link." artwork-align="center"}
+{: #fig-web-link-example title="Example of using the \"gosc\" attribute in a web link." artwork-align="center"}
 
 # Security Considerations  # {#sec-security-considerations}
 
