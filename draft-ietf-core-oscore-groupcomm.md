@@ -1053,29 +1053,56 @@ Assuming an honest server, the message binding guarantees that a response is not
 
 Like in OSCORE {{RFC8613}}, the replay protection relies on the Partial IV of incoming messages. The operation of validating the Partial IV and performing replay protection MUST be atomic.
 
-The protection from replay of requests is performed as per {{Section 7.4 of RFC8613}}, separately for each client by leveraging the Replay Window in the corresponding Recipient Context. When supporting Observe {{RFC7641}}, the protection from replay of notifications is performed as per {{Section 7.4.1 of RFC8613}}.
+The protection from replay of requests is performed as per {{Section 7.4 of RFC8613}}, separately for each client by leveraging the Replay Window in the corresponding Recipient Context.
 
-### Replay Protection of Non-notification Responses# {#sec-replay-protection-non-notifications}
+### Replay Protection of Responses {#sec-replay-protection-non-notifications}
 
-This section refers specifically to non-notification responses to a group request. A client can receive multiple such responses from the same server in the group as a reply to the same group request, until the CoAP Token value associated with the group request is freed up {{I-D.ietf-core-groupcomm-bis}}.
+If a client sends a request to which multiple responses are expected (e.g., using Observe {{RFC7641}}),
+responses need to be replay protected individually.
+(For requests with just a single response,
+this is done trivially by not processing any further response after the first one.)
 
-When replying to a group request with a non-notification response (both successful and error), a server MUST include a Partial IV, except for the first non-notification response where the Partial IV MAY be omitted. A server supporting Observe {{RFC7641}} MUST NOT reply to a group request with 2.xx responses of which some are notifications and some are not.
+For responses to Observe requests {{RFC7641}}, the protection from replay of notifications is performed as per {{Section 7.4.1 of RFC8613}},
+with a separate Notification Number maintained for each server.
+That works as a simplification of the procedure outlined in the remainder of this section.
+<!-- ... but only as long as the notification doesn't span multiple sender KIDs? -->
 
-When processing responses from a same server to an Observe registration request, a client supporting Observe MUST accept either only notifications or only non-notification responses. The specific way to achieve this is implementation specific.
+<!-- Here we're quietly introducing non-traditional responses to OSCORE ... the same could really also be said about OSCORE itself (but we didn't know how non-traditional responses worked back then) -->
+Replay protection can for multiple responses can be skipped altogether
+when applications do not require it,
+e.g. because handling responses is an idempotent operation.
 
-In order to protect against replay, the client SHALL maintain for each ongoing Non-Notification Group Exchange one Response Number for each different server. The Response Number is a non-negative integer containing the largest Partial IV of the received non-notification responses from that server within the Non-Notification Group Exchange.
+To do replay protection,
+for each Recipient Context for with responses to a single request
+the client needs to store whether a response without a Partial IV has been processed.
 
-Then, separately for each server, the client uses the associated Response Number to perform ordering and replay protection of the non-notification responses to a group request received from that server, by comparing their Partial IVs with one another and against the Response Number.
+When a response comes in that has no Partial IV,
+it is accepted if no previous response with no Partial IV has been received from that Recipient Context,
+and discarded otherwise.
 
-For each server, the associated Response Number is initialized to the Partial IV of the first successfully verified non-notification response to a group request. A client MUST only accept at most one such response without Partial IV from each server in the group, and treat it as the oldest non-notification response to the group request received from that server.
+Else, when a response comes in with a Partial IV,
+and the Recipient Context's Replay Window is uninitialized,
+it is initialized at the response's Partial IV
+(i.e., that and all smaller Partial IVs are marked as seen),
+and the message is accepted.
 
-A client receiving a non-notification response to a group request containing a Partial IV SHALL compare the Partial IV with the Response Number associated with the replying server within the ongoing Non-Notification Group Exchange. The client MUST stop processing non-observation responses to a group request from a server, if those have a Partial IV that has been previously received before from that server within the Non-Notification Group Exchange. Applications MAY decide that a client only processes non-notification responses to a group request if those have a greater Partial IV than the Response Number associated with the replying server within the ongoing Non-Notification Group Exchange.
+Else, when a respoonse comes in with a Partial IV
+that is marked as seen in the replay window,
+or the sequence number is before the replay window,
+the response is discarded;
+otherwise, it is accepted.
 
-If the verification of the non-notification response succeeds, and the received Partial IV was greater than the Response Number associated with the replying server, then the client SHALL overwrite that Response Number with the received Partial IV.
+If the client needs to establish an order on the responses received from one server,
+the response that has no Partial IV is regarded as the oldest;
+all other responses are sorted by the time the client learned of the server's KID and credentials from the Group Manager first,
+and then then by their sequence number.
 
-For each server, a client MUST consider the non-notification response to a group request with the highest Partial IV as the freshest, regardless of the order of arrival. Given a group request, implementations need to make sure that the corresponding non-notification response from a server without Partial IV is considered the oldest from that server.
-
-What is defined in this section does not apply to non-notification responses to non-group requests, since there is at most a single such response and only from one, individually targeted server in the group.
+A server that finds a request's Partial IV to not be a replay
+according to its replay window
+<!-- by the rules that really means "Any server that successfully unprotected a request" -->
+may use the request's Partial IV when protecting the first response
+if that response is protected with the same context as the request,
+and must send a Partial IV for all subsequent responses.
 
 # Message Reception # {#sec-message-reception}
 
