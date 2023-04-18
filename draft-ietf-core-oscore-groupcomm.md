@@ -240,9 +240,9 @@ The Security Context of Group OSCORE extends the Security Context defined in {{S
 
     * If the group uses the group mode, the Common context is extended with the following new parameters.
 
-         - Signature Encryption Algorithm and Signature Algorithm. These relate to the encryption/decryption operations and to the computation/verification of countersignatures, respectively, when a message is protected with the group mode (see {{mess-processing}}).
+         - Group Encryption Algorithm and Signature Algorithm. These relate to the encryption/decryption operations and to the computation/verification of countersignatures, respectively, when a message is protected with the group mode (see {{mess-processing}}).
 
-         - Group Encryption Key, used to perform encryption/decryption of countersignatures, when a message is protected with the group mode (see {{mess-processing}}).
+         - Signature Encryption Secret, used to perform encryption/decryption of countersignatures, when a message is protected with the group mode (see {{mess-processing}}).
 
     *  If the group uses the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm used for agreement on a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
 
@@ -268,9 +268,9 @@ The Security Context of Group OSCORE extends the Security Context defined in {{S
 | Context Component | New Information Elements                        |
 +-------------------+-------------------------------------------------+
 | Common Context    |   Group Manager Authentication Credential       |
-|                   | * Signature Encryption Algorithm                |
+|                   | * Group Encryption Algorithm                    |
 |                   | * Signature Algorithm                           |
-|                   | * Group Encryption Key                          |
+|                   | * Signature Encryption Secret                   |
 |                   | ^ Pairwise Key Agreement Algorithm              |
 +-------------------+-------------------------------------------------+
 | Sender Context    |   Endpoint's own private key                    |
@@ -285,49 +285,48 @@ The Security Context of Group OSCORE extends the Security Context defined in {{S
 
 ## Common Context ## {#ssec-common-context}
 
-The Common Context may be acquired from the Group Manager (see {{group-manager}}). The following sections define how the Common Context is extended, compared to {{RFC8613}}.
+The following sections define how the Common Context is used and extended compared to {{RFC8613}}. All algorithms (AEAD, Group Encryption, Signature, Pairwise Key Agreement) are immutable once the Common Context is established.
+The Common Context may be acquired from the Group Manager (see {{group-manager}}).
 
 ### AEAD Algorithm ## {#ssec-common-context-aead-alg}
 
-AEAD Algorithm identifies the COSE AEAD algorithm to use for encryption, when messages are protected using the pairwise mode (see {{sec-pairwise-protection}}). This algorithm MUST provide integrity protection. This parameter is immutable once the Common Context is established, and it is not relevant if the group uses only the group mode.
+The AEAD Algorithm (see {{Section 3.1 of RFC8613}}) SHALL identify the COSE AEAD algorithm to use for encryption when messages are protected using the pairwise mode (see {{sec-pairwise-protection}}). This algorithm MUST provide integrity protection. This parameter is not relevant if the group uses only the group mode, see {{ssec-common-context-cs-enc-alg}}.
 
 ### ID Context ## {#ssec-common-context-id-context}
 
-The ID Context parameter (see {{Sections 3.1 and 3.3 of RFC8613}}) in the Common Context SHALL contain the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle potential collisions between Gids (see {{ssec-gid-collision}}).
+The ID Context parameter (see {{Sections 3.1 and 3.3 of RFC8613}}) SHALL contain the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle potential collisions between Gids (see {{ssec-gid-collision}}).
 
 ### Group Manager Authentication Credential ## {#ssec-common-context-gm-pub-key}
 
-Group Manager Authentication Credential specifies the authentication credential of the Group Manager, including the Group Manager's public key. This is included in the external additional authenticated data when processing messages (see {{sec-cose-object-ext-aad}}).
+The new Group Manager Authentication Credential specifies the authentication credential of the Group Manager, including the Group Manager's public key.
 
 Each group member MUST obtain the authentication credential of the Group Manager with a valid proof-of-possession of the corresponding private key, for instance from the Group Manager itself when joining the group. Further details on the provisioning of the Group Manager's authentication credential to the group members are out of the scope of this document.
 
-### Signature Encryption Algorithm ## {#ssec-common-context-cs-enc-alg}
+### Group Encryption Algorithm ## {#ssec-common-context-cs-enc-alg}
 
-Signature Encryption Algorithm identifies the algorithm to use for encryption, when messages are protected using the group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection. This parameter is immutable once the Common Context is established.
-
-This algorithm is not used to encrypt the countersignature in messages protected using the group mode, for which the method defined in {{sec-cose-object-unprotected-field}} is used.
+The new Group Encryption Algorithm identifies the algorithm to use for encryption, when messages are protected using the group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection.
 
 ### Signature Algorithm ## {#ssec-common-context-cs-alg}
 
-Signature Algorithm identifies the digital signature algorithm used to compute a countersignature on the COSE object (see {{Sections 3.2 and 3.3 of RFC9338}}), when messages are protected using the group mode (see {{mess-processing}}). This parameter is immutable once the Common Context is established.
+The Signature Algorithm identifies the digital signature algorithm used to compute a countersignature on the COSE object (see {{Sections 3.2 and 3.3 of RFC9338}}), when messages are protected using the group mode (see {{mess-processing}}).
 
-### Group Encryption Key ## {#ssec-common-context-group-enc-key}
+### Signature Encryption Secret ## {#ssec-common-context-group-enc-key}
 
-Group Encryption Key specifies the encryption key for deriving a keystream to encrypt/decrypt a countersignature, when a message is protected with the group mode (see {{mess-processing}}).
+The new Signature Encryption Secret specifies the encryption key for deriving a keystream to encrypt/decrypt a countersignature, when a message is protected with the group mode (see {{mess-processing}}).
 
-The Group Encryption Key is derived as defined for Sender/Recipient Keys in {{Section 3.2.1 of RFC8613}}, with the following differences.
+The Signature Encryption Secret is derived as defined for Sender/Recipient Keys in {{Section 3.2.1 of RFC8613}}, with the following differences.
 
 * The 'id' element of the 'info' array is the empty byte string.
 
-* The 'alg_aead' element of the 'info' array takes the value of Signature Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}).
+* The 'alg_aead' element of the 'info' array takes the value of Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}).
 
-* The 'type' element of the 'info' array is "Group Encryption Key". The label is an ASCII string and does not include a trailing NUL byte.
+* The 'type' element of the 'info' array is "Signature Encryption Secret". The label is an ASCII string and does not include a trailing NUL byte.
 
-* L and the 'L' element of the 'info' array are the size of the key for the Signature Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}), in bytes.
+* L and the 'L' element of the 'info' array are the size of the key for the Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}), in bytes.
 
 ### Pairwise Key Agreement Algorithm ## {#ssec-common-context-dh-alg}
 
-Pairwise Key Agreement Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}). This parameter is immutable once the Common Context is established.
+The new Pairwise Key Agreement Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
 
 ## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
@@ -335,7 +334,7 @@ OSCORE specifies the derivation of Sender Context and Recipient Context, specifi
 
 The derivation of Sender/Recipient Keys and Common IV defined in OSCORE applies also to Group OSCORE, with the following extensions compared to {{Section 3.2.1 of RFC8613}}.
 
-* If the group uses (also) the group mode, the 'alg_aead' element of the 'info' array takes the value of Signature Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}).
+* If the group uses (also) the group mode, the 'alg_aead' element of the 'info' array takes the value of Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}).
 
 * If the group uses only the pairwise mode, the 'alg_aead' element of the 'info' array takes the value of AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}).
 
@@ -597,9 +596,9 @@ In order to verify countersignatures of messages in a group, a signature checker
 
   If the signature checker is provided with a chain or a bag of X.509 / C509 certificates or of CWTs for a given entity, then the authentication credential associated with that entity that the signature checker stores and uses is just the end-entity certificate or end-entity untagged CWT.
 
-* The current Group Encryption Key (see {{ssec-common-context-group-enc-key}}).
+* The current Signature Encryption Secret (see {{ssec-common-context-group-enc-key}}).
 
-* The identifiers of the algorithms used in the group (see {{sec-context}}), i.e.: i) Signature Encryption Algorithm and Signature Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement Algorithm, if the group uses also the pairwise mode.
+* The identifiers of the algorithms used in the group (see {{sec-context}}), i.e.: i) Group Encryption Algorithm and Signature Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement Algorithm, if the group uses also the pairwise mode.
 
 A signature checker MUST be authorized before it can retrieve such information. To this end, the same method mentioned above based on the ACE framework {{RFC9200}} can be used.
 
@@ -796,7 +795,7 @@ The input parameters of HKDF are as follows.
 
 * salt takes as value the Partial IV (PIV) used to protect M. Note that, if M is a response, salt takes as value either: i) the fresh Partial IV generated by the server and included in the response; or ii) the same Partial IV of the request generated by the client and not included in the response.
 
-* IKM is the Group Encryption Key from the Common Context (see {{ssec-common-context-group-enc-key}}).
+* IKM is the Signature Encryption Secret from the Common Context (see {{ssec-common-context-group-enc-key}}).
 
 * info is the serialization of a CBOR array consisting of (the notation follows {{RFC8610}}):
 
@@ -841,7 +840,7 @@ The external_aad of the Additional Authenticated Data (AAD) is different compare
 
 The same external_aad structure is used in group mode and pairwise mode for authenticated encryption/decryption (see {{Section 5.3 of RFC9052}}), as well as in group mode for computing and verifying the countersignature (see {{Sections 3.2 and 3.3 of RFC9338}}).
 
-In particular, the external_aad includes also the Signature Algorithm, the Signature Encryption Algorithm, the Pairwise Key Agreement Algorithm, the value of the 'kid context' in the COSE object of the request, the OSCORE option of the protected message, the sender's authentication credential, and the Group Manager's authentication credential.
+In particular, the external_aad includes also the Signature Algorithm, the Group Encryption Algorithm, the Pairwise Key Agreement Algorithm, the value of the 'kid context' in the COSE object of the request, the OSCORE option of the protected message, the sender's authentication credential, and the Group Manager's authentication credential.
 
 The external_aad SHALL be a CBOR array wrapped in a bstr object as defined below, following the notation of {{RFC8610}}:
 
@@ -873,7 +872,7 @@ Compared with {{Section 5.4 of RFC8613}}, the aad_array has the following differ
 
    Furthermore, the 'algorithms' array additionally includes:
 
-   - 'alg_signature_enc', which specifies Signature Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value "null" (0xf6) if the group does not use the group mode, regardless whether the endpoint supports the group mode or not. Otherwise, this parameter MUST encode the value of Signature Encryption Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this AEAD algorithm.
+   - 'alg_signature_enc', which specifies Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value "null" (0xf6) if the group does not use the group mode, regardless whether the endpoint supports the group mode or not. Otherwise, this parameter MUST encode the value of Group Encryption Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this AEAD algorithm.
 
    - 'alg_signature', which specifies Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value "null" (0xf6) if the group does not use the group mode, regardless whether the endpoint supports the group mode or not. Otherwise, this parameter MUST encode the value of Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this signature algorithm.
 
@@ -1109,7 +1108,7 @@ The Group Manager indicates that the group uses (also) the group mode, as part o
 
 During all the steps of the message processing, an endpoint MUST use the same Security Context for the considered group. That is, an endpoint MUST NOT install a new Security Context for that group (see {{new-sec-context}}) until the message processing is completed.
 
-The group mode SHOULD be used to protect group requests intended for multiple recipients or for the whole group. For an example where this is not fulfilled, see {{I-D.amsuess-core-cachable-oscore}}. This applies to both requests directly addressed to multiple recipients, e.g., sent by the client over multicast, as well as requests sent by the client over unicast to a proxy, that forwards them to the intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}. For encryption and decryption operations, the Signature Encryption Algorithm from the Common Context is used.
+The group mode SHOULD be used to protect group requests intended for multiple recipients or for the whole group. For an example where this is not fulfilled, see {{I-D.amsuess-core-cachable-oscore}}. This applies to both requests directly addressed to multiple recipients, e.g., sent by the client over multicast, as well as requests sent by the client over unicast to a proxy, that forwards them to the intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}. For encryption and decryption operations, the Group Encryption Algorithm from the Common Context is used.
 
 As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-confirmable, and thus are not retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a predefined, sufficient amount of time, in order to correctly perform potential retransmissions at the application layer. According to {{Section 5.2.3 of RFC7252}}, responses to Non-confirmable group requests SHOULD also be Non-confirmable, but endpoints MUST be prepared to receive Confirmable responses in reply to a Non-confirmable group request. Confirmable group requests are acknowledged when sent over non-multicast transports, as specified in {{RFC7252}}.
 
@@ -1129,7 +1128,7 @@ A client transmits a secure group request as described in {{Section 8.1 of RFC86
 
 * In step 2, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
 
-* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this document. The encoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, the Group Flag MUST be set to 1. The Signature Encryption Algorithm from the Common Context MUST be used.
+* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this document. The encoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, the Group Flag MUST be set to 1. The Group Encryption Algorithm from the Common Context MUST be used.
 
 * In step 5, the countersignature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this document. In particular the payload of the OSCORE message includes also the encrypted countersignature (see {{sec-cose-object-unprotected-field}}).
 
@@ -1187,7 +1186,7 @@ Upon receiving a secure group request with the Group Flag set to 1, following th
 
    - If the signature verification fails, the server SHALL stop processing the request, SHALL NOT update the Replay Window, and MAY respond with a 4.00 (Bad Request) response. The server MAY set an Outer Max-Age option with value zero. The diagnostic payload MAY contain a string, which, if present, MUST be "Decryption failed" as if the decryption had failed.
 
-   - When decrypting the COSE object using the Recipient Key, the Signature Encryption Algorithm from the Common Context MUST be used.
+   - When decrypting the COSE object using the Recipient Key, the Group Encryption Algorithm from the Common Context MUST be used.
 
 * Additionally, if the used Recipient Context was created upon receiving this group request and the message is not verified successfully, the server MAY delete that Recipient Context. Such a configuration, which is specified by the application, mitigates attacks that aim at overloading the server's storage.
 
@@ -1227,7 +1226,7 @@ Note that the server always protects a response with the Sender Context from its
 
    - The server is using a different Security Context for the response compared to what was used to verify the request (see {{sec-group-key-management}}).
 
-* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this document. The encoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, the Group Flag MUST be set to 1. The Signature Encryption Algorithm from the Common Context MUST be used.
+* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this document. The encoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, the Group Flag MUST be set to 1. The Group Encryption Algorithm from the Common Context MUST be used.
 
    In addition, the following applies.
 
@@ -1306,7 +1305,7 @@ Note that a client may receive a response protected with a Security Context diff
 
       Otherwise, the client hereafter considers the received 'kid' as the current Recipient ID for the server.
 
-* In step 5, when decrypting the COSE object using the Recipient Key, the Signature Encryption Algorithm from the Common Context MUST be used.
+* In step 5, when decrypting the COSE object using the Recipient Key, the Group Encryption Algorithm from the Common Context MUST be used.
 
    In addition, the client performs the following actions for each ongoing Non-Notification Group Exchange.
 
@@ -1513,7 +1512,7 @@ An endpoint may support only the group mode, or only the pairwise mode, or both.
 
 For endpoints that support the group mode, the following applies.
 
-* For endpoints that use authenticated encryption, the AEAD algorithm AES-CCM-16-64-128 defined in {{Section 4.2 of RFC9053}} is mandatory to implement as Signature Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}).
+* For endpoints that use authenticated encryption, the AEAD algorithm AES-CCM-16-64-128 defined in {{Section 4.2 of RFC9053}} is mandatory to implement as Group Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}).
 
 * For many constrained IoT devices it is problematic to support more than one signature algorithm. Existing devices can be expected to support either EdDSA or ECDSA. In order to enable as much interoperability as we can reasonably achieve, the following applies with respect to the Signature Algorithm (see {{ssec-common-context-cs-alg}}).
 
