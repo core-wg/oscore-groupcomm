@@ -188,7 +188,7 @@ Group OSCORE defines two modes of operation, that can be used independently or t
 
 Both modes provide source authentication of CoAP messages. The application decides what mode to use, potentially on a per-message basis. Such decisions can be based, for instance, on pre-configured policies or dynamic assessing of the target recipient and/or resource, among other things. One important case is when requests are protected with the group mode, and responses with the pairwise mode. Since such responses convey shorter integrity tags instead of bigger, full-fledged signatures, this significantly reduces the message overhead in case of many responses to one request.
 
-A special deployment of Group OSCORE is to use pairwise mode only. For example, consider the case of a constrained-node network {{RFC7228}} with a large number of CoAP endpoints and the objective to establish secure communication between any pair of endpoints with a small provisioning effort and message overhead. Since the total number of security associations that needs to be established grows with the square of the number of endpoints, it is desirable to restrict the amount of secret keying material provided to each endpoint. Moreover, a key establishment protocol would need to be executed for each security association. One solution to this is to deploy Group OSCORE, with the endpoints being part of a group, and use the pairwise mode. This solution assumes a trusted third party called Group Manager (see {{group-manager}}). However, it has the benefit of providing a single shared secret, while distributing only the public keys of group members or a subset of those. After that, a CoAP endpoint can locally derive the OSCORE Security Context for the other endpoint in the group, and protect CoAP communications with very low overhead {{I-D.ietf-lwig-security-protocol-comparison}}.
+A special deployment of Group OSCORE is to use pairwise mode only. For example, consider the case of a constrained-node network {{RFC7228}} with a large number of CoAP endpoints and the objective to establish secure communication between any pair of endpoints with a small provisioning effort and message overhead. Since the total number of security associations that needs to be established grows with the square of the number of endpoints, it is desirable to restrict the amount of secret keying material provided to each endpoint. Moreover, a key establishment protocol would need to be executed for each security association. One solution to this is to deploy Group OSCORE, with the endpoints being part of a group, and use the pairwise mode. This solution has the benefit of providing a single shared secret, while distributing only the public keys of group members or a subset of those. After that, a CoAP endpoint can locally derive the OSCORE Security Context for the other endpoint in the group, and protect CoAP communications with very low overhead {{I-D.ietf-lwig-security-protocol-comparison}}.
 
 ## Terminology ## {#terminology}
 
@@ -204,13 +204,13 @@ This document refers also to the following terminology.
 
 * Keying material: data that is necessary to establish and maintain secure communication among endpoints. This includes, for instance, keys and IVs {{RFC4949}}.
 
-* Authentication credential: set of information associated with an entity, including that entity's public key and parameters associated with the public key. Examples of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets {{RFC8392}}, X.509 certificates {{RFC7925}} and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}. Further details about authentication credentials are provided in {{sec-pub-key-format}}.
+* Authentication credential: information associated with an entity, including that entity's public key and parameters associated with the public key. Examples of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets {{RFC8392}}, X.509 certificates {{RFC7925}} and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}. Further details about authentication credentials are provided in {{sec-pub-key-format}}.
 
 * Group: a set of endpoints that share group keying material and security parameters (Common Context, see {{sec-context}}). That is, unless otherwise specified, the term group used in this document refers to a "security group" (see {{Section 2.1 of I-D.ietf-core-groupcomm-bis}}), not to be confused with "CoAP group" or "application group".
 
-* Group Manager: entity responsible for a group. Each endpoint in a group communicates securely with the respective Group Manager, which is neither required to be an actual group member nor to take part in the group communication. The full list of responsibilities of the Group Manager is provided in {{sec-group-manager}}.
+* Group Manager: an entity responsible for a group, neither required to be an actual group member nor to take part in the group communication. The responsibilities of the Group Manager are listed in {{sec-group-manager}}.
 
-* Silent server: member of a group that never sends protected responses in reply to requests. For CoAP group communications, requests are normally sent without necessarily expecting a response. A silent server may send unprotected responses, as error responses reporting an OSCORE error. Note that an endpoint can implement both a silent server and a client, i.e., the two roles are independent. An endpoint acting only as a silent server performs only Group OSCORE processing on incoming requests. Silent servers maintain less keying material and in particular do not have a Sender Context for the group. Since silent servers do not have a Sender ID, they cannot support the pairwise mode.
+* Silent server: a member of a group that never sends protected responses in reply to requests. For CoAP group communications, requests are normally sent without necessarily expecting a response. A silent server may send unprotected responses, as error responses reporting an OSCORE error. Note that an endpoint can implement both a silent server and a client, i.e., the two roles are independent. An endpoint acting only as a silent server performs only Group OSCORE processing on incoming requests. Silent servers maintain less keying material and in particular do not have a Sender Context for the group. Since silent servers do not have a Sender ID, they cannot support the pairwise mode.
 
 * Group Identifier (Gid): identifier assigned to the group, unique within the set of groups of a given Group Manager.
 
@@ -230,7 +230,7 @@ This document refers also to the following terminology.
 
 This document refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol, see {{terminology}}. All members of a group maintain a Security Context as defined in OSCORE and extended as defined in this section.
 
-How the Security Context is established by the group members is out of scope for this document, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to tell which Security Context was latest established. The default setting for how to manage information about the group is described in terms of a Group Manager (see {{group-manager}}).
+How the Security Context is established by the group members is out of scope for this document, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to tell which Security Context was latest established. How to manage information about the group is described in terms of a Group Manager (see {{group-manager}}).
 
 Each endpoint of a group is aware of whether the group uses the group mode, or the pairwise mode, or both. By default this is indicated by the Group Manager. An endpoint can use any mode it supports if also used in the group.
 
@@ -334,7 +334,7 @@ OSCORE specifies the derivation of Sender Context and Recipient Context, specifi
 
 The derivation of Sender/Recipient Keys and Common IV defined in OSCORE applies also to Group OSCORE, with the following extensions compared to {{Section 3.2.1 of RFC8613}}.
 
-* If the group uses (also) the group mode, the 'alg_aead' element of the 'info' array takes the value of Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}).
+* If the group uses (also) the group mode, the 'alg_aead' element of the 'info' array takes the value of Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-enc-alg}}).
 
 * If the group uses only the pairwise mode, the 'alg_aead' element of the 'info' array takes the value of AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}).
 
