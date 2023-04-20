@@ -232,36 +232,33 @@ This document refers to a group as a set of endpoints sharing keying material an
 
 How the Security Context is established by the group members is out of scope for this document, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to tell which Security Context was latest established. How to manage information about the group is described in terms of a Group Manager (see {{group-manager}}).
 
-Each endpoint of a group is aware of whether the group uses the group mode, or the pairwise mode, or both. By default this is indicated by the Group Manager. An endpoint can use any mode it supports if also used in the group.
-
+An endpoint of the group may use the group mode (see {{mess-processing}}), the pairwise mode (see {{sec-pairwise-protection}}), or both, depending on the parameters of the Security Context.
 The Security Context of Group OSCORE extends the Security Context defined in {{Section 3 of RFC8613}} as follows (see {{fig-additional-context-information}}):
 
 * One Common Context, shared by all the endpoints in the group.
 
-    * If the group uses the group mode, the Common context is extended with the following new parameters.
+    * For the group mode, the Common Context is extended with the following new parameters.
 
-         - Group Encryption Algorithm and Signature Algorithm. These relate to the encryption/decryption operations and to the computation/verification of countersignatures, respectively, when a message is protected with the group mode (see {{mess-processing}}).
+         - Group Encryption Algorithm and Signature Algorithm. These relate to the encryption/decryption operations and to the computation/verification of countersignatures, respectively.
 
-         - Signature Encryption Key, used to perform encryption/decryption of countersignatures, when a message is protected with the group mode (see {{mess-processing}}).
+         - Signature Encryption Key, used to perform encryption/decryption of countersignatures.
 
-    *  If the group uses the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm used for agreement on a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
+    *  For the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm used for agreement on a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}).
 
-    * If a Group Manager is used for maintaining the group, the Common Context is extended with the authentication credential of the Group Manager, including the Group Manager's public key. When processing messages, the authentication credential of the Group Manager is included in the external additional authenticated data (see {{sec-cose-object-ext-aad}}).
+    * If a Group Manager is used for maintaining the group, the Common Context is extended with the authentication credential of the Group Manager, including the Group Manager's public key.
 
 
 * One Sender Context, extended with the endpoint's private key and authentication credential including the endpoint's public key.
 
-   The private key is used to sign messages protected with the group mode, or for deriving pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). The authentication credential is used for deriving pairwise keys in pairwise mode, and is included in the external additional authenticated data when processing outgoing messages (see {{sec-pairwise-protection}}).
+   The private key is used to sign messages protected with the group mode, or for deriving pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). The authentication credential is used for deriving pairwise keys in pairwise mode.
 
-    * If the endpoint supports the pairwise mode, the Sender Context is also extended with the Pairwise Sender Keys associated with the other endpoints (see {{sec-derivation-pairwise}}).
+    * For the pairwise mode, the Sender Context is also extended with the Pairwise Sender Keys associated with the other endpoints (see {{sec-derivation-pairwise}}).
 
     * If the endpoint is configured exclusively as silent server then the Sender Context is omitted.
 
-* One Recipient Context for each other endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated with endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the authentication credential of the other endpoint, including that endpoint's public key.
+* One Recipient Context for each other endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated with endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the authentication credential of the other endpoint, used to verify the signature of messages protected with the group mode from the other endpoint, or for deriving the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}).
 
-   The public key is used to verify the signature of messages protected with the group mode from the other endpoint and for deriving the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). The authentication credential is used for deriving pairwise keys in pairwise mode, and is included in the external additional authenticated data when processing incoming messages from the other endpoint (see {{sec-pairwise-protection}}).
-
-    * If the endpoint supports the pairwise mode, then the Recipient Context is also extended with the Pairwise Recipient Key associated with the other endpoint (see {{sec-derivation-pairwise}}).
+    * For the endpoint supports the pairwise mode, then the Recipient Context is also extended with the Pairwise Recipient Key associated with the other endpoint (see {{sec-derivation-pairwise}}).
 
 ~~~~~~~~~~~
 +-------------------+-------------------------------------------------+
