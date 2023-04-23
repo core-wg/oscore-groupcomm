@@ -228,7 +228,7 @@ This document refers also to the following terminology.
 
 # Security Context # {#sec-context}
 
-This document refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol, see {{terminology}}. All members of a group maintain a Security Context as defined in OSCORE and extended as defined in this section.
+This document refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol, see {{terminology}}. All members of a group maintain a Security Context as defined in this section.
 
 How the Security Context is established by the group members is out of scope for this document, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to tell which Security Context was latest established. How to manage information about the group is described in terms of a Group Manager (see {{group-manager}}).
 
@@ -237,28 +237,34 @@ The Security Context of Group OSCORE extends the Security Context defined in {{S
 
 * One Common Context, shared by all the endpoints in the group.
 
-    * For the group mode, the Common Context is extended with the following new parameters.
+    * For the group mode, the Common Context is extended with the following new parameters:
 
-         - Group Encryption Algorithm and Signature Algorithm. These relate to the encryption/decryption operations and to the computation/verification of countersignatures, respectively.
+         - Group Encryption Algorithm, used in encryption of group messages, see {{ssec-common-context-cs-enc-alg}}.
 
-         - Signature Encryption Key, used to perform encryption/decryption of countersignatures.
+         - Signature Algorithm, used in countersignatures, see {{ssec-common-context-cs-alg}}.
 
-    *  For the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm used for agreement on a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}).
+         - Signature Encryption Key, used in encryption of countersignatures, see {{ssec-common-context-group-enc-key}}.
 
-    * If a Group Manager is used for maintaining the group, the Common Context is extended with the authentication credential of the Group Manager, including the Group Manager's public key.
+    *  For the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm (see {{ssec-common-context-dh-alg}}) used for agreement of a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}).
+
+    * If a Group Manager is used for maintaining the group, the Common Context is extended with the authentication credential of the Group Manager, including the Group Manager's public key, see {{ssec-common-context-gm-pub-key}}.
 
 
-* One Sender Context, extended with the endpoint's private key and authentication credential including the endpoint's public key.
+* One Sender Context, extended with the following new parameters:
 
-   The private key is used to sign messages protected with the group mode, or for deriving pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}). The authentication credential is used for deriving pairwise keys in pairwise mode.
+   * The endpoint's own private key used to sign messages in the group mode (see {{mess-processing}}), or for deriving pairwise keys in the pairwise mode (see {{sec-derivation-pairwise}}).
 
-    * For the pairwise mode, the Sender Context is also extended with the Pairwise Sender Keys associated with the other endpoints (see {{sec-derivation-pairwise}}).
+   * The endpoint's own authentication credential containing its public key, see {{sec-pub-key-format}}.
 
-    * If the endpoint is configured exclusively as silent server then the Sender Context is omitted.
+    * For the pairwise mode, the Sender Context is extended with the Pairwise Sender Keys associated with the other endpoints (see {{sec-derivation-pairwise}}).
 
-* One Recipient Context for each other endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated with endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the authentication credential of the other endpoint, used to verify the signature of messages protected with the group mode from the other endpoint, or for deriving the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}).
+    * If the endpoint is configured exclusively as silent server (see {{terminology}}) then the Sender Context is omitted.
 
-    * For the pairwise mode, the Recipient Context is also extended with the Pairwise Recipient Key associated with the other endpoint (see {{sec-derivation-pairwise}}).
+* One Recipient Context for each other endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated with endpoints from which messages are not (expected to be) received.
+
+   * Each Recipient Context is extended with the authentication credential of the other endpoint, used to verify the signature of messages in the group mode, or for deriving the pairwise keys in the pairwise mode (see {{sec-derivation-pairwise}}).
+
+    * For the pairwise mode, each Recipient Context is extended with the Pairwise Recipient Key associated with the other endpoint (see {{sec-derivation-pairwise}}).
 
 ~~~~~~~~~~~
 +-------------------+-------------------------------------------------+
@@ -282,7 +288,7 @@ The Security Context of Group OSCORE extends the Security Context defined in {{S
 
 ## Common Context ## {#ssec-common-context}
 
-The following sections define how the Common Context is used and extended compared to {{RFC8613}}. All algorithms (AEAD, Group Encryption, Signature, Pairwise Key Agreement) are immutable once the Common Context is established.
+The following sections specify how the Common Context is used and extended compared to {{RFC8613}}. All algorithms (AEAD, Group Encryption, Signature, Pairwise Key Agreement) are immutable once the Common Context is established.
 The Common Context may be acquired from the Group Manager (see {{group-manager}}).
 
 ### AEAD Algorithm ## {#ssec-common-context-aead-alg}
@@ -295,7 +301,7 @@ The ID Context parameter (see {{Sections 3.1 and 3.3 of RFC8613}}) SHALL contain
 
 ### Group Manager Authentication Credential ## {#ssec-common-context-gm-pub-key}
 
-The new Group Manager Authentication Credential specifies the authentication credential of the Group Manager, including the Group Manager's public key.
+The new Group Manager Authentication Credential specifies the authentication credential of the Group Manager (if present), including the Group Manager's public key.
 
 Each group member MUST obtain the authentication credential of the Group Manager with a valid proof-of-possession of the corresponding private key, for instance from the Group Manager itself when joining the group. Further details on the provisioning of the Group Manager's authentication credential to the group members are out of the scope of this document.
 
@@ -333,7 +339,11 @@ The derivation of Sender/Recipient Keys and Common IV defined in OSCORE applies 
 
 * If the group uses (also) the group mode, the 'alg_aead' element of the 'info' array takes the value of Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-enc-alg}}).
 
+<!-- Can we omit "(also)"?  -->
+
 * If the group uses only the pairwise mode, the 'alg_aead' element of the 'info' array takes the value of AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}).
+
+<!-- Can we omit "only"?  -->
 
 The Sender ID SHALL be unique for each endpoint in a group with a certain tuple (Master Secret, Master Salt, Group Identifier), see {{Section 3.3 of RFC8613}}.
 
