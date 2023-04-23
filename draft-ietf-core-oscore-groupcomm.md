@@ -210,7 +210,7 @@ This document refers also to the following terminology.
 
 * Group Manager: an entity responsible for a group, neither required to be an actual group member nor to take part in the group communication. The responsibilities of the Group Manager are listed in {{sec-group-manager}}.
 
-* Silent server: a member of a group that never sends protected responses in reply to requests. For CoAP group communications, requests are normally sent without necessarily expecting a response. A silent server may send unprotected responses, as error responses reporting an OSCORE error. Note that an endpoint can implement both a silent server and a client, i.e., the two roles are independent. An endpoint acting only as a silent server performs only Group OSCORE processing on incoming requests. Silent servers maintain less keying material and in particular do not have a Sender Context for the group. Since silent servers do not have a Sender ID, they cannot support the pairwise mode.
+* Silent server: a member of a group that performs only group mode processing on incoming requests and never sends OSCORE protected responses. For CoAP group communications, requests are normally sent without necessarily expecting a response. A silent server may send unprotected responses, as error responses reporting an OSCORE error. An endpoint can implement both a silent server and a client, the two roles are independent.
 
 * Group Identifier (Gid): identifier assigned to the group, unique within the set of groups of a given Group Manager.
 
@@ -258,7 +258,7 @@ The Security Context of Group OSCORE extends the Security Context defined in {{S
 
 * One Recipient Context for each other endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated with endpoints from which messages are not (expected to be) received. The Recipient Context is extended with the authentication credential of the other endpoint, used to verify the signature of messages protected with the group mode from the other endpoint, or for deriving the pairwise keys in pairwise mode (see {{sec-derivation-pairwise}}).
 
-    * For the endpoint supports the pairwise mode, then the Recipient Context is also extended with the Pairwise Recipient Key associated with the other endpoint (see {{sec-derivation-pairwise}}).
+    * For the pairwise mode, the Recipient Context is also extended with the Pairwise Recipient Key associated with the other endpoint (see {{sec-derivation-pairwise}}).
 
 ~~~~~~~~~~~
 +-------------------+-------------------------------------------------+
