@@ -431,7 +431,7 @@ where:
 
    - L  and the 'L' element of the 'info' array are the size of the key for the AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}), in bytes.
 
-If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in {{Sections 4.1 and 4.2 of RFC7748}}, before using the X25519 and X448 functions defined in {{Section 5 of RFC7748}}. For further details, see {{montgomery}}. ECC asymmetric keys in Montgomery or Weirstrass form are used directly in the key agreement algorithm without coordinate mapping.
+If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in {{Sections 4.1 and 4.2 of RFC7748}}, before using the X25519 or X448 functions defined in {{Section 5 of RFC7748}}. For further details, see {{montgomery}}. ECC asymmetric keys in Montgomery or Weierstrass form are used directly in the key agreement algorithm without coordinate mapping.
 
 After establishing a partially or completely new Security Context (see {{ssec-sec-context-persistence}} and {{sec-group-key-management}}), the old pairwise keys MUST be deleted. Since new Sender/Recipient Keys are derived from the new group keying material (see {{ssec-sender-recipient-context}}), every group member MUST use the new Sender/Recipient Keys when deriving new pairwise keys.
 
@@ -460,7 +460,7 @@ On the other hand, when combining group and pairwise communication modes, this m
 
 ### Security Context for Pairwise Mode  ### {#pairwise-implementation}
 
-If the pairwise mode is supported, the Security Context additionally includes Pairwise Key Agreement Algorithm and the pairwise keys, as described at the beginning of {{sec-context}}.
+If the pairwise mode is supported, the Security Context additionally includes the Pairwise Key Agreement Algorithm and the pairwise keys, as described at the beginning of {{sec-context}}.
 
 The pairwise keys as well as the shared secrets used in their derivation (see {{key-derivation-pairwise}}) may be stored in memory or recomputed every time they are needed. The shared secret changes only when a public/private key pair used for its derivation changes, which results in the pairwise keys also changing. Additionally, the pairwise keys change if the Sender ID changes or if a new Security Context is established for the group (see {{sec-group-re-join}}). In order to optimize protocol performance, an endpoint may store the derived pairwise keys for easy retrieval.
 
