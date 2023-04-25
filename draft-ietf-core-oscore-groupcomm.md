@@ -599,7 +599,7 @@ In order to verify countersignatures of messages in a group, a signature checker
 
 * The identifiers of the algorithms used in the group (see {{sec-context}}), i.e.: i) Group Encryption Algorithm and Signature Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement Algorithm, if the group uses also the pairwise mode.
 
-<--! What use does the signature checker have of these pairwise parameters? -->
+<!-- What use does the signature checker have of these pairwise parameters? -->
 
 A signature checker MUST be authorized before it can retrieve such information. To this end, the ACE framework {{RFC9200}} may be used.
 
