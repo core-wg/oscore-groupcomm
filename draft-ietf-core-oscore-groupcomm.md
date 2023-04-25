@@ -355,7 +355,7 @@ In a group, the following MUST hold for the authentication credential of each en
 
 * All authentication credentials and the public key specified therein MUST be applicable to the public key algorithm used in the group and aligned with the possible associated parameters used in the group, e.g., the used elliptic curve (when applicable).
 
-      If the group uses only the pairwise mode, then the public key algorithm is the Pairwise Key Agreement Algorithm used in the group, else the Signature Algorithm used in the group. 
+      If the group uses only the pairwise mode, then the public key algorithm is the Pairwise Key Agreement Algorithm used in the group, else the Signature Algorithm used in the group.
 
    If the authentication credentials are X.509 certificates {{RFC7925}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
 
