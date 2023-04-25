@@ -337,13 +337,7 @@ OSCORE specifies the derivation of Sender Context and Recipient Context, specifi
 
 The derivation of Sender/Recipient Keys and Common IV defined in OSCORE applies also to Group OSCORE, with the following extensions compared to {{Section 3.2.1 of RFC8613}}.
 
-* If the group uses (also) the group mode, the 'alg_aead' element of the 'info' array takes the value of Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-enc-alg}}).
-
-<!-- Can we omit "(also)"?  -->
-
-* If the group uses only the pairwise mode, the 'alg_aead' element of the 'info' array takes the value of AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}).
-
-<!-- Can we omit "only"?  -->
+* If the group uses only the pairwise mode, the the 'alg_aead' element of the 'info' array takes the value of the AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}), else the value of the Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-enc-alg}}).
 
 The Sender ID SHALL be unique for each endpoint in a group with a certain tuple (Master Secret, Master Salt, Group Identifier), see {{Section 3.3 of RFC8613}}.
 
@@ -361,7 +355,7 @@ In a group, the following MUST hold for the authentication credential of each en
 
 * All authentication credentials and the public key specified therein MUST be applicable to the public key algorithm used in the group and aligned with the possible associated parameters used in the group, e.g., the used elliptic curve (when applicable).
 
-   If the group uses (also) the group mode, the public key algorithm is the Signature Algorithm used in the group. If the group uses only the pairwise mode, the public key algorithm is the Pairwise Key Agreement Algorithm used in the group.
+      If the group uses only the pairwise mode, then the public key algorithm is the Pairwise Key Agreement Algorithm used in the group, else the Signature Algorithm used in the group. 
 
    If the authentication credentials are X.509 certificates {{RFC7925}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
 
@@ -1769,7 +1763,7 @@ Additional considerations are discussed in {{sec-synch-challenge-response}}, wit
 
 The same considerations from {{Section 12.1 of RFC8613}} hold for Group OSCORE.
 
-Additionally, (D)TLS and Group OSCORE can be combined for protecting message exchanges occurring over unicast. However, it is not possible to combine (D)TLS and Group OSCORE for protecting message exchanges where messages are (also) sent over multicast.
+Additionally, (D)TLS and Group OSCORE can be combined for protecting message exchanges occurring over unicast. However, it is not possible to combine (D)TLS and Group OSCORE for protecting message exchanges where messages are sent over multicast.
 
 
 ## Master Secret {#ssec-master-secret}
