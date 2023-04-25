@@ -581,25 +581,27 @@ An endpoint acquires group data such as the Gid and OSCORE input parameters incl
 
 Furthermore, when joining the group or later on as a group member, an endpoint can retrieve from the Group Manager the authentication credential of the Group Manager as well as the authentication credential and other information associated with other members of the group, with which it can derive the corresponding Recipient Context. Together with the requested authentication credentials, the Group Manager MUST provide the Sender ID of the associated group members and the current Key Generation Number in the group. An application can configure a group member to asynchronously retrieve information about Recipient Contexts, e.g., by Observing {{RFC7641}} a resource at the Group Manager to get updates on the group membership.
 
-## Support for Additional Entities # {#sec-additional-entities}
+## Support for Signature Checkers # {#sec-additional-entities}
 
-The Group Manager MAY serve additional entities acting as signature checkers, e.g., intermediary gateways. These entities do not join a group as members, but can retrieve authentication credentials of group members and other selected group data from the Group Manager, in order to solely verify countersignatures of messages protected in group mode (see {{sec-processing-signature-checker}}).
+The Group Manager may serve signature checkers, e.g., intermediary gateways, which verify  countersignatures of messages protected in group mode (see {{sec-processing-signature-checker}}). These entities do not join a group as members, but can retrieve authentication credentials of group members and other selected group data from the Group Manager.
 
-In order to verify countersignatures of messages in a group, a signature checker needs to retrieve the following information about that group from the Group Manager.
+In order to verify countersignatures of messages in a group, a signature checker needs to retrieve the following information about the group:
 
 * The current ID Context (Gid) used in the group.
 
-* The authentication credentials of the group members and the authentication credential of the Group Manager.
+* The authentication credentials of the group members and optionally the authentication credential of the Group Manager.
 
-  If the signature checker is provided with a CWT for a given entity, then the authentication credential associated with that entity that the signature checker stores and uses is the untagged CWT.
+  If the signature checker is provided with a CWT for a given entity, then the authentication credential associated with that entity is the untagged CWT.
 
-  If the signature checker is provided with a chain or a bag of X.509 / C509 certificates or of CWTs for a given entity, then the authentication credential associated with that entity that the signature checker stores and uses is just the end-entity certificate or end-entity untagged CWT.
+  If the signature checker is provided with a chain or a bag of X.509 / C509 certificates or of CWTs for a given entity, then the authentication credential associated with that entity the end-entity certificate or end-entity untagged CWT.
 
 * The current Signature Encryption Key (see {{ssec-common-context-group-enc-key}}).
 
 * The identifiers of the algorithms used in the group (see {{sec-context}}), i.e.: i) Group Encryption Algorithm and Signature Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement Algorithm, if the group uses also the pairwise mode.
 
-A signature checker MUST be authorized before it can retrieve such information. To this end, the same method mentioned above based on the ACE framework {{RFC9200}} can be used.
+<--! What use does the signature checker have of these pairwise parameters? -->
+
+A signature checker MUST be authorized before it can retrieve such information. To this end, the ACE framework {{RFC9200}} may be used.
 
 ## Management of Group Keying Material # {#sec-group-key-management}
 
@@ -1802,7 +1804,7 @@ In order to renew its own Sender Context, the endpoint SHOULD inform the Group M
 
 Additionally, the same considerations from {{Section 12.6 of RFC8613}} hold for Group OSCORE, about building the AEAD nonce and the secrecy of the Security Context parameters.
 
-The group mode uses the "encrypt-then-sign" construction, i.e., the countersignature is computed over the COSE_Encrypt0 object (see {{sec-cose-object-unprotected-field}}). This is motivated by enabling additional entities acting as signature checkers (see {{sec-additional-entities}}), which do not join a group as members but are allowed to verify countersignatures of messages protected in group mode without being able to decrypt them (see {{sec-processing-signature-checker}}).
+The group mode uses the "encrypt-then-sign" construction, i.e., the countersignature is computed over the COSE_Encrypt0 object (see {{sec-cose-object-unprotected-field}}). This is motivated by enabling signature checkers (see {{sec-additional-entities}}), which do not join a group as members but are allowed to verify countersignatures of messages protected in group mode without being able to decrypt them (see {{sec-processing-signature-checker}}).
 
 If the encryption algorithm used in group mode provides integrity protection, countersignatures of COSE_Encrypt0 with short authentication tags do not provide the security properties associated with the same algorithm used in COSE_Sign (see {{Section 6 of RFC9338}}). To provide 128-bit security against collision attacks, the tag length MUST be at least 256-bits. A countersignature of a COSE_Encrypt0 with AES-CCM-16-64-128 provides at most 32 bits of integrity protection.
 
