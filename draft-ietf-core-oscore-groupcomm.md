@@ -247,7 +247,7 @@ The Security Context of Group OSCORE extends the Security Context defined in {{S
 
     *  For the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm (see {{ssec-common-context-dh-alg}}) used for agreement of a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}).
 
-    * If a Group Manager is used for maintaining the group, the Common Context is extended with the authentication credential of the Group Manager, including the Group Manager's public key, see {{ssec-common-context-gm-pub-key}}.
+    * The Common Context is extended with the authentication credential of the Group Manager, see {{ssec-common-context-gm-pub-key}}.
 
 
 * One Sender Context, extended with the following new parameters:
@@ -301,9 +301,7 @@ The ID Context parameter (see {{Sections 3.1 and 3.3 of RFC8613}}) SHALL contain
 
 ### Group Manager Authentication Credential ## {#ssec-common-context-gm-pub-key}
 
-The new Group Manager Authentication Credential specifies the authentication credential of the Group Manager (if present), including the Group Manager's public key.
-
-Each group member MUST obtain the authentication credential of the Group Manager with a valid proof-of-possession of the corresponding private key, for instance from the Group Manager itself when joining the group. Further details on the provisioning of the Group Manager's authentication credential to the group members are out of the scope of this document.
+The new Group Manager Authentication Credential specifies the authentication credential of the Group Manager, including the Group Manager's public key. The endpoint and MUST achieve proof-of-possession of the corresponding private key. Further details on the provisioning of the Group Manager's authentication credential to the group members are out of the scope of this document.
 
 ### Group Encryption Algorithm ## {#ssec-common-context-cs-enc-alg}
 
@@ -349,13 +347,10 @@ An endpoint admits a maximum amount of Recipient Contexts for a same Security Co
 
 ## Authentication Credentials ## {#sec-pub-key-format}
 
-In a group, the following MUST hold for the authentication credential of each endpoint as well as for the authentication credential of the Group Manager.
+The authentication credentials of the endpoints in a group MUST be encoded according to the format used in the group, as indicated by the Authentication Credential Format parameter in the Common Context. The authentication credential of the Group Manager SHOULD be encoded according to that same format. The used format MUST provide the public key as well as the comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).
 
-* All authentication credentials MUST be encoded according to the same format used in the group. The used format MUST provide the public key as well as the comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).
 
-* All authentication credentials and the public key specified therein MUST be applicable to the public key algorithm used in the group and aligned with the possible associated parameters used in the group, e.g., the used elliptic curve (when applicable).
-
-      If the group uses only the pairwise mode, then the public key algorithm is the Pairwise Key Agreement Algorithm used in the group, else the Signature Algorithm used in the group.
+   If the group uses only the pairwise mode, then the public key algorithm is the Pairwise Key Agreement Algorithm used in the group, else the Signature Algorithm used in the group.
 
    If the authentication credentials are X.509 certificates {{RFC7925}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
 
