@@ -301,7 +301,7 @@ The ID Context parameter (see {{Sections 3.1 and 3.3 of RFC8613}}) SHALL contain
 
 ### Group Manager Authentication Credential ## {#ssec-common-context-gm-pub-key}
 
-The new Group Manager Authentication Credential specifies the authentication credential of the Group Manager, including the Group Manager's public key. The endpoint and MUST achieve proof-of-possession of the corresponding private key. Further details on the provisioning of the Group Manager's authentication credential to the group members are out of the scope of this document.
+The new Group Manager Authentication Credential specifies the authentication credential of the Group Manager, including the Group Manager's public key. The endpoint MUST achieve proof-of-possession of the corresponding private key. Further details on the provisioning of the Group Manager's authentication credential to the group members are out of the scope of this document.
 
 ### Group Encryption Algorithm ## {#ssec-common-context-cs-enc-alg}
 
@@ -335,7 +335,7 @@ OSCORE specifies the derivation of Sender Context and Recipient Context, specifi
 
 The derivation of Sender/Recipient Keys and Common IV defined in OSCORE applies also to Group OSCORE, with the following extensions compared to {{Section 3.2.1 of RFC8613}}.
 
-* If the group uses only the pairwise mode, the the 'alg_aead' element of the 'info' array takes the value of the AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}), else the value of the Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-enc-alg}}).
+* If the group uses only the pairwise mode, then the 'alg_aead' element of the 'info' array takes the value of the AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}), else the value of the Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-enc-alg}}).
 
 The Sender ID SHALL be unique for each endpoint in a group with a certain tuple (Master Secret, Master Salt, Group Identifier), see {{Section 3.3 of RFC8613}}.
 
@@ -584,19 +584,17 @@ In order to verify countersignatures of messages in a group, a signature checker
 
 * The current ID Context (Gid) used in the group.
 
-* The authentication credentials of the group members and optionally the authentication credential of the Group Manager.
+* The authentication credentials of the group members and the Group Manager.
 
   If the signature checker is provided with a CWT for a given entity, then the authentication credential associated with that entity is the untagged CWT.
 
-  If the signature checker is provided with a chain or a bag of X.509 / C509 certificates or of CWTs for a given entity, then the authentication credential associated with that entity the end-entity certificate or end-entity untagged CWT.
+  If the signature checker is provided with a chain or a bag of X.509 / C509 certificates or of CWTs for a given entity, then the authentication credential associated with that entity is the end-entity certificate or end-entity untagged CWT.
 
 * The current Signature Encryption Key (see {{ssec-common-context-group-enc-key}}).
 
 * The identifiers of the algorithms used in the group (see {{sec-context}}), i.e.: i) Group Encryption Algorithm and Signature Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement Algorithm, if the group uses also the pairwise mode.
 
-<!-- What use does the signature checker have of these pairwise parameters? -->
-
-A signature checker MUST be authorized before it can retrieve such information. To this end, the ACE framework {{RFC9200}} may be used.
+A signature checker MUST be authorized before it can retrieve such information, for example with the use of {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
 ## Management of Group Keying Material # {#sec-group-key-management}
 
@@ -1084,15 +1082,15 @@ To this end, an endpoint can take into account the different structure of the Se
 
 If either of the following conditions holds, a recipient endpoint MUST discard the incoming protected message:
 
-   - The Group Flag is set to 0 and the retrieved Security Context is associated with an OSCORE group, but the endpoint does not support the pairwise mode.
+   - The Group Flag is set to 0 and the retrieved Security Context is associated with an OSCORE group, but the endpoint does not support the pairwise mode or one of the following algorithms are unset: the AEAD Algorithm and the Pairwise Key Agreement Algorithm.
 
-   - The Group Flag is set to 1 and the retrieved Security Context is associated with an OSCORE group, but the endpoint does not support the group mode.
+   - The Group Flag is set to 1 and the retrieved Security Context is associated with an OSCORE group, but the endpoint does not support the group mode or one of the following algorithms are unset: the Group Encryption Algorithm and the Signature Algorithm.
 
    - The Group Flag is set to 1 but there is no Security Context associated with an OSCORE group.
 
       Future specifications may define how to process incoming messages protected with Security Contexts as in {{RFC8613}}, when the Group Flag bit is set to 1.
 
-Otherwise, if a Security Context associated with an OSCORE group and valid to process, the recipient endpoint processes the message with Group OSCORE, using the group mode (see {{mess-processing}}) if the Group Flag is set to 1, or the pairwise mode (see {{sec-pairwise-protection}}) if the Group Flag is set to 0.
+Otherwise, if a Security Context associated with an OSCORE group is retrieved, the recipient endpoint processes the message with Group OSCORE, using the group mode (see {{mess-processing}}) if the Group Flag is set to 1, or the pairwise mode (see {{sec-pairwise-protection}}) if the Group Flag is set to 0.
 
 Note that, if the Group Flag is set to 0, and the recipient endpoint retrieves a Security Context which is valid to process the message but is not associated with an OSCORE group, then the message is processed according to {{RFC8613}}.
 
