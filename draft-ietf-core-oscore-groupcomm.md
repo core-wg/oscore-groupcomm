@@ -461,7 +461,7 @@ It is RECOMMENDED that the immutable part of the Security Context is stored in n
 
 On the other hand, the mutable parts of the Security Context are updated by the endpoint when executing the security protocol, but may nevertheless become outdated, e.g., due to loss of the mutable Security Context (see {{ssec-loss-mutable-context}}) or exhaustion of Sender Sequence Numbers (see {{ssec-wrap-around-partial-iv}}).
 
-If it is not feasible or practically possible to store and maintain up-to-date the mutable part in non-volatile memory (e.g., due to limited number of write operations), the endpoint MUST be able to detect a loss of the mutable Security Context and MUST accordingly take the actions defined in {{ssec-loss-mutable-context}}.
+If it is not feasible or practically possible to store and maintain up-to-date the mutable part in non-volatile memory (e.g., due to limited number of write operations), the endpoint MUST be able to detect a loss of the mutable Security Context.
 
 ### Loss of Mutable Security Context {#ssec-loss-mutable-context}
 
@@ -539,7 +539,7 @@ All the group members need to acquire new Security Context parameters from the G
 
 * It completes any ongoing message processing for the considered group.
 
-* It derives and install a new Security Context. In particular:
+* It derives and installs a new Security Context. In particular:
 
    - It re-derives the keying material stored in its Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). The Master Salt used for the re-derivations is the updated Master Salt parameter if provided by the Group Manager, or the empty byte string otherwise.
 
@@ -1362,13 +1362,13 @@ When using the pairwise mode of Group OSCORE, messages are protected and process
 
 The pairwise mode takes advantage of an existing Security Context for the group mode to establish a Security Context shared exclusively with any other member. In order to use the pairwise mode in a group that uses also the group mode, the signature scheme of the group mode MUST support a combined signature and encryption scheme. This can be, for example, signature using ECDSA, and encryption using AES-CCM with a key derived with ECDH. For encryption and decryption operations, the AEAD Algorithm from the Common Context is used (see {{ssec-common-context-aead-alg}}).
 
-The pairwise mode does not support the use of additional entities acting as verifiers of source authentication and integrity of group messages, such as intermediary gateways (see {{group-manager}}).
+The pairwise mode does not support external verifiers of source authentication and message integrity like the group mode does (see {{sec-processing-signature-checker}}).
 
 An endpoint implementing only a silent server does not support the pairwise mode.
 
-If the signature algorithm used in the group supports ECDH (e.g., ECDSA, EdDSA), the pairwise mode MUST be supported by endpoints that use the CoAP Echo Option {{RFC9175}} and/or block-wise transfers {{RFC7959}}, for instance for responses after the first block-wise request, which possibly targets all servers in the group and includes the CoAP Block2 option (see {{Section 3.8 of I-D.ietf-core-groupcomm-bis}}). This prevents the attack described in {{ssec-unicast-requests}}, which leverages requests sent over unicast to a single group member and protected with the group mode.
+Endpoints using the CoAP Echo Option [RFC9175] and/or block-wise transfers [RFC7959] in a group where the signature algorithm supports ECDH (e.g., ECDSA, EdDSA) MUST support the pairwise mode. This applies for example to responses after a first block-wise request which targets all servers in the group and includes the CoAP Block2 option (see Section 3.8 of [I-D.ietf-core-groupcomm-bis]). This prevents the attack described in {{ssec-unicast-requests}}, which leverages requests sent over unicast to a single group member and protected with the group mode.
 
-Senders cannot use the pairwise mode to protect a message intended for multiple recipients. In fact, the pairwise mode is defined only between two endpoints and the keying material is thus only available to one recipient.
+Pairwise mode cannot be used to protect messages intended for multiple recipients. In fact, the keying material used for pairwise mode is shared only between two endpoints.
 
 However, a sender can use the pairwise mode to protect a message sent to (but not intended for) multiple recipients, if interested in a response from only one of them. For instance, this is useful to support the address discovery service defined in {{ssec-pre-conditions}}, when a single 'kid' value is indicated in the payload of a request sent to multiple recipients, e.g., over multicast.
 
@@ -1468,7 +1468,7 @@ Upon receiving a request from a particular client for the first time, the server
 
 The server stores the Echo Option value included in the response together with the pair (gid,kid), where 'gid' is the Group Identifier of the OSCORE group and 'kid' is the Sender ID of the client in the group. These are specified in the 'kid context' and 'kid' fields of the OSCORE Option of the request, respectively. After a group rekeying has been completed and a new Security Context has been established in the group, which results also in a new Group Identifier (see {{sec-group-key-management}}), the server MUST delete all the stored Echo values associated with members of the group.
 
-Upon receiving a 4.01 (Unauthorized) response that includes an Echo Option and originates from a verified group member, the client sends a request as a unicast message addressed to the same server, echoing the Echo Option value. The client MUST NOT send the request including the Echo Option over multicast.
+Upon receiving a 4.01 (Unauthorized) response that includes an Echo Option and originates from a verified group member, the subsequent client request echoing the Echo Option value MUST be sent as a unicast message to the same server.
 
 If the group uses also the group mode and the used Signature Algorithm supports ECDH (e.g., ECDSA, EdDSA), the client MUST use the pairwise mode to protect the request, as per {{sec-pairwise-protection-req}}. Note that, as defined in {{sec-pairwise-protection}}, endpoints that are members of such a group and that use the Echo Option MUST support the pairwise mode.
 
