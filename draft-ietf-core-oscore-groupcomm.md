@@ -558,39 +558,31 @@ The distribution of a new Gid and Master Secret may result in temporarily misali
 
 # The Group Manager # {#group-manager}
 
-As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant Security Context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s). This document is based on the existence of an entity called Group Manager and responsible for the group, but it does not mandate how the Group Manager interacts with the group members. The list of responsibilities of the Group Manager is compiled in {{sec-group-manager}}.
+As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant Security Context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s). This document is based on the existence of an entity called the Group Manager which is responsible for the group, but it does not mandate how the Group Manager interacts with the group members. The list of responsibilities of the Group Manager is compiled in {{sec-group-manager}}.
 
-A possible Group Manager to use is specified in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for authentication and authorization in constrained environments {{RFC9200}}.
+The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. Also, for each group, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. According to a hierarchical approach, the Gid value assigned to a group is associated with a dedicated space for the values of Sender ID and Recipient ID of the members of that group. When an endpoint (re-)joins a group, it is provided also with the current Gid to use in the group. The Group Manager also assigns an integer Key Generation Number counter to each of its groups, identifying the current version of the keying material used in that group. Further details about identifiers and keys is provided in {{sec-group-key-management}}.
 
-The Group Manager assigns an integer Key Generation Number to each of its groups, identifying the current version of the keying material used in that group. The first Key Generation Number assigned to every group MUST be 0. Separately for each group, the value of the Key Generation Number increases strictly monotonically, each time the Group Manager distributes new keying material to that group (see {{sec-group-key-management}}). That is, if the current Key Generation Number for a group is X, then X+1 will denote the keying material distributed and used in that group immediately after the current one.
+The Group Manager maintains records of the authentication credentials of endpoints in a group, and provides information about the group and its members to other group members (see {{setup}}), and to external entities with a specific role (see {{sec-additional-entities}}).
 
-The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. Also, for each group, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. According to a hierarchical approach, the Gid value assigned to a group is associated with a dedicated space for the values of Sender ID and Recipient ID of the members of that group. When an endpoint (re-)joins a group, it is provided also with the current Gid to use in the group.
 
-The Group Manager maintains records of the authentication credentials of endpoints in a group, and provides information about the group and its members to other group members and to external entities with selected roles (see {{sec-additional-entities}}). Upon endpoints' joining, the Group Manager collects such authentication credentials and MUST verify proof-of-possession of the respective private key.
 
-An endpoint acquires group data such as the Gid and OSCORE input parameters including its own Sender ID from the Group Manager, and provides information about its authentication credential to the Group Manager, for example upon joining the group.
+## Set-up of New Endpoints # {#setup}
 
-Furthermore, when joining the group or later on as a group member, an endpoint can retrieve from the Group Manager the authentication credential of the Group Manager as well as the authentication credential and other information associated with other members of the group, with which it can derive the corresponding Recipient Context. Together with the requested authentication credentials, the Group Manager MUST provide the Sender ID of the associated group members and the current Key Generation Number in the group. An application can configure a group member to asynchronously retrieve information about Recipient Contexts, e.g., by Observing {{RFC7641}} a resource at the Group Manager to get updates on the group membership.
+An endpoint acquires group data such as the Gid and OSCORE input parameters including its own Sender ID from the Group Manager, with which it can derive the Sender Context.
 
-## Support for Signature Checkers # {#sec-additional-entities}
+When joining the group or later on as a group member, an endpoint can also retrieve from the Group Manager the authentication credential of the Group Manager as well as the authentication credential and other information associated with other members of the group, with which it can derive the corresponding Recipient Context. An application can configure a group member to asynchronously retrieve information about Recipient Contexts, e.g., by Observing {{RFC7641}} a resource at the Group Manager to get updates on the group membership.
 
-The Group Manager may serve signature checkers, e.g., intermediary gateways, which verify  countersignatures of messages protected in group mode (see {{sec-processing-signature-checker}}). These entities do not join a group as members, but can retrieve authentication credentials of group members and other selected group data from the Group Manager.
+ Upon endpoints' joining, the Group Manager collects authentication credentials and SHOULD verify proof-of-possession of the respective private key. Together with the requested authentication credentials, the Group Manager MUST provide the Sender ID of the associated group members and the current Key Generation Number in the group (see {{sec-group-key-management}}).
 
-In order to verify countersignatures of messages in a group, a signature checker needs to retrieve the following information about the group:
+An endpoint may join a group, for example, by explicitly interacting with the responsible Group Manager, or by being configured with some tool performing the tasks of the Group Manager. When becoming members of a group, endpoints are not required to know how many and what endpoints are in the same group.
 
-* The current ID Context (Gid) used in the group.
+Communications between a joining endpoint and the Group Manager must be secured. Specific details on how to secure communications between joining endpoints and a Group Manager are out of the scope of this document.
 
-* The authentication credentials of the group members and the Group Manager.
+The Group Manager must verify that the joining endpoint is authorized to join the group. To this end, the Group Manager can directly authorize the joining endpoint, or expect it to provide authorization evidence previously obtained from a trusted entity. Further details about the authorization of joining endpoints are out of scope.
 
-  If the signature checker is provided with a CWT for a given entity, then the authentication credential associated with that entity is the untagged CWT.
+In case of successful authorization check, the Group Manager provides the joining endpoint with the keying material and parameters of group members. The actual provisioning of keying material and parameters to the joining endpoint is out of the scope of this document.
 
-  If the signature checker is provided with a chain or a bag of X.509 / C509 certificates or of CWTs for a given entity, then the authentication credential associated with that entity is the end-entity certificate or end-entity untagged CWT.
-
-* The current Signature Encryption Key (see {{ssec-common-context-group-enc-key}}).
-
-* The identifiers of the algorithms used in the group (see {{sec-context}}), i.e.: i) Group Encryption Algorithm and Signature Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement Algorithm, if the group uses also the pairwise mode.
-
-A signature checker MUST be authorized before it can retrieve such information, for example with the use of {{I-D.ietf-ace-key-groupcomm-oscore}}.
+A possible Group Manager is specified in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for authentication and authorization in constrained environments {{RFC9200}}.
 
 ## Management of Group Keying Material # {#sec-group-key-management}
 
@@ -603,6 +595,9 @@ The set of group members should not be assumed as fixed, i.e., the group members
 The Group Manager MUST rekey the group when one or more endpoints leave the group. An endpoint may leave the group at own initiative, or may be evicted from the group by the Group Manager, e.g., in case an endpoint is compromised, or is suspected to be compromised. In either case, rekeying the group excludes such endpoints from future communications in the group, and thus preserves forward security. If a network node is compromised or suspected to be compromised, the Group Manager MUST evict from the group all the endpoints hosted by that node that are member of the group and rekey the group accordingly.
 
 If required by the application, the Group Manager MUST rekey the group also before one or more new joining endpoints are added to the group, thus preserving backward security.
+
+ Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see {{sec-group-key-management}}). The first Key Generation Number assigned to every group MUST be 0.
+
 
 The establishment of the new Security Context for the group takes the following steps.
 
@@ -717,6 +712,29 @@ Components changed in lockstep
                                             the Group ID change
 ~~~~~~~~~~~
 {: #fig-key-material-diagram title="Relations among keying material components." artwork-align="center"}
+
+
+
+## Support for Signature Checkers # {#sec-additional-entities}
+
+The Group Manager may serve signature checkers, e.g., intermediary gateways, which verify  countersignatures of messages protected in group mode (see {{sec-processing-signature-checker}}). These entities do not join a group as members, but can retrieve authentication credentials of group members and other selected group data from the Group Manager.
+
+In order to verify countersignatures of messages in a group, a signature checker needs to retrieve the following information about the group:
+
+* The current ID Context (Gid) used in the group.
+
+* The authentication credentials of the group members and the Group Manager.
+
+  If the signature checker is provided with a CWT for a given entity, then the authentication credential associated with that entity is the untagged CWT.
+
+  If the signature checker is provided with a chain or a bag of X.509 / C509 certificates or of CWTs for a given entity, then the authentication credential associated with that entity is the end-entity certificate or end-entity untagged CWT.
+
+* The current Signature Encryption Key (see {{ssec-common-context-group-enc-key}}).
+
+* The identifiers of the algorithms used in the group (see {{sec-context}}), i.e.: i) Group Encryption Algorithm and Signature Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement Algorithm, if the group uses also the pairwise mode.
+
+A signature checker MUST be authorized before it can retrieve such information, for example with the use of {{I-D.ietf-ace-key-groupcomm-oscore}}.
+
 
 ## Responsibilities of the Group Manager ## {#sec-group-manager}
 
@@ -1945,18 +1963,6 @@ As an example, a 3-byte Gid can be composed of: i) a 1-byte Group Prefix '0xb1' 
 Using an immutable Group Prefix for a group assumes that enough time elapses before all possible Group Epoch values are used, i.e., before the Group Manager terminates the group or starts reassigning Gid values to the group (see {{sec-group-key-management}}). Thus, the expected highest rate for addition/removal of group members and consequent group rekeying should be taken into account for a proper dimensioning of the Group Epoch size.
 
 As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple groups managed by different non-synchronized Group Managers, it is possible that Group Identifiers of different groups coincide at some point in time. In this case, a recipient has to handle coinciding Group Identifiers, and has to try using different Security Contexts to process an incoming message, until the right one is found and the message is correctly verified. Therefore, it is favorable that Group Identifiers from different Group Managers have a size that result in a small probability of collision. How small this probability should be is up to system designers.
-
-# Set-up of New Endpoints # {#setup}
-
-An endpoint joins a group by explicitly interacting with the responsible Group Manager. When becoming members of a group, endpoints are not required to know how many and what endpoints are in the same group.
-
-Communications between a joining endpoint and the Group Manager rely on the CoAP protocol and must be secured. Specific details on how to secure communications between joining endpoints and a Group Manager are out of the scope of this document.
-
-The Group Manager must verify that the joining endpoint is authorized to join the group. To this end, the Group Manager can directly authorize the joining endpoint, or expect it to provide authorization evidence previously obtained from a trusted entity. Further details about the authorization of joining endpoints are out of scope.
-
-In case of successful authorization check, the Group Manager generates a Sender ID assigned to the joining endpoint, before proceeding with the rest of the join process. That is, the Group Manager provides the joining endpoint with the keying material and parameters to initialize the Security Context, including its own authentication credential (see {{sec-context}}). The actual provisioning of keying material and parameters to the joining endpoint is out of the scope of this document.
-
-As mentioned in {{group-manager}}, the Group Manager and the join process can be as specified in {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
 # Document Updates # {#sec-document-updates}
 
