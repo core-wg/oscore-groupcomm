@@ -333,9 +333,9 @@ The new Pairwise Key Agreement Algorithm identifies the elliptic curve Diffie-He
 
 OSCORE specifies the derivation of Sender Context and Recipient Context, specifically of Sender/Recipient Keys and Common IV, from a set of input parameters (see {{Section 3.2 of RFC8613}}).
 
-The derivation of Sender/Recipient Keys and Common IV defined in OSCORE applies also to Group OSCORE, with the following extensions compared to {{Section 3.2.1 of RFC8613}}.
+The derivation of Sender/Recipient Keys and Common IV defined in OSCORE applies also to Group OSCORE, with the following modification compared to {{Section 3.2.1 of RFC8613}}.
 
-* If the group uses only the pairwise mode, then the 'alg_aead' element of the 'info' array takes the value of the AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}), else the value of the Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-enc-alg}}).
+If the group uses only the pairwise mode, then the 'alg_aead' element of the 'info' array takes the value of the AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}), else the value of the Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-enc-alg}}).
 
 The Sender ID SHALL be unique for each endpoint in a group with a certain tuple (Master Secret, Master Salt, Group Identifier), see {{Section 3.3 of RFC8613}}.
 
@@ -343,7 +343,7 @@ With the exception of the authentication credential of the sender endpoint, a re
 
 For severely constrained devices, it may be not feasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the sender endpoint's authentication credential. Such devices can be configured to drop a received message for which there is no (complete) Recipient Context, and retrieve the sender endpoint's authentication credential in order to have it available to verify subsequent messages from that endpoint.
 
-An endpoint admits a maximum amount of Recipient Contexts for a same Security Context, e.g., due to memory limitations. After reaching that limit, the endpoint has to delete a current Recipient Context to install a new one. It is up to the application to define policies for Recipient Contexts to delete. If a new Recipient Context has been installed after having deleted an old, then the Recipient Context is initialized with an invalid Replay Window, see {{ssec-loss-mutable-context-overflow}}.
+An endpoint admits a maximum number of Recipient Contexts for a same Security Context, e.g., due to memory limitations. After reaching that limit, the endpoint has to delete a current Recipient Context to install a new one, see {{ssec-loss-mutable-context-overflow}}. It is up to the application to define policies for Recipient Contexts to delete.
 
 ## Authentication Credentials ## {#sec-pub-key-format}
 
@@ -483,7 +483,7 @@ An adversary may leverage the above to perform a Denial of Service attack and pr
 
 The Security Context may contain a large and variable number of Recipient Contexts. A Recipient Context may need to be deleted, because the maximum number of Recipient Contexts has been reached (see {{ssec-sender-recipient-context}}) or for some other reason.
 
-When a Recipient Context is deleted, information about previously received messages is lost, so if the Recipient Context is derived again from the same Security Context there is a risk for replay. If one Recipient Context has been deleted from an existing Security Context, then the Replay Window of a new Recipient Context MUST be initialized as invalid. Messages associated to a Recipient Context with invalid Replay Window MUST NOT be delivered to the application.
+When a Recipient Context is deleted, information about previously received messages from the corresponding endpoint is lost, so if the Recipient Context is derived again from the same Security Context there is a risk that a replayed message is not detected. If one Recipient Context has been deleted from the current Security Context, then the Replay Window of any new Recipient Context in this Security Context MUST be initialized as invalid. Messages associated with a Recipient Context that has an invalid Replay Window MUST NOT be delivered to the application.
 
 If the endpoint receives a request to process with the new Recipient Context and if the endpoint supports the CoAP Echo Option {{RFC9175}}, then it is RECOMMENDED to follow the procedure specified in {{sec-synch-challenge-response}} which establishes a valid Replay Window. In particular, the endpoint MUST use its Partial IV when generating the AEAD nonce and MUST include the Partial IV in the response message conveying the Echo Option.
 
