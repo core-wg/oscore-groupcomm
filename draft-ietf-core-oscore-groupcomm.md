@@ -1032,9 +1032,9 @@ Upon leaving the group or before re-joining the group, a group member MUST termi
 
 ## Update of Replay Window # {#sec-synch-seq-num}
 
-As in OSCORE {{RFC8613}}, a server updates the Replay Window of its Recipient Contexts based on the Partial IV values in received request messages, which corresponds to the Sender Sequence Numbers of the clients. Note that there can be large jumps in these sequence numbers, for example when a client exchanges unicast messages with other servers.
+As in OSCORE {{RFC8613}}, a server updates the Replay Window of its Recipient Contexts based on the Partial IV values in received request messages, which correspond to the Sender Sequence Numbers of the clients. Note that there can be large jumps in these sequence numbers, for example when a client exchanges unicast messages with other servers.
 
-The update of Replay Windows, and Security Contexts in general, is described in {{ssec-sec-context-persistence}}.
+The update of Replay Windows is described in {{ssec-sec-context-persistence}}.
 
 
 ## Message Freshness # {#sec-freshness}
