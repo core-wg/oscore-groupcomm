@@ -572,7 +572,7 @@ An endpoint acquires group data such as the Gid and OSCORE input parameters incl
 
 When joining the group or later on as a group member, an endpoint can also retrieve from the Group Manager the authentication credential of the Group Manager as well as the authentication credential and other information associated with other members of the group, with which it can derive the corresponding Recipient Context. An application can configure a group member to asynchronously retrieve information about Recipient Contexts, e.g., by Observing {{RFC7641}} a resource at the Group Manager to get updates on the group membership.
 
- Upon endpoints' joining, the Group Manager collects authentication credentials and SHOULD verify proof-of-possession of the respective private key. Together with the requested authentication credentials, the Group Manager MUST provide the Sender ID of the associated group members and the current Key Generation Number in the group (see {{sec-group-key-management}}).
+ Upon endpoints' joining, the Group Manager collects authentication credentials and MUST verify proof-of-possession of the respective private key. Together with the requested authentication credentials, the Group Manager MUST provide the Sender ID of the associated group members and the current Key Generation Number in the group (see {{sec-group-key-management}}).
 
 An endpoint may join a group, for example, by explicitly interacting with the responsible Group Manager, or by being configured with some tool performing the tasks of the Group Manager. When becoming members of a group, endpoints are not required to know how many and what endpoints are in the same group.
 
@@ -580,7 +580,7 @@ Communications between a joining endpoint and the Group Manager must be secured.
 
 The Group Manager must verify that the joining endpoint is authorized to join the group. To this end, the Group Manager can directly authorize the joining endpoint, or expect it to provide authorization evidence previously obtained from a trusted entity. Further details about the authorization of joining endpoints are out of scope.
 
-In case of successful authorization check, the Group Manager provides the joining endpoint with the keying material and parameters of group members. The actual provisioning of keying material and parameters to the joining endpoint is out of the scope of this document.
+In case of successful authorization check, the Group Manager provides the joining endpoint with the keying material to initialize the Security Context. The actual provisioning of keying material and parameters to the joining endpoint is out of the scope of this document.
 
 One realization of a Group Manager is specified in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for authentication and authorization in constrained environments {{RFC9200}}.
 
@@ -1043,9 +1043,9 @@ When receiving a request from a client for the first time, the server is not syn
 
 During its operations in the group, the server may also lose synchronization with a client's Sender Sequence Number. This can happen, for instance, if the server has rebooted or has deleted its previously synchronized version of the Recipient Context for that client (see {{ssec-loss-mutable-context}}).
 
-Even if the server is synchronized with the client's Sender Sequence Number, the Partial IV only allows the server to determine the relative order of the requests under the assumption that the client is honest.
+Even if the server is synchronized with the client's Sender Sequence Number, the Partial IV only allows the server to determine the relative order of the requests from that client under the assumption that the client is honest.
 
-If the application requires freshness, e.g., according to time- or event-based policies (see {{Section 2.5.1 of RFC9175}}), the server can use the approach in {{sec-synch-challenge-response}} as a variant of the procedure in {{Section B.1.2 of RFC8613}}, before delivering request messages from that client to the application. This also makes the server (re-)synchronize with a client's Sender Sequence Number, and provides relative freshness of subsequent requests.
+If the application requires freshness, e.g., according to time- or event-based policies (see {{Section 2.5.1 of RFC9175}}), the server can use the approach in {{sec-synch-challenge-response}} as a variant of the procedure in {{Section B.1.2 of RFC8613}}, before delivering request messages from that client to the application. This also makes the server (re-)synchronize with a client's Sender Sequence Number.
 
 Assuming an honest server, the message binding guarantees that a response is not older than its request. Hence, the following holds.
 
@@ -1477,7 +1477,7 @@ Upon receiving a response with the Group Flag set to 0, following the procedure 
 
 This section describes how a server endpoint can verify freshness of a request and synchronize with Sender Sequence Numbers of client endpoints in the group. Similarly to what is defined in {{Section B.1.2 of RFC8613}}, the server performs a challenge-response exchange with a client, by using the Echo Option for CoAP specified in {{Section 2 of RFC9175}}.
 
-Upon receiving a request from a particular client for the first time, the server processes the message as described in this document, but, even if valid, does not deliver it to the application. Instead, the server replies to the client using pairwise mode with an OSCORE protected 4.01 (Unauthorized) response message, including only the Echo Option and no diagnostic payload. The Echo option value SHOULD NOT be reused; if it is reused, it MUST be highly unlikely to have been recently used with this client. Since this response is protected with the Security Context used in the group, the client will consider the response valid upon successfully decrypting and verifying it.
+Upon receiving a request from a particular client for the first time, the server processes the message as described in this document, but, even if valid, does not deliver it to the application. Instead, the server replies to the client with an OSCORE protected 4.01 (Unauthorized) response message, including only the Echo Option and no diagnostic payload. The Echo option value SHOULD NOT be reused; if it is reused, it MUST be highly unlikely to have been recently used with this client. Since this response is protected with the Security Context used in the group, the client will consider the response valid upon successfully decrypting and verifying it.
 
 The server stores the Echo Option value included in the response together with the pair (gid,kid), where 'gid' is the Group Identifier of the OSCORE group and 'kid' is the Sender ID of the client in the group. These are specified in the 'kid context' and 'kid' fields of the OSCORE Option of the request, respectively. After a group rekeying has been completed and a new Security Context has been established in the group, which results also in a new Group Identifier (see {{sec-group-key-management}}), the server MUST delete all the stored Echo values associated with members of the group.
 
@@ -1792,10 +1792,7 @@ As discussed in {{sec-synch-seq-num}}, a Replay Window may be initialized as not
 
 ## Message Freshness {#ssec-seccons-freshness}
 
-As in OSCORE, Group OSCORE provides only the guarantee that the request is
-   not older than the security context. Assuming the other endpoint is honest, it also provides relative
-   freshness in the sense that the received Partial IV allows a
-   recipient to determine the relative order of requests or notifications.
+As in OSCORE, Group OSCORE provides only the guarantee that the request is not older than the security context. Assuming the other endpoint is honest, it also provides relative ordering in the sense that the received Partial IV allows a recipient to determine the order in which requests or notifications were sent.
 
 As discussed in {{sec-freshness}}, a server may use the approach described in {{sec-synch-challenge-response}} to assert freshness and synchronize sequence numbers.
 
