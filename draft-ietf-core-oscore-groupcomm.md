@@ -471,9 +471,9 @@ If it is not feasible or practically possible to store and maintain up-to-date t
 
 In case a loss of the Sender Context and/or of the Recipient Contexts is detected (e.g., following a reboot), the endpoint MUST NOT protect further messages using this Security Context to avoid reusing an AEAD nonce with the same AEAD key.
 
-In particular, before resuming its operations in the group, the endpoint MUST retrieve new Security Context parameters from the Group Manager (see {{sec-group-re-join}}) and use them to derive a new Sender Context (see {{ssec-sender-recipient-context}}). Since this includes a newly derived Sender Key, a server will not reuse the same pair (key, nonce), even when using the Partial IV of (old re-injected) requests to build the AEAD nonce for protecting the corresponding responses.
+Before resuming its operations in the group, the endpoint MUST retrieve new Security Context parameters from the Group Manager (see {{sec-group-re-join}}) and use them to derive a new Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). Since the new contexts include newly derived encryption keys, a server will not reuse the same pair (key, nonce), even when using the Partial IV of (old re-injected) requests to build the AEAD nonce for protecting the responses.
 
-From then on, the endpoint MUST use the latest installed Sender Context to protect outgoing messages. Also, newly created Recipient Contexts will have a Replay Window which is initialized as valid.
+From then on, the endpoint MUST use the latest installed Sender Context to protect outgoing messages. The Recipient Contexts derived from a new Security Context have a Replay Window which is initialized as valid.
 
 If not able to establish an updated Sender Context, e.g., because of lack of connectivity with the Group Manager, the endpoint MUST NOT protect further messages using the current Security Context and MUST NOT accept incoming messages from other group members, as currently unable to detect possible replays.
 
@@ -1016,9 +1016,7 @@ The examples assume that the plaintext (see {{Section 5.3 of RFC8613}}) is 6 byt
 
 # Message Binding, Sequence Numbers, Freshness and Replay Protection
 
-Like OSCORE, also Group OSCORE provides message binding of responses to requests, as well as uniqueness of AEAD (key, nonce) pair (see {{Sections 7.1 and 7.2 of RFC8613}}, respectively).
-
-Furthermore, the following also holds for Group OSCORE.
+Like OSCORE, Group OSCORE provides message binding of responses to requests, as well as uniqueness of AEAD (key, nonce) pair (see {{Sections 7.1 and 7.2 of RFC8613}}, respectively).
 
 ## Supporting Observe and Multiple Non-Notification Responses # {#sec-long-term-observations}
 
@@ -1034,11 +1032,10 @@ Upon leaving the group or before re-joining the group, a group member MUST termi
 
 ## Update of Replay Window # {#sec-synch-seq-num}
 
-Sender Sequence Numbers seen by a server as Partial IV values in request messages can spontaneously increase at a fast pace, for example when a client exchanges unicast messages with other servers using the Group OSCORE Security Context. As in OSCORE {{RFC8613}}, a server always needs to accept such increases and accordingly updates the Replay Window in each of its Recipient Contexts.
+As in OSCORE {{RFC8613}}, a server updates the Replay Window of its Recipient Contexts based on the Partial IV values in received request messages, which corresponds to the Sender Sequence Numbers of the clients. Note that there can be large jumps in these sequence numbers, for example when a client exchanges unicast messages with other servers.
 
-As discussed in {{ssec-loss-mutable-context}}, a newly created Recipient Context would have an invalid Replay Window, if its installation has required to delete another Recipient Context. Hence, the server is not able to verify if a request from the client associated with the new Recipient Context is a replay. When this happens, the server MUST validate the Replay Window of the new Recipient Context, before accepting messages from the associated client (see {{ssec-loss-mutable-context}}).
+The update of Replay Windows, and Security Contexts in general, is described in {{ssec-sec-context-persistence}}.
 
-Furthermore, when the Group Manager establishes a new Security Context for the group (see {{new-sec-context}}), every server re-initializes the Replay Window in each of its Recipient Contexts.
 
 ## Message Freshness # {#sec-freshness}
 
