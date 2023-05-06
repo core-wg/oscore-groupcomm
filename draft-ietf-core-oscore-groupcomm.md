@@ -329,9 +329,9 @@ The Signature Encryption Key is derived as defined for Sender/Recipient Keys in 
 
 The new parameter Pairwise Key Agreement Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
 
-If the HKDF Algorithm is "HKDF SHA-256" (identified as "HMAC 256/256", COSE algorithm encoding: 5), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-256" (COSE algorithm encoding: -27).
+If the HKDF Algorithm specified in the Common Context is "HKDF SHA-256" (identified as "HMAC 256/256", COSE algorithm encoding: 5), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-256" (COSE algorithm encoding: -27).
 
-If the HKDF Algorithm is "HKDF SHA-512" (identified as "HMAC 512/512", COSE algorithm encoding: 7), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-512" (COSE algorithm encoding: -28).
+If the HKDF Algorithm specified in the Common Context is "HKDF SHA-512" (identified as "HMAC 512/512", COSE algorithm encoding: 7), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-512" (COSE algorithm encoding: -28).
 
 More generally, if the group uses the pairwise mode, then the Pairwise Key Agreement Algorithm MUST be a COSE algorithm such that: i) it performs a direct ECDH Static-Static key agreement; and ii) it indicates the use of the same HKDF Algorithm used in the group as specified in the Common Context.
 
