@@ -329,6 +329,14 @@ The Signature Encryption Key is derived as defined for Sender/Recipient Keys in 
 
 The new parameter Pairwise Key Agreement Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
 
+If the HKDF Algorithm is "HKDF SHA-256" (identified as "HMAC 256/256", COSE algorithm encoding: 5), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-256" (COSE algorithm encoding: -27).
+
+If the HKDF Algorithm is "HKDF SHA-512" (identified as "HMAC 512/512", COSE algorithm encoding: 7), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-512" (COSE algorithm encoding: -28).
+
+More generally, if the group uses the pairwise mode, then the Pairwise Key Agreement Algorithm MUST be a COSE algorithm such that: i) it performs a direct ECDH Static-Static key agreement; and ii) it indicates the use of the same HKDF Algorithm used in the group as specified in the Common Context.
+
+Note that the HKDF Algorithm in the Common Context is denoted by the value of the corresponding COSE HMAC Algorithm. For example, the HKDF Algorithm "HKDF SHA-256" is specified as the HMAC Algorithm “HMAC 256/256” (COSE algorithm encoding: 5).
+
 ## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
 OSCORE specifies the derivation of Sender Context and Recipient Context, specifically of Sender/Recipient Keys and Common IV, from a set of input parameters (see {{Section 3.2 of RFC8613}}).
@@ -1974,6 +1982,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Renamed "Group Encryption Key" to "Signature Encryption Key".
 
 * Renamed "Signature Encryption Algorithm" to "Group Encryption Algorithm".
+
+* Guidelines on the value of the Pairwise Key Agreement Algorithm.
 
 * The Group Manager is not optional, but always present.
 
