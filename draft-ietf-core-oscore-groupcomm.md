@@ -52,7 +52,7 @@ author:
         email: francesca.palombini@ericsson.com
       -
         ins: J. Mattsson
-        name: John Preuss Mattsson
+        name: John Preuß Mattsson
         org: Ericsson AB
         street: Torshamnsgatan 23
         city: Kista
@@ -112,7 +112,7 @@ normative:
 informative:
   I-D.ietf-ace-key-groupcomm:
   I-D.ietf-ace-key-groupcomm-oscore:
-  I-D.ietf-lwig-security-protocol-comparison:
+  I-D.ietf-iotops-security-protocol-comparison:
   I-D.ietf-core-observe-multicast-notifications:
   I-D.ietf-lwig-curve-representations:
   I-D.ietf-cose-cbor-encoded-cert:
@@ -121,11 +121,11 @@ informative:
   I-D.tiloca-core-oscore-capable-proxies:
   RFC4944:
   RFC4949:
+  RFC5280:
   RFC5869:
   RFC6282:
   RFC6690:
   RFC7228:
-  RFC7925:
   RFC7959:
   RFC8392:
   RFC9147:
@@ -188,7 +188,7 @@ Group OSCORE defines two modes of operation, that can be used independently or t
 
 Both modes provide source authentication of CoAP messages. The application decides what mode to use, potentially on a per-message basis. Such decisions can be based, for instance, on pre-configured policies or dynamic assessing of the target recipient and/or resource, among other things. One important case is when requests are protected in group mode, and responses with the pairwise mode. Since such responses convey shorter integrity tags instead of bigger, full-fledged signatures, this significantly reduces the message overhead in case of many responses to one request.
 
-A special deployment of Group OSCORE is to use pairwise mode only. For example, consider the case of a constrained-node network {{RFC7228}} with a large number of CoAP endpoints and the objective to establish secure communication between any pair of endpoints with a small provisioning effort and message overhead. Since the total number of security associations that needs to be established grows with the square of the number of endpoints, it is desirable to restrict the amount of secret keying material provided to each endpoint. Moreover, a key establishment protocol would need to be executed for each security association. One solution to this is to deploy Group OSCORE, with the endpoints being part of a group, and use the pairwise mode. This solution has the benefit of providing a single shared secret, while distributing only the public keys of group members or a subset of those. After that, a CoAP endpoint can locally derive the OSCORE Security Context for the other endpoint in the group, and protect CoAP communications with very low overhead {{I-D.ietf-lwig-security-protocol-comparison}}.
+A special deployment of Group OSCORE is to use pairwise mode only. For example, consider the case of a constrained-node network {{RFC7228}} with a large number of CoAP endpoints and the objective to establish secure communication between any pair of endpoints with a small provisioning effort and message overhead. Since the total number of security associations that needs to be established grows with the square of the number of endpoints, it is desirable to restrict the amount of secret keying material provided to each endpoint. Moreover, a key establishment protocol would need to be executed for each security association. One solution to this is to deploy Group OSCORE, with the endpoints being part of a group, and use the pairwise mode. This solution has the benefit of providing a single shared secret, while distributing only the public keys of group members or a subset of those. After that, a CoAP endpoint can locally derive the OSCORE Security Context for the other endpoint in the group, and protect CoAP communications with very low overhead {{I-D.ietf-iotops-security-protocol-comparison}}.
 
 ## Terminology ## {#terminology}
 
@@ -204,7 +204,7 @@ This document refers also to the following terminology.
 
 * Keying material: data that is necessary to establish and maintain secure communication among endpoints. This includes, for instance, keys and IVs {{RFC4949}}.
 
-* Authentication credential: information associated with an entity, including that entity's public key and parameters associated with the public key. Examples of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets {{RFC8392}}, X.509 certificates {{RFC7925}} and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}. Further details about authentication credentials are provided in {{sec-pub-key-format}}.
+* Authentication credential: information associated with an entity, including that entity's public key and parameters associated with the public key. Examples of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets {{RFC8392}}, X.509 certificates {{RFC5280}} and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}. Further details about authentication credentials are provided in {{sec-pub-key-format}}.
 
 * Group: a set of endpoints that share group keying material and security parameters (Common Context, see {{sec-context}}). That is, unless otherwise specified, the term group used in this document refers to a "security group" (see {{Section 2.1 of I-D.ietf-core-groupcomm-bis}}), not to be confused with "CoAP group" or "application group".
 
@@ -347,12 +347,12 @@ An endpoint admits a maximum number of Recipient Contexts for a same Security Co
 
 ## Authentication Credentials ## {#sec-pub-key-format}
 
-The authentication credentials of the endpoints in a group MUST be encoded according to the format used in the group, as indicated by the Authentication Credential Format parameter in the Common Context. The authentication credential of the Group Manager SHOULD be encoded according to that same format. The used format MUST provide the public key as well as the comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).
+The authentication credentials of the endpoints in a group MUST be encoded according to the format used in the group, as indicated by the Authentication Credential Format parameter in the Common Context. The authentication credential of the Group Manager SHOULD be encoded according to that same format. The used format MUST provide the public key as well as a comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).
 
 
    If the group uses only the pairwise mode, then the public key algorithm is the Pairwise Key Agreement Algorithm used in the group, else the Signature Algorithm used in the group.
 
-   If the authentication credentials are X.509 certificates {{RFC7925}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
+   If the authentication credentials are X.509 certificates {{RFC5280}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
 
    If authentication credentials are CBOR Web Tokens (CWTs) or CWT Claims Sets {{RFC8392}}, the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.
 
@@ -812,7 +812,7 @@ info = [
   id : bstr,
   id_context : bstr,
   type : bool,
-  L: uint
+  L : uint
 ]
 ~~~~~~~~~~~
 
@@ -865,9 +865,9 @@ aad_array = [
    request_piv : bstr,
    options : bstr,
    request_kid_context : bstr,
-   OSCORE_option: bstr,
-   sender_cred: bstr,
-   gm_cred: bstr / null
+   OSCORE_option : bstr,
+   sender_cred : bstr,
+   gm_cred : bstr / null
 ]
 ~~~~~~~~~~~
 {: #fig-ext-aad title="external_aad" artwork-align="center"}
@@ -1095,9 +1095,9 @@ To this end, an endpoint can take into account the different structure of the Se
 
 If either of the following conditions holds, a recipient endpoint MUST discard the incoming protected message:
 
-   - The Group Flag is set to 0 and the retrieved Security Context is associated with an OSCORE group, but the endpoint does not support the pairwise mode or any of the following algorithms is unset: the AEAD Algorithm and the Pairwise Key Agreement Algorithm.
+   - The Group Flag is set to 0 and the retrieved Security Context is associated with an OSCORE group, but the endpoint does not support the pairwise mode or any of the following algorithms is unset in the Security Context: the AEAD Algorithm and the Pairwise Key Agreement Algorithm.
 
-   - The Group Flag is set to 1 and the retrieved Security Context is associated with an OSCORE group, but the endpoint does not support the group mode or any of the following algorithms is unset: the Group Encryption Algorithm and the Signature Algorithm.
+   - The Group Flag is set to 1 and the retrieved Security Context is associated with an OSCORE group, but the endpoint does not support the group mode or any of the following algorithms is unset in the Security Context: the Group Encryption Algorithm and the Signature Algorithm.
 
    - The Group Flag is set to 1 but there is no Security Context associated with an OSCORE group.
 
@@ -1300,7 +1300,7 @@ Note that a client may receive a response protected with a Security Context diff
 
       The client verifies the original countersignature SIGNATURE.
 
-   - If the verification of the countersignature fails, the server: i) SHALL stop processing the response; ii) SHALL NOT update the Response Number associated with the server, if the response is a non-notification response to a group request; and iii) SHALL NOT update the Notification Number associated with the server, if the response is an Observe notification {{RFC7641}}.
+   - If the verification of the countersignature fails, the client: i) SHALL stop processing the response; ii) SHALL NOT update the Response Number associated with the server, if the response is a non-notification response to a group request; and iii) SHALL NOT update the Notification Number associated with the server, if the response is an Observe notification {{RFC7641}}.
 
    - After a successful verification of the countersignature, the client performs also the following actions in case the request was protected in pairwise mode (see {{sec-pairwise-protection-req}}).
 
@@ -1483,7 +1483,7 @@ The server stores the Echo Option value included in the response together with t
 
 Upon receiving a 4.01 (Unauthorized) response that includes an Echo Option and originates from a verified group member, the subsequent client request echoing the Echo Option value MUST be sent as a unicast message to the same server.
 
-If in the group the AEAD Algorithm and Pairwise Key Agreement Algorithm are set, the client MUST use the pairwise mode to protect the request, as per {{sec-pairwise-protection-req}}. Note that, as defined in {{sec-pairwise-protection}}, endpoints that are members of such a group and that use the Echo Option support the pairwise mode. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are not set, only the group mode can be used. Hence, requests including the Echo option can be protected only with the Group Mode, with the caveat due to the risk for those requests to be redirected to a different server than the intended one, as discussed in {{ssec-unicast-requests}}.
+If in the group the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, the client MUST use the pairwise mode to protect the request, as per {{sec-pairwise-protection-req}}. Note that, as defined in {{sec-pairwise-protection}}, endpoints that are members of such a group and that use the Echo Option support the pairwise mode. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are not set, only the group mode can be used. Hence, requests including the Echo option can be protected only with the Group Mode, with the caveat due to the risk for those requests to be redirected to a different server than the intended one, as discussed in {{ssec-unicast-requests}}.
 
 The client does not necessarily resend the same group request, but can instead send a more recent one, if the application permits it. This allows the client to not retain previously sent group requests for full retransmission, unless the application explicitly requires otherwise. In either case, the client uses a fresh Sender Sequence Number value from its own Sender Context. If the client stores group requests for possible retransmission with the Echo Option, it should not store a given request for longer than a preconfigured time interval. Note that the unicast request echoing the Echo Option is correctly treated and processed, since the 'kid context' field including the Group Identifier of the OSCORE group is still present in the OSCORE Option as part of the COSE object (see {{sec-cose-object}}).
 
@@ -1755,13 +1755,13 @@ If a request is intended to be sent over unicast as addressed to a single group 
 
 This does not include the case where the client sends a request over unicast to a proxy, to be forwarded to multiple intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}. In this case, the client MUST protect the request with the group mode, even though it is sent to the proxy over unicast (see {{mess-processing}}).
 
-If the client uses the group mode with its own Sender Key to protect a unicast request to a group member, an on-path adversary can, right then or later on, redirect that request to one/many different group member(s) over unicast, or to the whole OSCORE group over multicast. By doing so, the adversary can induce the target group member(s) to perform actions intended for one group member only. Note that the adversary can be external, i.e., (s)he does not need to also be a member of the OSCORE group.
+If the client uses the group mode with its own Sender Key to protect a unicast request to a group member, an on-path adversary can, right then or later on, redirect that request to one/many different group member(s) over unicast, or to the whole OSCORE group over multicast. By doing so, the adversary can induce the target group member(s) to perform actions intended for one group member only. Note that the adversary can be external, i.e., they do not need to also be a member of the OSCORE group.
 
 This is due to the fact that the client is not able to indicate the single intended recipient in a way which is secure and possible to process for Group OSCORE on the server side. In particular, Group OSCORE does not protect network addressing information such as the IP address of the intended recipient server. It follows that the server(s) receiving the redirected request cannot assert whether that was the original intention of the client, and would thus simply assume so.
 
 The impact of such an attack depends especially on the REST method of the request, i.e., the Inner CoAP Code of the OSCORE request message. In particular, safe methods such as GET and FETCH would trigger (several) unintended responses from the targeted server(s), while not resulting in destructive behavior. On the other hand, non safe methods such as PUT, POST and PATCH/iPATCH would result in the target server(s) taking active actions on their resources and possible cyber-physical environment, with the risk of destructive consequences and possible implications for safety.
 
-A client can instead use the pairwise mode as defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set, a client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast. For an example where this is not fulfilled, see {{Section 9.2.1 of I-D.ietf-core-observe-multicast-notifications}}.
+A client can instead use the pairwise mode as defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, a client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast. For an example where this is not fulfilled, see {{Section 9.2.1 of I-D.ietf-core-observe-multicast-notifications}}.
 
 With particular reference to block-wise transfers {{RFC7959}}, {{Section 3.8 of I-D.ietf-core-groupcomm-bis}} points out that, while an initial request including the CoAP Block2 option can be sent over multicast, any other request in a transfer has to occur over unicast, individually addressing the servers in the group.
 
@@ -1937,13 +1937,13 @@ The approach described in this document aims at fulfilling the following securit
 
 Group Communication for CoAP {{I-D.ietf-core-groupcomm-bis}} provides the necessary background for multicast-based CoAP communication, with particular reference to low-power and lossy networks (LLNs) and resource constrained environments. The interested reader is encouraged to first read {{I-D.ietf-core-groupcomm-bis}} to understand the non-security related details. This section discusses a number of use cases that benefit from secure group communication, and refers to the three types of groups from {{sec-requirements}}. Specific security requirements for these use cases are discussed in {{sec-requirements}}.
 
-* Lighting control: consider a building equipped with IP-connected lighting devices, switches, and border routers. The lighting devices acting as servers are organized into application groups and CoAP groups, according to their physical location in the building. For instance, lighting devices in a room or corridor can be configured as members of a single application group and corresponding CoAP group. Those lighting devices together with the switches acting as clients in the same room or corridor can be configured as members of the corresponding security group. Switches are then used to control the lighting devices by sending on/off/dimming commands to all lighting devices in the CoAP group, while border routers connected to an IP network backbone (which is also multicast-enabled) can be used to interconnect routers in the building. Consequently, this would also enable logical groups to be formed even if devices with a role in the lighting application may be physically in different subnets (e.g., on wired and wireless networks). Connectivity between lighting devices may be realized, for instance, by means of IPv6 and (border) routers supporting 6LoWPAN {{RFC4944}}{{RFC6282}}. Group communication enables synchronous operation of a set of connected lights, ensuring that the light preset (e.g., dimming level or color) of a large set of luminaires are changed at the same perceived time. This is especially useful for providing a visual synchronicity of light effects to the user. As a practical guideline, events within a 200 ms interval are perceived as simultaneous by humans, which is necessary to ensure in many setups. Devices may reply back to the switches that issue on/off/dimming commands, in order to report about the execution of the requested operation (e.g., OK, failure, error) and their current operational status. In a typical lighting control scenario, a single switch is the only entity responsible for sending commands to a set of lighting devices. In more advanced lighting control use cases, a M-to-N communication topology would be required, for instance in case multiple sensors (presence or day-light) are responsible to trigger events to a set of lighting devices. Especially in professional lighting scenarios, the roles of client and server are configured by the lighting commissioner, and devices strictly follow those roles.
+* Lighting control: consider a building equipped with IP-connected lighting devices, switches, and border routers. The lighting devices acting as servers are organized into application groups and CoAP groups, according to their physical location in the building. For instance, lighting devices in a room or corridor can be configured as members of a single application group and corresponding CoAP group. Those lighting devices together with the switches acting as clients in the same room or corridor can be configured as members of the corresponding security group. Switches are then used to control the lighting devices by sending on/off/dimming commands to all lighting devices in the CoAP group, while border routers connected to an IP network backbone (which is also multicast-enabled) can be used to interconnect routers in the building. Consequently, this would also enable logical groups to be formed even if devices with a role in the lighting application may be physically in different subnets (e.g., on wired and wireless networks). Connectivity between lighting devices may be realized, for instance, by means of IPv6 and (border) routers supporting 6LoWPAN {{RFC4944}}{{RFC6282}}. Group communication enables synchronous operation of a set of connected lights, ensuring that the light preset (e.g., dimming level or color) of a large set of luminaires are changed at the same perceived time. This is especially useful for providing a visual synchronicity of light effects to the user. As a practical guideline, events within a 200 ms interval are perceived as simultaneous by humans, which is necessary to ensure in many setups. Devices may reply back to the switches that issue on/off/dimming commands, in order to report about the execution of the requested operation (e.g., OK, failure, error) and their current operational status. In a typical lighting control scenario, a single switch is the only entity responsible for sending commands to a set of lighting devices. In more advanced lighting control use cases, an M-to-N communication topology would be required, for instance in case multiple sensors (presence or day-light) are responsible to trigger events to a set of lighting devices. Especially in professional lighting scenarios, the roles of client and server are configured by the lighting commissioner, and devices strictly follow those roles.
 
 * Integrated building control: enabling Building Automation and Control Systems (BACSs) to control multiple heating, ventilation and air-conditioning units to predefined presets. Controlled units can be organized into application groups and CoAP groups in order to reflect their physical position in the building, e.g., devices in the same room can be configured as members of a single application group and corresponding CoAP group. As a practical guideline, events within intervals of seconds are typically acceptable. Controlled units are expected to possibly reply back to the BACS issuing control commands, in order to report about the execution of the requested operation (e.g., OK, failure, error) and their current operational status.
 
 * Software and firmware updates: software and firmware updates often comprise quite a large amount of data. This can overload a Low-power and Lossy Network (LLN) that is otherwise typically used to deal with only small amounts of data, on an infrequent base. Rather than sending software and firmware updates as unicast messages to each individual device, multicasting such updated data to a larger set of devices at once displays a number of benefits. For instance, it can significantly reduce the network load and decrease the overall time latency for propagating this data to all devices. Even if the complete whole update process itself is secured, securing the individual messages is important, in case updates consist of relatively large amounts of data. In fact, checking individual received data piecemeal for tampering avoids that devices store large amounts of partially corrupted data and that they detect tampering hereof only after all data has been received. Devices receiving software and firmware updates are expected to possibly reply back, in order to provide a feedback about the execution of the update operation (e.g., OK, failure, error) and their current operational status.
 
-* Parameter and configuration update: by means of multicast communication, it is possible to update the settings of a set of similar devices, both simultaneously and efficiently. Possible parameters are related, for instance, to network load management or network access controls. Devices receiving parameter and configuration updates are expected to possibly reply back, to provide a feedback about the execution of the update operation (e.g., OK, failure, error) and their current operational status.
+* Parameter and configuration update: by means of multicast communication, it is possible to update the settings of a set of similar devices, both simultaneously and efficiently. Possible parameters are related, for instance, to network load management or network access control. Devices receiving parameter and configuration updates are expected to possibly reply back, to provide a feedback about the execution of the update operation (e.g., OK, failure, error) and their current operational status.
 
 * Commissioning of Low-power and Lossy Network (LLN) systems: a commissioning device is responsible for querying all devices in the local network or a selected subset of them, in order to discover their presence, and be aware of their capabilities, default configuration, and operating conditions. Queried devices displaying similarities in their capabilities and features, or sharing a common physical location can be configured as members of a single application group and corresponding CoAP group. Queried devices are expected to reply back to the commissioning device, in order to notify their presence, and provide the requested information and their current operational status.
 
@@ -2387,4 +2387,4 @@ member is now optional to support and use for the Group Manager.
 
 The authors sincerely thank {{{Christian Amsüss}}}, {{{Stefan Beck}}}, {{{Rolf Blom}}}, {{{Carsten Bormann}}}, {{{Esko Dijk}}}, {{{Martin Gunnarsson}}}, {{{Klaus Hartke}}}, {{{Rikard Höglund}}}, {{{Richard Kelsey}}}, {{{Dave Robin}}}, {{{Jim Schaad}}}, {{{Ludwig Seitz}}}, {{{Peter van der Stok}}} and {{{Erik Thormarker}}} for their feedback and comments.
 
-The work on this document has been partly supported by VINNOVA and the Celtic-Next project CRITISEC; the H2020 project SIFIS-Home (Grant agreement 952652); the SSF project SEC4Factory under the grant RIT17-0032; and the EIT-Digital High Impact Initiative ACTIVE.
+The work on this document has been partly supported by VINNOVA and the Celtic-Next project CRITISEC; the H2020 projects SIFIS-Home (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement 101020259); the SSF project SEC4Factory under the grant RIT17-0032; and the EIT-Digital High Impact Initiative ACTIVE.
