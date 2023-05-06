@@ -335,7 +335,7 @@ If the HKDF Algorithm specified in the Common Context is "HKDF SHA-512" (identif
 
 More generally, if the group uses the pairwise mode, then the Pairwise Key Agreement Algorithm MUST be a COSE algorithm such that: i) it performs a direct ECDH Static-Static key agreement; and ii) it indicates the use of the same HKDF Algorithm used in the group as specified in the Common Context.
 
-Note that the HKDF Algorithm in the Common Context is denoted by the value of the corresponding COSE HMAC Algorithm. For example, the HKDF Algorithm "HKDF SHA-256" is specified as the HMAC Algorithm “HMAC 256/256” (COSE algorithm encoding: 5).
+Note that the HKDF Algorithm in the Common Context is denoted by the value of the corresponding COSE HMAC Algorithm. For example, the HKDF Algorithm "HKDF SHA-256" is specified as the HMAC Algorithm "HMAC 256/256" (COSE algorithm encoding: 5).
 
 ## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
@@ -416,7 +416,9 @@ where:
 
 * Recipient Auth Cred is the endpoint X's authentication credential from the Recipient Context associated with the endpoint X.
 
-* The Shared Secret is computed as a cofactor Diffie-Hellman shared secret, see Section 5.7.1.2 of {{NIST-800-56A}}, using the Pairwise Key Agreement Algorithm. The endpoint uses its private key from the Sender Context and the other endpoint's public key included in Recipient Auth Cred. Note the requirement of validation of public keys in {{ssec-crypto-considerations}}. For X25519 and X448, the procedure is described in {{Section 5 of RFC7748}} using public keys mapped to Montgomery coordinates, see {{montgomery}}.
+* The Shared Secret is computed as a cofactor Diffie-Hellman shared secret, see Section 5.7.1.2 of {{NIST-800-56A}}, using the Pairwise Key Agreement Algorithm. The endpoint uses its private key from the Sender Context and the other endpoint's public key included in Recipient Auth Cred. Note the requirement of validation of public keys in {{ssec-crypto-considerations}}.
+
+   In case the other endpoint's public key has COSE Key Type "EC2" (e.g., for the curves P-256, P-384 and P-512), then the public key is used as is. In case the other endpoint's public key has COSE Key Type "OKP", the procedure is described in {{Section 5 of RFC7748}}. In particular, if the public key is for X25519 or X448, it is used as is. Otherwise, if the public key is for the curve Ed25519 or Ed448, it is first mapped to Montgomery coordinates (see {{montgomery}}).
 
 * IKM-Sender is the Input Keying Material (IKM) used in the HKDF for the derivation of the Pairwise Sender Key. IKM-Sender is the byte string concatenation of Sender Auth Cred, Recipient Auth Cred and the Shared Secret. The authentication credentials Sender Auth Cred and Recipient Auth Cred are binary encoded as defined in {{sec-pub-key-format}}.
 
@@ -1983,7 +1985,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Renamed "Signature Encryption Algorithm" to "Group Encryption Algorithm".
 
-* Guidelines on the value of the Pairwise Key Agreement Algorithm.
+* Guidelines on the Pairwise Key Agreement Algorithm and derivation of the Diffie-Hellman secret.
 
 * The Group Manager is not optional, but always present.
 
