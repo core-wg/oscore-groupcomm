@@ -1967,6 +1967,22 @@ As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple gr
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
+## Version -17 to -18 ## {#sec-17-18}
+
+* Changed document title.
+
+* Renamed "Group Encryption Key" to "Signature Encryption Key".
+
+* Renamed "Signature Encryption Algorithm" to "Group Encryption Algorithm".
+
+* The Group Manager is not optional, but always present.
+
+* The authentication credential of the Group Manager can have a different format than that of the group members'.
+
+* Set-up of new endpoints moved to document body.
+
+* Clarifications and editorial improvements.
+
 ## Version -16 to -17 ## {#sec-16-17}
 
 * Definition and registration of the target attribute "gosc".
