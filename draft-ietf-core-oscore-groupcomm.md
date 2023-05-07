@@ -840,7 +840,7 @@ aad_array = [
    request_kid_context : bstr,
    OSCORE_option : bstr,
    sender_cred : bstr,
-   gm_cred : bstr / null
+   gm_cred : bstr
 ]
 ~~~~~~~~~~~
 {: #fig-ext-aad title="external_aad" artwork-align="center"}
@@ -869,7 +869,7 @@ Compared with {{Section 5.4 of RFC8613}}, the aad_array has the following differ
 
 * The new element 'sender_cred', containing the sender's authentication credential. This parameter MUST be set to a CBOR byte string, which encodes the sender's authentication credential in its original binary representation made available to other endpoints in the group (see {{sec-pub-key-format}}).
 
-* The new element 'gm_cred', containing the Group Manager's authentication credential. If no Group Manager maintains the group, this parameter MUST encode the CBOR simple value "null" (0xf6). Otherwise, this parameter MUST be set to a CBOR byte string, which encodes the Group Manager's authentication credential in its original binary representation made available to other endpoints in the group (see {{sec-pub-key-format}}). This prevents the attack described in {{ssec-group-cloning}}.
+* The new element 'gm_cred', containing the Group Manager's authentication credential. This parameter MUST be set to a CBOR byte string, which encodes the Group Manager's authentication credential in its original binary representation made available to other endpoints in the group (see {{sec-pub-key-format}}). This prevents the attack described in {{ssec-group-cloning}}.
 
 # OSCORE Header Compression {#compression}
 
@@ -2028,7 +2028,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * The possible use of a mode follows from the set parameters.
 
-* The Group Manager is not optional, but always present.
+* The Group Manager is always present; 'gm_cred' in the external_aad cannot be null anymore.
 
 * The authentication credential of the Group Manager can have a different format than that of the group members'.
 
