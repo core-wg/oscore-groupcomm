@@ -188,7 +188,7 @@ Group OSCORE defines two modes of operation, that can be used independently or t
 
 Both modes provide source authentication of CoAP messages. The application decides what mode to use, potentially on a per-message basis. Such decisions can be based, for instance, on pre-configured policies or dynamic assessing of the target recipient and/or resource, among other things. One important case is when requests are protected in group mode, and responses with the pairwise mode. Since such responses convey shorter integrity tags instead of bigger, full-fledged signatures, this significantly reduces the message overhead in case of many responses to one request.
 
-A special deployment of Group OSCORE is to use pairwise mode only. For example, consider the case of a constrained-node network {{RFC7228}} with a large number of CoAP endpoints and the objective to establish secure communication between any pair of endpoints with a small provisioning effort and message overhead. Since the total number of security associations that needs to be established grows with the square of the number of endpoints, it is desirable to restrict the amount of secret keying material provided to each endpoint. Moreover, a key establishment protocol would need to be executed for each security association. One solution to this is to deploy Group OSCORE, with the endpoints being part of a group, and use the pairwise mode. This solution has the benefit of providing a single shared secret, while distributing only the public keys of group members or a subset of those. After that, a CoAP endpoint can locally derive the OSCORE Security Context for the other endpoint in the group, and protect CoAP communications with very low overhead {{I-D.ietf-iotops-security-protocol-comparison}}.
+A special deployment of Group OSCORE is to use the pairwise mode only. For example, consider the case of a constrained-node network {{RFC7228}} with a large number of CoAP endpoints and the objective to establish secure communication between any pair of endpoints with a small provisioning effort and message overhead. Since the total number of security associations that needs to be established grows with the square of the number of endpoints, it is desirable to restrict the amount of secret keying material provided to each endpoint. Moreover, a key establishment protocol would need to be executed for each security association. One solution to this is to deploy Group OSCORE, with the endpoints being part of a group, and to use the pairwise mode. This solution has the benefit of providing a single shared secret, while distributing only the public keys of group members or a subset of those. After that, a CoAP endpoint can locally derive the OSCORE Security Context for the other endpoint in the group, and protect CoAP communications with very low overhead {{I-D.ietf-iotops-security-protocol-comparison}}.
 
 ## Terminology ## {#terminology}
 
@@ -286,7 +286,7 @@ The Security Context of Group OSCORE extends the Security Context defined in {{S
 | Recipient Context | ^ Pairwise Recipient Key for the other endpoint |
 +-------------------+-------------------------------------------------+
 ~~~~~~~~~~~
-{: #fig-additional-context-information title="Additions to the OSCORE Security Context. The optional elements labeled with * (with ^) are present only if the group uses the group mode (the pairwise mode)." artwork-align="center"}
+{: #fig-additional-context-information title="Additions to the OSCORE Security Context. The elements labeled with * and with ^ are relevant only for the group mode and only for the pairwise mode, respectively." artwork-align="center"}
 
 ## Common Context ## {#ssec-common-context}
 
@@ -295,7 +295,7 @@ The Common Context may be acquired from the Group Manager (see {{group-manager}}
 
 ### AEAD Algorithm ## {#ssec-common-context-aead-alg}
 
-The AEAD Algorithm (see {{Section 3.1 of RFC8613}}) SHALL identify the COSE AEAD algorithm to use for encryption when messages are protected using the pairwise mode (see {{sec-pairwise-protection}}). This algorithm MUST provide integrity protection. This parameter is not relevant if the group uses only the group mode, see {{ssec-common-context-cs-enc-alg}}.
+The AEAD Algorithm (see {{Section 3.1 of RFC8613}}) SHALL identify the COSE AEAD algorithm to use for encryption and decryption when messages are protected using the pairwise mode (see {{sec-pairwise-protection}}). This algorithm MUST provide integrity protection. If this parameter is not set, the pairwise mode is not used in the group.
 
 ### ID Context ## {#ssec-common-context-id-context}
 
@@ -311,11 +311,11 @@ The new parameter Group Manager Authentication Credential specifies the authenti
 
 ### Group Encryption Algorithm ## {#ssec-common-context-cs-enc-alg}
 
-The new parameter Group Encryption Algorithm identifies the algorithm to use for encryption and decryption, when messages are protected in group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection.
+The new parameter Group Encryption Algorithm identifies the algorithm to use for encryption and decryption, when messages are protected in group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection. If this parameter is not set, the group mode is not used in the group.
 
 ### Signature Algorithm ## {#ssec-common-context-cs-alg}
 
-The new Signature Algorithm identifies the digital signature algorithm used for computing and verifying the countersignature on the COSE object (see {{Sections 3.2 and 3.3 of RFC9338}}), when messages are protected in group mode (see {{mess-processing}}).
+The new Signature Algorithm identifies the digital signature algorithm used for computing and verifying the countersignature on the COSE object (see {{Sections 3.2 and 3.3 of RFC9338}}), when messages are protected in group mode (see {{mess-processing}}). If this parameter is not set, the group mode is not used in the group.
 
 ### Signature Encryption Key ## {#ssec-common-context-group-enc-key}
 
@@ -325,23 +325,23 @@ The Signature Encryption Key is derived as defined for Sender/Recipient Keys in 
 
 * The 'id' element of the 'info' array is the empty byte string.
 
-* The 'alg_aead' element of the 'info' array takes the value of Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}).
+* The 'alg_aead' element of the 'info' array specifies the Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}), encoded as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.
 
 * The 'type' element of the 'info' array is "SEKey". The label is an ASCII string and does not include a trailing NUL byte.
 
-* L and the 'L' element of the 'info' array are the size of the key for the Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}), in bytes. While the obtained Signature Encryption Key is never used with the Group Encryption Algorithm, its length was chosen to obtain a matching level of security.
+* L and the 'L' element of the 'info' array are the size of the key for the Group Encryption Algorithm specified in the Common Context (see {{ssec-common-context-cs-alg}}), in bytes. While the obtained Signature Encryption Key is never used with the Group Encryption Algorithm, its length was chosen to obtain a matching level of security.
 
 ### Pairwise Key Agreement Algorithm ## {#ssec-common-context-dh-alg}
 
-The new parameter Pairwise Key Agreement Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}).
+The new parameter Pairwise Key Agreement Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}). If this parameter is not set, the pairwise mode is not used in the group.
 
 If the HKDF Algorithm specified in the Common Context is "HKDF SHA-256" (identified as "HMAC 256/256", COSE algorithm encoding: 5), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-256" (COSE algorithm encoding: -27).
 
 If the HKDF Algorithm specified in the Common Context is "HKDF SHA-512" (identified as "HMAC 512/512", COSE algorithm encoding: 7), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-512" (COSE algorithm encoding: -28).
 
-More generally, if the group uses the pairwise mode, then the Pairwise Key Agreement Algorithm MUST be a COSE algorithm such that: i) it performs a direct ECDH Static-Static key agreement; and ii) it indicates the use of the same HKDF Algorithm used in the group as specified in the Common Context.
+Note that the HKDF Algorithm in the Common Context is denoted by the corresponding COSE HMAC Algorithm. For example, the HKDF Algorithm "HKDF SHA-256" is specified as the HMAC Algorithm "HMAC 256/256" (COSE algorithm encoding: 5).
 
-Note that the HKDF Algorithm in the Common Context is denoted by the value of the corresponding COSE HMAC Algorithm. For example, the HKDF Algorithm "HKDF SHA-256" is specified as the HMAC Algorithm "HMAC 256/256" (COSE algorithm encoding: 5).
+More generally, if Pairwise Key Agreement Algorithm is set, it MUST identify a COSE algorithm such that: i) it performs a direct ECDH Static-Static key agreement; and ii) it indicates the use of the same HKDF Algorithm used in the group as specified in the Common Context.
 
 ## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
@@ -349,7 +349,9 @@ OSCORE specifies the derivation of Sender Context and Recipient Context, specifi
 
 The derivation of Sender/Recipient Keys and Common IV defined in OSCORE applies also to Group OSCORE, with the following modification compared to {{Section 3.2.1 of RFC8613}}.
 
-If the group uses only the pairwise mode, then the 'alg_aead' element of the 'info' array takes the value of the AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}), else the value of the Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-enc-alg}}).
+* If Group Encryption Algorithm in the Common Context is not set (see {{ssec-common-context-cs-enc-alg}}), then the 'alg_aead' element of the 'info' array  MUST specify AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}), as per {{Section 5.4 of RFC8613}}.
+
+* Otherwise, the 'alg_aead' element of the 'info' array  MUST specify Group Encryption Algorithm from the Common Context as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.
 
 The Sender ID SHALL be unique for each endpoint in a group with a certain tuple (Master Secret, Master Salt, Group Identifier), see {{Section 3.3 of RFC8613}}.
 
@@ -364,7 +366,7 @@ An endpoint may admit a maximum number of Recipient Contexts for a same Security
 The authentication credentials of the endpoints in a group MUST be encoded according to the format used in the group, as indicated by the Authentication Credential Format parameter in the Common Context (see {{ssec-common-context-authcred-format}}). The authentication credential of the Group Manager SHOULD be encoded according to that same format. The format of authentication credentials MUST provide the public key and a comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).
 
 
-   If the group uses only the pairwise mode, then the public key algorithm is the Pairwise Key Agreement Algorithm used in the group, else the Signature Algorithm used in the group.
+   If Group Encryption Algorithm in the Common Context is not set (see {{ssec-common-context-cs-enc-alg}}), then the public key algorithm is the Pairwise Key Agreement Algorithm used in the group (see {{ssec-common-context-dh-alg}}), else the Signature Algorithm used in the group (see {{ssec-common-context-cs-alg}}).
 
    If the authentication credentials are X.509 certificates {{RFC5280}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
 
@@ -745,7 +747,7 @@ In order to verify countersignatures of messages in a group, a signature checker
 
 * The current Signature Encryption Key (see {{ssec-common-context-group-enc-key}}).
 
-* The identifiers of the algorithms used in the group (see {{sec-context}}), i.e.: i) Group Encryption Algorithm and Signature Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement Algorithm, if the group uses also the pairwise mode.
+* The identifiers of the algorithms used in the group (see {{sec-context}}), i.e.: i) Group Encryption Algorithm and Signature Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement Algorithm, if such parameters are set in the Common Context (see {{ssec-common-context-aead-alg}} and {{ssec-common-context-dh-alg}}).
 
 A signature checker MUST be authorized before it can retrieve such information, for example with the use of {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
@@ -829,7 +831,7 @@ external_aad = bstr .cbor aad_array
 aad_array = [
    oscore_version : uint,
    algorithms : [alg_aead : int / tstr / null,
-                 alg_signature_enc : int / tstr / null,
+                 alg_group_enc : int / tstr / null,
                  alg_signature : int / tstr / null,
                  alg_pairwise_key_agreement : int / tstr / null],
    request_kid : bstr,
@@ -847,19 +849,19 @@ Compared with {{Section 5.4 of RFC8613}}, the aad_array has the following differ
 
 * The 'algorithms' array is extended as follows.
 
-   The parameter 'alg_aead' MUST be set to the CBOR simple value "null" (0xf6) if the group does not use the pairwise mode, regardless whether the endpoint supports the pairwise mode or not. Otherwise, this parameter MUST encode the value of AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}), as per {{Section 5.4 of RFC8613}}.
+   The parameter 'alg_aead' MUST be set to the CBOR simple value "null" (0xf6) if the parameter AEAD Algorithm in the Security Context is not set (see {{sec-context}}). Otherwise, regardless of whether the endpoint supports the pairwise mode or not, this parameter MUST specify AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}) as per {{Section 5.4 of RFC8613}}.
 
    Furthermore, the 'algorithms' array additionally includes:
 
-   - 'alg_signature_enc', which specifies Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value "null" (0xf6) if the group does not use the group mode, regardless whether the endpoint supports the group mode or not. Otherwise, this parameter MUST encode the value of Group Encryption Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this AEAD algorithm.
+   - 'alg_group_enc', which specifies Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-enc-alg}}). This parameter MUST be set to the CBOR simple value "null" (0xf6) if the parameter Group Encryption Algorithm in the Common Context is not set. Otherwise, regardless of whether the endpoint supports the group mode or not, this parameter MUST specify Group Encryption Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.
 
-   - 'alg_signature', which specifies Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value "null" (0xf6) if the group does not use the group mode, regardless whether the endpoint supports the group mode or not. Otherwise, this parameter MUST encode the value of Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this signature algorithm.
+   - 'alg_signature', which specifies Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value "null" (0xf6) if the parameter Signature Algorithm in the Common Context is not set. Otherwise, regardless of whether the endpoint supports the group mode or not, this parameter MUST specify Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.
 
-   - 'alg_pairwise_key_agreement', which specifies Pairwise Key Agreement Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value "null" (0xf6) if the group does not use the pairwise mode, regardless whether the endpoint supports the pairwise mode or not. Otherwise, this parameter MUST encode the value of Pairwise Key Agreement Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this HKDF algorithm.
+   - 'alg_pairwise_key_agreement', which specifies Pairwise Key Agreement Algorithm from the Common Context (see {{ssec-common-context-dh-alg}}). This parameter MUST be set to the CBOR simple value "null" (0xf6) if Pairwise Key Agreement Algorithm in the Common Context is not set. Otherwise, regardless of whether the endpoint supports the pairwise mode or not, this parameter MUST specify Pairwise Key Agreement Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.
 
 * The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}).
 
-   This enables endpoints to safely keep an observation {{RFC7641}} or a Non-Notification Group Exchange active beyond a possible change of Gid (i.e., of ID Context), following a group rekeying (see {{sec-group-key-management}}). In fact, it ensures that every response, regardless whether it is an Observe notification or not, cryptographically matches with only one request, rather than with multiple ones that were protected with different keying material but share the same 'request_kid' and 'request_piv' values.
+   This enables endpoints to safely keep an observation {{RFC7641}} or a Non-Notification Group Exchange active beyond a possible change of Gid (i.e., of ID Context), following a group rekeying (see {{sec-group-key-management}}). In fact, it ensures that every response, regardless of whether it is an Observe notification or not, cryptographically matches with only one request, rather than with multiple ones that were protected with different keying material but share the same 'request_kid' and 'request_piv' values.
 
 * The new element 'OSCORE_option', containing the value of the OSCORE Option present in the protected message, encoded as a binary string. This prevents the attack described in {{ssec-cross-group-injection}} when using the group mode, as further explained  in {{sssec-cross-group-injection-group-mode}}.
 
@@ -1113,9 +1115,9 @@ To this end, an endpoint can take into account the different structure of the Se
 
 If either of the following conditions holds, a recipient endpoint MUST discard the incoming protected message:
 
-   - The Group Flag is set to 0 and the retrieved Security Context is associated with an OSCORE group, but the endpoint does not support the pairwise mode or any of the following algorithms is unset in the Security Context: the AEAD Algorithm and the Pairwise Key Agreement Algorithm.
+   - The Group Flag is set to 0 and the retrieved Security Context is associated with an OSCORE group, but the endpoint does not support the pairwise mode or any of the following algorithms is not set in the Security Context: the AEAD Algorithm and the Pairwise Key Agreement Algorithm.
 
-   - The Group Flag is set to 1 and the retrieved Security Context is associated with an OSCORE group, but the endpoint does not support the group mode or any of the following algorithms is unset in the Security Context: the Group Encryption Algorithm and the Signature Algorithm.
+   - The Group Flag is set to 1 and the retrieved Security Context is associated with an OSCORE group, but the endpoint does not support the group mode or any of the following algorithms is not set in the Security Context: the Group Encryption Algorithm and the Signature Algorithm.
 
    - The Group Flag is set to 1 but there is no Security Context associated with an OSCORE group.
 
@@ -1129,7 +1131,7 @@ Note that, if the Group Flag is set to 0, and the recipient endpoint retrieves a
 
 When using the group mode, messages are protected and processed as specified in {{RFC8613}}, with the modifications described in this section. The security objectives of the group mode are discussed in {{ssec-sec-objectives}}.
 
-The Group Manager indicates that the group uses (also) the group mode, as part of the group data provided to candidate group members when joining the group.
+The possible use of the group mode is indicated by the Group Manager as part of the group data provided to candidate group members when joining the group, according to which the parameters Group Encryption Algorithm and Signature Algorithm in the Security Context are set (see {{sec-context}}).
 
 During all the steps of the message processing, an endpoint MUST use the same Security Context for the considered group. That is, an endpoint MUST NOT install a new Security Context for that group (see {{new-sec-context}}) until the message processing is completed.
 
@@ -1252,7 +1254,7 @@ Note that the server always protects a response with the Sender Context from its
 
 * In step 3, if any of the following two conditions holds, the server MUST include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response. This prevents the AEAD nonce from the request from being reused.
 
-   - The response is not the first response that the server sends to the request, regardless whether it is an Observe notification {{RFC7641}} or a non-notification response to a group request (see {{sec-replay-protection-non-notifications}}).
+   - The response is not the first response that the server sends to the request, regardless of whether it is an Observe notification {{RFC7641}} or a non-notification response to a group request (see {{sec-replay-protection-non-notifications}}).
 
    - The server is using a different Security Context for the response compared to what was used to verify the request (see {{sec-group-key-management}}).
 
@@ -1396,7 +1398,11 @@ The particular actions following a successful or unsuccessful verification of th
 
 When using the pairwise mode of Group OSCORE, messages are protected and processed as in {{RFC8613}}, with the modifications described in this section. The security objectives of the pairwise mode are discussed in {{ssec-sec-objectives}}.
 
-The pairwise mode takes advantage of an existing Security Context for the group mode to establish a Security Context shared exclusively with any other member. In order to use the pairwise mode in a group that uses also the group mode, the signature scheme of the group mode MUST support a combined signature and encryption scheme. This can be, for example, signature using ECDSA, and encryption using AES-CCM with a key derived with ECDH. For encryption and decryption operations, the AEAD Algorithm from the Common Context is used (see {{ssec-common-context-aead-alg}}).
+The possible use of the pairwise mode is indicated by the Group Manager as part of the group data provided to candidate group members when joining the group, according to which the parameters AEAD Algorithm and Pairwise Key Agreement Algorithm in the Security Context are set (see {{sec-context}}).
+
+The pairwise mode takes advantage of an existing Security Context to establish keying material shared exclusively with any other member. For encryption and decryption operations in pairwise mode, the AEAD Algorithm from the Common Context is used (see {{ssec-common-context-aead-alg}}).
+
+In order to use the pairwise mode in a group where the group mode is also used (i.e., Group Encryption Algorithm and Signature Algorithm in the Security Context are set), the signature scheme of the group mode MUST support a combined signature and encryption scheme. For example, this can rely on signing operations using ECDSA, and encryption operations using AES-CCM with keying material derived through ECDH.
 
 The pairwise mode does not support external verifiers of source authentication and message integrity like the group mode does (see {{sec-processing-signature-checker}}).
 
@@ -1404,11 +1410,9 @@ An endpoint implementing only a silent server does not support the pairwise mode
 
 Endpoints using the CoAP Echo Option {{RFC9175}} and/or block-wise transfers {{RFC7959}} in a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set MUST support the pairwise mode. This applies, for example, to block-wise exchanges after a first block-wise request which targets all servers in the group and includes the CoAP Block2 option (see Section 3.8 of {{I-D.ietf-core-groupcomm-bis}}). This prevents the attack described in {{ssec-unicast-requests}}, which leverages requests sent over unicast to a single group member and protected in group mode.
 
-The pairwise mode cannot be used to protect messages intended for multiple recipients. In fact, the keying material used for pairwise mode is shared only between two endpoints.
+The pairwise mode cannot be used to protect messages intended for multiple recipients. In fact, the keying material used for the pairwise mode is shared only between two endpoints.
 
 However, a sender can use the pairwise mode to protect a message sent to (but not intended for) multiple recipients, if interested in a response from only one of them. For instance, this is useful to support the address discovery service defined in {{ssec-pre-conditions}}, when a single 'kid' value is indicated in the payload of a request sent to multiple recipients, e.g., over multicast.
-
-The Group Manager indicates that the group uses (also) the pairwise mode, as part of the group data provided to candidate group members when joining the group.
 
 ## Pre-Conditions ## {#ssec-pre-conditions}
 
@@ -2001,6 +2005,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Renamed "Signature Encryption Algorithm" to "Group Encryption Algorithm".
 
 * Guidelines on the Pairwise Key Agreement Algorithm and derivation of the Diffie-Hellman secret.
+
+* The possible use of a mode follows from the set parameters.
 
 * The Group Manager is not optional, but always present.
 
