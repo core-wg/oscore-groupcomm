@@ -233,32 +233,33 @@ This document refers to a group as a set of endpoints sharing keying material an
 How the Security Context is established by the group members is out of scope for this document, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to tell which Security Context was latest established. How to manage information about the group is described in terms of a Group Manager (see {{group-manager}}).
 
 An endpoint of the group may use the group mode (see {{mess-processing}}), the pairwise mode (see {{sec-pairwise-protection}}), or both, depending on the modes it supports and on the parameters of the Security Context.
-The Security Context of Group OSCORE extends the Security Context defined in {{Section 3 of RFC8613}} as follows (see {{fig-additional-context-information}}):
+The Security Context of Group OSCORE extends the Security Context defined in {{Section 3 of RFC8613}} as follows (see {{fig-additional-context-information}}).
 
-* One Common Context, shared by all the endpoints in the group.
+* One Common Context, shared by all the endpoints in the group and extended as defined below.
 
-    * For the group mode, the Common Context is extended with the following new parameters:
+    * The new parameter Authentication Credential Format, specifying the format of authentication credentials used in the group (see {{ssec-common-context-authcred-format}}).
 
-         - Group Encryption Algorithm, used for encrypting and decrypting messages protected in group mode, see {{ssec-common-context-cs-enc-alg}}.
+    * The new parameter Group Manager Authentication Credential, specifying the authentication credential of the Group Manager responsible for the group (see {{ssec-common-context-gm-pub-key}}).
 
-         - Signature Algorithm, used for computing and verifying the countersignature of messages protected in group mode, see {{ssec-common-context-cs-alg}}.
+    * For the group mode, the Common Context is extended with the following new parameters.
 
-         - Signature Encryption Key, used for encrypting and decrypting the countersignature of messages protected in group mode, see {{ssec-common-context-group-enc-key}}.
+         - Group Encryption Algorithm, used for encrypting and decrypting messages protected in group mode (see {{ssec-common-context-cs-enc-alg}}).
+
+         - Signature Algorithm, used for computing and verifying the countersignature of messages protected in group mode (see {{ssec-common-context-cs-alg}}).
+
+         - Signature Encryption Key, used for encrypting and decrypting the countersignature of messages protected in group mode (see {{ssec-common-context-group-enc-key}}).
 
     *  For the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm (see {{ssec-common-context-dh-alg}}) used for the agreement on a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}).
 
-    * The Common Context is extended with the authentication credential of the Group Manager, see {{ssec-common-context-gm-pub-key}}.
-
-
-* One Sender Context, extended with the following new parameters:
+* One Sender Context, extended with the following new parameters.
 
    * The endpoint's own private key used to sign messages protected in group mode (see {{mess-processing}}), or for deriving pairwise keys used with the pairwise mode (see {{sec-derivation-pairwise}}).
 
-   * The endpoint's own authentication credential containing its public key, see {{sec-pub-key-format}}.
+   * The endpoint's own authentication credential containing its public key (see {{sec-pub-key-format}}).
 
     * For the pairwise mode, the Sender Context is extended with the Pairwise Sender Keys associated with the other endpoints (see {{sec-derivation-pairwise}}).
 
-    * If the endpoint is configured exclusively as silent server (see {{terminology}}) then the Sender Context is omitted.
+    If the endpoint is configured exclusively as silent server (see {{terminology}}), then the Sender Context is omitted.
 
 * One Recipient Context for each other endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated with endpoints from which messages are not (expected to be) received.
 
@@ -270,7 +271,8 @@ The Security Context of Group OSCORE extends the Security Context defined in {{S
 +-------------------+-------------------------------------------------+
 | Context Component | New Information Elements                        |
 +-------------------+-------------------------------------------------+
-| Common Context    |   Group Manager Authentication Credential       |
+| Common Context    |   Authentication Credential Format              |
+|                   |   Group Manager Authentication Credential       |
 |                   | * Group Encryption Algorithm                    |
 |                   | * Signature Algorithm                           |
 |                   | * Signature Encryption Key                      |
@@ -298,6 +300,10 @@ The AEAD Algorithm (see {{Section 3.1 of RFC8613}}) SHALL identify the COSE AEAD
 ### ID Context ## {#ssec-common-context-id-context}
 
 The ID Context parameter (see {{Sections 3.1 and 3.3 of RFC8613}}) SHALL contain the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle potential collisions between Gids (see {{ssec-gid-collision}}).
+
+### Authentication Credential Format ## {#ssec-common-context-authcred-format}
+
+The new parameter Authentication Credential Format specifies the format of authentication credentials used in the group. Further details on authentication credentials are compiled in {{sec-pub-key-format}}.
 
 ### Group Manager Authentication Credential ## {#ssec-common-context-gm-pub-key}
 
@@ -1980,6 +1986,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -17 to -18 ## {#sec-17-18}
 
 * Changed document title.
+
+* Added Common Context parameter "Authentication Credential Format".
 
 * Renamed "Group Encryption Key" to "Signature Encryption Key". Consistent fixes in its derivation.
 
