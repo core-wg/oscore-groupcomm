@@ -887,9 +887,9 @@ The OSCORE header compression defined in {{Section 6 of RFC8613}} is used for co
 
 * This document defines the usage of the sixth least significant bit, called "Group Flag", in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is specified in {{iana-cons-flag-bits}}.
 
-* The Group Flag MUST be set to 1 if the OSCORE message is protected using the group mode (see {{mess-processing}}).
+* The Group Flag MUST be set to 1 if the Group OSCORE message is protected using the group mode (see {{mess-processing}}).
 
-* The Group Flag MUST be set to 0 if the OSCORE message is protected using the pairwise mode (see {{sec-pairwise-protection}}). The Group Flag MUST also be set to 0 for ordinary OSCORE messages processed according to {{RFC8613}}.
+* The Group Flag MUST be set to 0 if the Group OSCORE message is protected using the pairwise mode (see {{sec-pairwise-protection}}). The Group Flag MUST also be set to 0 for ordinary OSCORE messages processed according to {{RFC8613}}.
 
 ### Keystream Derivation for Countersignature Encryption ## {#sssec-encrypted-signature-keystream}
 
@@ -1157,7 +1157,7 @@ A client transmits a secure group request as described in {{Section 8.1 of RFC86
 
 * In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this document. The encoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, the Group Flag MUST be set to 1. The Group Encryption Algorithm from the Common Context MUST be used.
 
-* In step 5, the countersignature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this document. In particular, the payload of the OSCORE message includes also the encrypted countersignature.
+* In step 5, the countersignature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this document. In particular, the payload of the Group OSCORE message includes also the encrypted countersignature.
 
 In addition, when sending a group request, the following applies for the corresponding Non-Notification Group Exchange.
 
@@ -1272,7 +1272,7 @@ Note that the server always protects a response with the Sender Context from its
 
       That is, when responding to a request protected in pairwise mode, the server SHOULD include the 'kid' parameter in a response protected in group mode, if it is replying to that client for the first time since the assignment of its new Sender ID.
 
-* In step 5, the countersignature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this document. In particular the payload of the OSCORE message includes also the encrypted countersignature (see {{sec-cose-object-unprotected-field}}).
+* In step 5, the countersignature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this document. In particular the payload of the Group OSCORE message includes also the encrypted countersignature (see {{sec-cose-object-unprotected-field}}).
 
 
 ### Supporting Observe ### {#ssec-protect-response-observe}
