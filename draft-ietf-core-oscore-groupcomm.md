@@ -689,13 +689,11 @@ The occurrence of such an event and how long it would take to occur depend on th
 
    A. The Group Manager MUST check if the new Gid to be distributed is equal to the Birth Gid of any of the current group members. If any of such "elder members" is found in the group, then:
 
-    * The Group Manager MUST evict the elder members from the group. That is, the Group Manager MUST terminate their membership and MUST rekey the group in such a way that the new keying material is not provided to those evicted elder members.
+   -  The Group Manager MUST evict the elder members from the group. That is, the Group Manager MUST terminate their membership and, in the following steps, it MUST rekey the group in such a way that the new keying material is not provided to those evicted elder members.
 
-       This ensures that: i) an Observe notification {{RFC7641}} can never successfully match against the Observe requests of two different observations; and ii) a non-notification response can never successfully match against the group requests of two different Non-Notification Group Exchanges. In fact, the excluded elder members would eventually re-join the group, thus terminating any of their ongoing (long-lasting) observations (see {{sec-long-term-observations}}) and Non-Notification Group Exchanges (see {{sec-replay-protection-non-notifications}}).
+      This ensures that: i) an Observe notification {{RFC7641}} can never successfully match against the Observe requests of two different observations; and ii) a non-notification response can never successfully match against the group requests of two different Non-Notification Group Exchanges. In fact, the excluded elder members would eventually re-join the group, thus terminating any of their ongoing (long-lasting) observations (see {{sec-long-term-observations}}) and Non-Notification Group Exchanges (see {{sec-replay-protection-non-notifications}}).
 
-       Therefore, it is ensured by construction that no client can have with the same server two ongoing observations, or two ongoing Non-Notification Group Exchanges, or one ongoing observation and one ongoing Non-Notification Group Exchange, such that the two respective requests were protected using the same Partial IV, Gid and Sender ID.
-
-    * Until a further following group rekeying, the Group Manager MUST store the list of those latest-evicted elder members. If any of those endpoints re-joins the group before a further following group rekeying occurs, the Group Manager MUST NOT rekey the group upon their re-joining. When one of those endpoints re-joins the group, the Group Manager can rely, e.g., on the ongoing secure communication association to recognize the endpoint as included in the stored list.
+      Therefore, it is ensured by construction that no client can have with the same server two ongoing observations, or two ongoing Non-Notification Group Exchanges, or one ongoing observation and one ongoing Non-Notification Group Exchange, such that the two respective requests were protected using the same Partial IV, Gid and Sender ID.
 
 #### Recycling of Sender IDs ### {#sec-sid-recycling}
 
@@ -2000,6 +1998,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * The authentication credential of the Group Manager can have a different format than that of the group members'.
 
 * Set-up of new endpoints moved to document body.
+
+* Removed excessive requirements on group rekeying scheduling.
 
 * Clarifications and editorial improvements.
 
