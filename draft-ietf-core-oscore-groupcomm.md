@@ -361,7 +361,7 @@ An endpoint admits a maximum number of Recipient Contexts for a same Security Co
 
 ## Authentication Credentials ## {#sec-pub-key-format}
 
-The authentication credentials of the endpoints in a group MUST be encoded according to the format used in the group, as indicated by the Authentication Credential Format parameter in the Common Context. The authentication credential of the Group Manager SHOULD be encoded according to that same format. The used format MUST provide the public key as well as a comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).
+The authentication credentials of the endpoints in a group MUST be encoded according to the format used in the group, as indicated by the Authentication Credential Format parameter in the Common Context (see {{ssec-common-context-authcred-format}}). The authentication credential of the Group Manager SHOULD be encoded according to that same format. The format of authentication credentials MUST provide the public key and a comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).
 
 
    If the group uses only the pairwise mode, then the public key algorithm is the Pairwise Key Agreement Algorithm used in the group, else the Signature Algorithm used in the group.
