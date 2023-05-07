@@ -1161,7 +1161,7 @@ As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over mult
 
 According to {{Section 5.2.3 of RFC7252}}, responses to Non-confirmable group requests SHOULD also be Non-confirmable, but endpoints MUST be prepared to receive Confirmable responses in reply to a Non-confirmable group request. Confirmable group requests are acknowledged when sent over non-multicast transports, as specified in {{RFC7252}}.
 
-Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{RFC8613}}. However, a recipient MUST stop processing and reject any message which is malformed and does not follow the format specified in {{sec-cose-object}} of this document, or which is not cryptographically validated in a successful way.
+Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{RFC8613}}. In addition, a recipient MUST stop processing and reject any message which is malformed and does not follow the format specified in {{sec-cose-object}} of this document, or which is not cryptographically validated in a successful way per the processing defined in {{ssec-verify-request}} and {{ssec-verify-response}} of this document.
 
 In either case, it is RECOMMENDED that a server does not send back any error message in reply to a received request, if any of the two following conditions holds:
 
