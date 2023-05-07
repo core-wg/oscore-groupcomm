@@ -321,7 +321,7 @@ The Signature Encryption Key is derived as defined for Sender/Recipient Keys in 
 
 * The 'alg_aead' element of the 'info' array takes the value of Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}).
 
-* The 'type' element of the 'info' array is "Signature Encryption Key". The label is an ASCII string and does not include a trailing NUL byte.
+* The 'type' element of the 'info' array is "SEKey". The label is an ASCII string and does not include a trailing NUL byte.
 
 * L and the 'L' element of the 'info' array are the size of the key for the Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}), in bytes.
 
@@ -1981,7 +1981,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Changed document title.
 
-* Renamed "Group Encryption Key" to "Signature Encryption Key".
+* Renamed "Group Encryption Key" to "Signature Encryption Key". Consistent fixes in its derivation.
 
 * Renamed "Signature Encryption Algorithm" to "Group Encryption Algorithm".
 
