@@ -481,13 +481,13 @@ The mutable parts of the Security Context are updated by the endpoint when execu
 
 ### Loss of Mutable Security Context {#ssec-loss-mutable-context}
 
-An endpoint may lose its mutable Security Context, e.g., due to a reboot (see {{ssec-loss-mutable-context-total}}) or due to a deleted Recipient Context (see {{ssec-loss-mutable-context-overflow}}).
+An endpoint may lose its mutable Security Context, e.g., due to a reboot occurred in an unprepared way (see {{ssec-loss-mutable-context-total}}) or due to a deleted Recipient Context (see {{ssec-loss-mutable-context-overflow}}).
 
 If it is not feasible or practically possible to store and maintain up-to-date the mutable part in non-volatile memory (e.g., due to limited number of write operations), the endpoint MUST be able to detect a loss of the mutable Security Context, to prevent the re-use of a nonce with the same AEAD key, and to handle incoming replayed messages.
 
 #### Total Loss {#ssec-loss-mutable-context-total}
 
-In case a loss of the Sender Context and/or of the Recipient Contexts is detected (e.g., following a reboot), the endpoint MUST NOT protect further messages using this Security Context to avoid reusing an AEAD nonce with the same AEAD key.
+In case a loss of the Sender Context and/or of the Recipient Contexts is detected (e.g., following a reboot occurred in an unprepared way), the endpoint MUST NOT protect further messages using this Security Context to avoid reusing an AEAD nonce with the same AEAD key.
 
 Before resuming its operations in the group, the endpoint MUST retrieve new Security Context parameters from the Group Manager (see {{sec-group-re-join}}) and use them to derive a new Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). Since the new Sender Context includes newly derived encryption keys, an endpoint will not reuse the same pair (key, nonce), even when it is a server using the Partial IV of (old re-injected) requests to build the AEAD nonce for protecting the responses.
 
@@ -495,7 +495,7 @@ From then on, the endpoint MUST use the latest installed Sender Context to prote
 
 If not able to establish an updated Sender Context, e.g., because of lack of connectivity with the Group Manager, the endpoint MUST NOT protect further messages using the current Security Context and MUST NOT accept incoming messages from other group members, as currently unable to detect possible replays.
 
-An adversary may leverage the above to perform a Denial of Service attack and prevent some group members from communicating altogether. That is, the adversary can first block the communication path between the Group Manager and some individual group members. This can be achieved, for instance, by injecting fake responses to DNS queries for the Group Manager hostname, or by removing a network link used for routing traffic towards the Group Manager. Then, the adversary can induce a reboot for some endpoints in the group, e.g., by triggering a short power outage. After that, such endpoints that have lost their Sender Context and/or Recipient Contexts following the reboot would not be able to obtain new Security Context parameters from the Group Manager, as specified above. Thus, they would not be able to further communicate in the group until connectivity with the Group Manager is restored.
+An adversary may leverage the above to perform a Denial of Service attack and prevent some group members from communicating altogether. That is, the adversary can first block the communication path between the Group Manager and some individual group members. This can be achieved, for instance, by injecting fake responses to DNS queries for the Group Manager hostname, or by removing a network link used for routing traffic towards the Group Manager. Then, the adversary can induce an unprepared reboot for some endpoints in the group, e.g., by triggering a short power outage. After that, such endpoints that have lost their Sender Context and/or Recipient Contexts following the reboot would not be able to obtain new Security Context parameters from the Group Manager, as specified above. Thus, they would not be able to further communicate in the group until connectivity with the Group Manager is restored.
 
 #### Deleted Recipient Contexts {#ssec-loss-mutable-context-overflow}
 
@@ -1081,7 +1081,7 @@ The update of Replay Windows is described in {{ssec-sec-context-persistence}}.
 
 When receiving a request from a client for the first time, the server is not synchronized with the client's Sender Sequence Number, so the received message may be a delayed old message. This applies to a server that has just joined the group, with respect to already present clients, and recurs as new clients are added as group members.
 
-During its operations in the group, the server may also lose synchronization with a client's Sender Sequence Number. This can happen, for instance, if the server has rebooted or has deleted its previously synchronized version of the Recipient Context for that client (see {{ssec-loss-mutable-context}}).
+During its operations in the group, the server may also lose synchronization with a client's Sender Sequence Number. This can happen, for instance, if the server has rebooted in an unprepared way or has deleted its previously synchronized version of the Recipient Context for that client (see {{ssec-loss-mutable-context}}).
 
 Even if the server is synchronized with the client's Sender Sequence Number, the Partial IV only allows the server to determine the relative order of the requests from that client under the assumption that the client is honest.
 
@@ -1544,7 +1544,7 @@ If the verifications above fail, the server MUST NOT process the request further
 
 If the verifications above are successful, the server proceeds as follows. In case the Replay Window in the Recipient Context associated with the client has not been set yet, the server updates the Replay Window to mark the current Sender Sequence Number from the latest received request as seen (but all newer ones as new), and delivers the message as fresh to the application. Otherwise, the server discards the verification result and treats the message as fresh or as a replay, according to the existing Replay Window.
 
-A server should not deliver requests from a given client to the application until one valid request from that same client has been verified as fresh, as conveying an echoed Echo Option. A server may perform the challenge-response described above at any time, if synchronization with Sender Sequence Numbers of clients is lost, e.g., after a device reboot. A client has to be ready to perform the challenge-response based on the Echo Option if a server starts it.
+A server should not deliver requests from a given client to the application until one valid request from that same client has been verified as fresh, as conveying an echoed Echo Option. A server may perform the challenge-response described above at any time, if synchronization with Sender Sequence Numbers of clients is lost, e.g., after a device reboot occurred in an unprepared way. A client has to be ready to perform the challenge-response based on the Echo Option if a server starts it.
 
 It is the role of the server application to define under what circumstances Sender Sequence Numbers lose synchronization. This can include experiencing a "large enough" gap D = (SN2 - SN1), between the Sender Sequence Number SN1 of the latest accepted group request from a client and the Sender Sequence Number SN2 of a group request just received from that client. However, a client may send several unicast requests to different group members as protected in pairwise mode, which may result in the server experiencing the gap D in a relatively short time. This would induce the server to perform more challenge-response exchanges than actually needed.
 
