@@ -329,7 +329,7 @@ The Signature Encryption Key is derived as defined for Sender/Recipient Keys in 
 
 * The 'type' element of the 'info' array is "SEKey". The label is an ASCII string and does not include a trailing NUL byte.
 
-* L and the 'L' element of the 'info' array are the size of the key for the Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}), in bytes.
+* L and the 'L' element of the 'info' array are the size of the key for the Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}), in bytes. While the obtained Signature Encryption Key is never used with the Group Encryption Algorithm, its length was chosen to obtain a matching level of security.
 
 ### Pairwise Key Agreement Algorithm ## {#ssec-common-context-dh-alg}
 
