@@ -793,7 +793,7 @@ Building on {{Section 5 of RFC8613}}, this section defines how to use COSE {{RFC
 
 When protecting a message in group mode, the 'unprotected' field MUST additionally include the following parameter:
 
-* COSE_Countersignature0: its value is set to the encrypted countersignature of the COSE object, namely ENC_SIGNATURE. That is:
+* Countersignature0 version 2: its value is set to the encrypted countersignature of the COSE object, namely ENC_SIGNATURE. That is:
 
    - The countersignature of the COSE object, namely SIGNATURE, is computed by the sender as described in {{Sections 3.2 and 3.3 of RFC9338}}, by using its private key and according to the Signature Algorithm in the Security Context.
 
@@ -2001,7 +2001,7 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
 * Removed excessive requirements on group rekeying scheduling.
 
-* Clarifications and editorial improvements.
+* Clarifications, fixes and editorial improvements.
 
 ## Version -16 to -17 ## {#sec-16-17}
 
