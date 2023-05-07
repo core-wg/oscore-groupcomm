@@ -940,98 +940,118 @@ The examples assume that the plaintext (see {{Section 5.3 of RFC8613}}) is 6 byt
 
 ### Examples in Group Mode ## {#sssec-example-cose-group}
 
-* Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25, Partial IV = 5 and kid context = 0x44616c.
+Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25, Partial IV = 5 and kid context = 0x44616c.
+
+* Before compression (96 bytes):
 
 ~~~~~~~~~~~
-   * Before compression (96 bytes):
-
-      [
-      h'',
-      { 4:h'25', 6:h'05', 10:h'44616c', 11:h'de9e ... f1' },
-      h'aea0155667924dff8a24e4cb35b9'
-      ]
+   [
+     / protected / h'',
+     / unprotected / {
+       / kid /                           4 : h'25',
+       / Partial IV /                    6 : h'05',
+       / kid context /                  10 : h'44616c',
+       / Countersignature0 version 2 /  12 : h'66e6d9b0
+       db009f3e105a673f8855611726caed57f530f8cae9d0b168
+       513ab949fedc3e80a96ebe94ba08d3f8d3bf83487458e2ab
+       4c2f936ff78b50e33c885e35'
+     },
+     / ciphertext / h'aea0155667924dff8a24e4cb35b9'
+   ]
 ~~~~~~~~~~~
 
-~~~~~~~~~~~
-   * After compression (85 bytes):
-
-      Flag byte: 0b00111001 = 0x39 (1 byte)
-
-      Option Value: 0x39 05 03 44 61 6c 25 (7 bytes)
-
-      Payload: 0xaea0155667924dff8a24e4cb35b9 de9e ... f1
-      (14 bytes + size of the encrypted countersignature)
-~~~~~~~~~~~
-
-
-* Response with ciphertext = 0x60b035059d9ef5667c5a0710823b, kid = 0x52 and no Partial IV.
+* After compression (85 bytes):
 
 ~~~~~~~~~~~
-   * Before compression (88 bytes):
+   Flag byte: 0b00111001 = 0x39 (1 byte)
 
-      [
-      h'',
-      { 4:h'52', 11:h'ca1e ... b3' },
-      h'60b035059d9ef5667c5a0710823b'
-      ]
+   Option Value: 0x39 05 03 44 61 6c 25 (7 bytes)
+
+   Payload: 0xaea0155667924dff8a24e4cb35b9 de9e ... f1
+   (14 bytes + size of the encrypted countersignature)
 ~~~~~~~~~~~
 
+&nbsp;
+
+Response with ciphertext = 0x60b035059d9ef5667c5a0710823b, kid = 0x52 and no Partial IV.
+
+* Before compression (88 bytes):
+
 ~~~~~~~~~~~
-   * After compression (80 bytes):
+   [
+     / protected / h'',
+     / unprotected / {
+       / kid /                           4 : h'52',
+       / Countersignature0 version 2 /  12 : h'f5b659b8
+       24487eb349c5c5c8a3fe401784cade2892725438e8be0fab
+       daa2867ee6d29f68edb0818e50ebf98c28b923d0205f5162
+       e73662e27c1a3ec562a49b80'
+     },
+     / ciphertext / h'60b035059d9ef5667c5a0710823b'
+   ]
+~~~~~~~~~~~
 
-      Flag byte: 0b00101000 = 0x28 (1 byte)
+* After compression (80 bytes):
 
-      Option Value: 0x28 52 (2 bytes)
+~~~~~~~~~~~
+   Flag byte: 0b00101000 = 0x28 (1 byte)
 
-      Payload: 0x60b035059d9ef5667c5a0710823b ca1e ... b3
-      (14 bytes + size of the encrypted countersignature)
+   Option Value: 0x28 52 (2 bytes)
+
+   Payload: 0x60b035059d9ef5667c5a0710823b ca1e ... b3
+   (14 bytes + size of the encrypted countersignature)
 ~~~~~~~~~~~
 
 ### Examples in Pairwise Mode ## {#sssec-example-cose-pairwise}
 
-* Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25, Partial IV = 5 and kid context = 0x44616c.
+Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25, Partial IV = 5 and kid context = 0x44616c.
+
+* Before compression (29 bytes):
 
 ~~~~~~~~~~~
-   * Before compression (29 bytes):
-
-      [
-      h'',
-      { 4:h'25', 6:h'05', 10:h'44616c' },
-      h'aea0155667924dff8a24e4cb35b9'
-      ]
+   [
+     / protected / h'',
+     / unprotected / {
+       / kid /           4 : h'25',
+       / Partial IV /    6 : h'05',
+       / kid context /  10 : h'44616c'
+     },
+     / ciphertext / h'aea0155667924dff8a24e4cb35b9'
+   ]
 ~~~~~~~~~~~
 
-~~~~~~~~~~~
-   * After compression (21 bytes):
-
-      Flag byte: 0b00011001 = 0x19 (1 byte)
-
-      Option Value: 0x19 05 03 44 61 6c 25 (7 bytes)
-
-      Payload: 0xaea0155667924dff8a24e4cb35b9 (14 bytes)
-~~~~~~~~~~~
-
-
-* Response with ciphertext = 0x60b035059d9ef5667c5a0710823b and no Partial IV.
+* After compression (21 bytes):
 
 ~~~~~~~~~~~
-   * Before compression (18 bytes):
+   Flag byte: 0b00011001 = 0x19 (1 byte)
 
-      [
-      h'',
-      {},
-      h'60b035059d9ef5667c5a0710823b'
-      ]
+   Option Value: 0x19 05 03 44 61 6c 25 (7 bytes)
+
+   Payload: 0xaea0155667924dff8a24e4cb35b9 (14 bytes)
 ~~~~~~~~~~~
 
+&nbsp;
+
+Response with ciphertext = 0x60b035059d9ef5667c5a0710823b and no Partial IV.
+
+* Before compression (18 bytes):
+
 ~~~~~~~~~~~
-   * After compression (14 bytes):
+   [
+     / protected / h'',
+     / unprotected / {},
+     / ciphertext / h'60b035059d9ef5667c5a0710823b'
+   ]
+~~~~~~~~~~~
 
-      Flag byte: 0b00000000 = 0x00 (1 byte)
+* After compression (14 bytes):
 
-      Option Value: 0x (0 bytes)
+~~~~~~~~~~~
+   Flag byte: 0b00000000 = 0x00 (1 byte)
 
-      Payload: 0x60b035059d9ef5667c5a0710823b (14 bytes)
+   Option Value: 0x (0 bytes)
+
+   Payload: 0x60b035059d9ef5667c5a0710823b (14 bytes)
 ~~~~~~~~~~~
 
 # Message Binding, Sequence Numbers, Freshness and Replay Protection
@@ -1847,7 +1867,7 @@ For the public key translation from Ed25519 (Ed448) to X25519 (X448) specified i
 
 The security of using the same key pair for Diffie-Hellman and for signing (by considering the ECDH procedure in {{sec-derivation-pairwise}} as a Key Encapsulation Mechanism (KEM)) is demonstrated in {{Degabriele}} and {{Thormarker}}.
 
-Applications using ECDH (except X25519 and X448) based KEM in {{sec-derivation-pairwise}} are assumed to verify that a peer endpoint’s public key is on the expected curve and that the shared secret is not the point at infinity. The KEM in {{Degabriele}} checks that the shared secret is different from the point at infinity, as does the procedure in Section 5.7.1.2 of {{NIST-800-56A}} which is referenced in {{sec-derivation-pairwise}}.
+Applications using ECDH (except X25519 and X448) based KEM in {{sec-derivation-pairwise}} are assumed to verify that a peer endpoint's public key is on the expected curve and that the shared secret is not the point at infinity. The KEM in {{Degabriele}} checks that the shared secret is different from the point at infinity, as does the procedure in Section 5.7.1.2 of {{NIST-800-56A}} which is referenced in {{sec-derivation-pairwise}}.
 
 Extending Theorem 2 of {{Degabriele}}, {{Thormarker}} shows that the same key pair can be used with X25519 and Ed25519 (X448 and Ed448) for the KEM specified in {{sec-derivation-pairwise}}. By symmetry in the KEM used in this document, both endpoints can consider themselves to have the recipient role in the KEM – as discussed in Section 7 of {{Thormarker}} - and rely on the mentioned proofs for the security of their key pairs.
 
@@ -2015,6 +2035,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Set-up of new endpoints moved to document body.
 
 * The encrypted countersignature is a result of the header compression, not of COSE.
+
+* Revised examples of compressed and non-compressed COSE object.
 
 * Removed excessive requirements on group rekeying scheduling.
 
