@@ -325,11 +325,11 @@ The Signature Encryption Key is derived as defined for Sender/Recipient Keys in 
 
 * The 'id' element of the 'info' array is the empty byte string.
 
-* The 'alg_aead' element of the 'info' array specifies the Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}), encoded as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.
+* The 'alg_aead' element of the 'info' array specifies the Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-enc-alg}}), encoded as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.
 
 * The 'type' element of the 'info' array is "SEKey". The label is an ASCII string and does not include a trailing NUL byte.
 
-* L and the 'L' element of the 'info' array are the size of the key for the Group Encryption Algorithm specified in the Common Context (see {{ssec-common-context-cs-alg}}), in bytes. While the obtained Signature Encryption Key is never used with the Group Encryption Algorithm, its length was chosen to obtain a matching level of security.
+* L and the 'L' element of the 'info' array are the size of the key for the Group Encryption Algorithm specified in the Common Context (see {{ssec-common-context-cs-enc-alg}}), in bytes. While the obtained Signature Encryption Key is never used with the Group Encryption Algorithm, its length was chosen to obtain a matching level of security.
 
 ### Pairwise Key Agreement Algorithm ## {#ssec-common-context-dh-alg}
 
