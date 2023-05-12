@@ -119,6 +119,7 @@ informative:
   I-D.irtf-cfrg-det-sigs-with-noise:
   I-D.amsuess-core-cachable-oscore:
   I-D.tiloca-core-oscore-capable-proxies:
+  I-D.tiloca-core-groupcomm-proxy:
   RFC4944:
   RFC4949:
   RFC5280:
@@ -127,6 +128,7 @@ informative:
   RFC6690:
   RFC7228:
   RFC7959:
+  RFC8075:
   RFC8392:
   RFC9147:
   RFC9200:
@@ -164,7 +166,7 @@ entity:
 
 --- abstract
 
-This document defines Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of CoAP messages exchanged between members of a group, e.g., sent over IP multicast. In particular, the described approach defines how OSCORE is used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with any other member of the group for pairwise OSCORE communication.
+This document defines Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of CoAP messages exchanged between members of a group, e.g., sent over IP multicast. In particular, the described approach defines how OSCORE is used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with any other member of the group for pairwise OSCORE communication. Group OSCORE can be used between endpoints communicating with CoAP or CoAP-mappable HTTP.
 
 --- middle
 
@@ -175,7 +177,7 @@ The Constrained Application Protocol (CoAP) {{RFC7252}} is a web transfer protoc
 Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} describes a security protocol based on the exchange of protected CoAP messages. OSCORE builds on CBOR Object Signing and Encryption (COSE) {{RFC9052}}{{RFC9053}} and provides end-to-end encryption, integrity, replay protection and binding of response to request between a sender and a recipient, independent of the transport layer also in the presence of intermediaries.
 To this end, a CoAP message is protected by including its payload (if any), certain options, and header fields in a COSE object within the CoAP payload and the CoAP OSCORE option, thereby replacing those message fields with an authenticated and encrypted object.
 
-This document defines Group OSCORE, a security protocol for Group communication for CoAP {{I-D.ietf-core-groupcomm-bis}}, providing the same end-to-end security properties as OSCORE in the case where CoAP requests have multiple recipients. In particular, the described approach defines how OSCORE is used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with any other member of the group for pairwise protected OSCORE communication. Just like OSCORE, Group OSCORE is independent of the transport layer and works wherever CoAP does.
+This document defines Group OSCORE, a security protocol for Group communication with CoAP {{I-D.ietf-core-groupcomm-bis}} and CoAP-mappable HTTP requests and responses, providing the same end-to-end security properties as OSCORE in the case where requests have multiple recipients. In particular, the described approach defines how OSCORE is used in a group communication setting to provide source authentication for group requests, sent by a client to multiple servers, and for protection of the corresponding responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with any other member of the group for pairwise protected OSCORE communication. Just like OSCORE, Group OSCORE is independent of the transport layer and works wherever CoAP does.
 
 As with OSCORE, it is possible to combine Group OSCORE with communication security on other layers. One example is the use of transport layer security, such as DTLS {{RFC9147}}, between one client and one proxy (and vice versa), or between one proxy and one server (and vice versa). This prevents observers from accessing addressing information conveyed in CoAP options that would not be protected by Group OSCORE, but would be protected by DTLS. These options include Uri-Host, Uri-Port and Proxy-Uri. Note that DTLS does not define how to secure messages sent over IP multicast.
 Group OSCORE is also intended to work with OSCORE capable proxies {{I-D.tiloca-core-oscore-capable-proxies}} thereby enabling, for example, nested OSCORE operations with OSCORE protected communication between CoAP client and proxy, carrying additionally protected Group OSCORE messages protected between CoAP client and servers.
@@ -189,6 +191,8 @@ Group OSCORE defines two modes of operation, that can be used independently or t
 Both modes provide source authentication of CoAP messages. The application decides what mode to use, potentially on a per-message basis. Such decisions can be based, for instance, on pre-configured policies or dynamic assessing of the target recipient and/or resource, among other things. One important case is when requests are protected in group mode, and responses with the pairwise mode. Since such responses convey shorter integrity tags instead of bigger, full-fledged signatures, this significantly reduces the message overhead in case of many responses to one request.
 
 A special deployment of Group OSCORE is to use the pairwise mode only. For example, consider the case of a constrained-node network {{RFC7228}} with a large number of CoAP endpoints and the objective to establish secure communication between any pair of endpoints with a small provisioning effort and message overhead. Since the total number of security associations that needs to be established grows with the square of the number of endpoints, it is desirable to restrict the amount of secret keying material provided to each endpoint. Moreover, a key establishment protocol would need to be executed for each security association. One solution to this is to deploy Group OSCORE, with the endpoints being part of a group, and to use the pairwise mode. This solution has the benefit of providing a single shared secret, while distributing only the public keys of group members or a subset of those. After that, a CoAP endpoint can locally derive the OSCORE Security Context for the other endpoint in the group, and protect CoAP communications with very low overhead {{I-D.ietf-iotops-security-protocol-comparison}}.
+
+In some circumstances, Group OSCORE messages may be transported in HTTP, e.g., when they are protected with the pairwise mode and target a single recipient, or when they are protected with the group mode and target multiple CoAP recipients through cross-protocol translators such as HTTP-to-CoAP proxies {{RFC8075}}{{I-D.tiloca-core-groupcomm-proxy}}. The use of Group OSCORE with HTTP is as defined for OSCORE in {{Section 11 of RFC8613}}.
 
 ## Terminology ## {#terminology}
 
@@ -2012,6 +2016,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -17 to -18 ## {#sec-17-18}
 
 * Changed document title.
+
+* Possible use with CoAP-mappable HTTP.
 
 * Added Common Context parameter "Authentication Credential Format".
 
