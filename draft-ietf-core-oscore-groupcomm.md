@@ -1836,9 +1836,15 @@ Since one-to-many communication such as multicast usually involves unreliable tr
 
 A server may not be synchronized with a the client's Sender Sequence Number, or a Replay Window may be initialized as not valid, see {{ssec-loss-mutable-context}} for causes and measures to take in such situations. The server can either retrieve a new security context or synchronize sequence numbers before resuming to accept incoming messages from other group members.
 
+## Message Ordering {#ssec-seccons-ordering}
+
+Assuming the other endpoint is honest, Group OSCORE provides relative ordering of received messages. For a given Security Context, the received Partial IV allows the recipient endpoint to determine the order in which requests or responses were sent by the other endpoint.
+
+In case the Partial IV is omitted, this indicates that the notification was the first in that series of observations. For ordinary responses, the client only knows that a received response is not older than the corresponding request.
+
 ## Message Freshness {#ssec-seccons-freshness}
 
-As in OSCORE, Group OSCORE provides only the guarantee that the request is not older than the security context. Assuming the other endpoint is honest, it also provides relative ordering in the sense that the received (or omitted) Partial IV allows a recipient to determine the order in which requests or responses were sent.
+As in OSCORE, Group OSCORE provides only the guarantee that the request is not older than the security context.
 
 As discussed in {{sec-freshness}}, a server may use the approach described in {{sec-synch-challenge-response}} to assert freshness.
 
