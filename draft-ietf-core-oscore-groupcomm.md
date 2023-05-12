@@ -1715,7 +1715,11 @@ Furthermore, as described below, a group rekeying may temporarily result in misa
 
 In this case, the sender protects a message using the old Security Context, i.e., before having installed the new Security Context. However, the recipient receives the message after having installed the new Security Context, and is thus unable to correctly process it.
 
-A possible way to ameliorate this issue is to preserve the old, recent, Security Context for a maximum amount of time defined by the application. By doing so, the recipient can still try to process the received message using the old retained Security Context as a second attempt. This makes particular sense when the recipient is a client, that would hence be able to process incoming responses protected with the old, recent, Security Context used to protect the associated group request. Instead, a recipient server would better and more simply discard an incoming group request which is not successfully processed with the new Security Context.
+A possible way to ameliorate this issue is to preserve the old retained Security Context for a maximum amount of time defined by the application. By doing so, the recipient can still try to process the received message using the old retained Security Context.
+
+This makes particular sense when the recipient is a client, that would hence be able to process incoming responses protected with the old retained Security Context used to protect the associated group request. If, as typically expected, the old Gid is not included in the response, then the client will first fail to process the response using the latest Security Context, and then use the old retained Security Context as a second attempt.
+
+Instead, a recipient server can immediately process an incoming request with the old retained Security Context, as signalled by the old Gid that is always included in requests. However, the server would better and more simply discard such an incoming group request.
 
 This tolerance preserves the processing of secure messages throughout a long-lasting key rotation, as group rekeying processes may likely take a long time to complete, especially in large groups. On the other hand, a former (compromised) group member can abusively take advantage of this, and send messages protected with the old retained Security Context. Therefore, a conservative application policy should not admit the retention of old Security Contexts.
 
@@ -2048,6 +2052,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Removed excessive requirements on group rekeying scheduling.
 
 * More considerations on the strictness of group key management.
+
+* Clearer alternatives on retaining an old Security Context.
 
 * Revised used of terminology on freshness.
 
