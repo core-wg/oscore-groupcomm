@@ -1819,7 +1819,7 @@ The impact of such an attack depends especially on the REST method of the reques
 
 A client can instead use the pairwise mode as defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, a client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast. For an example where this is not fulfilled, see {{Section 9.2.1 of I-D.ietf-core-observe-multicast-notifications}}.
 
-With particular reference to block-wise transfers {{RFC7959}}, {{Section 3.8 of I-D.ietf-core-groupcomm-bis}} points out that, while an initial request including the CoAP Block2 option can be sent over multicast, any other request in a transfer has to occur over unicast, individually addressing the servers in the group.
+The use of block-wise transfers {{RFC7959}} with group communication for CoAP is as discussed in {{Section 3.8 of I-D.ietf-core-groupcomm-bis}}.
 
 Additional considerations are discussed in {{sec-synch-challenge-response}}, with respect to requests including a CoAP Echo Option {{RFC9175}} that have to be sent over unicast, as a challenge-response method for servers to achieve synchronization of clients' Sender Sequence Number.
 
