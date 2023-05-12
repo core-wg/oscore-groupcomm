@@ -1266,7 +1266,7 @@ If Observe {{RFC7641}} is supported, the following holds for each newly started 
 
 ## Protecting the Response ## {#ssec-protect-response}
 
-If a server generates a CoAP message in response to a Group OSCORE request, then the server SHALL follow the description in {{Section 8.3 of RFC8613}}, with the modifications described in this section.
+When using the group mode to protect a response, the server SHALL follow the description in {{Section 8.3 of RFC8613}}, with the modifications described in this section.
 
 Note that the server always protects a response with the Sender Context from its latest Security Context, and that establishing a new Security Context resets the Sender Sequence Number to 0 (see {{sec-group-key-management}}).
 
