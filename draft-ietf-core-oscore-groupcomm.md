@@ -1852,7 +1852,7 @@ In either case, an internal on-path adversary would not be able to mix up the Ec
 
 ## Client Aliveness {#ssec-client-aliveness}
 
-Building on {{Section 12.5 of RFC8613}}, a server may use the CoAP Echo Option {{RFC9175}} to verify the aliveness of the client that originated a received request, by using the approach described in {{sec-synch-challenge-response}} of this document.
+Like in OSCORE, {{Section 12.5 of RFC8613}}, a server may verify the aliveness of the client by using the CoAP Echo Option {{RFC9175}} as described in {{sec-synch-challenge-response}}.
 
 ## Cryptographic Considerations {#ssec-crypto-considerations}
 
