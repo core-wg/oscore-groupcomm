@@ -1087,9 +1087,9 @@ Even if the server is synchronized with the client's Sender Sequence Number, the
 
 If the application requires freshness, e.g., according to time- or event-based policies (see {{Section 2.5.1 of RFC9175}}), the server can use the approach in {{sec-synch-challenge-response}} as a variant of the procedure in {{Section B.1.2 of RFC8613}}, before delivering request messages from that client to the application. This also makes the server (re-)synchronize with a client's Sender Sequence Number.
 
-Like in OSCORE {{RFC8613}}, assuming an honest server, the message binding guarantees that a response is not older than its request, so the same properties as stated in {{Section 7.3 of RFC8613}} applies:
+Like in OSCORE {{RFC8613}}, assuming an honest server, the message binding guarantees that a response is not older than its request, so the same properties as stated in {{Section 7.3 of RFC8613}} apply:
 
-* Freshness of a response can be assessed if it is received soon after the request.
+* The freshness of a response can be assessed if it is received soon after the request.
 
 * For notifications, this assessment gets weaker with time, and it is RECOMMENDED that the client regularly re-register the observation.
 
@@ -1103,7 +1103,7 @@ This applies also to non-notification responses:
 
 * In case of a response to a group request, multiple such responses can be received from the same server in reply to the same group request, until the CoAP Token value associated with the group request is freed up {{I-D.ietf-core-groupcomm-bis}}. Therefore, the freshness guarantee gets weaker with time.
 
-* For non-notification responses to group requests, the received Partial IV allows a recipient to determine the relative order of requests or responses.
+* In case of responses to group requests, the received Partial IV allows a recipient to determine the relative order of requests or responses.
 
 ## Replay Protection # {#sec-replay-protection}
 
@@ -2048,6 +2048,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Removed excessive requirements on group rekeying scheduling.
 
 * More considerations on the strictness of group key management.
+
+* Revised used of terminology on freshness.
 
 * Clarifications, fixes and editorial improvements.
 
