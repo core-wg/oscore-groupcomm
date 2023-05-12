@@ -1842,7 +1842,7 @@ As in OSCORE, Group OSCORE provides only the guarantee that the request is not o
 
 As discussed in {{sec-freshness}}, a server may use the approach described in {{sec-synch-challenge-response}} to assert freshness and synchronize sequence numbers.
 
-The challenge-response approach described in {{sec-synch-challenge-response}} provides an assurance of absolute message freshness. However, it can result in an impact on performance which is undesirable or unbearable, especially in large groups where many endpoints at the same time might join as new members or lose synchronization.
+The challenge-response approach described in {{sec-synch-challenge-response}} provides an assurance of freshness of the request without depending on the honesty of the client. However, it can result in an impact on performance which is undesirable or unbearable, especially in large groups where many endpoints at the same time might join as new members or lose synchronization.
 
 Endpoints configured as silent servers are not able to perform the challenge-response described above, as they do not store a Sender Context to secure the 4.01 (Unauthorized) response to the client. Thus, silent servers should adopt alternative approaches to achieve and maintain synchronization with Sender Sequence Numbers of clients.
 
