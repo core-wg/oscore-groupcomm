@@ -1856,6 +1856,8 @@ As discussed in {{sec-freshness}}, a server may use the approach described in {{
 
 Building on {{Section 12.5 of RFC8613}}, a server may use the CoAP Echo Option {{RFC9175}} to verify the aliveness of the client that originated a received request, by using the approach described in {{sec-synch-challenge-response}} of this document.
 
+In the interest of avoiding otherwise unnecessary uses of such an approach, the server can exploit the fact that the received request cannot be older than the Security Context used to protect it. This effectively allows the server to verify the client aliveness relative to the installation of the latest group keying material.
+
 ## Cryptographic Considerations {#ssec-crypto-considerations}
 
 The same considerations from {{Section 12.6 of RFC8613}} about the maximum Sender Sequence Number hold for Group OSCORE.
