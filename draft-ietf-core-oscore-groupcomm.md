@@ -1834,13 +1834,13 @@ Note that the Partial IV of an endpoint does not necessarily grow monotonically.
 
 Since one-to-many communication such as multicast usually involves unreliable transports, the simplification of the Replay Window to a size of 1 suggested in {{Section 7.4 of RFC8613}} is not viable with Group OSCORE, unless exchanges in the group rely only on unicast messages.
 
-A server may not be synchronized with a the client's Sender Sequence Number, or a Replay Window may be initialized as not valid, see {{ssec-loss-mutable-context}}. {{ssec-loss-mutable-context-total}} and {{ssec-loss-mutable-context-overflow}} define measures that endpoints need to take in such situations, before resuming to accept incoming messages from other group members.
+A server may not be synchronized with a the client's Sender Sequence Number, or a Replay Window may be initialized as not valid, see {{ssec-loss-mutable-context}} for causes and measures to take in such situations. The server can either retrieve a new security context or synchronize sequence numbers before resuming to accept incoming messages from other group members.
 
 ## Message Freshness {#ssec-seccons-freshness}
 
 As in OSCORE, Group OSCORE provides only the guarantee that the request is not older than the security context. Assuming the other endpoint is honest, it also provides relative ordering in the sense that the received (or omitted) Partial IV allows a recipient to determine the order in which requests or responses were sent.
 
-As discussed in {{sec-freshness}}, a server may use the approach described in {{sec-synch-challenge-response}} to assert freshness and synchronize sequence numbers.
+As discussed in {{sec-freshness}}, a server may use the approach described in {{sec-synch-challenge-response}} to assert freshness.
 
 The challenge-response approach described in {{sec-synch-challenge-response}} provides an assurance of freshness of the request without depending on the honesty of the client. However, it can result in an impact on performance which is undesirable or unbearable, especially in large groups where many endpoints at the same time might join as new members or lose synchronization.
 
