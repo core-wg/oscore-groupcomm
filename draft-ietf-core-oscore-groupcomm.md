@@ -1844,15 +1844,13 @@ In case the Partial IV is omitted in a notification, this indicates that the obs
 
 ## Message Freshness {#ssec-seccons-freshness}
 
-As in OSCORE, Group OSCORE provides only the guarantee that the request is not older than the security context.
-
-As discussed in {{sec-freshness}}, a server may use the approach described in {{sec-synch-challenge-response}} to assert freshness.
+As in OSCORE, Group OSCORE provides only the guarantee that the request is not older than the security context. Other aspects of freshness are discussed in {{sec-freshness}}.
 
 The challenge-response approach described in {{sec-synch-challenge-response}} provides an assurance of freshness of the request without depending on the honesty of the client. However, it can result in an impact on performance which is undesirable or unbearable, especially in large groups where many endpoints at the same time might join as new members or lose synchronization.
 
 Endpoints configured as silent servers are not able to perform the challenge-response described above, as they do not store a Sender Context to secure the 4.01 (Unauthorized) response to the client. Thus, silent servers should adopt alternative approaches to achieve and maintain synchronization with Sender Sequence Numbers of clients.
 
-Since requests including the Echo Option are sent over unicast, a server can be victim of the attack discussed in {{ssec-unicast-requests}}, in case such requests are protected in group mode. Instead, protecting those requests with the pairwise mode prevents the attack above. In fact, only the exact server involved in the challenge-response exchange is able to derive the pairwise key used by the client to protect the request including the Echo Option.
+Since requests including the Echo Option are sent over unicast, a server can be victim of the attack discussed in {{ssec-unicast-requests}}, in case such requests are protected in group mode. Instead, protecting those requests with the pairwise mode prevents the attack above. In fact, only the very server involved in the challenge-response exchange is able to derive the pairwise key used by the client to protect the request including the Echo Option.
 
 In either case, an internal on-path adversary would not be able to mix up the Echo Option value of two different unicast requests, sent by a same client to any two different servers in the group. In fact, even if the group mode was used, this would require the adversary to forge the countersignature of both requests. As a consequence, each of the two servers remains able to selectively accept a request with the Echo Option only if it is waiting for that exact integrity-protected Echo Option value, and is thus the intended recipient.
 
