@@ -1838,9 +1838,9 @@ A server may not be synchronized with a the client's Sender Sequence Number, or 
 
 ## Message Ordering {#ssec-seccons-ordering}
 
-Assuming the other endpoint is honest, Group OSCORE provides relative ordering of received messages. For a given Security Context, the received Partial IV allows the recipient endpoint to determine the order in which requests or notifications were sent by the other endpoint. 
+Assuming the other endpoint is honest, Group OSCORE provides relative ordering of received messages. For a given Security Context, the received Partial IV allows the recipient endpoint to determine the order in which requests or notifications were sent by the other endpoint.
 
-In case the Partial IV is omitted in a notification, this indicates that the observation was the oldest, see {{Section 7.4.1 or RFC8613}}. For ordinary responses, the client only knows that a received response is not older than the corresponding request.
+In case the Partial IV is omitted in a notification, this indicates that the observation was the oldest, see {{Section 7.4.1 of RFC8613}}. For ordinary responses, the client only knows that a received response is not older than the corresponding request.
 
 ## Message Freshness {#ssec-seccons-freshness}
 
