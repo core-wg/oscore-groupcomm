@@ -1834,13 +1834,13 @@ Note that the Partial IV of an endpoint does not necessarily grow monotonically.
 
 Since one-to-many communication such as multicast usually involves unreliable transports, the simplification of the Replay Window to a size of 1 suggested in {{Section 7.4 of RFC8613}} is not viable with Group OSCORE, unless exchanges in the group rely only on unicast messages.
 
-A server may not be synchronized with a the client's Sender Sequence Number, or a Replay Window may be initialized as not valid, see {{ssec-loss-mutable-context}} for causes and measures to take in such situations. The server can either retrieve a new security context or synchronize sequence numbers before resuming to accept incoming messages from other group members.
+A server may not be synchronized with a the client's Sender Sequence Number, or a Replay Window may be initialized as invalid, see {{ssec-loss-mutable-context}}. The server can either retrieve a new security context or synchronize the sequence numbers before resuming to accept incoming messages from other group members.
 
 ## Message Ordering {#ssec-seccons-ordering}
 
-Assuming the other endpoint is honest, Group OSCORE provides relative ordering of received messages. For a given Security Context, the received Partial IV allows the recipient endpoint to determine the order in which requests or responses were sent by the other endpoint.
+Assuming the other endpoint is honest, Group OSCORE provides relative ordering of received messages. For a given Security Context, the received Partial IV allows the recipient endpoint to determine the order in which requests or notifications were sent by the other endpoint. 
 
-In case the Partial IV is omitted, this indicates that the notification was the first in that series of observations. For ordinary responses, the client only knows that a received response is not older than the corresponding request.
+In case the Partial IV is omitted in a notification, this indicates that the observation was the oldest, see {{Section 7.4.1 or RFC8613}}. For ordinary responses, the client only knows that a received response is not older than the corresponding request.
 
 ## Message Freshness {#ssec-seccons-freshness}
 
