@@ -511,9 +511,7 @@ When a Recipient Context is deleted, information about previously received messa
 
 If the endpoint receives a request to process with the new Recipient Context and the endpoint supports the CoAP Echo Option {{RFC9175}}, then it is RECOMMENDED to follow the procedure specified in {{sec-synch-challenge-response}} which establishes a valid Replay Window. In particular, the endpoint MUST use its Partial IV when generating the AEAD nonce and MUST include the Partial IV in the response message conveying the Echo Option.
 
-Alternatively, the endpoint MAY retrieve or wait for new Security Context parameters from the Group Manager and derive new Sender and Recipient Contexts, as defined in {{ssec-loss-mutable-context-total}}. In this case the Replay Windows of all Recipient Contexts becomes valid.
-
-
+Alternatively, the endpoint MAY retrieve or wait for new Security Context parameters from the Group Manager and derive new Sender and Recipient Contexts, as defined in {{ssec-loss-mutable-context-total}}. In this case the Replay Windows of all Recipient Contexts become valid if they are not already.
 
 ### Exhaustion of Sender Sequence Number {#ssec-wrap-around-partial-iv}
 
