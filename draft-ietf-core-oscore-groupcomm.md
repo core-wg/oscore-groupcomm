@@ -1548,7 +1548,15 @@ Upon receiving the unicast request including the Echo Option, the server perform
 
 If the verifications above fail, the server MUST NOT process the request further and MAY send a 4.01 (Unauthorized) response including an Echo Option, hence performing a new challenge-response exchange.
 
-If the verifications above are successful, the server proceeds as follows. In case the Replay Window in the Recipient Context associated with the client has not been set yet, the server updates the Replay Window to mark the current Sender Sequence Number from the latest received request as seen (but all newer ones as new), and delivers the message as fresh to the application. Otherwise, the server discards the verification result and treats the message as fresh or as a replay, according to the existing Replay Window.
+If the verifications above are successful, the server considers the Recipient Context associated with the sender client and proceeds as follows.
+
+* In case the Replay Window is invalid, the steps below occur.
+
+   1. The server updates the Replay Window, by marking as received the Sender Sequence Number from the latest received request. This becomes the lower limit of the Replay Window, while all the other values are marked as not received.
+
+   2. The server makes the Replay Window valid, and accepts the request as fresh.
+
+* In case the Replay Window is already valid, the server discards the verification result and accepts the request as fresh or treats it as a replay, according to the existing Replay Window.
 
 A server should not deliver requests from a given client to the application until one valid request from that same client has been verified as fresh, as conveying an echoed Echo Option. A server may perform the challenge-response described above at any time, if synchronization with Sender Sequence Numbers of clients is lost, e.g., after a device reboot occurred in an unprepared way. A client has to be ready to perform the challenge-response based on the Echo Option if a server starts it.
 
