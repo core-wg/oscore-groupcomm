@@ -1846,15 +1846,17 @@ Note that the Partial IV of an endpoint does not necessarily grow monotonically.
 
 Since one-to-many communication such as multicast usually involves unreliable transports, the simplification of the Replay Window to a size of 1 suggested in {{Section 7.4 of RFC8613}} is not viable with Group OSCORE, unless exchanges in the group rely only on unicast messages.
 
-A server may not be synchronized with a the client's Sender Sequence Number, or a Replay Window may be initialized as invalid, see {{ssec-loss-mutable-context}}. The server can either retrieve a new security context or synchronize the sequence numbers before resuming to accept incoming messages from other group members.
+A server may not be synchronized with a client's Sender Sequence Number, or a Replay Window may be initialized as invalid (see {{ssec-loss-mutable-context}}). The server can either retrieve a new Group OSCORE Security Context, or synchronize with the clients' Sender Sequence Numbers before resuming to accept incoming messages from other group members.
 
 ## Message Ordering {#ssec-seccons-ordering}
 
-Assuming the other endpoint is honest, Group OSCORE provides relative ordering of received messages. For a given Security Context, the received Partial IV (when included) allows the recipient endpoint to determine the order in which requests or responses were sent by the other endpoint. In case the Partial IV was omitted in a response, this indicates that it was the oldest response to corresponding request (like notification responses in OSCORE, see {{Section 7.4.1 of RFC8613}}). A received response is not older than the corresponding request.
+Assuming that the other endpoint is honest, Group OSCORE provides relative ordering of received messages. For a given Group OSCORE Security Context, the received Partial IV (when included) allows the recipient endpoint to determine the order in which requests or responses were sent by the other endpoint.
+
+In case the Partial IV was omitted in a response, this indicates that it was the oldest response from the sender endpoint to the corresponding request (like notification responses in OSCORE, see {{Section 7.4.1 of RFC8613}}). A received response is not older than the corresponding request.
 
 ## Message Freshness {#ssec-seccons-freshness}
 
-As in OSCORE, Group OSCORE provides only the guarantee that the request is not older than the security context. Other aspects of freshness are discussed in {{sec-freshness}}.
+As in OSCORE, Group OSCORE provides only the guarantee that the request is not older than the Group OSCORE Security Context used to protect it. Other aspects of freshness are discussed in {{sec-freshness}}. Other aspects of freshness are discussed in {{sec-freshness}}.
 
 The challenge-response approach described in {{sec-synch-challenge-response}} provides an assurance of freshness of the request without depending on the honesty of the client. However, it can result in an impact on performance which is undesirable or unbearable, especially in large groups where many endpoints at the same time might join as new members or lose synchronization.
 
@@ -1866,7 +1868,7 @@ In either case, an internal on-path adversary would not be able to mix up the Ec
 
 ## Client Aliveness {#ssec-client-aliveness}
 
-Like in OSCORE, {{Section 12.5 of RFC8613}}, a server may verify the aliveness of the client by using the CoAP Echo Option {{RFC9175}} as described in {{sec-synch-challenge-response}}.
+Like in OSCORE (see {{Section 12.5 of RFC8613}}), a server may verify the aliveness of the client by using the CoAP Echo Option {{RFC9175}} as described in {{sec-synch-challenge-response}}.
 
 In the interest of avoiding otherwise unnecessary uses of such an approach, the server can exploit the fact that the received request cannot be older than the Security Context used to protect it. This effectively allows the server to verify the client aliveness relative to the installation of the latest group keying material.
 
