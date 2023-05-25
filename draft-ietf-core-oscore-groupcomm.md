@@ -495,7 +495,7 @@ In case a loss of the Sender Context and/or of the Recipient Contexts is detecte
 
 Before resuming its operations in the group, the endpoint MUST retrieve new Security Context parameters from the Group Manager (see {{sec-group-re-join}}) and use them to derive a new Sender Context and Recipient Contexts (see {{ssec-sender-recipient-context}}). Since the new Sender Context includes newly derived encryption keys, an endpoint will not reuse the same pair (key, nonce), even when it is a server using the Partial IV of (old re-injected) requests to build the AEAD nonce for protecting the responses.
 
-From then on, the endpoint MUST use the latest installed Sender Context to protect outgoing messages. The Recipient Contexts derived from a new Security Context have a Replay Window which is initialized as valid.
+From then on, the endpoint MUST use the latest installed Sender Context to protect outgoing messages. Newly derived Recipient Contexts will have a Replay Window which is initialized as valid.
 
 If not able to establish an updated Sender Context, e.g., because of lack of connectivity with the Group Manager, the endpoint MUST NOT protect further messages using the current Security Context and MUST NOT accept incoming messages from other group members, as currently unable to detect possible replays.
 
