@@ -563,7 +563,7 @@ All the group members need to acquire new Security Context parameters from the G
 
    - It resets its Sender Sequence Number in its Sender Context to 0.
 
-   - It re-initializes the Replay Window of each Recipient Context.
+   - It re-initializes the Replay Window of each Recipient Context as valid and with 0 as its current lower limit.
 
    - For each ongoing Non-Notification Group Exchange where it is a client and that it wants to keep active, it resets to 0 the Response Number of each associated server (see {{sec-long-term-observations}}).
 
