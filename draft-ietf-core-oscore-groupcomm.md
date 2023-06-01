@@ -305,6 +305,14 @@ The AEAD Algorithm (see {{Section 3.1 of RFC8613}}) SHALL identify the COSE AEAD
 
 The ID Context parameter (see {{Sections 3.1 and 3.3 of RFC8613}}) SHALL contain the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle potential collisions between Gids (see {{ssec-gid-collision}}).
 
+### Common IV ##  {#ssec-common-common-iv}
+
+The Common IV parameter (see {{Section 3.1 of RFC8613}}) SHALL identify the Common IV used in the group. Differently from OSCORE, the length of the Common IV is determined as follows.
+
+* If only one among the AEAD Algorithm and the Group Encryption Algorithm is set (see {{ssec-common-context-aead-alg}} and {{ssec-common-context-cs-enc-alg}}), the length of the Common IV is the AEAD nonce length for the set algorithm.
+
+* If both the AEAD Algorithm and the Group Encryption Algorithm are set, the length of the Common IV is the greatest AEAD nonce length among those of the two algorithms.
+
 ### Authentication Credential Format ## {#ssec-common-context-authcred-format}
 
 The new parameter Authentication Credential Format specifies the format of authentication credentials used in the group. Further details on authentication credentials are compiled in {{sec-pub-key-format}}.
@@ -349,21 +357,33 @@ More generally, if Pairwise Key Agreement Algorithm is set, it MUST identify a C
 
 ## Sender Context and Recipient Context ## {#ssec-sender-recipient-context}
 
-OSCORE specifies the derivation of Sender Context and Recipient Context, specifically of Sender/Recipient Keys and Common IV, from a set of input parameters (see {{Section 3.2 of RFC8613}}).
-
-The derivation of Sender/Recipient Keys and Common IV defined in OSCORE applies also to Group OSCORE, with the following modification compared to {{Section 3.2.1 of RFC8613}}.
-
-* If Group Encryption Algorithm in the Common Context is not set (see {{ssec-common-context-cs-enc-alg}}), then the 'alg_aead' element of the 'info' array  MUST specify AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}), as per {{Section 5.4 of RFC8613}}.
-
-* Otherwise, the 'alg_aead' element of the 'info' array  MUST specify Group Encryption Algorithm from the Common Context as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.
-
 The Sender ID SHALL be unique for each endpoint in a group with a certain tuple (Master Secret, Master Salt, Group Identifier), see {{Section 3.3 of RFC8613}}.
 
-With the exception of the authentication credential of the sender endpoint, a receiver endpoint can derive a complete Security Context from a received Group OSCORE message and the Common Context. The authentication credentials in the Recipient Contexts can be retrieved from the Group Manager (see {{group-manager}}) upon joining the group. An authentication credential can alternatively be acquired from the Group Manager at a later time, for example the first time a message is received from a particular endpoint in the group (see {{ssec-verify-request}} and {{ssec-verify-response}}).
+The maximum length of a Sender ID in bytes equals L minus 6, where L is determined as follows.
+
+* If only one among the AEAD Algorithm and the Group Encryption Algorithm is set (see {{ssec-common-context-aead-alg}} and {{ssec-common-context-cs-enc-alg}}), then L is the AEAD nonce length for the set algorithm.
+
+* If both the AEAD Algorithm and the Group Encryption Algorithm are set, then L is the smallest AEAD nonce length among those of the two algorithms.
+
+With the exception of the authentication credential of the sender endpoint, a receiver endpoint can derive a complete Security Context from a received Group OSCORE message and the Common Context (see {{ssec-establishment-context-parameters}}).
+
+The authentication credentials in the Recipient Contexts can be retrieved from the Group Manager (see {{group-manager}}) upon joining the group. An authentication credential can alternatively be acquired from the Group Manager at a later time, for example the first time a message is received from a particular endpoint in the group (see {{ssec-verify-request}} and {{ssec-verify-response}}).
 
 For severely constrained devices, it may be not feasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the sender endpoint's authentication credential. Such devices can be configured to drop a received message for which there is no (complete) Recipient Context, and retrieve the sender endpoint's authentication credential in order to have it available to verify subsequent messages from that endpoint.
 
 An endpoint may admit a maximum number of Recipient Contexts for a same Security Context, e.g., due to memory limitations. After reaching that limit, the endpoint has to delete a current Recipient Context to install a new one, see {{ssec-loss-mutable-context-overflow}}. It is up to the application to define policies for Recipient Contexts to delete.
+
+## Establishment of Security Context Parameters ## {#ssec-establishment-context-parameters}
+
+OSCORE defines the derivation of Sender Context and Recipient Context (specifically, of Sender/Recipient Keys) and of the Common IV, from a set of input parameters (see {{Section 3.2 of RFC8613}}).
+
+The derivation of Sender/Recipient Keys and of the Common IV defined in OSCORE applies also to Group OSCORE, with the following modifications compared to {{Section 3.2.1 of RFC8613}}.
+
+* If Group Encryption Algorithm in the Common Context is set (see {{ssec-common-context-cs-enc-alg}}), then the 'alg_aead' element of the 'info' array MUST specify Group Encryption Algorithm from the Common Context as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.
+
+* If Group Encryption Algorithm in the Common Context is not set, then the 'alg_aead' element of the 'info' array MUST specify AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}), as per {{Section 5.4 of RFC8613}}.
+
+* When deriving the Common IV, the 'L' element of the 'info' array MUST specify the length of the Common IV in bytes, which is determined as defined in {{ssec-common-common-iv}}.
 
 ## Authentication Credentials ## {#sec-pub-key-format}
 
@@ -577,12 +597,13 @@ From then on, it can resume processing new messages for the considered group. In
 
 The distribution of a new Gid and Master Secret may result in temporarily misaligned Security Contexts among group members. In particular, this may result in a group member not being able to process messages received right after a new Gid and Master Secret have been distributed. A discussion on practical consequences and possible ways to address them, as well as on how to handle the old Security Context, is provided in {{ssec-key-rotation}}.
 
-
 # The Group Manager # {#group-manager}
 
 As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant Security Context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s). This document is based on the existence of an entity called the Group Manager that is responsible for the group, but it does not mandate how the Group Manager interacts with the group members. The list of responsibilities of the Group Manager is compiled in {{sec-group-manager}}.
 
-The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. For each group, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. According to a hierarchical approach, the Gid value assigned to a group is associated with a dedicated space for the values of Sender ID and Recipient ID of the members of that group. When an endpoint (re-)joins a group, it is provided with the current Gid to use in the group. The Group Manager also assigns an integer Key Generation Number counter to each of its groups, identifying the current version of the keying material used in that group. Further details about identifiers and keys are provided in {{sec-group-key-management}}.
+The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. For each group, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. The maximum length of Sender IDs depends on the length of the AEAD nonce for the algorithms used in the group (see {{ssec-sender-recipient-context}}).
+
+According to a hierarchical approach, the Gid value assigned to a group is associated with a dedicated space for the values of Sender ID and Recipient ID of the members of that group. When an endpoint (re-)joins a group, it is provided with the current Gid to use in the group. The Group Manager also assigns an integer Key Generation Number counter to each of its groups, identifying the current version of the keying material used in that group. Further details about identifiers and keys are provided in {{sec-group-key-management}}.
 
 The Group Manager maintains records of the authentication credentials of endpoints in a group, and provides information about the group and its members to other group members (see {{setup}}), and to external entities with a specific role (see {{sec-additional-entities}}).
 
@@ -821,6 +842,12 @@ The value of the 'kid' parameter in the 'unprotected' field of response messages
 
 The value of the 'kid context' parameter in the 'unprotected' field of requests messages MUST be set to the ID Context, i.e., the Group Identifier value (Gid) of the group. That is, unlike in {{RFC8613}}, the 'kid context' parameter is always present in requests.
 
+## AEAD Nonce # {#sec-cose-object-aead-nonce}
+
+The AEAD nonce is constructed like in OSCORE, with the difference that step 4 in {{Section 5.2 of RFC8613}} is replaced with:
+
+A. and then XOR with the X least significant bits of the Common IV, where X is the length in bits of the AEAD nonce.
+
 ## external_aad # {#sec-cose-object-ext-aad}
 
 The external_aad of the Additional Authenticated Data (AAD) is different compared to OSCORE {{RFC8613}}, and is defined in this section.
@@ -899,7 +926,7 @@ The OSCORE header compression defined in {{Section 6 of RFC8613}} is used for co
 
 * The Group Flag MUST be set to 0 if the Group OSCORE message is protected using the pairwise mode (see {{sec-pairwise-protection}}). The Group Flag MUST also be set to 0 for ordinary OSCORE messages processed according to {{RFC8613}}.
 
-### Keystream Derivation for Countersignature Encryption ## {#sssec-encrypted-signature-keystream}
+## Keystream Derivation for Countersignature Encryption ## {#sssec-encrypted-signature-keystream}
 
 The following defines how an endpoint derives the keystream KEYSTREAM, used to encrypt/decrypt the countersignature of an outgoing/incoming message M protected in group mode.
 
@@ -2050,6 +2077,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Renamed "Group Encryption Key" to "Signature Encryption Key". Consistent fixes in its derivation.
 
 * Renamed "Signature Encryption Algorithm" to "Group Encryption Algorithm".
+
+* Ensured a single Common IV, also when the two encryption algorithms have different AEAD nonce sizes.
 
 * Guidelines on the Pairwise Key Agreement Algorithm and derivation of the Diffie-Hellman secret.
 
