@@ -263,7 +263,7 @@ The Security Context of Group OSCORE extends the Security Context defined in {{S
 
     * For the pairwise mode, the Sender Context is extended with the Pairwise Sender Keys associated with the other endpoints (see {{sec-derivation-pairwise}}).
 
-    If the endpoint is configured exclusively as silent server (see {{terminology}}), then the Sender Context is omitted.
+    If the endpoint is configured exclusively as silent server (see {{terminology}}) and it uses only the group mode, then the Sender Context is omitted.
 
 * One Recipient Context for each other endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated with endpoints from which messages are not (expected to be) received.
 
