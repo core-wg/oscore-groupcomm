@@ -1386,9 +1386,9 @@ Note that a client may receive a response protected with a Security Context diff
 
       - If the 'kid' parameter is not present in the response, the client checks whether the server that has sent the response is the same one to which the request was intended for. This can be done by checking that the public key used to verify the countersignature of the response is equal to the public key included in the authentication credential Recipient Auth Cred, which was taken as input to derive the Pairwise Sender Key used for protecting the request (see {{key-derivation-pairwise}}).
 
-      In either case, if the client determines that the response has come from a different server than the expected one, then the client: i) SHALL discard the response and SHALL NOT deliver it to the application; ii) SHALL NOT update the Response Number associated with the server, if the response is a non-notification response to a group request; and iii) SHALL NOT update the Notification Number associated with the server, if the response is an Observe notification {{RFC7641}}.
+      In either case, if the client determines that the response has come from a different server than the expected one, then the client: i) SHOULD NOT accept the response as valid to be delivered to the application; ii) SHOULD NOT update the Response Number associated with the server, if the response is a non-notification response to a group request; and iii) SHOULD NOT update the Notification Number associated with the server, if the response is an Observe notification {{RFC7641}}. Exceptions can apply if the client has a means of preserving the order of responses in a more elaborate way out of the scope of this document, or the client application does not require response ordering altogether.
 
-      Otherwise, the client hereafter considers the received 'kid' as the current Recipient ID for the server.
+      Otherwise, if the response is accepted as valid to be delivered to the application, the client hereafter considers the received 'kid' as the current Recipient ID for the server.
 
 * In step 5, when decrypting the COSE object using the Recipient Key, the Group Encryption Algorithm from the Common Context MUST be used.
 
