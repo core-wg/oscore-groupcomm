@@ -1106,12 +1106,6 @@ Upon leaving the group or before re-joining the group, a group member MUST termi
 
 ## Synchronization and Freshness # {#sec-freshness}
 
-When receiving a request from a client for the first time, the server is not synchronized with the client's Sender Sequence Number, so the received message may be a delayed old message. This applies to a server that has just joined the group, with respect to already present clients, and recurs as new clients are added as group members.
-
-During its operations in the group, the server may also lose synchronization with a client's Sender Sequence Number. This can happen, for instance, if the server has rebooted in an unprepared way or has deleted its previously synchronized version of the Recipient Context for that client (see {{ssec-loss-mutable-context}}).
-
-Even if the server is synchronized with the client's Sender Sequence Number, the Partial IV only allows the server to determine the relative order of the requests from that client under the assumption that the client is honest.
-
 If the application requires freshness, e.g., according to time- or event-based policies (see {{Section 2.5.1 of RFC9175}}), the server can use the approach in {{sec-synch-challenge-response}} as a variant of the procedure in {{Section B.1.2 of RFC8613}}, before delivering request messages from that client to the application. This also makes the server (re-)synchronize with a client's Sender Sequence Number.
 
 Like in OSCORE {{RFC8613}}, assuming an honest server, the message binding guarantees that a response is not older than its request, so the same properties as stated in {{Section 7.3 of RFC8613}} apply:
@@ -1591,9 +1585,7 @@ If the verifications above are successful, the server considers the Recipient Co
 
 A server should not deliver requests from a given client to the application until one valid request from that same client has been verified as fresh, as conveying an echoed Echo Option. A server may perform the challenge-response described above at any time, if synchronization with Sender Sequence Numbers of clients is lost, e.g., after a device reboot occurred in an unprepared way. A client has to be ready to perform the challenge-response based on the Echo Option if a server starts it.
 
-It is the role of the server application to define under what circumstances Sender Sequence Numbers lose synchronization. This can include experiencing a "large enough" gap D = (SN2 - SN1), between the Sender Sequence Number SN1 of the latest accepted group request from a client and the Sender Sequence Number SN2 of a group request just received from that client. However, a client may send several unicast requests to different group members as protected in pairwise mode, which may result in the server experiencing the gap D in a relatively short time. This would induce the server to perform more challenge-response exchanges than actually needed.
-
-See further discussion in {{ssec-seccons-freshness}}.
+Message freshness is further discussed in {{ssec-seccons-freshness}}.
 
 # Implementation Compliance
 
@@ -1887,7 +1879,7 @@ In case the Partial IV was omitted in a response, this indicates that it was the
 
 ## Message Freshness {#ssec-seccons-freshness}
 
-As in OSCORE, Group OSCORE provides only the guarantee that the request is not older than the Group OSCORE Security Context used to protect it. Other aspects of freshness are discussed in {{sec-freshness}}. Other aspects of freshness are discussed in {{sec-freshness}}.
+As in OSCORE, Group OSCORE provides only the guarantee that the request is not older than the Group OSCORE Security Context used to protect it. Other aspects of freshness are discussed in {{sec-freshness}}.
 
 The challenge-response approach described in {{sec-synch-challenge-response}} provides an assurance of freshness of the request without depending on the honesty of the client. However, it can result in an impact on performance which is undesirable or unbearable, especially in large groups where many endpoints at the same time might join as new members or lose synchronization.
 
