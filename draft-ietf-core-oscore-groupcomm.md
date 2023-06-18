@@ -1900,7 +1900,7 @@ In the interest of avoiding otherwise unnecessary uses of such an approach, the 
 ## Cryptographic Considerations {#ssec-crypto-considerations}
 
 The same considerations from {{Section 12.6 of RFC8613}} about the maximum Sender Sequence Number hold for Group OSCORE.
-MUST
+
 As discussed in {{ssec-wrap-around-partial-iv}}, an endpoint that experiences an exhaustion of its own Sender Sequence Number space MUST NOT protect further messages including a Partial IV, until it has derived a new Sender Context. This prevents the endpoint to reuse the same AEAD nonce with the same Sender Key.
 
 In order to renew its own Sender Context, the endpoint SHOULD inform the Group Manager, which can either renew the whole Security Context by means of group rekeying, or provide only that endpoint with a new Sender ID value. In either case, the endpoint derives a new Sender Context, and in particular a new Sender Key.
