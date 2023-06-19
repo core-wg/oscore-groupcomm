@@ -662,7 +662,7 @@ The establishment of the new Security Context for the group takes the following 
 
    Further information may be distributed, depending on the specific group key management scheme used in the group.
 
-When receiving the new group keying materal, a group member considers the received stale Sender IDs and performs the following actions.
+When receiving the new group keying material, a group member considers the received stale Sender IDs and performs the following actions.
 
 * The group member MUST remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group.
 
@@ -910,7 +910,7 @@ The OSCORE header compression defined in {{Section 6 of RFC8613}} is used for co
 
 * When the Group OSCORE message is protected in group mode, the message payload SHALL encode the ciphertext of the COSE object, concatenated with the encrypted countersignature of the COSE object. That is:
 
-   - The plain, original countersignature of the COSE object, namely SIGNATURE, is specified in the "Countersignature0 version 2" parameterer within the 'unprotected' field of the COSE object (see {{sec-cose-object-unprotected-field}}).
+   - The plain, original countersignature of the COSE object, namely SIGNATURE, is specified in the "Countersignature0 version 2" parameter within the 'unprotected' field of the COSE object (see {{sec-cose-object-unprotected-field}}).
 
    - The encrypted countersignature, namely ENC_SIGNATURE, is computed as
 
@@ -1184,7 +1184,7 @@ During all the steps of the message processing, an endpoint MUST use the same Se
 
 The group mode SHOULD be used to protect group requests intended for multiple recipients or for the whole group. For an example where this is not fulfilled, see {{I-D.amsuess-core-cachable-oscore}}. This applies to both requests directly addressed to multiple recipients, e.g., sent by the client over multicast, as well as requests sent by the client over unicast to a proxy, that forwards them to the intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}.
 
-As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-confirmable, and thus are not retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a predefined, sufficient amount of time, in order to correctly perform potential retransmissions at the application layer. If performed, these retransmissions are repetitions of previous protected messages, which the sender enpoint does not protect again with Group OSCORE.
+As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-confirmable, and thus are not retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a predefined, sufficient amount of time, in order to correctly perform potential retransmissions at the application layer. If performed, these retransmissions are repetitions of previous protected messages, which the sender endpoint does not protect again with Group OSCORE.
 
 According to {{Section 5.2.3 of RFC7252}}, responses to Non-confirmable group requests SHOULD also be Non-confirmable, but endpoints MUST be prepared to receive Confirmable responses in reply to a Non-confirmable group request. Confirmable group requests are acknowledged when sent over non-multicast transports, as specified in {{RFC7252}}.
 
@@ -1676,7 +1676,7 @@ The group mode defined in {{mess-processing}} relies on commonly shared group ke
 
    On the other hand, proof of group membership is always ensured by construction through the strict management of the group keying material (see {{sec-group-key-management}}). That is, the group is rekeyed in case of members' leaving, and the current group members are informed of former group members. Thus, a current group member storing the latest group keying material does not store the authentication credential of any former group member.
 
-   This allows a recipient endpoint to rely on the stored authentication credentials and public keys included therin, in order to always confidently assert the group membership of a sender endpoint when processing an incoming message, i.e., to assert that the sender endpoint was a group member when it signed the message. In turn, this prevents a former group member to possibly re-sign and inject in the group a stored message that was protected with old keying material.
+   This allows a recipient endpoint to rely on the stored authentication credentials and public keys included therein, in order to always confidently assert the group membership of a sender endpoint when processing an incoming message, i.e., to assert that the sender endpoint was a group member when it signed the message. In turn, this prevents a former group member to possibly re-sign and inject in the group a stored message that was protected with old keying material.
 
    A case in point is a group where the Group Encryption Algorithm does not provide integrity protection; a group member leaves the group; and, after the group rekeying, associates with the group as external signature checker (see {{sec-processing-signature-checker}}). When doing so, it obtains from the Group Manager the new Signature Encryption Key, from which it can derive keystreams for encrypting and decrypting the countersignatures of messages protected in group mode.
 
@@ -1746,7 +1746,7 @@ A possible way to ameliorate this issue is to preserve the old retained Security
 
 This makes particular sense when the recipient is a client, that would hence be able to process incoming responses protected with the old retained Security Context used to protect the associated group request. If, as typically expected, the old Gid is not included in the response, then the client will first fail to process the response using the latest Security Context, and then use the old retained Security Context as a second attempt.
 
-Instead, a recipient server can immediately process an incoming request with the old retained Security Context, as signalled by the old Gid that is always included in requests. However, the server would better and more simply discard such an incoming group request.
+Instead, a recipient server can immediately process an incoming request with the old retained Security Context, as signaled by the old Gid that is always included in requests. However, the server would better and more simply discard such an incoming group request.
 
 This tolerance preserves the processing of secure messages throughout a long-lasting key rotation, as group rekeying processes may likely take a long time to complete, especially in large groups. On the other hand, a former (compromised) group member can abusively take advantage of this, and send messages protected with the old retained Security Context. Therefore, a conservative application policy should not admit the retention of old Security Contexts.
 
