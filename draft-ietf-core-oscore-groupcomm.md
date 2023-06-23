@@ -1203,31 +1203,17 @@ A client transmits a secure group request as described in {{Section 8.1 of RFC86
 
 * In step 5, the countersignature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this document. In particular, the payload of the Group OSCORE message includes also the encrypted countersignature.
 
-In addition, when sending a group request, the following applies for the corresponding Non-Notification Group Exchange.
+In addition, the following applies when sending a request that establishes a long exchange.
 
-* If the client intends to keep the Non-Notification Group Exchange active beyond a possible change of Sender ID, the client MUST store the value of the 'kid' parameter from the group request, and retain it until the Non-Notification Group Exchange is terminated. Even in case the client is individually rekeyed and receives a new Sender ID from the Group Manager (see {{new-sender-id}}), the client MUST NOT update the stored 'kid' parameter value associated with the Non-Notification Group Exchange and the corresponding group request.
+* If the client intends to keep the long exchange active beyond a possible change of Sender ID, the client MUST store the value of the 'kid' parameter from the request, and retain it until the long exchange is terminated. Even in case the client is individually rekeyed and receives a new Sender ID from the Group Manager (see {{new-sender-id}}), the client MUST NOT update the stored 'kid' parameter value associated with the long exchange and the corresponding request.
 
-* If the client intends to keep the Non-Notification Group Exchange active beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}), then the following applies.
+* If the client intends to keep the long exchange active beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}), then the following applies.
 
-   -  The client MUST store the value of the 'kid context' parameter from the group request, and retain it until the Non-Notification Group Exchange is terminated. Upon establishing a new Security Context with a new Gid as ID Context (see {{new-sec-context}}), the client MUST NOT update the stored 'kid context' parameter value associated with the Non-Notification Group Exchange and the corresponding group request.
+   -  The client MUST store the value of the 'kid context' parameter from the request, and retain it until the long exchange is terminated. Upon establishing a new Security Context with a new Gid as ID Context (see {{new-sec-context}}), the client MUST NOT update the stored 'kid context' parameter value associated with the long exchange and the corresponding request.
 
    - The client MUST store an invariant identifier of the group, which is immutable even in case the Security Context of the group is re-established.  For example, this invariant identifier can be the "group name" in {{I-D.ietf-ace-key-groupcomm-oscore}}, where it is used for joining the group and retrieving the current group keying material from the Group Manager.
 
       After a group rekeying, such an invariant information makes it simpler for the client to retrieve the current group keying material from the Group Manager, in case the client has missed both the rekeying messages and the first response protected with the new Security Context (see {{ssec-protect-response}}).
-
-### Supporting Observe ### {#ssec-protect-request-observe}
-
-If Observe {{RFC7641}} is supported, the following holds for each newly started observation.
-
-* If the client intends to keep the observation active beyond a possible change of Sender ID, the client MUST store the value of the 'kid' parameter from the original Observe request, and retain it for the whole duration of the observation. Even in case the client is individually rekeyed and receives a new Sender ID from the Group Manager (see {{new-sender-id}}), the client MUST NOT update the stored value associated with a particular Observe request.
-
-* If the client intends to keep the observation active beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}), then the following applies.
-
-   - The client MUST store the value of the 'kid context' parameter from the original Observe request, and retain it for the whole duration of the observation. Upon establishing a new Security Context with a new Gid as ID Context (see {{new-sec-context}}), the client MUST NOT update the stored value associated with a particular Observe request.
-
-   - Just like defined in {{ssec-protect-request}}, the client MUST store an invariant identifier of the group, which is immutable even in case the Security Context of the group is re-established.
-
-      After a group rekeying, such an invariant information makes it simpler for the observer client to retrieve the current group keying material from the Group Manager, in case the client has missed both the rekeying messages and the first observe notification protected with the new Security Context (see {{ssec-protect-response-observe}}).
 
 ## Verifying the Request ## {#ssec-verify-request}
 
@@ -1255,8 +1241,7 @@ Upon receiving a secure group request with the Group Flag set to 1, following th
 
    - The server verifies the original countersignature SIGNATURE as described in {{Sections 3.2 and 3.3 of RFC9338}}, by using the client's public key and according to the Signature Algorithm in the Security Context.
 
-      In particular, the Countersign_structure contains the context text string "CounterSignature0", the external_aad as defined in {{sec-cose-object-ext-aad}} of this document, and the ciphertext of the COSE
-object as payload.
+      In particular, the Countersign_structure contains the context text string "CounterSignature0", the external_aad as defined in {{sec-cose-object-ext-aad}} of this document, and the ciphertext of the COSE object as payload.
 
    - If the signature verification fails, the server SHALL stop processing the request, SHALL NOT update the Replay Window, and MAY respond with a 4.00 (Bad Request) response. Such a response MAY include an Outer Max-Age option with value zero, and its diagnostic payload MAY contain a string, which, if present, MUST be "Decryption failed" as if the decryption of the COSE object had failed.
 
@@ -1266,19 +1251,13 @@ object as payload.
 
 A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. For an example where this is not fulfilled, see {{Section 9.2.1 of I-D.ietf-core-observe-multicast-notifications}}.
 
-In addition, the following applies if the server intends to reply with multiple non-notification responses to a group request.
+In addition, the following applies if the server intends to reply with multiple responses, within the long exchange established by the corresponding request.
 
-* The server MUST store the value of the 'kid' parameter from the group request, and retain it until the last non-notification response has been sent. The server MUST NOT update the stored value of a 'kid' parameter associated with a particular group request, even in case the client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}).
+In addition, the following applies if the request establishes a long exchange and the server intends to reply with multiple responses.
 
-* The server MUST store the value of the 'kid context' parameter from the group request, and retain it until the last non-notification response has been sent, i.e., beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}). That is, upon establishing a new Security Context with a new Gid as ID Context (see {{new-sec-context}}), the server MUST NOT update the stored value of a 'kid context' parameter associated with a particular group request.
+* The server MUST store the value of the 'kid' parameter from the request, and retain it until the last response has been sent. The server MUST NOT update the stored value of the 'kid' parameter associated with the request, even in case the client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}).
 
-### Supporting Observe ### {#ssec-verify-request-observe}
-
-If Observe {{RFC7641}} is supported, the following holds for each newly started observation.
-
-* The server MUST store the value of the 'kid' parameter from the original Observe request, and retain it for the whole duration of the observation. The server MUST NOT update the stored value of a 'kid' parameter associated with a particular Observe request, even in case the observer client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}).
-
-* The server MUST store the value of the 'kid context' parameter from the original Observe request, and retain it for the whole duration of the observation, beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}). That is, upon establishing a new Security Context with a new Gid as ID Context (see {{new-sec-context}}), the server MUST NOT update the stored value associated with the ongoing observation.
+* The server MUST store the value of the 'kid context' parameter from the request, and retain it until the last response has been sent, i.e., beyond a possible change of ID Context following a group rekeying (see {{sec-group-key-management}}). That is, upon establishing a new Security Context with a new Gid as ID Context (see {{new-sec-context}}), the server MUST NOT update the stored value of a 'kid context' parameter associated with the request.
 
 ## Protecting the Response ## {#ssec-protect-response}
 
@@ -1288,15 +1267,15 @@ Note that the server always protects a response with the Sender Context from its
 
 * In step 2, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
 
-   In addition, the following applies if the server intends to reply with multiple non-notification responses to a group request.
+   In addition, the following applies if the server intends to reply with multiple responses, within the long exchange established by the corresponding request.
 
-   - The server MUST use the stored value of the 'kid' parameter from the group request (see {{ssec-verify-request}}), as value for the 'request_kid' parameter in the external_aad structure (see {{sec-cose-object-ext-aad}}).
+   - The server MUST use the stored value of the 'kid' parameter from the request (see {{ssec-verify-request}}), as value for the 'request_kid' parameter in the external_aad structure (see {{sec-cose-object-ext-aad}}).
 
-   - The server MUST use the stored value of the 'kid context' parameter from the group request (see {{ssec-verify-request}}), as value for the 'request_kid_context' parameter in the external_aad structure (see {{sec-cose-object-ext-aad}}).
+   - The server MUST use the stored value of the 'kid context' parameter from the request (see {{ssec-verify-request}}), as value for the 'request_kid_context' parameter in the external_aad structure (see {{sec-cose-object-ext-aad}}).
 
 * In step 3, if any of the following two conditions holds, the server MUST include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response. This prevents the server from reusing the AEAD nonce from the request together with the same encryption key.
 
-   - The response is not the first response that the server sends to the request, regardless of whether it is an Observe notification {{RFC7641}} or a non-notification response to a group request (see {{sec-replay-protection-responses}}).
+   - The response is not the first response that the server sends to the request.
 
    - The server is using a different Security Context for the response compared to what was used to verify the request (see {{sec-group-key-management}}).
 
@@ -1308,30 +1287,15 @@ Note that the server always protects a response with the Sender Context from its
 
    * The server may be replying to a request that was protected with an old Security Context. After completing the establishment of a new Security Context, the server MUST protect all the responses to that request with the Sender Context of the new Security Context.
 
-      For each ongoing Non-Notification Group Exchange, the server can help the client to synchronize, by including also the 'kid context' parameter in non-notification responses following a group rekeying, with value set to the ID Context (Gid) of the new Security Context.
+      For each ongoing long exchange, the server can help the client to synchronize, by including also the 'kid context' parameter in responses following a group rekeying, with value set to the ID Context (Gid) of the new Security Context.
 
-      If there is a known upper limit to the duration of a group rekeying, the server SHOULD include the 'kid context' parameter during that time. Otherwise, the server SHOULD include it until the Max-Age has expired for the last non-notification response sent before the installation of the new Security Context.
+      If there is a known upper limit to the duration of a group rekeying, the server SHOULD include the 'kid context' parameter during that time. Otherwise, the server SHOULD include it until the Max-Age has expired for the last response sent before the installation of the new Security Context.
 
    * The server can obtain a new Sender ID from the Group Manager, when individually rekeyed (see {{new-sender-id}}) or when re-joining the group. In such a case, the server can help the client to synchronize, by including the 'kid' parameter in a response protected in group mode, even when the request was protected in pairwise mode (see {{sec-pairwise-protection-req}}).
 
       That is, when responding to a request protected in pairwise mode, the server SHOULD include the 'kid' parameter in a response protected in group mode, if it is replying to that client for the first time since the assignment of its new Sender ID.
 
 * In step 5, the countersignature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this document. In particular the payload of the Group OSCORE message includes also the encrypted countersignature (see {{compression}}).
-
-
-### Supporting Observe ### {#ssec-protect-response-observe}
-
-If Observe {{RFC7641}} is supported, the following holds when protecting notifications for an ongoing observation.
-
-* The server MUST use the stored value of the 'kid' parameter from the original Observe request (see {{ssec-verify-request-observe}}), as value for the 'request\_kid' parameter in the external\_aad structure (see {{sec-cose-object-ext-aad}}).
-
-* The server MUST use the stored value of the 'kid context' parameter from the original Observe request (see {{ssec-verify-request-observe}}), as value for the 'request\_kid\_context' parameter in the external\_aad structure (see {{sec-cose-object-ext-aad}}).
-
-Furthermore, the server may have ongoing observations started by Observe requests protected with an old Security Context. After completing the establishment of a new Security Context, the server MUST protect the following notifications with the Sender Context of the new Security Context.
-
-For each ongoing observation, the server can help the client to synchronize, by including also the 'kid context' parameter in notifications following a group rekeying, with value set to the ID Context (Gid) of the new Security Context.
-
-If there is a known upper limit to the duration of a group rekeying, the server SHOULD include the 'kid context' parameter during that time. Otherwise, the server SHOULD include it until the Max-Age has expired for the last notification sent before the installation of the new Security Context.
 
 ## Verifying the Response ## {#ssec-verify-response}
 
@@ -1345,13 +1309,13 @@ Note that a client may receive a response protected with a Security Context diff
 
 * In step 3, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
 
-   In addition, the following applies if the client processes a response to a group request.
+   In addition, the following applies if the client processes a response to a request within a long exchange.
 
-   *  The client MUST use the stored value of the 'kid' parameter from the group request (see {{ssec-protect-request}}), as value for the 'request_kid' parameter in the external_aad structure (see {{sec-cose-object-ext-aad}}).
+   *  The client MUST use the stored value of the 'kid' parameter from the request (see {{ssec-protect-request}}), as value for the 'request_kid' parameter in the external_aad structure (see {{sec-cose-object-ext-aad}}).
 
-   *  The client MUST use the stored value of the 'kid context' parameter from the group request (see {{ssec-protect-request}}), as value for the 'request_kid_context' parameter in the external_aad structure (see {{sec-cose-object-ext-aad}}).
+   *  The client MUST use the stored value of the 'kid context' parameter from the request (see {{ssec-protect-request}}), as value for the 'request_kid_context' parameter in the external_aad structure (see {{sec-cose-object-ext-aad}}).
 
-   This ensures that, throughout a Non-Notification Group Exchange, the client can correctly verify non-notification responses to a group request, even in case the client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}), as well as when it installs a new Security Context with a new ID Context (Gid) following a group rekeying (see {{sec-group-key-management}}).
+   This ensures that, throughout a long exchange, the client can correctly verify the received responses, even in case the client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}), as well as when it installs a new Security Context with a new ID Context (Gid) following a group rekeying (see {{sec-group-key-management}}).
 
 * In step 5, the client also verifies the countersignature, by using the public key from the server's authentication credential stored in the associated Recipient Context. In particular:
 
@@ -1365,7 +1329,7 @@ Note that a client may receive a response protected with a Security Context diff
 
       The client verifies the original countersignature SIGNATURE.
 
-   - If the verification of the countersignature fails, the client: i) SHALL stop processing the response; ii) SHALL NOT update the Response Number associated with the server, if the response is a non-notification response to a group request; and iii) SHALL NOT update the Notification Number associated with the server, if the response is an Observe notification {{RFC7641}}.
+   - If the verification of the countersignature fails, the client: i) SHALL stop processing the response; and ii) SHALL NOT update the Response Number associated with the server, if the response is received within a long exchange.
 
    - After a successful verification of the countersignature, the client performs also the following actions in case the request was protected in pairwise mode (see {{sec-pairwise-protection-req}}).
 
@@ -1373,50 +1337,27 @@ Note that a client may receive a response protected with a Security Context diff
 
       - If the 'kid' parameter is not present in the response, the client checks whether the server that has sent the response is the same one to which the request was intended for. This can be done by checking that the public key used to verify the countersignature of the response is equal to the public key included in the authentication credential Recipient Auth Cred, which was taken as input to derive the Pairwise Sender Key used for protecting the request (see {{key-derivation-pairwise}}).
 
-      In either case, if the client determines that the response has come from a different server than the expected one, then the client: i) SHALL discard the response and SHALL NOT deliver it to the application; ii) SHALL NOT update the Response Number associated with the server, if the response is a non-notification response to a group request; and iii) SHALL NOT update the Notification Number associated with the server, if the response is an Observe notification {{RFC7641}}.
+      In either case, if the client determines that the response has come from a different server than the expected one, then the client: i) SHALL discard the response and SHALL NOT deliver it to the application; ii) SHALL NOT update the Response Number associated with the server, if the response is received within a long exchange.
 
       Otherwise, the client hereafter considers the received 'kid' as the current Recipient ID for the server.
 
 * In step 5, when decrypting the COSE object using the Recipient Key, the Group Encryption Algorithm from the Common Context MUST be used.
 
-   In addition, the client performs the following actions for each ongoing Non-Notification Group Exchange.
+   In addition, the client performs the following actions if the response is received within a long exchange.
 
-   * The ordering and the replay protection of non-notification responses received from a server in reply to a group request are performed as per {{sec-replay-protection-responses}} of this document, by using the Response Number associated with that server for the Non-Notification Group Exchange in question. In case of unsuccessful decryption and verification of a non-notification response, the client SHALL NOT update the Response Number associated with the server.
+   * The ordering and the replay protection of responses received from the server during the long exchange are performed as per {{sec-replay-protection-responses}} of this document, by using the Response Number associated with that server within that long exchange. In case of unsuccessful decryption and verification of a response, the client SHALL NOT update the Response Number associated with the server.
 
-   * When receiving the first valid non-notification response from a server in reply to a group request, the client MUST store the current kid "kid1" of that server for the Non-Notification Group Exchange in question. If the 'kid' field is included in the OSCORE option of the response, its value specifies "kid1". If the group request was protected in pairwise mode (see {{sec-pairwise-protection-req}}), the 'kid' field may not be present in the OSCORE option of the response (see {{sec-cose-object-kid}}). In this case, the client assumes "kid1" to be the Recipient ID for the server to which the group request was intended for.
+   * When receiving the first valid response from the server within the long exchange, the client MUST store the current kid "kid1" of that server for that long exchange. If the 'kid' field is included in the OSCORE option of the response, its value specifies "kid1". If the request was protected in pairwise mode (see {{sec-pairwise-protection-req}}), the 'kid' field may not be present in the OSCORE option of the response (see {{sec-cose-object-kid}}). In this case, the client assumes "kid1" to be the Recipient ID for the server to which the request was intended for.
 
-   * When receiving another valid non-notification response to the same group request from the same server - which can be identified and recognized through the same public key used to verify the countersignature and included in the server's authentication credential - the client determines the current kid "kid2" of the server as above for "kid1", and MUST check whether "kid2" is equal to the stored "kid1".
+   * When receiving another valid response to the same request from the same server - which can be identified and recognized through the same public key used to verify the countersignature and included in the server's authentication credential - the client determines the current kid "kid2" of the server as above for "kid1", and MUST check whether "kid2" is equal to the stored "kid1".
 
       If "kid1" and "kid2" are different, the client SHOULD NOT accept the response as valid to be delivered to the application, and SHOULD NOT update the Response Number associated with the server. Exceptions can apply if the client has a means of preserving the order of responses in a more elaborate way out of the scope of this document, or the client application does not require response ordering altogether.
 
-   Note that, if "kid2" is different from "kid1" and the 'kid' field is omitted from the response - which is possible if the group request was protected in pairwise mode - then the client will compute a wrong keystream to decrypt the countersignature (i.e., by using "kid1" rather than "kid2" in the 'id' field of the 'info' array in {{sssec-encrypted-signature-keystream}}), thus subsequently failing to verify the countersignature and discarding the response.
+   Note that, if "kid2" is different from "kid1" and the 'kid' field is omitted from the response - which is possible if the request was protected in pairwise mode - then the client will compute a wrong keystream to decrypt the countersignature (i.e., by using "kid1" rather than "kid2" in the 'id' field of the 'info' array in {{sssec-encrypted-signature-keystream}}), thus subsequently failing to verify the countersignature and discarding the response.
 
-   This ensures that the client remains able to correctly perform the ordering and replay protection of non-notification responses to group requests, even in case a server legitimately starts using a new Sender ID, as received from the Group Manager when individually rekeyed (see {{new-sender-id}}) or when re-joining the group.
+   This ensures that the client remains able to correctly perform the ordering and replay protection of responses within a long exchange, even in case the server legitimately starts using a new Sender ID, as received from the Group Manager when individually rekeyed (see {{new-sender-id}}) or when re-joining the group.
 
 * In step 8, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client MAY delete that Recipient Context. Such a configuration, which is specified by the application, mitigates attacks that aim at overloading the client's storage.
-
-
-### Supporting Observe ### {#ssec-verify-response-observe}
-
-If Observe {{RFC7641}} is supported, the following holds when verifying notifications for an ongoing observation.
-
-* The client MUST use the stored value of the 'kid' parameter from the original Observe request (see {{ssec-protect-request-observe}}), as value for the 'request\_kid' parameter in the external\_aad structure (see {{sec-cose-object-ext-aad}}).
-
-* The client MUST use the stored value of the 'kid context' parameter from the original Observe request (see {{ssec-protect-request-observe}}), as value for the 'request\_kid\_context' parameter in the external\_aad structure (see {{sec-cose-object-ext-aad}}).
-
-This ensures that the client can correctly verify notifications, even in case it is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}), as well as when it installs a new Security Context with a new ID Context (Gid) following a group rekeying (see {{sec-group-key-management}}).
-
-* The ordering and the replay protection of notifications received from a server are performed as per {{Sections 4.1.3.5.2 and 7.4.1 of RFC8613}}, by using the Notification Number associated with that server for the observation in question. In addition, the client performs the following actions for each ongoing observation.
-
-   - When receiving the first valid notification from a server, the client MUST store the current kid "kid1" of that server for the observation in question. If the 'kid' field is included in the OSCORE option of the notification, its value specifies "kid1". If the Observe request was protected in pairwise mode (see {{sec-pairwise-protection-req}}), the 'kid' field may not be present in the OSCORE option of the notification (see {{sec-cose-object-kid}}). In this case, the client assumes "kid1" to be the Recipient ID for the server to which the Observe request was intended for.
-
-   - When receiving another valid notification from the same server - which can be identified and recognized through the same public key used to verify the countersignature and included in the server's authentication credential - the client determines the current kid "kid2" of the server as above for "kid1", and MUST check whether "kid2" is equal to the stored "kid1".
-
-      If "kid1" and "kid2" are different, the client SHOULD NOT accept the response as valid to be delivered to the application, SHOULD NOT update the Notification Number associated with the server, and SHOULD cancel or re-register the observation in question. Exceptions can apply if the client has a means of preserving the order of responses in a more elaborate way out of the scope of this document, or the client application does not require response ordering altogether.
-
-      Note that, if "kid2" is different from "kid1" and the 'kid' field is omitted from the notification - which is possible if the Observe request was protected in pairwise mode - then the client will compute a wrong keystream to decrypt the countersignature (i.e., by using "kid1" rather than "kid2" in the 'id' field of the 'info' array in {{sssec-encrypted-signature-keystream}}), thus subsequently failing to verify the countersignature and discarding the notification.
-
-This ensures that the client remains able to correctly perform the ordering and replay protection of notifications, even in case a server legitimately starts using a new Sender ID, as received from the Group Manager when individually rekeyed (see {{new-sender-id}}) or when re-joining the group.
 
 ## External Signature Checkers # {#sec-processing-signature-checker}
 
@@ -1478,11 +1419,9 @@ The pairwise mode protects messages between two members of a group, essentially 
 
 ## Protecting the Request {#sec-pairwise-protection-req}
 
-When using the pairwise mode, the request is protected as defined in {{Section 8.1 of RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following differences also apply.
+When using the pairwise mode, the request is protected as defined in {{Section 8.1 of RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document.
 
-* When sending a group request, what is specified in {{ssec-protect-request}} of this document holds for the corresponding Non-Notification Group Exchange, with respect to storing the value of the 'kid' and 'kid context' parameters, and to storing an invariant identifier of the group.
-
-* If Observe {{RFC7641}} is supported, what is defined in {{ssec-protect-request-observe}} of this document holds.
+Furthermore, when sending a request that establishes a long exchange, what is specified in {{ssec-protect-request}} of this document holds, with respect to storing the value of the 'kid' and 'kid context' parameters, and to storing an invariant identifier of the group.
 
 ## Verifying the Request {#sec-pairwise-verify-req}
 
@@ -1500,9 +1439,7 @@ Upon receiving a request with the Group Flag set to 0, following the procedure i
 
    - The rule about processing the request where the received Recipient ID ('kid') is equal to the server's Sender ID.
 
-   - The storing of the value of the 'kid' and 'kid context' parameters from the group request, if the server intends to reply with multiple non-notification responses to a group request.
-
-* If Observe {{RFC7641}} is supported, what is defined in {{ssec-verify-request-observe}} of this document holds.
+   - The storing of the value of the 'kid' and 'kid context' parameters from the request, if the server intends to reply with multiple responses within the long exchange established by the request.
 
 ## Protecting the Response {#sec-pairwise-protection-resp}
 
@@ -1512,15 +1449,13 @@ When using the pairwise mode, a response is protected as defined in {{Section 8.
 
    - The protection of a response when using a different Security Context than the one used to protect the corresponding request. That is, the server always protects a response with the Sender Context from its latest Security Context, and establishing a new Security Context resets the Sender Sequence Number to 0 (see {{sec-group-key-management}}).
 
-   - The use of the stored value of the 'kid' and 'kid context' parameters, if the server intends to reply with multiple non-notification responses to a group request.
+   - The use of the stored value of the 'kid' and 'kid context' parameters, if the server intends to reply with multiple responses within the long exchange established by the request.
 
    - The rules for the inclusion of the server's Sender Sequence Number as Partial IV in a response, as used to build the AEAD nonce to protect the response.
 
    - The rules for the inclusion of the ID Context (Gid) in the 'kid context' parameter of a response, if the ID Context used for the response differs from the one used to verify the request (see {{sec-group-key-management}}), also for helping the client to synchronize.
 
    - The rules for the inclusion of the Sender ID in the 'kid' parameter of a response to a request that was protected in pairwise mode, if the server has obtained a new Sender ID from the Group Manager when individually rekeyed (see {{new-sender-id}}), thus helping the client to synchronize.
-
-* If Observe {{RFC7641}} is supported, what is defined in {{ssec-protect-response-observe}} of this document holds.
 
 ## Verifying the Response {#sec-pairwise-verify-resp}
 
@@ -1536,13 +1471,11 @@ Upon receiving a response with the Group Flag set to 0, following the procedure 
 
    - The possible, dynamic creation and configuration of a Recipient Context upon receiving the response.
 
-   - The use of the stored value of the 'kid' and 'kid context' parameters, when processing a response to a group request.
+   - The use of the stored value of the 'kid' and 'kid context' parameters, when processing a response received within a long exchange.
 
-   - The performing of ordering and replay protection for non-notification responses to a group request.
+   - The performing of ordering and replay protection for responses received within a long exchange.
 
    - The possible deletion of a Recipient Context created upon receiving the response, in case the response is not verified successfully.
-
-* If Observe {{RFC7641}} is supported, what is defined in {{ssec-verify-response-observe}} of this document holds. The client can also in this case identify a server to be the same one across a change of Sender ID, by relying on the server's public key. As to the expected server's authentication credential, the same holds as specified above for non-notification responses.
 
 # Challenge-Response Based Freshness and Synchronization # {#sec-synch-challenge-response}
 
@@ -1649,7 +1582,7 @@ The same considerations on protected message fields for OSCORE discussed in {{Se
 
 The same considerations on uniqueness of (key, nonce) pairs for OSCORE discussed in {{Section D.4 of RFC8613}} hold for Group OSCORE. This is further discussed in {{ssec-key-nonce-uniqueness}} of this document.
 
-The same considerations on unprotected message fields for OSCORE discussed in {{Section D.5 of RFC8613}} hold for Group OSCORE, with the following differences. First, the 'kid context' of request messages is part of the Additional Authenticated Data, thus safely enabling to keep Non-Notification Group Exchanges and observations active beyond a possible change of ID Context (Gid), following a group rekeying (see {{sec-cose-object-ext-aad}}). Second, the countersignature included in a Group OSCORE message protected in group mode is computed also over the value of the OSCORE option, which is also part of the Additional Authenticated Data used in the signing process. This is further discussed in {{ssec-cross-group-injection}} of this document.
+The same considerations on unprotected message fields for OSCORE discussed in {{Section D.5 of RFC8613}} hold for Group OSCORE, with the following differences. First, the 'kid context' of request messages is part of the Additional Authenticated Data, thus safely enabling to keep long exchanges active beyond a possible change of ID Context (Gid), following a group rekeying (see {{sec-cose-object-ext-aad}}). Second, the countersignature included in a Group OSCORE message protected in group mode is computed also over the value of the OSCORE option, which is also part of the Additional Authenticated Data used in the signing process. This is further discussed in {{ssec-cross-group-injection}} of this document.
 
 As discussed in {{Section 6.2.3 of I-D.ietf-core-groupcomm-bis}}, Group OSCORE addresses security attacks against CoAP listed in Sections 11.2-11.6 of {{RFC7252}}, especially when run over IP multicast.
 
@@ -1703,9 +1636,9 @@ The proof for uniqueness of (key, nonce) pairs in {{Section D.4 of RFC8613}} is 
 
 * Uniqueness of Sender IDs within the group is enforced by the Group Manager. In fact, from the moment when a Gid is assigned to a group until the moment when a new Gid is assigned to that same group, the Group Manager does not reassign a Sender ID within the group (see {{sec-group-key-management}}).
 
-* The case A in {{Section D.4 of RFC8613}} concerns all group requests and responses including a Partial IV (e.g., Observe notifications and non-notification responses to group requests). In this case, same considerations from {{RFC8613}} apply here as well.
+* The case A in {{Section D.4 of RFC8613}} concerns all requests as well as all responses including a Partial IV (e.g., Observe notifications {{RFC7641}} or any other subsequent responses after the first one). In this case, same considerations from {{RFC8613}} apply here as well.
 
-* The case B in {{Section D.4 of RFC8613}} concerns responses not including a Partial IV (e.g., single response to a non-group request). In this case, same considerations from {{RFC8613}} apply here as well.
+* The case B in {{Section D.4 of RFC8613}} concerns responses not including a Partial IV (e.g., a single response to a request). In this case, same considerations from {{RFC8613}} apply here as well.
 
 As a consequence, each message encrypted/decrypted with the same Sender Key is processed by using a different (ID_PIV, PIV) pair. This means that nonces used by any fixed encrypting endpoint are unique. Thus, each message is processed with a different (key, nonce) pair.
 
