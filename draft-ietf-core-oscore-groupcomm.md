@@ -1129,7 +1129,7 @@ The protection from replay of requests is performed as per {{Section 7.4 of RFC8
 
 ### Replay Protection of Responses # {#sec-replay-protection-responses}
 
-A client uses the method defined in this section in order to check whether a response is a replay.
+A client uses the method defined in this section in order to check whether a received response is a replay.
 
 This especially applies to responses received within a long exchange, during which multiple such responses can be received from the same server to the corresponding request. These include Observe notifications {{RFC7641}}; and non-notification responses as a reply to a group request, which the client can receive until the CoAP Token value associated with the group request is freed up (see Section 3.1.6 of {{I-D.ietf-core-groupcomm-bis}}).
 
