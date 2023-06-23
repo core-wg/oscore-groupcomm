@@ -1095,7 +1095,7 @@ Like OSCORE, Group OSCORE provides message binding of responses to requests, as 
 
 ## Supporting Multiple Responses in Long Exchanges # {#sec-long-exchanges}
 
-For each of its ongoing long exchange, a client maintains one Response Number for each different server. Then, separately for each server, the client uses the associated Response Number to perform ordering and replay protection of responses received from that server within that long exchange (see {{sec-replay-protection-non-notifications}}).
+For each of its ongoing long exchange, a client maintains one Response Number for each different server. Then, separately for each server, the client uses the associated Response Number to perform ordering and replay protection of responses received from that server within that long exchange (see {{sec-replay-protection-responses}}).
 
 That is, the Response Number has the same purpose that the Notification Number has in OSCORE (see Section 4.1.3.5.2 of {{RFC8613}}), but a client uses it for handling any response from the associated server within a long exchange.
 
@@ -1125,9 +1125,9 @@ Like in OSCORE {{RFC8613}}, assuming an honest server, the message binding guara
 
 Like in OSCORE {{RFC8613}}, the replay protection relies on the Partial IV of incoming messages. A server updates the Replay Window of its Recipient Contexts based on the Partial IV values in received request messages, which correspond to the Sender Sequence Numbers of the clients. Note that there can be large jumps in these Sender Sequence Numbers, for example when a client exchanges unicast messages with other servers. The operation of validating the Partial IV and performing replay protection MUST be atomic. The update of Replay Windows is described in {{ssec-loss-mutable-context}}.
 
-The protection from replay of requests is performed as per {{Section 7.4 of RFC8613}}, separately for each client by leveraging the Replay Window in the corresponding Recipient Context. When supporting Observe {{RFC7641}}, the protection from replay of notifications is performed as per {{Section 7.4.1 of RFC8613}}.
+The protection from replay of requests is performed as per {{Section 7.4 of RFC8613}}, separately for each client and by leveraging the Replay Window in the corresponding Recipient Context. The protection from replay of responses in a long exchange is performed as defined in {{sec-replay-protection-responses}}.
 
-### Replay Protection of Non-notification Responses# {#sec-replay-protection-non-notifications}
+### Replay Protection of Non-notification Responses# {#sec-replay-protection-responses}
 
 This section refers specifically to non-notification responses to a group request. A client can receive multiple such responses from the same server in the group as a reply to the same group request, until the CoAP Token value associated with the group request is freed up {{I-D.ietf-core-groupcomm-bis}}.
 
@@ -1296,7 +1296,7 @@ Note that the server always protects a response with the Sender Context from its
 
 * In step 3, if any of the following two conditions holds, the server MUST include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response. This prevents the server from reusing the AEAD nonce from the request together with the same encryption key.
 
-   - The response is not the first response that the server sends to the request, regardless of whether it is an Observe notification {{RFC7641}} or a non-notification response to a group request (see {{sec-replay-protection-non-notifications}}).
+   - The response is not the first response that the server sends to the request, regardless of whether it is an Observe notification {{RFC7641}} or a non-notification response to a group request (see {{sec-replay-protection-responses}}).
 
    - The server is using a different Security Context for the response compared to what was used to verify the request (see {{sec-group-key-management}}).
 
@@ -1333,7 +1333,7 @@ For each ongoing observation, the server can help the client to synchronize, by 
 
 If there is a known upper limit to the duration of a group rekeying, the server SHOULD include the 'kid context' parameter during that time. Otherwise, the server SHOULD include it until the Max-Age has expired for the last notification sent before the installation of the new Security Context.
 
-As per {{sec-replay-protection-non-notifications}}, the server MUST NOT reply to a group request with 2.xx responses of which some are notifications and some are not. That is, if the server receives an observation request and registers the observation, then any following 2.xx response from the server to that request MUST be a notification. Also, if the server receives an observation request and registers the observation, then any following 2.xx response from the server to that request MUST be a notification.
+As per {{sec-replay-protection-responses}}, the server MUST NOT reply to a group request with 2.xx responses of which some are notifications and some are not. That is, if the server receives an observation request and registers the observation, then any following 2.xx response from the server to that request MUST be a notification. Also, if the server receives an observation request and registers the observation, then any following 2.xx response from the server to that request MUST be a notification.
 
 ## Verifying the Response ## {#ssec-verify-response}
 
@@ -1383,7 +1383,7 @@ Note that a client may receive a response protected with a Security Context diff
 
    In addition, the client performs the following actions for each ongoing Non-Notification Group Exchange.
 
-   * The ordering and the replay protection of non-notification responses received from a server in reply to a group request are performed as per {{sec-replay-protection-non-notifications}} of this document, by using the Response Number associated with that server for the Non-Notification Group Exchange in question. In case of unsuccessful decryption and verification of a non-notification response, the client SHALL NOT update the Response Number associated with the server.
+   * The ordering and the replay protection of non-notification responses received from a server in reply to a group request are performed as per {{sec-replay-protection-responses}} of this document, by using the Response Number associated with that server for the Non-Notification Group Exchange in question. In case of unsuccessful decryption and verification of a non-notification response, the client SHALL NOT update the Response Number associated with the server.
 
    * When receiving the first valid non-notification response from a server in reply to a group request, the client MUST store the current kid "kid1" of that server for the Non-Notification Group Exchange in question. If the 'kid' field is included in the OSCORE option of the response, its value specifies "kid1". If the group request was protected in pairwise mode (see {{sec-pairwise-protection-req}}), the 'kid' field may not be present in the OSCORE option of the response (see {{sec-cose-object-kid}}). In this case, the client assumes "kid1" to be the Recipient ID for the server to which the group request was intended for.
 
