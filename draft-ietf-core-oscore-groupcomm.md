@@ -587,7 +587,7 @@ All the group members need to acquire new Security Context parameters from the G
 
    - It re-initializes the Replay Window of each Recipient Context as valid and with 0 as its current lower limit.
 
-   - For each long exchange where it is a client and that it wants to keep active, it resets to 0 the Response Number of each associated server (see {{sec-long-term-observations}}).
+   - For each long exchange where it is a client and that it wants to keep active, it resets to 0 the Response Number of each associated server (see {{sec-long-exchanges}}).
 
 From then on, it can resume processing new messages for the considered group. In particular:
 
@@ -720,7 +720,7 @@ The occurrence of such an event and how long it would take to occur depend on th
 
    -  The Group Manager MUST evict the elder members from the group. That is, the Group Manager MUST terminate their membership and, in the following steps, it MUST rekey the group in such a way that the new keying material is not provided to those evicted elder members.
 
-      This ensures that: i) an Observe notification {{RFC7641}} can never successfully match against the Observe requests of two different observations; and ii) a non-notification response can never successfully match against the group requests of two different Non-Notification Group Exchanges. In fact, the excluded elder members would eventually re-join the group, thus terminating any of their ongoing (long-lasting) observations (see {{sec-long-term-observations}}) and Non-Notification Group Exchanges (see {{sec-replay-protection-non-notifications}}).
+      This ensures that: i) an Observe notification {{RFC7641}} can never successfully match against the Observe requests of two different observations; and ii) a non-notification response can never successfully match against the group requests of two different Non-Notification Group Exchanges. In fact, the excluded elder members would eventually re-join the group, thus terminating any of their ongoing (long-lasting) observations (see {{sec-long-exchanges}}) and Non-Notification Group Exchanges (see {{sec-replay-protection-non-notifications}}).
 
       Therefore, it is ensured by construction that no client can have with the same server two ongoing observations, or two ongoing Non-Notification Group Exchanges, or one ongoing observation and one ongoing Non-Notification Group Exchange, such that the two respective requests were protected using the same Partial IV, Gid and Sender ID.
 
@@ -1091,7 +1091,7 @@ Response with ciphertext = 0x60b035059d9ef5667c5a0710823b and no Partial IV.
 
 Like OSCORE, Group OSCORE provides message binding of responses to requests, as well as uniqueness of AEAD (key, nonce) pair (see {{Sections 7.1 and 7.2 of RFC8613}}, respectively).
 
-## Supporting Observe and Multiple Non-Notification Responses # {#sec-long-term-observations}
+## Supporting Observe and Multiple Non-Notification Responses # {#sec-long-exchanges}
 
 A client maintains for each ongoing Non-Notification Group Exchange one Response Number for each different server. Then, separately for each server, the client uses the associated Response Number to perform ordering and replay protection of non-notification responses received from that server (see {{sec-replay-protection-non-notifications}}).
 
