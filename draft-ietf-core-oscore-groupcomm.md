@@ -226,7 +226,7 @@ This document refers also to the following terminology.
 
 * Group request: a CoAP request message sent by a client in the group to all the servers in that group.
 
-* Long exchange: an exchange of messages in the group, where the associated request is a group request and/or an Observe request {{RFC7641}}.
+* Long exchange: an exchange of messages associated with a request that is a group request and/or an Observe request {{RFC7641}}.
 
    More formally, the request associated with a long exchange is: a group request, irrespective of it being an Observe request; or an Observe request, irrespective of it being a group request.
 
