@@ -1195,7 +1195,7 @@ This prevents servers from replying with multiple error messages to a client sen
 
 ## Protecting the Request ## {#ssec-protect-request}
 
-A client transmits a secure group request as described in {{Section 8.1 of RFC8613}}, with the following modifications.
+When using the group mode to protect a request, a client SHALL proceed as described in {{Section 8.1 of RFC8613}}, with the following modifications.
 
 * In step 2, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
 
@@ -1217,7 +1217,7 @@ In addition, the following applies when sending a request that establishes a lon
 
 ## Verifying the Request ## {#ssec-verify-request}
 
-Upon receiving a secure group request with the Group Flag set to 1, following the procedure in {{sec-message-reception}}, a server proceeds as described in {{Section 8.2 of RFC8613}}, with the following modifications.
+Upon receiving a protected request with the Group Flag set to 1, following the procedure in {{sec-message-reception}}, a server SHALL proceed as described in {{Section 8.2 of RFC8613}}, with the following modifications.
 
 * In step 2, the decoding of the compressed COSE object follows {{compression}} of this document. In particular:
 
@@ -1247,7 +1247,7 @@ Upon receiving a secure group request with the Group Flag set to 1, following th
 
    - When decrypting the COSE object using the Recipient Key, the Group Encryption Algorithm from the Common Context MUST be used.
 
-* Additionally, if the used Recipient Context was created upon receiving this group request and the message is not verified successfully, the server MAY delete that Recipient Context. Such a configuration, which is specified by the application, mitigates attacks that aim at overloading the server's storage.
+* Additionally, if the used Recipient Context was created upon receiving this request and the message is not verified successfully, the server MAY delete that Recipient Context. Such a configuration, which is specified by the application, mitigates attacks that aim at overloading the server's storage.
 
 A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. For an example where this is not fulfilled, see {{Section 9.2.1 of I-D.ietf-core-observe-multicast-notifications}}.
 
@@ -1261,7 +1261,7 @@ In addition, the following applies if the request establishes a long exchange an
 
 ## Protecting the Response ## {#ssec-protect-response}
 
-When using the group mode to protect a response, the server SHALL follow the description in {{Section 8.3 of RFC8613}}, with the modifications described in this section.
+When using the group mode to protect a response, a server SHALL proceed as described in {{Section 8.3 of RFC8613}}, with the following modifications.
 
 Note that the server always protects a response with the Sender Context from its latest Security Context, and that establishing a new Security Context resets the Sender Sequence Number to 0 (see {{sec-group-key-management}}).
 
@@ -1299,7 +1299,7 @@ Note that the server always protects a response with the Sender Context from its
 
 ## Verifying the Response ## {#ssec-verify-response}
 
-Upon receiving a secure response message with the Group Flag set to 1, following the procedure in {{sec-message-reception}}, the client proceeds as described in {{Section 8.4 of RFC8613}}, with the following modifications.
+Upon receiving a protected response with the Group Flag set to 1, following the procedure in {{sec-message-reception}}, a client SHALL proceed as described in {{Section 8.4 of RFC8613}}, with the modifications described in this section.
 
 Note that a client may receive a response protected with a Security Context different from the one used to protect the corresponding request, and that, upon the establishment of a new Security Context, the client re-initializes its Replay Windows in its Recipient Contexts (see {{sec-group-key-management}}).
 
@@ -1491,7 +1491,7 @@ Upon receiving a 4.01 (Unauthorized) response that includes an Echo Option and o
 
 If in the group the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, the client MUST use the pairwise mode to protect the request, as per {{sec-pairwise-protection-req}}. Note that, as defined in {{sec-pairwise-protection}}, endpoints that are members of such a group and that use the Echo Option support the pairwise mode. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are not set, only the group mode can be used. Hence, requests including the Echo option can be protected only with the Group Mode, with the caveat due to the risk for those requests to be redirected to a different server than the intended one, as discussed in {{ssec-unicast-requests}}.
 
-The client does not necessarily resend the same group request, but can instead send a more recent one, if the application permits it. This allows the client to not retain previously sent group requests for full retransmission, unless the application explicitly requires otherwise. In either case, the client uses a fresh Sender Sequence Number value from its own Sender Context. If the client stores group requests for possible retransmission with the Echo Option, it should not store a given request for longer than a preconfigured time interval. Note that the unicast request echoing the Echo Option is correctly treated and processed, since the 'kid context' field including the Group Identifier of the OSCORE group is still present in the OSCORE Option as part of the COSE object (see {{sec-cose-object}}).
+The client does not necessarily resend the same request, but can instead send a more recent one, if the application permits it. This allows the client to not retain previously sent requests for full retransmission, unless the application explicitly requires otherwise. In either case, the client uses a fresh Sender Sequence Number value from its own Sender Context. If the client stores requests for possible retransmission with the Echo Option, it should not store a given request for longer than a preconfigured time interval. Note that the unicast request echoing the Echo Option is correctly treated and processed, since the 'kid context' field including the Group Identifier of the OSCORE group is still present in the OSCORE Option as part of the COSE object (see {{sec-cose-object}}).
 
 Upon receiving the unicast request including the Echo Option, the server performs the following verifications.
 
@@ -1670,9 +1670,9 @@ In this case, the sender protects a message using the old Security Context, i.e.
 
 A possible way to ameliorate this issue is to preserve the old retained Security Context for a maximum amount of time defined by the application. By doing so, the recipient can still try to process the received message using the old retained Security Context.
 
-This makes particular sense when the recipient is a client, that would hence be able to process incoming responses protected with the old retained Security Context used to protect the associated group request. If, as typically expected, the old Gid is not included in the response, then the client will first fail to process the response using the latest Security Context, and then use the old retained Security Context as a second attempt.
+This makes particular sense when the recipient is a client, that would hence be able to process incoming responses protected with the old retained Security Context used to protect the associated request. If, as typically expected, the old Gid is not included in the response, then the client will first fail to process the response using the latest Security Context, and then use the old retained Security Context as a second attempt.
 
-Instead, a recipient server can immediately process an incoming request with the old retained Security Context, as signaled by the old Gid that is always included in requests. However, the server would better and more simply discard such an incoming group request.
+Instead, a recipient server can immediately process an incoming request with the old retained Security Context, as signaled by the old Gid that is always included in requests. However, the server would better and more simply discard such an incoming request.
 
 This tolerance preserves the processing of secure messages throughout a long-lasting key rotation, as group rekeying processes may likely take a long time to complete, especially in large groups. On the other hand, a former (compromised) group member can abusively take advantage of this, and send messages protected with the old retained Security Context. Therefore, a conservative application policy should not admit the retention of old Security Contexts.
 
@@ -1726,7 +1726,7 @@ Note that Z does not know the pairwise keys of X and Y, since it does not know a
 
 When a Group OSCORE message is protected in group mode, the countersignature is computed also over the value of the OSCORE option, which is part of the Additional Authenticated Data used in the signing process (see {{sec-cose-object-ext-aad}}).
 
-That is, other than over the ciphertext, the countersignature is computed over: the ID Context (Gid) and the Partial IV, which are always present in group requests; as well as the Sender ID of the message originator, which is always present in group requests as well as in responses to requests protected in group mode.
+That is, other than over the ciphertext, the countersignature is computed over: the ID Context (Gid) and the Partial IV, which are always present in requests; as well as the Sender ID of the message originator, which is always present in requests as well as in responses to requests protected in group mode.
 
 Since the signing process takes as input also the ciphertext of the COSE_Encrypt0 object, the countersignature is bound not only to the intended OSCORE group, hence to the triplet (Master Secret, Master Salt, ID Context), but also to a specific Sender ID in that group and to its specific symmetric key used for AEAD encryption, hence to the quartet (Master Secret, Master Salt, ID Context, Sender ID).
 
@@ -1942,7 +1942,7 @@ The following points are assumed to be already addressed and are out of the scop
 
 The protocol described in this document aims at fulfilling the following security objectives:
 
-* Data replay protection: group request messages or response messages replayed within the security group must be detected.
+* Data replay protection: request messages or response messages replayed within the security group must be detected.
 
 * Data confidentiality: messages sent within the security group shall be encrypted.
 
