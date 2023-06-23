@@ -896,7 +896,7 @@ Compared with {{Section 5.4 of RFC8613}}, the aad_array has the following differ
 
 * The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}).
 
-   This enables endpoints to safely keep an observation {{RFC7641}} or a Non-Notification Group Exchange active beyond a possible change of Gid (i.e., of ID Context), following a group rekeying (see {{sec-group-key-management}}). In fact, it ensures that every response, regardless of whether it is an Observe notification or not, cryptographically matches with only one request, rather than with multiple ones that were protected with different keying material but share the same 'request_kid' and 'request_piv' values.
+   This enables endpoints to safely keep a long exchange active beyond a possible change of Gid (i.e., of ID Context), following a group rekeying (see {{sec-group-key-management}}). In fact, it ensures that every response within a long exchange cryptographically matches with only one request (i.e., the request associated with that long exchange), rather than with multiple requests that were protected with different keying material but share the same 'request_kid' and 'request_piv' values.
 
 * The new element 'OSCORE_option', containing the value of the OSCORE Option present in the protected message, encoded as a binary string. This prevents the attack described in {{ssec-cross-group-injection}} when using the group mode, as further explained  in {{sssec-cross-group-injection-group-mode}}.
 
