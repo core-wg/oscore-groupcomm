@@ -720,9 +720,11 @@ The occurrence of such an event and how long it would take to occur depend on th
 
    -  The Group Manager MUST evict the elder members from the group. That is, the Group Manager MUST terminate their membership and, in the following steps, it MUST rekey the group in such a way that the new keying material is not provided to those evicted elder members.
 
-      This ensures that: i) an Observe notification {{RFC7641}} can never successfully match against the Observe requests of two different observations; and ii) a non-notification response can never successfully match against the group requests of two different Non-Notification Group Exchanges. In fact, the excluded elder members would eventually re-join the group, thus terminating any of their ongoing (long-lasting) observations (see {{sec-long-exchanges}}) and Non-Notification Group Exchanges (see {{sec-replay-protection-non-notifications}}).
+      This ensures that any response from the same server to the request of a long exchange can never successfully match against the request of two different long exchanges.
 
-      Therefore, it is ensured by construction that no client can have with the same server two ongoing observations, or two ongoing Non-Notification Group Exchanges, or one ongoing observation and one ongoing Non-Notification Group Exchange, such that the two respective requests were protected using the same Partial IV, Gid and Sender ID.
+      In fact, the excluded elder members would eventually re-join the group, thus terminating any of their ongoing long exchanges (see {{sec-long-exchanges}}).
+
+      Therefore, it is ensured by construction that no client can have with the same server two ongoing long exchanges, such that the two respective requests were protected using the same Partial IV, Gid, and Sender ID.
 
 #### Recycling of Sender IDs ### {#sec-sid-recycling}
 
