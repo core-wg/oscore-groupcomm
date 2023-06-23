@@ -587,7 +587,7 @@ All the group members need to acquire new Security Context parameters from the G
 
    - It re-initializes the Replay Window of each Recipient Context as valid and with 0 as its current lower limit.
 
-   - For each long exchange where it is a client and that it wants to keep active, it resets to 0 the Response Number of each associated server (see {{sec-long-exchanges}}).
+   - For each long exchange where it is a client and that it wants to keep active, it sets the Response Number of each associated server as not initialized (see {{sec-long-exchanges}}).
 
 From then on, it can resume processing new messages for the considered group. In particular:
 
@@ -1123,29 +1123,31 @@ Like in OSCORE {{RFC8613}}, assuming an honest server, the message binding guara
 
 ## Replay Protection # {#sec-replay-protection}
 
-Like in OSCORE {{RFC8613}}, the replay protection relies on the Partial IV of incoming messages. A server updates the Replay Window of its Recipient Contexts based on the Partial IV values in received request messages, which correspond to the Sender Sequence Numbers of the clients. Note that there can be large jumps in these Sender Sequence Numbers, for example when a client exchanges unicast messages with other servers. The operation of validating the Partial IV and performing replay protection MUST be atomic. The update of Replay Windows is described in {{ssec-loss-mutable-context}}.
+Like in OSCORE {{RFC8613}}, the replay protection relies on the Partial IV of incoming messages. A server updates the Replay Window of its Recipient Contexts based on the Partial IV values in received request messages, which correspond to the Sender Sequence Numbers of the clients. Note that there can be large jumps in these Sender Sequence Number values, for example when a client exchanges unicast messages with other servers. The operation of validating the Partial IV and performing replay protection MUST be atomic. The update of Replay Windows is described in {{ssec-loss-mutable-context}}.
 
 The protection from replay of requests is performed as per {{Section 7.4 of RFC8613}}, separately for each client and by leveraging the Replay Window in the corresponding Recipient Context. The protection from replay of responses in a long exchange is performed as defined in {{sec-replay-protection-responses}}.
 
-### Replay Protection of Responses# {#sec-replay-protection-responses}
+### Replay Protection of Responses # {#sec-replay-protection-responses}
 
-This section refers specifically to non-notification responses to a group request. A client can receive multiple such responses from the same server in the group as a reply to the same group request, until the CoAP Token value associated with the group request is freed up {{I-D.ietf-core-groupcomm-bis}}.
+A client uses the method defined in this section in order to check whether a response is a replay.
 
-When replying to a group request with a non-notification response (both successful and error), a server MUST include a Partial IV, except for the first non-notification response where the Partial IV MAY be omitted. A server supporting Observe {{RFC7641}} MUST NOT reply to a group request with 2.xx responses of which some are notifications and some are not.
+This especially applies to responses received within a long exchange, during which multiple such responses can be received from the same server to the corresponding request. These include Observe notifications {{RFC7641}}; and non-notification responses as a reply to a group request, which the client can receive until the CoAP Token value associated with the group request is freed up (see Section 3.1.6 of {{I-D.ietf-core-groupcomm-bis}}).
 
-In order to protect against replay, the client SHALL maintain for each ongoing Non-Notification Group Exchange one Response Number for each different server. The Response Number is a non-negative integer containing the largest Partial IV of the received non-notification responses from that server within the Non-Notification Group Exchange.
+When sending a response (both successful and error), a server MUST include its Sender Sequence Number as Partial IV in the response, except when sending the first response to the corresponding request, in which case the Partial IV in the response MAY be omitted.
 
-Then, separately for each server, the client uses the associated Response Number to perform ordering and replay protection of the non-notification responses to a group request received from that server, by comparing their Partial IVs with one another and against the Response Number.
+In order to protect against replay, the client SHALL maintain for each ongoing long exchange one Response Number for each different server. The Response Number is a non-negative integer containing the largest Partial IV of the responses received from that server during the long exchange, while using the same Security Context.
 
-For each server, the associated Response Number is initialized to the Partial IV of the first successfully verified non-notification response to a group request. A client MUST only accept at most one such response without Partial IV from each server in the group, and treat it as the oldest non-notification response to the group request received from that server.
+Then, separately for each server, the client uses the associated Response Number to perform ordering and replay protection of the responses from that server during the long exchange, by comparing their Partial IVs with one another and against the Response Number.
 
-A client receiving a non-notification response to a group request containing a Partial IV SHALL compare the Partial IV with the Response Number associated with the replying server within the ongoing Non-Notification Group Exchange. The client MUST stop processing non-observation responses to a group request from a server, if those have a Partial IV that has been previously received before from that server within the Non-Notification Group Exchange. Applications MAY decide that a client only processes non-notification responses to a group request if those have a greater Partial IV than the Response Number associated with the replying server within the ongoing Non-Notification Group Exchange.
+For every long exchange, the Response Number associated with a server is initialized to the Partial IV of the response from that server such that, within the long exchange, it is the first response from that server to include a Partial IV and to be successfully verified with the used Security Context. Note that, when a new Security Context is established in the group, the client sets the Response Number of each associated server as not initialized (see {{new-sec-context}}), hence later responses within the same long exchange and protected with the new Security Context will result in a new initialization of Response Numbers. Furthermore, for every long exchange, a client MUST only accept at most one response without Partial IV from each server, and treat it as the oldest response from that server within that long exchange.
 
-If the verification of the non-notification response succeeds, and the received Partial IV was greater than the Response Number associated with the replying server, then the client SHALL overwrite that Response Number with the received Partial IV.
+During a long exchange, a client receiving a response containing a Partial IV SHALL compare the Partial IV with the Response Number associated with the replying server within that long exchange. The client MUST stop processing responses from a server, if those have a Partial IV that has been previously received from that server during that long exchange, while using the same Security Context. Applications MAY decide that a client only processes responses within a long exchange if those have a greater Partial IV than the Response Number associated with the replying server within that long exchange.
 
-For each server, a client MUST consider the non-notification response to a group request with the highest Partial IV as the freshest, regardless of the order of arrival. Given a group request, implementations need to make sure that the corresponding non-notification response from a server without Partial IV is considered the oldest from that server.
+If the verification of the response succeeds, and the received Partial IV (when included) was greater than the Response Number associated with the replying server, then the client SHALL overwrite that Response Number with the received Partial IV.
 
-What is defined in this section does not apply to non-notification responses to non-group requests, since there is at most a single such response and only from one, individually targeted server in the group.
+As long as a server uses the same Security Context to protect its responses to the same request, the client MUST consider the response with the highest Partial IV as the freshest response from that server among those protected with that Security Context, regardless of the order of arrival. Within a long exchange, implementations need to make sure that a response without Partial IV is considered the oldest response from the replying server within that long exchange.
+
+The method defined in this section is not relevant for responses to requests that are neither group requests nor Observe requests. In fact, for each of such requests, there is at most one response and only from one, individually targeted server in the group.
 
 # Message Reception # {#sec-message-reception}
 
