@@ -1127,13 +1127,11 @@ Like in OSCORE {{RFC8613}}, the replay protection relies on the Partial IV of in
 
 The protection from replay of requests is performed as per {{Section 7.4 of RFC8613}}, separately for each client and by leveraging the Replay Window in the corresponding Recipient Context. The protection from replay of responses in a long exchange is performed as defined in {{sec-replay-protection-responses}}.
 
-### Replay Protection of Non-notification Responses# {#sec-replay-protection-responses}
+### Replay Protection of Responses# {#sec-replay-protection-responses}
 
 This section refers specifically to non-notification responses to a group request. A client can receive multiple such responses from the same server in the group as a reply to the same group request, until the CoAP Token value associated with the group request is freed up {{I-D.ietf-core-groupcomm-bis}}.
 
 When replying to a group request with a non-notification response (both successful and error), a server MUST include a Partial IV, except for the first non-notification response where the Partial IV MAY be omitted. A server supporting Observe {{RFC7641}} MUST NOT reply to a group request with 2.xx responses of which some are notifications and some are not.
-
-When processing responses from a same server to an Observe registration request, a client supporting Observe MUST accept either only notifications or only non-notification responses. The specific way to achieve this is implementation specific.
 
 In order to protect against replay, the client SHALL maintain for each ongoing Non-Notification Group Exchange one Response Number for each different server. The Response Number is a non-negative integer containing the largest Partial IV of the received non-notification responses from that server within the Non-Notification Group Exchange.
 
