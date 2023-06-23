@@ -1109,23 +1109,17 @@ Upon leaving the group or before re-joining the group, a group member MUST termi
 
 If the application requires freshness, e.g., according to time- or event-based policies (see {{Section 2.5.1 of RFC9175}}), a server can use the approach in {{sec-synch-challenge-response}} as a variant of the procedure in {{Section B.1.2 of RFC8613}}, before delivering request messages from a client to the application. This also makes the server (re-)synchronize with the client's Sender Sequence Number.
 
-Like in OSCORE {{RFC8613}}, assuming an honest server, the message binding guarantees that a response is not older than the request it replies to, so the same properties as stated in {{Section 7.3 of RFC8613}} apply:
+Like in OSCORE {{RFC8613}}, assuming an honest server, the message binding guarantees that a response is not older than the request it replies to. Therefore, building on {{Section 7.3 of RFC8613}}, the following properties hold for Group OSCORE.
 
 * The freshness of a response can be assessed if it is received soon after the request.
 
-* For notifications, this assessment gets weaker with time, and it is RECOMMENDED that the client regularly re-register the observation.
+   For responses within a long exchange, this assessment gets weaker with time. If such responses are Observe notifications {{RFC7641}}, it is RECOMMENDED that the client regularly re-register the observation.
+
+   If the request was neither a group request nor an Observe request, there is at most a single response and only from one, individually targeted server in the group. Thus, freshness can be assessed depending on when the request was sent.
 
 * It is not guaranteed that a misbehaving server did not create the response before receiving the request, i.e., Group OSCORE does not verify server aliveness.
 
-* For requests and notifications, the received Partial IV allows a recipient to determine the relative order of requests or responses.
-
-This applies also to non-notification responses:
-
-* In case of a response to a non-group request, there is at most a single such response and only from one, individually targeted server in the group, so freshness can be assessed depending on when the request was sent.
-
-* In case of a response to a group request, multiple such responses can be received from the same server in reply to the same group request, until the CoAP Token value associated with the group request is freed up {{I-D.ietf-core-groupcomm-bis}}. Therefore, the freshness guarantee gets weaker with time.
-
-* In case of responses to group requests, the received Partial IV allows a recipient to determine the relative order of requests or responses.
+* For requests and responses, the received Partial IV allows a recipient to determine the relative order of requests or responses.
 
 ## Replay Protection # {#sec-replay-protection}
 
