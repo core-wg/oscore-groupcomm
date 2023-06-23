@@ -1331,8 +1331,6 @@ For each ongoing observation, the server can help the client to synchronize, by 
 
 If there is a known upper limit to the duration of a group rekeying, the server SHOULD include the 'kid context' parameter during that time. Otherwise, the server SHOULD include it until the Max-Age has expired for the last notification sent before the installation of the new Security Context.
 
-As per {{sec-replay-protection-responses}}, the server MUST NOT reply to a group request with 2.xx responses of which some are notifications and some are not. That is, if the server receives an observation request and registers the observation, then any following 2.xx response from the server to that request MUST be a notification. Also, if the server receives an observation request and registers the observation, then any following 2.xx response from the server to that request MUST be a notification.
-
 ## Verifying the Response ## {#ssec-verify-response}
 
 Upon receiving a secure response message with the Group Flag set to 1, following the procedure in {{sec-message-reception}}, the client proceeds as described in {{Section 8.4 of RFC8613}}, with the following modifications.
