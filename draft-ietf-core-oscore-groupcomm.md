@@ -220,15 +220,17 @@ This document refers also to the following terminology.
 
 * Birth Gid: with respect to a group member, the Gid obtained by that group member upon (re-)joining the group.
 
-* Group request: CoAP request message sent by a client in the group to all servers in that group.
-
 * Key Generation Number: an integer value identifying the current version of the keying material used in a group.
 
 * Source authentication: evidence that a received message in the group originated from a specific identified group member. This also provides assurance that the message was not tampered with by anyone, be it a different legitimate group member or an endpoint which is not a group member.
 
-* Non-Notification Group Exchange: the exchange of messages between a client and the servers in the group, as pertaining to a group request from the client and the corresponding responses from the servers that are _not_ Observe notifications {{RFC7641}}. This is irrespective of the group request being an Observe request or not.
+* Group request: a CoAP request message sent by a client in the group to all the servers in that group.
 
-   The client terminates a Non-Notification Group Exchange when freeing up the CoAP Token value used for the group request, for which no further responses will be accepted afterwards.
+* Long exchange: an exchange of messages in the group, where the associated request is a group request and/or an Observe request {{RFC7641}}.
+
+   More formally, the request associated with a long exchange is: a group request, irrespective of it being an Observe request; or an Observe request, irrespective of it being a group request.
+
+   In either case, multiple responses can follow from the same server to the request associated with the long exchange. The client terminates a long exchange when freeing up the CoAP Token value used for the associated request, for which no further responses will be accepted afterwards.
 
 # Security Context # {#sec-context}
 
@@ -2063,6 +2065,10 @@ As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple gr
 # Document Updates # {#sec-document-updates}
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
+
+## Version -18 to -19 ## {#sec-18-19}
+
+* Unified presentation of handling of multiple responses.
 
 ## Version -17 to -18 ## {#sec-17-18}
 
