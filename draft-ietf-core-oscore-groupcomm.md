@@ -1419,13 +1419,13 @@ The pairwise mode protects messages between two members of a group, essentially 
 
 ## Protecting the Request {#sec-pairwise-protection-req}
 
-When using the pairwise mode, the request is protected as defined in {{Section 8.1 of RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document.
+When using the pairwise mode to protect a request, a client SHALL proceed as described in {{Section 8.1 of RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document.
 
 Furthermore, when sending a request that establishes a long exchange, what is specified in {{ssec-protect-request}} of this document holds, with respect to storing the value of the 'kid' and 'kid context' parameters, and to storing an invariant identifier of the group.
 
 ## Verifying the Request {#sec-pairwise-verify-req}
 
-Upon receiving a request with the Group Flag set to 0, following the procedure in {{sec-message-reception}}, the server MUST process it as defined in {{Section 8.2 of RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following differences also apply.
+Upon receiving a protected request with the Group Flag set to 0, following the procedure in {{sec-message-reception}}, a server SHALL proceed as described in {{Section 8.2 of RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following differences also apply.
 
 * If the server discards the request due to not retrieving a Security Context associated with the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.01 (Unauthorized) error message or a 4.02 (Bad Option) error message, respectively. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
 
@@ -1443,7 +1443,7 @@ Upon receiving a request with the Group Flag set to 0, following the procedure i
 
 ## Protecting the Response {#sec-pairwise-protection-resp}
 
-When using the pairwise mode, a response is protected as defined in {{Section 8.3 of RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following differences also apply.
+When using the pairwise mode to protect a response, a server SHALL proceed as described in {{Section 8.3 of RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following differences also apply.
 
 * What is specified in {{ssec-protect-response}} of this document holds with respect to the following points.
 
@@ -1459,7 +1459,7 @@ When using the pairwise mode, a response is protected as defined in {{Section 8.
 
 ## Verifying the Response {#sec-pairwise-verify-resp}
 
-Upon receiving a response with the Group Flag set to 0, following the procedure in {{sec-message-reception}}, the client MUST process it as defined in {{Section 8.4 of RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following differences also apply.
+Upon receiving a protected response with the Group Flag set to 0, following the procedure in {{sec-message-reception}}, a client SHALL proceed as described in {{Section 8.4 of RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following differences also apply.
 
 * The client may receive a response protected with a Security Context different from the one used to protect the corresponding request. Also, upon the establishment of a new Security Context, the client re-initializes its Replay Windows in its Recipient Contexts (see {{ssec-sender-recipient-context}}).
 
