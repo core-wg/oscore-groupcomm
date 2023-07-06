@@ -228,8 +228,6 @@ This document refers also to the following terminology.
 
 * Long exchange: an exchange of messages associated with a request that is a group request and/or an Observe request {{RFC7641}}.
 
-   More formally, the request associated with a long exchange is: a group request, irrespective of it being an Observe request; or an Observe request, irrespective of it being a group request.
-
    In either case, multiple responses can follow from the same server to the request associated with the long exchange. The client terminates a long exchange when freeing up the CoAP Token value used for the associated request, for which no further responses will be accepted afterwards.
 
 # Security Context # {#sec-context}
@@ -722,7 +720,7 @@ The occurrence of such an event and how long it would take to occur depend on th
 
       This ensures that any response from the same server to the request of a long exchange can never successfully match against the request of two different long exchanges.
 
-      In fact, the excluded elder members would eventually re-join the group, thus terminating any of their ongoing long exchanges (see {{sec-long-exchanges}}).
+      In fact, the excluded elder members could eventually re-join the group, thus terminating any of their ongoing long exchanges (see {{sec-long-exchanges}}).
 
       Therefore, it is ensured by construction that no client can have with the same server two ongoing long exchanges, such that the two respective requests were protected using the same Partial IV, Gid, and Sender ID.
 
@@ -1115,7 +1113,7 @@ Like in OSCORE {{RFC8613}}, assuming an honest server, the message binding guara
 
    For responses within a long exchange, this assessment gets weaker with time. If such responses are Observe notifications {{RFC7641}}, it is RECOMMENDED that the client regularly re-register the observation.
 
-   If the request was neither a group request nor an Observe request, there is at most a single response and only from one, individually targeted server in the group. Thus, freshness can be assessed depending on when the request was sent.
+   If the request was neither a group request nor an Observe request, there is at most a single valid response and only from one, individually targeted server in the group. Thus, freshness can be assessed depending on when the request was sent.
 
 * It is not guaranteed that a misbehaving server did not create the response before receiving the request, i.e., Group OSCORE does not verify server aliveness.
 
@@ -1141,7 +1139,7 @@ Then, separately for each server, the client uses the associated Response Number
 
 For every long exchange, the Response Number associated with a server is initialized to the Partial IV of the response from that server such that, within the long exchange, it is the first response from that server to include a Partial IV and to be successfully verified with the used Security Context. Note that, when a new Security Context is established in the group, the client sets the Response Number of each associated server as not initialized (see {{new-sec-context}}), hence later responses within the same long exchange and protected with the new Security Context will result in a new initialization of Response Numbers. Furthermore, for every long exchange, a client MUST only accept at most one response without Partial IV from each server, and treat it as the oldest response from that server within that long exchange.
 
-During a long exchange, a client receiving a response containing a Partial IV SHALL compare the Partial IV with the Response Number associated with the replying server within that long exchange. The client MUST stop processing responses from a server, if those have a Partial IV that has been previously received from that server during that long exchange, while using the same Security Context. Applications MAY decide that a client only processes responses within a long exchange if those have a greater Partial IV than the Response Number associated with the replying server within that long exchange.
+During a long exchange, a client receiving a response containing a Partial IV SHALL compare the Partial IV with the Response Number associated with the replying server within that long exchange. The client MUST stop processing a response from a server, if that response has a Partial IV that has been previously received from that server during that long exchange, while using the same Security Context. Applications MAY decide that a client only processes responses within a long exchange if those have a greater Partial IV than the Response Number associated with the replying server within that long exchange.
 
 If the verification of the response succeeds, and the received Partial IV (when included) was greater than the Response Number associated with the replying server, then the client SHALL overwrite that Response Number with the received Partial IV.
 
@@ -1250,8 +1248,6 @@ Upon receiving a protected request with the Group Flag set to 1, following the p
 * Additionally, if the used Recipient Context was created upon receiving this request and the message is not verified successfully, the server MAY delete that Recipient Context. Such a configuration, which is specified by the application, mitigates attacks that aim at overloading the server's storage.
 
 A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. For an example where this is not fulfilled, see {{Section 9.2.1 of I-D.ietf-core-observe-multicast-notifications}}.
-
-In addition, the following applies if the server intends to reply with multiple responses, within the long exchange established by the corresponding request.
 
 In addition, the following applies if the request establishes a long exchange and the server intends to reply with multiple responses.
 
