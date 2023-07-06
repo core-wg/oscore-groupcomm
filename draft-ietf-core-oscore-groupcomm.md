@@ -1325,7 +1325,7 @@ Note that a client may receive a response protected with a Security Context diff
 
       The client verifies the original countersignature SIGNATURE.
 
-   - If the verification of the countersignature fails, the client: i) SHALL stop processing the response; and ii) SHALL NOT update the Response Number associated with the server, if the response is received within a long exchange.
+   - If the verification of the countersignature fails, the client: i) SHALL stop processing the response; and ii) SHALL NOT update the Response Number associated with the server.
 
    - After a successful verification of the countersignature, the client performs also the following actions in case the request was protected in pairwise mode (see {{sec-pairwise-protection-req}}).
 
@@ -1333,7 +1333,7 @@ Note that a client may receive a response protected with a Security Context diff
 
       - If the 'kid' parameter is not present in the response, the client checks whether the server that has sent the response is the same one to which the request was intended for. This can be done by checking that the public key used to verify the countersignature of the response is equal to the public key included in the authentication credential Recipient Auth Cred, which was taken as input to derive the Pairwise Sender Key used for protecting the request (see {{key-derivation-pairwise}}).
 
-      In either case, if the client determines that the response has come from a different server than the expected one, then the client: i) SHALL discard the response and SHALL NOT deliver it to the application; ii) SHALL NOT update the Response Number associated with the server, if the response is received within a long exchange.
+      In either case, if the client determines that the response has come from a different server than the expected one, then the client: i) SHALL discard the response and SHALL NOT deliver it to the application; ii) SHALL NOT update the Response Number associated with the server.
 
       Otherwise, the client hereafter considers the received 'kid' as the current Recipient ID for the server.
 
