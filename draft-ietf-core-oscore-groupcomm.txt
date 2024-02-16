@@ -4059,7 +4059,8 @@ Table of Contents
 14.2.  Target Attributes Registry
 
    IANA is asked to add the following entry to the "Target Attributes"
-   registry within the "CoRE Parameters" registry group.
+   registry within the "Constrained RESTful Environments (CoRE)
+   Parameters" registry group.
 
    Attribute Name: gosc
    Brief Description: Hint: resource only accessible
@@ -4628,6 +4629,8 @@ D.1.  Version -20 to -21
    *  Updated author list.
 
    *  Terminology: improved definition of "group request".
+
+   *  Editorial: expanded name of the "CoRE Parameters" registry group.
 
 D.2.  Version -19 to -20
 
