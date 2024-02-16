@@ -60,25 +60,14 @@ author:
         country: Sweden
         email: john.mattsson@ericsson.com
       -
-        ins: J. Park
-        name: Jiye Park
-        org: Universitaet Duisburg-Essen
-        street: Schuetzenbahn 70
-        city: Essen
-        code: 45127
-        country: Germany
-        email: ji-ye.park@uni-due.de
-
-contributor:
--
-   ins: R. Höglund
-   name: Rikard Höglund
-   org: RISE AB
-   street: Isafjordsgatan 22
-   city: Kista
-   code: SE-16440 Stockholm
-   country: Sweden
-   email: rikard.hoglund@ri.se
+        ins: R. Höglund
+        name: Rikard Höglund
+        org: RISE AB
+        street: Isafjordsgatan 22
+        city: Kista
+        code: SE-16440 Stockholm
+        country: Sweden
+        email: rikard.hoglund@ri.se
 
 normative:
 
@@ -1997,6 +1986,10 @@ As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple gr
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
+## Version -20 to -21 ## {#sec-20-21}
+
+* Updated author list.
+
 ## Version -19 to -20 ## {#sec-19-20}
 
 * Change Controller for the target attribute "gosc" set to "IETF".
@@ -2446,6 +2439,8 @@ member is now optional to support and use for the Group Manager.
 
 # Acknowledgments # {#acknowldegment}
 {: numbered="no"}
+
+Jiye Park contributed as a co-author of initial versions of this document.
 
 The authors sincerely thank {{{Christian Amsüss}}}, {{{Stefan Beck}}}, {{{Rolf Blom}}}, {{{Carsten Bormann}}}, {{{Esko Dijk}}}, {{{Martin Gunnarsson}}}, {{{Klaus Hartke}}}, {{{Richard Kelsey}}}, {{{Dave Robin}}}, {{{Jim Schaad}}}, {{{Ludwig Seitz}}}, {{{Peter van der Stok}}}, and {{{Erik Thormarker}}} for their feedback and comments.
 
