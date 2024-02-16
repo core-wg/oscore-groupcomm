@@ -1909,7 +1909,7 @@ IANA is asked to add the following entry to the "Target Attributes" registry wit
 Attribute Name: gosc
 Brief Description: Hint: resource only accessible
                    using Group OSCORE or OSCORE
-Change Controller: IESG
+Change Controller: IETF
 Reference: [RFC-XXXX]
 ~~~~~~~~~~~
 
@@ -1997,9 +1997,15 @@ As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple gr
 
 RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
+## Version -19 to -20 ## {#sec-19-20}
+
+* Change Controller for the target attribute "gosc" set to "IETF".
+
 ## Version -18 to -19 ## {#sec-18-19}
 
 * Unified presentation of handling of multiple responses.
+
+* Added Rikard Höglund as Contributor.
 
 ## Version -17 to -18 ## {#sec-17-18}
 
