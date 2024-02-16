@@ -1892,7 +1892,7 @@ IANA is asked to add the following entry to the "OSCORE Flag Bits" registry with
 
 ## Target Attributes Registry ## {#iana-target-attributes}
 
-IANA is asked to add the following entry to the "Target Attributes" registry within the "CoRE Parameters" registry group.
+IANA is asked to add the following entry to the "Target Attributes" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
 
 ~~~~~~~~~~~
 Attribute Name: gosc
@@ -1991,6 +1991,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 * Updated author list.
 
 * Terminology: improved definition of "group request".
+
+* Editorial: expanded name of the "CoRE Parameters" registry group.
 
 ## Version -19 to -20 ## {#sec-19-20}
 
