@@ -8,8 +8,8 @@ Intended status: Standards Track                             G. Selander
 Expires: 19 August 2024                                     F. Palombini
                                                              J. Mattsson
                                                              Ericsson AB
-                                                                 J. Park
-                                             Universitaet Duisburg-Essen
+                                                              R. Höglund
+                                                                 RISE AB
                                                         16 February 2024
 
 
@@ -165,28 +165,28 @@ Table of Contents
    Appendix B.  List of Use Cases
    Appendix C.  Example of Group Identifier Format
    Appendix D.  Document Updates
-     D.1.  Version -19 to -20
-     D.2.  Version -18 to -19
-     D.3.  Version -17 to -18
-     D.4.  Version -16 to -17
-     D.5.  Version -15 to -16
-     D.6.  Version -14 to -15
-     D.7.  Version -13 to -14
-     D.8.  Version -12 to -13
-     D.9.  Version -11 to -12
-     D.10. Version -10 to -11
-     D.11. Version -09 to -10
-     D.12. Version -08 to -09
-     D.13. Version -07 to -08
-     D.14. Version -06 to -07
-     D.15. Version -05 to -06
-     D.16. Version -04 to -05
-     D.17. Version -03 to -04
-     D.18. Version -02 to -03
-     D.19. Version -01 to -02
-     D.20. Version -00 to -01
+     D.1.  Version -20 to -21
+     D.2.  Version -19 to -20
+     D.3.  Version -18 to -19
+     D.4.  Version -17 to -18
+     D.5.  Version -16 to -17
+     D.6.  Version -15 to -16
+     D.7.  Version -14 to -15
+     D.8.  Version -13 to -14
+     D.9.  Version -12 to -13
+     D.10. Version -11 to -12
+     D.11. Version -10 to -11
+     D.12. Version -09 to -10
+     D.13. Version -08 to -09
+     D.14. Version -07 to -08
+     D.15. Version -06 to -07
+     D.16. Version -05 to -06
+     D.17. Version -04 to -05
+     D.18. Version -03 to -04
+     D.19. Version -02 to -03
+     D.20. Version -01 to -02
+     D.21. Version -00 to -01
    Acknowledgments
-   Contributors
    Authors' Addresses
 
 1.  Introduction
@@ -4623,17 +4623,21 @@ Appendix D.  Document Updates
 
    RFC EDITOR: PLEASE REMOVE THIS SECTION.
 
-D.1.  Version -19 to -20
+D.1.  Version -20 to -21
+
+   *  Updated author list.
+
+D.2.  Version -19 to -20
 
    *  Change Controller for the target attribute "gosc" set to "IETF".
 
-D.2.  Version -18 to -19
+D.3.  Version -18 to -19
 
    *  Unified presentation of handling of multiple responses.
 
    *  Added Rikard Höglund as Contributor.
 
-D.3.  Version -17 to -18
+D.4.  Version -17 to -18
 
    *  Changed document title.
 
@@ -4678,13 +4682,13 @@ D.3.  Version -17 to -18
 
    *  Clarifications, fixes and editorial improvements.
 
-D.4.  Version -16 to -17
+D.5.  Version -16 to -17
 
    *  Definition and registration of the target attribute "gosc".
 
    *  Reference update and editorial fixes.
 
-D.5.  Version -15 to -16
+D.6.  Version -15 to -16
 
    *  Clients "SHOULD" use the group mode for one-to-many requests.
 
@@ -4697,11 +4701,11 @@ D.5.  Version -15 to -16
 
    *  Editorial improvements.
 
-D.6.  Version -14 to -15
+D.7.  Version -14 to -15
 
    *  Updated references and editorial fixes.
 
-D.7.  Version -13 to -14
+D.8.  Version -13 to -14
 
    *  Replaced "node" with "endpoint" where appropriate.
 
@@ -4728,7 +4732,7 @@ D.7.  Version -13 to -14
 
    *  Clarifications and editorial improvements.
 
-D.8.  Version -12 to -13
+D.9.  Version -12 to -13
 
    *  Fixes in the derivation of the Group Encryption Key.
 
@@ -4736,7 +4740,7 @@ D.8.  Version -12 to -13
 
    *  Changed UCCS to CCS.
 
-D.9.  Version -11 to -12
+D.10.  Version -11 to -12
 
    *  No mode of operation is mandatory to support.
 
@@ -4774,7 +4778,7 @@ D.9.  Version -11 to -12
 
    *  Fixes and editorial improvements.
 
-D.10.  Version -10 to -11
+D.11.  Version -10 to -11
 
    *  Loss of Recipient Contexts due to their overflow.
 
@@ -4821,7 +4825,7 @@ D.10.  Version -10 to -11
 
    *  Fixes and editorial improvements.
 
-D.11.  Version -09 to -10
+D.12.  Version -09 to -10
 
    *  Removed 'Counter Signature Key Parameters' from the Common
       Context.
@@ -4859,7 +4863,7 @@ D.11.  Version -09 to -10
 
    *  Overall clarifications and editorial revision.
 
-D.12.  Version -08 to -09
+D.13.  Version -08 to -09
 
    *  Pairwise keys are discarded after group rekeying.
 
@@ -4897,7 +4901,7 @@ D.12.  Version -08 to -09
 
    *  Clarifications and editorial improvements.
 
-D.13.  Version -07 to -08
+D.14.  Version -07 to -08
 
    *  Clarified relation between pairwise mode and group communication
       (Section 1).
@@ -4961,7 +4965,7 @@ D.13.  Version -07 to -08
 
    *  Editorial improvements.
 
-D.14.  Version -06 to -07
+D.15.  Version -06 to -07
 
    *  Updated abstract and introduction.
 
@@ -4993,7 +4997,7 @@ D.14.  Version -06 to -07
    *  New pairwise mode, using pairwise keying material for both
       requests and responses.
 
-D.15.  Version -05 to -06
+D.16.  Version -05 to -06
 
    *  Group IDs mandated to be unique under the same Group Manager.
 
@@ -5021,7 +5025,7 @@ D.15.  Version -05 to -06
 
    *  Editorial improvements.
 
-D.16.  Version -04 to -05
+D.17.  Version -04 to -05
 
    *  Added references to draft-dijk-core-groupcomm-bis.
 
@@ -5040,7 +5044,7 @@ D.16.  Version -04 to -05
    *  New "Counter Signature Key Parameters" IANA Registry
       (Section 9.2).
 
-D.17.  Version -03 to -04
+D.18.  Version -03 to -04
 
    *  Added the new "Counter Signature Parameters" in the Common Context
       (see Section 2).
@@ -5084,7 +5088,7 @@ D.17.  Version -03 to -04
    *  New IANA Registry "Counter Signature Parameters" (see
       Section 9.1).
 
-D.18.  Version -02 to -03
+D.19.  Version -02 to -03
 
    *  Revised structure and phrasing for improved readability and better
       alignment with draft-ietf-core-object-security.
@@ -5118,7 +5122,7 @@ D.18.  Version -02 to -03
    *  Revised Appendix D, now giving a short high-level description of a
       new endpoint set-up.
 
-D.19.  Version -01 to -02
+D.20.  Version -01 to -02
 
    *  Terminology has been made more aligned with RFC7252 and draft-
       ietf-core-object-security: i) "client" and "server" replace the
@@ -5153,7 +5157,7 @@ D.19.  Version -01 to -02
       synchronization of sequence numbers based on the Echo option from
       draft-ietf-core-echo-request-tag.
 
-D.20.  Version -00 to -01
+D.21.  Version -00 to -01
 
    *  Section 1.1 has been updated with the definition of group as
       "security group".
@@ -5190,6 +5194,9 @@ D.20.  Version -00 to -01
 
 Acknowledgments
 
+   Jiye Park contributed as a co-author of initial versions of this
+   document.
+
    The authors sincerely thank Christian Amsüss, Stefan Beck, Rolf Blom,
    Carsten Bormann, Esko Dijk, Martin Gunnarsson, Klaus Hartke, Richard
    Kelsey, Dave Robin, Jim Schaad, Ludwig Seitz, Peter van der Stok, and
@@ -5200,16 +5207,6 @@ Acknowledgments
    (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement
    101020259); the SSF project SEC4Factory under the grant RIT17-0032;
    and the EIT-Digital High Impact Initiative ACTIVE.
-
-Contributors
-
-   Rikard Höglund
-   RISE AB
-   Isafjordsgatan 22
-   SE-16440 Stockholm Kista
-   Sweden
-   Email: rikard.hoglund@ri.se
-
 
 Authors' Addresses
 
@@ -5245,9 +5242,9 @@ Authors' Addresses
    Email: john.mattsson@ericsson.com
 
 
-   Jiye Park
-   Universitaet Duisburg-Essen
-   Schuetzenbahn 70
-   45127 Essen
-   Germany
-   Email: ji-ye.park@uni-due.de
+   Rikard Höglund
+   RISE AB
+   Isafjordsgatan 22
+   SE-16440 Stockholm Kista
+   Sweden
+   Email: rikard.hoglund@ri.se
