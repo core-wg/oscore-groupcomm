@@ -224,7 +224,7 @@ This document refers also to the following terminology.
 
 * Source authentication: evidence that a received message in the group originated from a specific identified group member. This also provides assurance that the message was not tampered with by anyone, be it a different legitimate group member or an endpoint which is not a group member.
 
-* Group request: a CoAP request message sent by a client in the group to all the servers in that group.
+* Group request: a CoAP request message sent by a client in the group to servers in that group.
 
 * Long exchange: an exchange of messages associated with a request that is a group request and/or an Observe request {{RFC7641}}.
 
@@ -1989,6 +1989,8 @@ RFC EDITOR: PLEASE REMOVE THIS SECTION.
 ## Version -20 to -21 ## {#sec-20-21}
 
 * Updated author list.
+
+* Terminology: improved definition of "group request".
 
 ## Version -19 to -20 ## {#sec-19-20}
 
