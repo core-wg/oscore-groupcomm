@@ -371,7 +371,7 @@ Table of Contents
       which is not a group member.
 
    *  Group request: a CoAP request message sent by a client in the
-      group to all the servers in that group.
+      group to servers in that group.
 
    *  Long exchange: an exchange of messages associated with a request
       that is a group request and/or an Observe request [RFC7641].
@@ -4626,6 +4626,8 @@ Appendix D.  Document Updates
 D.1.  Version -20 to -21
 
    *  Updated author list.
+
+   *  Terminology: improved definition of "group request".
 
 D.2.  Version -19 to -20
 
