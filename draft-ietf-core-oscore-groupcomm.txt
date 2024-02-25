@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 19 August 2024                                     F. Palombini
+Expires: 28 August 2024                                     F. Palombini
                                                              J. Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                        16 February 2024
+                                                        25 February 2024
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 August 2024.
+   This Internet-Draft will expire on 28 August 2024.
 
 Copyright Notice
 
@@ -1770,18 +1770,18 @@ Table of Contents
 
    *  The 'algorithms' array is extended as follows.
 
-      The parameter 'alg_aead' MUST be set to the CBOR simple value
-      "null" (0xf6) if the parameter AEAD Algorithm in the Security
-      Context is not set (see Section 2).  Otherwise, regardless of
-      whether the endpoint supports the pairwise mode or not, this
-      parameter MUST specify AEAD Algorithm from the Common Context (see
-      Section 2.1.1) as per Section 5.4 of [RFC8613].
+      The parameter 'alg_aead' MUST be set to the CBOR simple value null
+      (0xf6) if the parameter AEAD Algorithm in the Security Context is
+      not set (see Section 2).  Otherwise, regardless of whether the
+      endpoint supports the pairwise mode or not, this parameter MUST
+      specify AEAD Algorithm from the Common Context (see Section 2.1.1)
+      as per Section 5.4 of [RFC8613].
 
       Furthermore, the 'algorithms' array additionally includes:
 
       -  'alg_group_enc', which specifies Group Encryption Algorithm
          from the Common Context (see Section 2.1.6).  This parameter
-         MUST be set to the CBOR simple value "null" (0xf6) if the
+         MUST be set to the CBOR simple value null (0xf6) if the
          parameter Group Encryption Algorithm in the Common Context is
          not set.  Otherwise, regardless of whether the endpoint
          supports the group mode or not, this parameter MUST specify
@@ -1791,18 +1791,17 @@ Table of Contents
 
       -  'alg_signature', which specifies Signature Algorithm from the
          Common Context (see Section 2.1.7).  This parameter MUST be set
-         to the CBOR simple value "null" (0xf6) if the parameter
-         Signature Algorithm in the Common Context is not set.
-         Otherwise, regardless of whether the endpoint supports the
-         group mode or not, this parameter MUST specify Signature
-         Algorithm as a CBOR integer or text string, consistently with
-         the "Value" field in the "COSE Algorithms" Registry for this
-         algorithm.
+         to the CBOR simple value null (0xf6) if the parameter Signature
+         Algorithm in the Common Context is not set.  Otherwise,
+         regardless of whether the endpoint supports the group mode or
+         not, this parameter MUST specify Signature Algorithm as a CBOR
+         integer or text string, consistently with the "Value" field in
+         the "COSE Algorithms" Registry for this algorithm.
 
       -  'alg_pairwise_key_agreement', which specifies Pairwise Key
          Agreement Algorithm from the Common Context (see
          Section 2.1.9).  This parameter MUST be set to the CBOR simple
-         value "null" (0xf6) if Pairwise Key Agreement Algorithm in the
+         value null (0xf6) if Pairwise Key Agreement Algorithm in the
          Common Context is not set.  Otherwise, regardless of whether
          the endpoint supports the pairwise mode or not, this parameter
          MUST specify Pairwise Key Agreement Algorithm as a CBOR integer
@@ -1931,8 +1930,8 @@ Table of Contents
       it used to verify (that the client used to protect) the request,
       see Section 8.3.
 
-   *  type is the CBOR simple value "true" (0xf5) if M is a request, or
-      the CBOR simple value "false" (0xf4) otherwise.
+   *  type is the CBOR simple value true (0xf5) if M is a request, or
+      the CBOR simple value false (0xf4) otherwise.
 
    *  L is the size of the countersignature, as per Signature Algorithm
       from the Common Context (see Section 2.1.7), in bytes.
@@ -4629,6 +4628,9 @@ D.1.  Version -20 to -21
    *  Updated author list.
 
    *  Terminology: improved definition of "group request".
+
+   *  Editorial: removed quotation marks when using the CBOR simple
+      values true, false, and null.
 
    *  Editorial: expanded name of the "CoRE Parameters" registry group.
 
