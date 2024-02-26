@@ -882,15 +882,15 @@ Compared with {{Section 5.4 of RFC8613}}, the aad_array has the following differ
 
 * The 'algorithms' array is extended as follows.
 
-   The parameter 'alg_aead' MUST be set to the CBOR simple value null (0xf6) if the parameter AEAD Algorithm in the Security Context is not set (see {{sec-context}}). Otherwise, regardless of whether the endpoint supports the pairwise mode or not, this parameter MUST specify AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}) as per {{Section 5.4 of RFC8613}}.
+   The parameter 'alg_aead' MUST be set to the CBOR simple value `null` (0xf6) if the parameter AEAD Algorithm in the Security Context is not set (see {{sec-context}}). Otherwise, regardless of whether the endpoint supports the pairwise mode or not, this parameter MUST specify AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}) as per {{Section 5.4 of RFC8613}}.
 
    Furthermore, the 'algorithms' array additionally includes:
 
-   - 'alg_group_enc', which specifies Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-enc-alg}}). This parameter MUST be set to the CBOR simple value null (0xf6) if the parameter Group Encryption Algorithm in the Common Context is not set. Otherwise, regardless of whether the endpoint supports the group mode or not, this parameter MUST specify Group Encryption Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.
+   - 'alg_group_enc', which specifies Group Encryption Algorithm from the Common Context (see {{ssec-common-context-cs-enc-alg}}). This parameter MUST be set to the CBOR simple value `null` (0xf6) if the parameter Group Encryption Algorithm in the Common Context is not set. Otherwise, regardless of whether the endpoint supports the group mode or not, this parameter MUST specify Group Encryption Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.
 
-   - 'alg_signature', which specifies Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value null (0xf6) if the parameter Signature Algorithm in the Common Context is not set. Otherwise, regardless of whether the endpoint supports the group mode or not, this parameter MUST specify Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.
+   - 'alg_signature', which specifies Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}). This parameter MUST be set to the CBOR simple value `null` (0xf6) if the parameter Signature Algorithm in the Common Context is not set. Otherwise, regardless of whether the endpoint supports the group mode or not, this parameter MUST specify Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.
 
-   - 'alg_pairwise_key_agreement', which specifies Pairwise Key Agreement Algorithm from the Common Context (see {{ssec-common-context-dh-alg}}). This parameter MUST be set to the CBOR simple value null (0xf6) if Pairwise Key Agreement Algorithm in the Common Context is not set. Otherwise, regardless of whether the endpoint supports the pairwise mode or not, this parameter MUST specify Pairwise Key Agreement Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.
+   - 'alg_pairwise_key_agreement', which specifies Pairwise Key Agreement Algorithm from the Common Context (see {{ssec-common-context-dh-alg}}). This parameter MUST be set to the CBOR simple value `null` (0xf6) if Pairwise Key Agreement Algorithm in the Common Context is not set. Otherwise, regardless of whether the endpoint supports the pairwise mode or not, this parameter MUST specify Pairwise Key Agreement Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.
 
 * The new element 'request_kid_context' contains the value of the 'kid context' in the COSE object of the request (see {{sec-cose-object-kid}}).
 
@@ -959,7 +959,7 @@ where:
 
    Note that, in case of group rekeying, a server might use a different Gid when protecting a response, compared to the Gid that it used to verify (that the client used to protect) the request, see {{ssec-protect-response}}.
 
-- type is the CBOR simple value true (0xf5) if M is a request, or the CBOR simple value false (0xf4) otherwise.
+- type is the CBOR simple value `true` (0xf5) if M is a request, or the CBOR simple value `false` (0xf4) otherwise.
 
 - L is the size of the countersignature, as per Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}), in bytes.
 
