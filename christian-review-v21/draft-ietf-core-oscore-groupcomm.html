@@ -2187,7 +2187,7 @@ In case the other endpoint's public key has COSE Key Type "EC2" (e.g., for the c
 <p id="section-3.2-3">The set of group members should not be assumed as fixed, i.e., the group membership is subject to changes, possibly on a frequent basis.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
 <p id="section-3.2-4">The Group Manager <span class="bcp14">MUST</span> rekey the group without undue delay in case one or more endpoints leave the group. An endpoint may leave the group at own initiative, or may be evicted from the group by the Group Manager, e.g., in case an endpoint is compromised, or is suspected to be compromised. In either case, rekeying the group excludes such endpoints from future communications in the group, and thus preserves forward security. If a network node is compromised or suspected to be compromised, the Group Manager <span class="bcp14">MUST</span> evict from the group all the endpoints hosted by that node that are member of the group and rekey the group accordingly.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
 <p id="section-3.2-5">If required by the application, the Group Manager <span class="bcp14">MUST</span> rekey the group also before one or more new joining endpoints are added to the group, thus preserving backward security.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
-<p id="section-3.2-6">Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see <a href="#sec-group-key-management" class="auto internal xref">Section 3.2</a>). The first Key Generation Number assigned to every group <span class="bcp14">MUST</span> be 0.<a href="#section-3.2-6" class="pilcrow">¶</a></p>
+<p id="section-3.2-6">Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see <a href="#sec-group-key-management" class="auto internal xref">Section 3.2</a>).<a href="#section-3.2-6" class="pilcrow">¶</a></p>
 <p id="section-3.2-7">The establishment of the new Security Context for the group takes the following steps.<a href="#section-3.2-7" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-3.2-8">
 <li id="section-3.2-8.1">
@@ -4245,13 +4245,16 @@ In a 1-to-N communication model, only a single client transmits data to the CoAP
             <p id="appendix-D.1-1.2.1">Rephrased consequences on loss of Recipient Contexts.<a href="#appendix-D.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-D.1-1.3">
-            <p id="appendix-D.1-1.3.1">Added IANA consideration on the "CoAP Option Numbers" registry.<a href="#appendix-D.1-1.3.1" class="pilcrow">¶</a></p>
+            <p id="appendix-D.1-1.3.1">Removed requirement on 0 as initial value of the Key Generation Number.<a href="#appendix-D.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-D.1-1.4">
-            <p id="appendix-D.1-1.4.1">Updated references.<a href="#appendix-D.1-1.4.1" class="pilcrow">¶</a></p>
+            <p id="appendix-D.1-1.4.1">Added IANA consideration on the "CoAP Option Numbers" registry.<a href="#appendix-D.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-D.1-1.5">
-            <p id="appendix-D.1-1.5.1">Editorial improvements.<a href="#appendix-D.1-1.5.1" class="pilcrow">¶</a></p>
+            <p id="appendix-D.1-1.5.1">Updated references.<a href="#appendix-D.1-1.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-D.1-1.6">
+            <p id="appendix-D.1-1.6.1">Editorial improvements.<a href="#appendix-D.1-1.6.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>

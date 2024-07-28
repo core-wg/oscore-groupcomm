@@ -1341,8 +1341,7 @@ Table of Contents
 
    Separately for each group, the value of the Key Generation Number
    increases by one each time the Group Manager distributes new keying
-   material to that group (see Section 3.2).  The first Key Generation
-   Number assigned to every group MUST be 0.
+   material to that group (see Section 3.2).
 
    The establishment of the new Security Context for the group takes the
    following steps.
@@ -4653,6 +4652,9 @@ D.1.  Version -21 to -22
    *  Removed mentioning of the CBOR encoding of the HKDF Algorithm.
 
    *  Rephrased consequences on loss of Recipient Contexts.
+
+   *  Removed requirement on 0 as initial value of the Key Generation
+      Number.
 
    *  Added IANA consideration on the "CoAP Option Numbers" registry.
 
