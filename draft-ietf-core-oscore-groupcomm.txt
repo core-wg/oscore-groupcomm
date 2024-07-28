@@ -181,27 +181,28 @@ Table of Contents
    Appendix B.  List of Use Cases
    Appendix C.  Example of Group Identifier Format
    Appendix D.  Document Updates
-     D.1.  Version -20 to -21
-     D.2.  Version -19 to -20
-     D.3.  Version -18 to -19
-     D.4.  Version -17 to -18
-     D.5.  Version -16 to -17
-     D.6.  Version -15 to -16
-     D.7.  Version -14 to -15
-     D.8.  Version -13 to -14
-     D.9.  Version -12 to -13
-     D.10. Version -11 to -12
-     D.11. Version -10 to -11
-     D.12. Version -09 to -10
-     D.13. Version -08 to -09
-     D.14. Version -07 to -08
-     D.15. Version -06 to -07
-     D.16. Version -05 to -06
-     D.17. Version -04 to -05
-     D.18. Version -03 to -04
-     D.19. Version -02 to -03
-     D.20. Version -01 to -02
-     D.21. Version -00 to -01
+     D.1.  Version -21 to -22
+     D.2.  Version -20 to -21
+     D.3.  Version -19 to -20
+     D.4.  Version -18 to -19
+     D.5.  Version -17 to -18
+     D.6.  Version -16 to -17
+     D.7.  Version -15 to -16
+     D.8.  Version -14 to -15
+     D.9.  Version -13 to -14
+     D.10. Version -12 to -13
+     D.11. Version -11 to -12
+     D.12. Version -10 to -11
+     D.13. Version -09 to -10
+     D.14. Version -08 to -09
+     D.15. Version -07 to -08
+     D.16. Version -06 to -07
+     D.17. Version -05 to -06
+     D.18. Version -04 to -05
+     D.19. Version -03 to -04
+     D.20. Version -02 to -03
+     D.21. Version -01 to -02
+     D.22. Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -257,11 +258,11 @@ Table of Contents
    Uri-Host, Uri-Port, and Proxy-Uri. Note that DTLS does not define how
    to secure messages sent over IP multicast.  Group OSCORE is also
    intended to work with OSCORE-capable proxies
-   [I-D.tiloca-core-oscore-capable-proxies] thereby enabling, for
-   example, nested OSCORE operations with OSCORE-protected communication
-   between a CoAP client and a proxy, carrying messages that are
-   additionally protected with Group OSCORE between the CoAP client and
-   the target CoAP servers.
+   [I-D.ietf-core-oscore-capable-proxies] thereby enabling, for example,
+   nested OSCORE operations with OSCORE-protected communication between
+   a CoAP client and a proxy, carrying messages that are additionally
+   protected with Group OSCORE between the CoAP client and the target
+   CoAP servers.
 
    Group OSCORE defines two modes of operation, that can be used
    independently or together:
@@ -314,7 +315,7 @@ Table of Contents
    a single recipient, or when they are protected with the group mode
    and target multiple CoAP recipients through cross-protocol
    translators such as HTTP-to-CoAP proxies
-   [RFC8075][I-D.tiloca-core-groupcomm-proxy].  The use of Group OSCORE
+   [RFC8075][I-D.ietf-core-groupcomm-proxy].  The use of Group OSCORE
    with HTTP is as defined for OSCORE in Section 11 of [RFC8613].
 
 1.1.  Terminology
@@ -4209,6 +4210,13 @@ Table of Contents
               2023, <https://datatracker.ietf.org/doc/html/draft-ietf-
               ace-key-groupcomm-oscore-16>.
 
+   [I-D.ietf-core-groupcomm-proxy]
+              Tiloca, M. and E. Dijk, "Proxy Operations for CoAP Group
+              Communication", Work in Progress, Internet-Draft, draft-
+              ietf-core-groupcomm-proxy-02, 8 July 2024,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-core-
+              groupcomm-proxy-02>.
+
    [I-D.ietf-core-observe-multicast-notifications]
               Tiloca, M., Höglund, R., Amsüss, C., and F. Palombini,
               "Observe Notifications as CoAP Multicast Responses", Work
@@ -4216,6 +4224,13 @@ Table of Contents
               multicast-notifications-09, 8 July 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-core-
               observe-multicast-notifications-09>.
+
+   [I-D.ietf-core-oscore-capable-proxies]
+              Tiloca, M. and R. Höglund, "OSCORE-capable Proxies", Work
+              in Progress, Internet-Draft, draft-ietf-core-oscore-
+              capable-proxies-02, 8 July 2024,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-core-
+              oscore-capable-proxies-02>.
 
    [I-D.ietf-cose-cbor-encoded-cert]
               Mattsson, J. P., Selander, G., Raza, S., Höglund, J., and
@@ -4246,20 +4261,6 @@ Table of Contents
               Draft, draft-irtf-cfrg-det-sigs-with-noise-03, 16 March
               2024, <https://datatracker.ietf.org/doc/html/draft-irtf-
               cfrg-det-sigs-with-noise-03>.
-
-   [I-D.tiloca-core-groupcomm-proxy]
-              Tiloca, M. and E. Dijk, "Proxy Operations for CoAP Group
-              Communication", Work in Progress, Internet-Draft, draft-
-              tiloca-core-groupcomm-proxy-09, 31 August 2023,
-              <https://datatracker.ietf.org/doc/html/draft-tiloca-core-
-              groupcomm-proxy-09>.
-
-   [I-D.tiloca-core-oscore-capable-proxies]
-              Tiloca, M. and R. Höglund, "OSCORE-capable Proxies", Work
-              in Progress, Internet-Draft, draft-tiloca-core-oscore-
-              capable-proxies-07, 10 July 2023,
-              <https://datatracker.ietf.org/doc/html/draft-tiloca-core-
-              oscore-capable-proxies-07>.
 
    [RFC4944]  Montenegro, G., Kushalnagar, N., Hui, J., and D. Culler,
               "Transmission of IPv6 Packets over IEEE 802.15.4
@@ -4637,7 +4638,13 @@ Appendix D.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-D.1.  Version -20 to -21
+D.1.  Version -21 to -22
+
+   *  Updated references.
+
+   *  Editorial improvements.
+
+D.2.  Version -20 to -21
 
    *  Updated author list.
 
@@ -4648,17 +4655,17 @@ D.1.  Version -20 to -21
 
    *  Editorial: expanded name of the "CoRE Parameters" registry group.
 
-D.2.  Version -19 to -20
+D.3.  Version -19 to -20
 
    *  Change Controller for the target attribute "gosc" set to "IETF".
 
-D.3.  Version -18 to -19
+D.4.  Version -18 to -19
 
    *  Unified presentation of handling of multiple responses.
 
    *  Added Rikard Höglund as Contributor.
 
-D.4.  Version -17 to -18
+D.5.  Version -17 to -18
 
    *  Changed document title.
 
@@ -4703,13 +4710,13 @@ D.4.  Version -17 to -18
 
    *  Clarifications, fixes and editorial improvements.
 
-D.5.  Version -16 to -17
+D.6.  Version -16 to -17
 
    *  Definition and registration of the target attribute "gosc".
 
    *  Reference update and editorial fixes.
 
-D.6.  Version -15 to -16
+D.7.  Version -15 to -16
 
    *  Clients "SHOULD" use the group mode for one-to-many requests.
 
@@ -4722,11 +4729,11 @@ D.6.  Version -15 to -16
 
    *  Editorial improvements.
 
-D.7.  Version -14 to -15
+D.8.  Version -14 to -15
 
    *  Updated references and editorial fixes.
 
-D.8.  Version -13 to -14
+D.9.  Version -13 to -14
 
    *  Replaced "node" with "endpoint" where appropriate.
 
@@ -4753,7 +4760,7 @@ D.8.  Version -13 to -14
 
    *  Clarifications and editorial improvements.
 
-D.9.  Version -12 to -13
+D.10.  Version -12 to -13
 
    *  Fixes in the derivation of the Group Encryption Key.
 
@@ -4761,7 +4768,7 @@ D.9.  Version -12 to -13
 
    *  Changed UCCS to CCS.
 
-D.10.  Version -11 to -12
+D.11.  Version -11 to -12
 
    *  No mode of operation is mandatory to support.
 
@@ -4799,7 +4806,7 @@ D.10.  Version -11 to -12
 
    *  Fixes and editorial improvements.
 
-D.11.  Version -10 to -11
+D.12.  Version -10 to -11
 
    *  Loss of Recipient Contexts due to their overflow.
 
@@ -4846,7 +4853,7 @@ D.11.  Version -10 to -11
 
    *  Fixes and editorial improvements.
 
-D.12.  Version -09 to -10
+D.13.  Version -09 to -10
 
    *  Removed 'Counter Signature Key Parameters' from the Common
       Context.
@@ -4884,7 +4891,7 @@ D.12.  Version -09 to -10
 
    *  Overall clarifications and editorial revision.
 
-D.13.  Version -08 to -09
+D.14.  Version -08 to -09
 
    *  Pairwise keys are discarded after group rekeying.
 
@@ -4922,7 +4929,7 @@ D.13.  Version -08 to -09
 
    *  Clarifications and editorial improvements.
 
-D.14.  Version -07 to -08
+D.15.  Version -07 to -08
 
    *  Clarified relation between pairwise mode and group communication
       (Section 1).
@@ -4986,7 +4993,7 @@ D.14.  Version -07 to -08
 
    *  Editorial improvements.
 
-D.15.  Version -06 to -07
+D.16.  Version -06 to -07
 
    *  Updated abstract and introduction.
 
@@ -5018,7 +5025,7 @@ D.15.  Version -06 to -07
    *  New pairwise mode, using pairwise keying material for both
       requests and responses.
 
-D.16.  Version -05 to -06
+D.17.  Version -05 to -06
 
    *  Group IDs mandated to be unique under the same Group Manager.
 
@@ -5046,7 +5053,7 @@ D.16.  Version -05 to -06
 
    *  Editorial improvements.
 
-D.17.  Version -04 to -05
+D.18.  Version -04 to -05
 
    *  Added references to draft-dijk-core-groupcomm-bis.
 
@@ -5065,7 +5072,7 @@ D.17.  Version -04 to -05
    *  New "Counter Signature Key Parameters" IANA Registry
       (Section 9.2).
 
-D.18.  Version -03 to -04
+D.19.  Version -03 to -04
 
    *  Added the new "Counter Signature Parameters" in the Common Context
       (see Section 2).
@@ -5109,7 +5116,7 @@ D.18.  Version -03 to -04
    *  New IANA Registry "Counter Signature Parameters" (see
       Section 9.1).
 
-D.19.  Version -02 to -03
+D.20.  Version -02 to -03
 
    *  Revised structure and phrasing for improved readability and better
       alignment with draft-ietf-core-object-security.
@@ -5143,7 +5150,7 @@ D.19.  Version -02 to -03
    *  Revised Appendix D, now giving a short high-level description of a
       new endpoint set-up.
 
-D.20.  Version -01 to -02
+D.21.  Version -01 to -02
 
    *  Terminology has been made more aligned with RFC7252 and draft-
       ietf-core-object-security: i) "client" and "server" replace the
@@ -5178,7 +5185,7 @@ D.20.  Version -01 to -02
       synchronization of sequence numbers based on the Echo option from
       draft-ietf-core-echo-request-tag.
 
-D.21.  Version -00 to -01
+D.22.  Version -00 to -01
 
    *  Section 1.1 has been updated with the definition of group as
       "security group".
