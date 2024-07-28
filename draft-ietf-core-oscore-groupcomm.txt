@@ -171,7 +171,8 @@ Table of Contents
      13.18. Privacy Considerations
    14. IANA Considerations
      14.1.  OSCORE Flag Bits Registry
-     14.2.  Target Attributes Registry
+     14.2.  CoAP Option Numbers Registry
+     14.3.  Target Attributes Registry
    15. References
      15.1.  Normative References
      15.2.  Informative References
@@ -4075,7 +4076,13 @@ Table of Contents
 
           Table 1: Registrations in the OSCORE Flag Bits Registry
 
-14.2.  Target Attributes Registry
+14.2.  CoAP Option Numbers Registry
+
+   IANA is asked to add this document as a reference for the OSCORE
+   Option in the "CoAP Option Numbers" registry within the "Constrained
+   RESTful Environments (CoRE) Parameters" registry group.
+
+14.3.  Target Attributes Registry
 
    IANA is asked to add the following entry to the "Target Attributes"
    registry within the "Constrained RESTful Environments (CoRE)
@@ -4642,6 +4649,8 @@ Appendix D.  Document Updates
    This section is to be removed before publishing as an RFC.
 
 D.1.  Version -21 to -22
+
+   *  Added IANA consideration on the "CoAP Option Numbers" registry.
 
    *  Updated references.
 
