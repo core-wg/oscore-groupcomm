@@ -2062,9 +2062,10 @@ In case the other endpoint's public key has COSE Key Type "EC2" (e.g., for the c
 <a href="#section-2.6.1.2" class="section-number selfRef">2.6.1.2. </a><a href="#name-deleted-recipient-contexts" class="section-name selfRef">Deleted Recipient Contexts</a>
             </h5>
 <p id="section-2.6.1.2-1">The Security Context may contain a large and variable number of Recipient Contexts. A Recipient Context may need to be deleted, because the maximum number of Recipient Contexts has been reached (see <a href="#ssec-sender-recipient-context" class="auto internal xref">Section 2.2</a>), or due to some other reason.<a href="#section-2.6.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-2.6.1.2-2">When a Recipient Context is deleted, information about previously received messages from the corresponding other endpoint is lost. Therefore, if the Recipient Context is derived again from the same Security Context, there is a risk that a replayed message is not detected. If one Recipient Context has been deleted from the current Security Context, then the Replay Window of any new Recipient Context in this Security Context <span class="bcp14">MUST</span> be initialized as invalid. Messages associated with a Recipient Context that has an invalid Replay Window <span class="bcp14">MUST NOT</span> be delivered to the application.<a href="#section-2.6.1.2-2" class="pilcrow">¶</a></p>
-<p id="section-2.6.1.2-3">If the endpoint receives a request to process with the new Recipient Context and the endpoint supports the CoAP Echo Option <span>[<a href="#RFC9175" class="cite xref">RFC9175</a>]</span>, then it is <span class="bcp14">RECOMMENDED</span> to follow the procedure specified in <a href="#sec-synch-challenge-response" class="auto internal xref">Section 10</a> which establishes a valid Replay Window. In particular, the endpoint <span class="bcp14">MUST</span> use its Partial IV when generating the AEAD nonce and <span class="bcp14">MUST</span> include the Partial IV in the response message conveying the Echo Option.<a href="#section-2.6.1.2-3" class="pilcrow">¶</a></p>
-<p id="section-2.6.1.2-4">Alternatively, the endpoint <span class="bcp14">MAY</span> retrieve or wait for new Security Context parameters from the Group Manager and derive new Sender and Recipient Contexts, as defined in <a href="#ssec-loss-mutable-context-total" class="auto internal xref">Section 2.6.1.1</a>. In this case the Replay Windows of all Recipient Contexts become valid if they are not already.<a href="#section-2.6.1.2-4" class="pilcrow">¶</a></p>
+<p id="section-2.6.1.2-2">When a Recipient Context is deleted, this does not only result in losing information about previously received messages from the corresponding other endpoint. It also results in the inability to be aware of the Security Contexts from which information has been lost.<a href="#section-2.6.1.2-2" class="pilcrow">¶</a></p>
+<p id="section-2.6.1.2-3">Therefore, if the Recipient Context is derived again from the same Security Context, there is a risk that a replayed message is not detected. If one Recipient Context has been deleted from the current Security Context, then the Replay Window of any new Recipient Context in this Security Context <span class="bcp14">MUST</span> be initialized as invalid. Messages associated with a Recipient Context that has an invalid Replay Window <span class="bcp14">MUST NOT</span> be delivered to the application.<a href="#section-2.6.1.2-3" class="pilcrow">¶</a></p>
+<p id="section-2.6.1.2-4">If the endpoint receives a request to process with the new Recipient Context and the endpoint supports the CoAP Echo Option <span>[<a href="#RFC9175" class="cite xref">RFC9175</a>]</span>, then it is <span class="bcp14">RECOMMENDED</span> to follow the procedure specified in <a href="#sec-synch-challenge-response" class="auto internal xref">Section 10</a> which establishes a valid Replay Window. In particular, the endpoint <span class="bcp14">MUST</span> use its Partial IV when generating the AEAD nonce and <span class="bcp14">MUST</span> include the Partial IV in the response message conveying the Echo Option.<a href="#section-2.6.1.2-4" class="pilcrow">¶</a></p>
+<p id="section-2.6.1.2-5">Alternatively, the endpoint <span class="bcp14">MAY</span> retrieve or wait for new Security Context parameters from the Group Manager and derive new Sender and Recipient Contexts, as defined in <a href="#ssec-loss-mutable-context-total" class="auto internal xref">Section 2.6.1.1</a>. In this case the Replay Windows of all Recipient Contexts become valid if they are not already.<a href="#section-2.6.1.2-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -4241,13 +4242,16 @@ In a 1-to-N communication model, only a single client transmits data to the CoAP
             <p id="appendix-D.1-1.1.1">Removed mentioning of the CBOR encoding of the HKDF Algorithm.<a href="#appendix-D.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-D.1-1.2">
-            <p id="appendix-D.1-1.2.1">Added IANA consideration on the "CoAP Option Numbers" registry.<a href="#appendix-D.1-1.2.1" class="pilcrow">¶</a></p>
+            <p id="appendix-D.1-1.2.1">Rephrased consequences on loss of Recipient Contexts.<a href="#appendix-D.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-D.1-1.3">
-            <p id="appendix-D.1-1.3.1">Updated references.<a href="#appendix-D.1-1.3.1" class="pilcrow">¶</a></p>
+            <p id="appendix-D.1-1.3.1">Added IANA consideration on the "CoAP Option Numbers" registry.<a href="#appendix-D.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-D.1-1.4">
-            <p id="appendix-D.1-1.4.1">Editorial improvements.<a href="#appendix-D.1-1.4.1" class="pilcrow">¶</a></p>
+            <p id="appendix-D.1-1.4.1">Updated references.<a href="#appendix-D.1-1.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-D.1-1.5">
+            <p id="appendix-D.1-1.5.1">Editorial improvements.<a href="#appendix-D.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
