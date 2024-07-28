@@ -734,9 +734,9 @@ Table of Contents
    For example, an X.509 certificate is provided as its direct binary
    serialization.  If C509 certificates or CWTs are used as
    authentication credentials, each is provided as the binary
-   serialization of a (possibly tagged) CBOR array.  If CWT Claims Sets
-   (CCSs) are used as authentication credentials, each is provided as
-   the binary serialization of a CBOR map.
+   serialization of a (possibly tagged) CBOR array.  If CCSs are used as
+   authentication credentials, each is provided as the binary
+   serialization of a CBOR map.
 
    If authentication credentials are CWTs, then the untagged CWT
    associated with an entity is stored in the Security Context and used
