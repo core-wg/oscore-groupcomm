@@ -2746,10 +2746,9 @@ Table of Contents
          If "kid1" and "kid2" are different, the client SHOULD NOT
          accept the response as valid to be delivered to the
          application, and SHOULD NOT update the Response Number
-         associated with the server.  Exceptions can apply, if the
-         client has a means of preserving the order of responses in a
-         more elaborate way out of the scope of this document, or if the
-         client application does not require response ordering
+         associated with the server.  Exceptions can apply as the client
+         can retain the information required to order the responses, or
+         if the client application does not require response ordering
          altogether.  Servers MUST NOT rely on clients tolerating this,
          unless it was explicitly agreed on (e.g., as part of the
          group's setup).
