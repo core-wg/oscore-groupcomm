@@ -2191,7 +2191,7 @@ In case the other endpoint's public key has COSE Key Type "EC2" (e.g., for the c
 <p id="section-3.2-7">The establishment of the new Security Context for the group takes the following steps.<a href="#section-3.2-7" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-3.2-8">
 <li id="section-3.2-8.1">
-            <p id="section-3.2-8.1.1">The Group Manager <span class="bcp14">MUST</span> increment the Key Generation Number for the group by 1.<a href="#section-3.2-8.1.1" class="pilcrow">¶</a></p>
+            <p id="section-3.2-8.1.1">The Group Manager <span class="bcp14">MUST</span> increment the Key Generation Number for the group by 1. It is up to the Group Manager what actions to take when a wrap-around of the Key Generation Number is detected.<a href="#section-3.2-8.1.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.2-8.2">
             <p id="section-3.2-8.2.1">The Group Manager <span class="bcp14">MUST</span> build a set of stale Sender IDs including:<a href="#section-3.2-8.2.1" class="pilcrow">¶</a></p>
@@ -4265,13 +4265,16 @@ In a 1-to-N communication model, only a single client transmits data to the CoAP
             <p id="appendix-D.1-1.8.1">Use the acronym CCSs for CWT Claims Sets.<a href="#appendix-D.1-1.8.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-D.1-1.9">
-            <p id="appendix-D.1-1.9.1">Added IANA consideration on the "CoAP Option Numbers" registry.<a href="#appendix-D.1-1.9.1" class="pilcrow">¶</a></p>
+            <p id="appendix-D.1-1.9.1">Mentioned wrap-around of the Key Generation Number.<a href="#appendix-D.1-1.9.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-D.1-1.10">
-            <p id="appendix-D.1-1.10.1">Updated references.<a href="#appendix-D.1-1.10.1" class="pilcrow">¶</a></p>
+            <p id="appendix-D.1-1.10.1">Added IANA consideration on the "CoAP Option Numbers" registry.<a href="#appendix-D.1-1.10.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-D.1-1.11">
-            <p id="appendix-D.1-1.11.1">Editorial improvements.<a href="#appendix-D.1-1.11.1" class="pilcrow">¶</a></p>
+            <p id="appendix-D.1-1.11.1">Updated references.<a href="#appendix-D.1-1.11.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-D.1-1.12">
+            <p id="appendix-D.1-1.12.1">Editorial improvements.<a href="#appendix-D.1-1.12.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>

@@ -1347,7 +1347,8 @@ Table of Contents
    following steps.
 
    1.  The Group Manager MUST increment the Key Generation Number for
-       the group by 1.
+       the group by 1.  It is up to the Group Manager what actions to
+       take when a wrap-around of the Key Generation Number is detected.
 
    2.  The Group Manager MUST build a set of stale Sender IDs including:
 
@@ -4674,6 +4675,8 @@ D.1.  Version -21 to -22
       Window recovery.
 
    *  Use the acronym CCSs for CWT Claims Sets.
+
+   *  Mentioned wrap-around of the Key Generation Number.
 
    *  Added IANA consideration on the "CoAP Option Numbers" registry.
 
