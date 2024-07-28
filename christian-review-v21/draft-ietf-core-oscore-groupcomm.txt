@@ -231,7 +231,7 @@ Table of Contents
    transport layer also in the presence of intermediaries.  To this end,
    a CoAP message is protected by including its payload (if any),
    certain options, and header fields into a COSE object, which is
-   conveyed within the CoAP payload and the CoAP OSCORE option of the
+   conveyed within the CoAP payload and the CoAP OSCORE Option of the
    protected message, thereby replacing those message fields with an
    authenticated and encrypted object.
 
@@ -1757,7 +1757,7 @@ Table of Contents
    In particular, the external_aad includes also the Signature
    Algorithm, the Group Encryption Algorithm, the Pairwise Key Agreement
    Algorithm, the value of the 'kid context' in the COSE object of the
-   request, the OSCORE option of the protected message, the sender's
+   request, the OSCORE Option of the protected message, the sender's
    authentication credential, and the Group Manager's authentication
    credential.
 
@@ -1844,12 +1844,12 @@ Table of Contents
       when using the group mode, as further explained in Section 13.7.2.
 
       Note for implementation: this construction requires the OSCORE
-      option of the message to be generated and finalized before
+      Option of the message to be generated and finalized before
       computing the ciphertext of the COSE_Encrypt0 object (when using
       the group mode or the pairwise mode) and before calculating the
       countersignature (when using the group mode).  Also, the aad_array
       needs to be large enough to contain the largest possible OSCORE
-      option.
+      Option.
 
    *  The new element 'sender_cred', containing the sender's
       authentication credential.  This parameter MUST be set to a CBOR
@@ -1891,7 +1891,7 @@ Table of Contents
       message payload SHALL encode the ciphertext of the COSE object.
 
    *  This document defines the usage of the sixth least significant
-      bit, called "Group Flag", in the first byte of the OSCORE option
+      bit, called "Group Flag", in the first byte of the OSCORE Option
       containing the OSCORE flag bits.  This flag bit is specified in
       Section 14.1.
 
@@ -1967,7 +1967,7 @@ Table of Contents
    mechanism, i.e., the COSE_Encrypt0 object.  The output is the
    compressed COSE object as defined in Section 5 and divided into two
    parts, since the object is transported in two CoAP fields: OSCORE
-   option and payload.
+   Option and payload.
 
    The examples assume that the plaintext (see Section 5.3 of [RFC8613])
    is 6 bytes long, and that the AEAD tag is 8 bytes long, hence
@@ -2416,7 +2416,7 @@ Table of Contents
       -  If the server discards the request due to not retrieving a
          Security Context associated with the OSCORE group, the server
          MAY respond with a 4.01 (Unauthorized) error message.  When
-         doing so, the server MAY set an Outer Max-Age option with value
+         doing so, the server MAY set an Outer Max-Age Option with value
          zero, and MAY include a descriptive string as diagnostic
          payload.
 
@@ -2475,7 +2475,7 @@ Table of Contents
       -  If the signature verification fails, the server SHALL stop
          processing the request, SHALL NOT update the Replay Window, and
          MAY respond with a 4.00 (Bad Request) response.  Such a
-         response MAY include an Outer Max-Age option with value zero,
+         response MAY include an Outer Max-Age Option with value zero,
          and its diagnostic payload MAY contain a string, which, if
          present, MUST be "Decryption failed" as if the decryption of
          the COSE object had failed.
@@ -2728,10 +2728,10 @@ Table of Contents
       -  When receiving the first valid response from the server within
          the long exchange, the client MUST store the kid "kid1" of that
          server for that long exchange.  If the 'kid' field is included
-         in the OSCORE option of the response, its value specifies
+         in the OSCORE Option of the response, its value specifies
          "kid1".  If the request was protected in pairwise mode (see
          Section 9.3), the 'kid' field may not be present in the OSCORE
-         option of the response (see Section 4.2).  In this case, the
+         Option of the response (see Section 4.2).  In this case, the
          client assumes "kid1" to be the Recipient ID for the server to
          which the request was intended for.
 
@@ -2924,7 +2924,7 @@ Table of Contents
       supporting the pairwise mode, the server MAY respond with a 4.01
       (Unauthorized) error message or a 4.02 (Bad Option) error message,
       respectively.  When doing so, the server MAY set an Outer Max-Age
-      option with value zero, and MAY include a descriptive string as
+      Option with value zero, and MAY include a descriptive string as
       diagnostic payload.
 
    *  If a new Recipient Context is created for this Recipient ID, new
@@ -3058,7 +3058,7 @@ Table of Contents
    generating the AEAD nonce for protecting the response conveying the
    Echo Option, and MUST include the Partial IV in the response.
 
-   The Echo option value SHOULD NOT be reused; if it is reused, it MUST
+   The Echo Option value SHOULD NOT be reused; if it is reused, it MUST
    be highly unlikely to have been recently used with this client.
    Since this response is protected with the Security Context used in
    the group, the client will consider the response valid upon
@@ -3086,7 +3086,7 @@ Table of Contents
    and that use the Echo Option support the pairwise mode.  In a group
    where the AEAD Algorithm and Pairwise Key Agreement Algorithm are not
    set, only the group mode can be used.  Hence, requests including the
-   Echo option can be protected only with the Group Mode, with the
+   Echo Option can be protected only with the Group Mode, with the
    caveat due to the risk for those requests to be redirected to a
    different server than the intended one, as discussed in Section 13.9.
 
@@ -3296,7 +3296,7 @@ Table of Contents
    enabling to keep long exchanges active beyond a possible change of ID
    Context (Gid), following a group rekeying (see Section 4.4).  Second,
    the countersignature included in a Group OSCORE message protected in
-   group mode is computed also over the value of the OSCORE option,
+   group mode is computed also over the value of the OSCORE Option,
    which is also part of the Additional Authenticated Data used in the
    signing process.  This is further discussed in Section 13.7 of this
    document.
@@ -3591,13 +3591,13 @@ Table of Contents
    attempt to inject the message to a different OSCORE group also
    including the same endpoints (see Section 13.7.1).
 
-   This practically relies on altering the content of the OSCORE option,
+   This practically relies on altering the content of the OSCORE Option,
    and having the same MAC in the ciphertext still correctly validating,
    which has a success probability depending on the size of the MAC.
 
    As discussed in Section 13.7.2, the attack is practically infeasible
    if the message is protected in group mode, thanks to the
-   countersignature also bound to the OSCORE option through the
+   countersignature also bound to the OSCORE Option through the
    Additional Authenticated Data used in the signing process (see
    Section 4.4).
 
@@ -3630,7 +3630,7 @@ Table of Contents
    to Y and valid to be accepted.
 
    More in detail, Z intercepts and stops message M1, and forges a
-   message M2 by changing the value of the OSCORE option from M1 as
+   message M2 by changing the value of the OSCORE Option from M1 as
    follows: the 'kid context' is set to G2 (rather than G1); and the
    'kid' is set to Sid2 (rather than Sid1).  Then, Z injects message M2
    as addressed to Y in G2.
@@ -3648,7 +3648,7 @@ Table of Contents
 
    When a Group OSCORE message is protected in group mode, the
    countersignature is computed also over the value of the OSCORE
-   option, which is part of the Additional Authenticated Data used in
+   Option, which is part of the Additional Authenticated Data used in
    the signing process (see Section 4.4).
 
    That is, other than over the ciphertext, the countersignature is
@@ -3670,7 +3670,7 @@ Table of Contents
    original one in the forged message M2.
 
    If, hypothetically, the countersignature did not cover the OSCORE
-   option:
+   Option:
 
    *  The attack described in Section 13.7.1 would still be possible
       against response messages protected in group mode, since the same
@@ -3779,7 +3779,7 @@ Table of Contents
    for CoAP is as discussed in Section 3.8 of
    [I-D.ietf-core-groupcomm-bis].  Note that, after a first block-wise
    request which targets all servers in the group and includes the CoAP
-   Block2 option, following block-wise exchanges rely on unicast
+   Block2 Option, following block-wise exchanges rely on unicast
    requests that should therefore be protected using the pairwise mode.
 
    Editor's note: The paragraph above will have to be re-checked against
@@ -4015,7 +4015,7 @@ Table of Contents
       also a member of those groups.
 
    Furthermore, the following privacy considerations hold about the
-   OSCORE option, which may reveal information on the communicating
+   OSCORE Option, which may reveal information on the communicating
    endpoints.
 
    *  The 'kid' parameter, which is intended to help a recipient
@@ -4882,11 +4882,11 @@ D.12.  Version -10 to -11
    *  Sender IDs not recycled in the group under the same Gid.
 
    *  Processing and description of the Group Flag bit in the OSCORE
-      option.
+      Option.
 
    *  Usage of the pairwise mode for multicast requests.
 
-   *  Clarifications on synchronization using the Echo option.
+   *  Clarifications on synchronization using the Echo Option.
 
    *  General format of context parameters and external_aad elements,
       supporting future registered COSE algorithms (new Appendix).
@@ -5044,7 +5044,7 @@ D.16.  Version -06 to -07
    *  Content re-organization for COSE Object and OSCORE header
       compression.
 
-   *  Defined the Pairwise Flag bit for the OSCORE option.
+   *  Defined the Pairwise Flag bit for the OSCORE Option.
 
    *  Supporting CoAP Observe for group requests and responses.
 
@@ -5057,7 +5057,7 @@ D.16.  Version -06 to -07
       upon key renewal.
 
    *  Security considerations on Group OSCORE for unicast requests, also
-      as affecting the usage of the Echo option.
+      as affecting the usage of the Echo Option.
 
    *  Clarification on different types of groups considered
       (application/security/CoAP).
@@ -5135,11 +5135,11 @@ D.19.  Version -03 to -04
    *  Described possible provisioning of new Sender ID in case of
       Partial IV wrap-around (see Section 2.2).
 
-   *  The former signature bit in the Flag Byte of the OSCORE option
+   *  The former signature bit in the Flag Byte of the OSCORE Option
       value is reverted to reserved (see Section 4.1).
 
    *  Updated examples of compressed COSE object, now with the sixth
-      less significant bit in the Flag Byte of the OSCORE option value
+      less significant bit in the Flag Byte of the OSCORE Option value
       set to 0 (see Section 4.3).
 
    *  Relaxed statements on sending error messages (see Section 6).
@@ -5222,7 +5222,7 @@ D.21.  Version -01 to -02
       Manager.
 
    *  Minor updates to Appendix E.3 about Challenge-Response
-      synchronization of sequence numbers based on the Echo option from
+      synchronization of sequence numbers based on the Echo Option from
       draft-ietf-core-echo-request-tag.
 
 D.22.  Version -00 to -01
