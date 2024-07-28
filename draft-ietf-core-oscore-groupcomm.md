@@ -641,7 +641,7 @@ Separately for each group, the value of the Key Generation Number increases by o
 
 The establishment of the new Security Context for the group takes the following steps.
 
-1. The Group Manager MUST increment the Key Generation Number for the group by 1.
+1. The Group Manager MUST increment the Key Generation Number for the group by 1. It is up to the Group Manager what actions to take when a wrap-around of the Key Generation Number is detected.
 
 2. The Group Manager MUST build a set of stale Sender IDs including:
 
@@ -2002,6 +2002,8 @@ As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple gr
 * Improved content on Challenge-Response based freshness and Replay Window recovery.
 
 * Use the acronym CCSs for CWT Claims Sets.
+
+* Mentioned wrap-around of the Key Generation Number.
 
 * Added IANA consideration on the "CoAP Option Numbers" registry.
 
