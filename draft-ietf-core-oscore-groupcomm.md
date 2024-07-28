@@ -114,10 +114,10 @@ informative:
   I-D.ietf-core-observe-multicast-notifications:
   I-D.ietf-lwig-curve-representations:
   I-D.ietf-cose-cbor-encoded-cert:
+  I-D.ietf-core-oscore-capable-proxies:
+  I-D.ietf-core-groupcomm-proxy:
   I-D.irtf-cfrg-det-sigs-with-noise:
   I-D.amsuess-core-cachable-oscore:
-  I-D.tiloca-core-oscore-capable-proxies:
-  I-D.tiloca-core-groupcomm-proxy:
   RFC4944:
   RFC4949:
   RFC5280:
@@ -178,7 +178,7 @@ To this end, a CoAP message is protected by including its payload (if any), cert
 This document defines Group OSCORE, a security protocol for group communication with CoAP {{I-D.ietf-core-groupcomm-bis}} and for CoAP-mappable HTTP requests and responses, providing the same end-to-end security properties as OSCORE also in the case where requests have multiple recipients. In particular, the described protocol defines how OSCORE is used in a group communication setting to provide source authentication for group requests sent by a client to multiple servers, and for protection of the corresponding responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with any other member of the group for pairwise-protected OSCORE communication. Just like OSCORE, Group OSCORE is independent of the transport layer and works wherever CoAP does.
 
 As with OSCORE, it is possible to combine Group OSCORE with communication security on other layers. One example is the use of transport layer security, such as DTLS {{RFC9147}}, between one client and one proxy (and vice versa), or between one proxy and one server (and vice versa). This prevents observers from accessing addressing information conveyed in CoAP options that would not be protected by Group OSCORE, but would be protected by DTLS. These options include Uri-Host, Uri-Port, and Proxy-Uri. Note that DTLS does not define how to secure messages sent over IP multicast.
-Group OSCORE is also intended to work with OSCORE-capable proxies {{I-D.tiloca-core-oscore-capable-proxies}} thereby enabling, for example, nested OSCORE operations with OSCORE-protected communication between a CoAP client and a proxy, carrying messages that are additionally protected with Group OSCORE between the CoAP client and the target CoAP servers.
+Group OSCORE is also intended to work with OSCORE-capable proxies {{I-D.ietf-core-oscore-capable-proxies}} thereby enabling, for example, nested OSCORE operations with OSCORE-protected communication between a CoAP client and a proxy, carrying messages that are additionally protected with Group OSCORE between the CoAP client and the target CoAP servers.
 
 Group OSCORE defines two modes of operation, that can be used independently or together:
 
@@ -190,7 +190,7 @@ Both modes provide source authentication of CoAP messages. The application decid
 
 A special deployment of Group OSCORE consists in using the pairwise mode only. For example, consider the case of a constrained-node network {{RFC7228}} with a large number of CoAP endpoints and the objective to establish secure communication between any pair of endpoints with a small provisioning effort and message overhead. Since the total number of security associations that needs to be established grows with the square of the number of endpoints, it is desirable to restrict the amount of secret keying material provided to each endpoint. Moreover, a key establishment protocol would need to be executed for each security association. One solution to this issue is to deploy Group OSCORE, with the endpoints being part of a group, and to use the pairwise mode. This solution has the benefit of providing a single shared secret, while distributing only the public keys of group members or a subset of those. After that, a CoAP endpoint can locally derive the OSCORE Security Context for the other endpoint in the group, and protect CoAP communications with very low overhead {{I-D.ietf-iotops-security-protocol-comparison}}.
 
-In some circumstances, Group OSCORE messages may be transported in HTTP, e.g., when they are protected with the pairwise mode and target a single recipient, or when they are protected with the group mode and target multiple CoAP recipients through cross-protocol translators such as HTTP-to-CoAP proxies {{RFC8075}}{{I-D.tiloca-core-groupcomm-proxy}}. The use of Group OSCORE with HTTP is as defined for OSCORE in {{Section 11 of RFC8613}}.
+In some circumstances, Group OSCORE messages may be transported in HTTP, e.g., when they are protected with the pairwise mode and target a single recipient, or when they are protected with the group mode and target multiple CoAP recipients through cross-protocol translators such as HTTP-to-CoAP proxies {{RFC8075}}{{I-D.ietf-core-groupcomm-proxy}}. The use of Group OSCORE with HTTP is as defined for OSCORE in {{Section 11 of RFC8613}}.
 
 ## Terminology ## {#terminology}
 
@@ -1982,6 +1982,12 @@ As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple gr
 
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
+
+## Version -21 to -22 ## {#sec-21-22}
+
+* Updated references.
+
+* Editorial improvements.
 
 ## Version -20 to -21 ## {#sec-20-21}
 
