@@ -3852,17 +3852,29 @@ Note that, by changing the Partial IV as discussed above, any member of G1 would
 <a href="#section-14.1" class="section-number selfRef">14.1. </a><a href="#name-oscore-flag-bits-registry" class="section-name selfRef">OSCORE Flag Bits Registry</a>
         </h3>
 <p id="section-14.1-1">IANA is asked to add the following entry to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.<a href="#section-14.1-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-14.1-2">
-<pre>
-+--------------+-------+-----------------------------+------------+
-| Bit Position | Name  | Description                 | Reference  |
-+--------------+-------+-----------------------------+------------+
-|       2      | Group | For using a Group OSCORE    | [RFC-XXXX] |
-|              | Flag  | Security Context, set to 1  |            |
-|              |       | if the message is protected |            |
-|              |       | with the group mode         |            |
-+--------------+-------+-----------------------------+------------+
-</pre><a href="#section-14.1-2" class="pilcrow">¶</a>
+<span id="name-registrations-in-the-oscore"></span><div id="_table-iana-oscore-flag-bits">
+<table class="center" id="table-1">
+          <caption>
+<a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#name-registrations-in-the-oscore" class="selfRef">Registrations in the OSCORE Flag Bits Registry</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Bit Position</th>
+              <th class="text-left" rowspan="1" colspan="1">Name</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+              <th class="text-left" rowspan="1" colspan="1">Reference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">2</td>
+              <td class="text-left" rowspan="1" colspan="1">Group Flag</td>
+              <td class="text-left" rowspan="1" colspan="1">For using a Group OSCORE Security Context, set to 1 if the message is protected with the group mode</td>
+              <td class="text-left" rowspan="1" colspan="1">[RFC-XXXX]</td>
+            </tr>
+          </tbody>
+        </table>
 </div>
 </section>
 </div>

@@ -4063,14 +4063,17 @@ Table of Contents
    registry within the "Constrained RESTful Environments (CoRE)
    Parameters" registry group.
 
-   +--------------+-------+-----------------------------+------------+
-   | Bit Position | Name  | Description                 | Reference  |
-   +--------------+-------+-----------------------------+------------+
-   |       2      | Group | For using a Group OSCORE    | [RFC-XXXX] |
-   |              | Flag  | Security Context, set to 1  |            |
-   |              |       | if the message is protected |            |
-   |              |       | with the group mode         |            |
-   +--------------+-------+-----------------------------+------------+
+   +==========+=======+===================================+============+
+   | Bit      | Name  | Description                       | Reference  |
+   | Position |       |                                   |            |
+   +==========+=======+===================================+============+
+   | 2        | Group | For using a Group OSCORE          | [RFC-XXXX] |
+   |          | Flag  | Security Context, set to 1        |            |
+   |          |       | if the message is protected       |            |
+   |          |       | with the group mode               |            |
+   +----------+-------+-----------------------------------+------------+
+
+          Table 1: Registrations in the OSCORE Flag Bits Registry
 
 14.2.  Target Attributes Registry
 
