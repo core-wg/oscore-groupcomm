@@ -21,11 +21,6 @@ venue:
   github: core-wg/oscore-groupcomm
 
 coding: utf-8
-pi:    # can use array (if all yes) or hash here
-
-  toc: yes
-  sortrefs:   # defaults to yes
-  symrefs: yes
 
 author:
       -
@@ -77,14 +72,12 @@ author:
 normative:
 
   I-D.ietf-core-groupcomm-bis:
-  RFC2119:
   RFC4086:
   RFC6979:
   RFC7252:
   RFC7641:
   RFC7748:
   RFC8032:
-  RFC8174:
   RFC8288:
   RFC8610:
   RFC8613:
@@ -201,7 +194,7 @@ In some circumstances, Group OSCORE messages may be transported in HTTP, e.g., w
 
 ## Terminology ## {#terminology}
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
+{::boilerplate bcp14-tagged}
 
 Readers are expected to be familiar with the terms and concepts described in CoAP {{RFC7252}}, including "endpoint", "client", "server", "sender", and "recipient"; group communication for CoAP {{I-D.ietf-core-groupcomm-bis}}; Observe {{RFC7641}}; CBOR {{RFC8949}}; COSE {{RFC9052}}{{RFC9053}} and related countersignatures  {{RFC9338}}.
 
@@ -1988,8 +1981,7 @@ Using an immutable Group Prefix for a group with a Group Manager that cannot rea
 As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple groups managed by different non-synchronized Group Managers, it is possible that Group Identifiers of different groups coincide at some point in time. In this case, a recipient has to handle coinciding Group Identifiers, and has to try using different Security Contexts to process an incoming message, until the right one is found and the message is correctly verified. Therefore, it is favorable that Group Identifiers from different Group Managers have a size that result in a small probability of collision. How small this probability should be is up to system designers.
 
 # Document Updates # {#sec-document-updates}
-
-RFC EDITOR: PLEASE REMOVE THIS SECTION.
+{:removeinrfc}
 
 ## Version -20 to -21 ## {#sec-20-21}
 
@@ -2449,7 +2441,7 @@ member is now optional to support and use for the Group Manager.
 * Appendix D has been updated to be aligned with draft-palombini-ace-key-groupcomm.
 
 # Acknowledgments # {#acknowldegment}
-{: numbered="no"}
+{:numbered="false"}
 
 Jiye Park contributed as a co-author of initial versions of this document.
 
