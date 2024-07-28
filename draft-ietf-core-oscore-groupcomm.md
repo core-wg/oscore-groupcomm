@@ -1877,16 +1877,9 @@ This document has the following actions for IANA.
 
 IANA is asked to add the following entry to the "OSCORE Flag Bits" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
 
-~~~~~~~~~~~
-+--------------+-------+-----------------------------+------------+
-| Bit Position | Name  | Description                 | Reference  |
-+--------------+-------+-----------------------------+------------+
-|       2      | Group | For using a Group OSCORE    | [RFC-XXXX] |
-|              | Flag  | Security Context, set to 1  |            |
-|              |       | if the message is protected |            |
-|              |       | with the group mode         |            |
-+--------------+-------+-----------------------------+------------+
-~~~~~~~~~~~
+| Bit Position | Name       | Description                                                                                         | Reference |
+| 2            | Group Flag | For using a Group OSCORE Security Context, set to 1 if the message is protected with the group mode | {{&SELF}} |
+{: #table-iana-oscore-flag-bits title="Registrations in the OSCORE Flag Bits Registry" align="center"}
 
 ## Target Attributes Registry ## {#iana-target-attributes}
 
