@@ -13,23 +13,22 @@
 <meta content="
        This document defines the security protocol Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of CoAP messages exchanged between members of a group, e.g., sent over IP multicast. In particular, the described protocol defines how OSCORE is used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with any other member of the group for pairwise OSCORE communication. Group OSCORE can be used between endpoints communicating with CoAP or CoAP-mappable HTTP. 
     " name="description">
-<meta content="xml2rfc 3.19.4" name="generator">
+<meta content="xml2rfc 3.22.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-core-oscore-groupcomm-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.19.4
-    Python 3.11.6
+  xml2rfc 3.22.0
+    Python 3.12.3
     ConfigArgParse 1.7
     google-i18n-address 3.1.0
     intervaltree 3.1.0
-    Jinja2 3.1.2
-    lxml 4.9.3
-    platformdirs 4.2.0
+    Jinja2 3.1.4
+    lxml 4.9.4
+    platformdirs 4.2.2
     pycountry 22.3.5
     PyYAML 6.0.1
-    requests 2.31.0
-    setuptools 68.2.2
-    six 1.16.0
+    requests 2.32.3
+    setuptools 69.5.1
     wcwidth 0.2.13
 -->
 <link href="draft-ietf-core-oscore-groupcomm.xml" rel="alternate" type="application/rfc+xml">
@@ -1029,11 +1028,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Group OSCORE</td>
-<td class="right">February 2024</td>
+<td class="right">July 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Tiloca, et al.</td>
-<td class="center">Expires 29 August 2024</td>
+<td class="center">Expires 29 January 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1046,12 +1045,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-core-oscore-groupcomm-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-02-26" class="published">26 February 2024</time>
+<time datetime="2024-07-28" class="published">28 July 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-08-29">29 August 2024</time></dd>
+<dd class="expires"><time datetime="2025-01-29">29 January 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1101,7 +1100,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 29 August 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 29 January 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1585,7 +1584,7 @@ Group OSCORE is also intended to work with OSCORE-capable proxies <span>[<a href
             <p id="section-1.1-6.2.1">Authentication credential: information associated with an entity, including that entity's public key and parameters associated with the public key. Examples of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets <span>[<a href="#RFC8392" class="cite xref">RFC8392</a>]</span>, X.509 certificates <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> and C509 certificates <span>[<a href="#I-D.ietf-cose-cbor-encoded-cert" class="cite xref">I-D.ietf-cose-cbor-encoded-cert</a>]</span>. Further details about authentication credentials are provided in <a href="#sec-pub-key-format" class="auto internal xref">Section 2.4</a>.<a href="#section-1.1-6.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.1-6.3">
-            <p id="section-1.1-6.3.1">Group: a set of endpoints that share group keying material and security parameters (Common Context, see <a href="#sec-context" class="auto internal xref">Section 2</a>). That is, unless otherwise specified, the term group used in this document refers to a "security group" (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-10#section-2.1" class="relref">Section 2.1</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>), not to be confused with "CoAP group" or "application group".<a href="#section-1.1-6.3.1" class="pilcrow">¶</a></p>
+            <p id="section-1.1-6.3.1">Group: a set of endpoints that share group keying material and security parameters (Common Context, see <a href="#sec-context" class="auto internal xref">Section 2</a>). That is, unless otherwise specified, the term group used in this document refers to a "security group" (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-11#section-2.1" class="relref">Section 2.1</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>), not to be confused with "CoAP group" or "application group".<a href="#section-1.1-6.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.1-6.4">
             <p id="section-1.1-6.4.1">Group Manager: an entity responsible for a group, neither required to be an actual group member nor to take part in the group communication. The responsibilities of the Group Manager are listed in <a href="#sec-group-manager" class="auto internal xref">Section 3.4</a>.<a href="#section-1.1-6.4.1" class="pilcrow">¶</a></p>
@@ -2998,7 +2997,7 @@ In particular, the Countersign_structure contains the context text string "Count
             <p id="section-8.2-2.4.1">Additionally, if the used Recipient Context was created upon receiving this request and the message is not verified successfully, the server MAY delete that Recipient Context. Such a configuration, which is specified by the application, mitigates attacks that aim at overloading the server's storage.<a href="#section-8.2-2.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-8.2-3">A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. For an example where this is not fulfilled, see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-07#section-9.2.1" class="relref">Section 9.2.1</a> of [<a href="#I-D.ietf-core-observe-multicast-notifications" class="cite xref">I-D.ietf-core-observe-multicast-notifications</a>]</span>.<a href="#section-8.2-3" class="pilcrow">¶</a></p>
+<p id="section-8.2-3">A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. For an example where this is not fulfilled, see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-09#section-9.2.1" class="relref">Section 9.2.1</a> of [<a href="#I-D.ietf-core-observe-multicast-notifications" class="cite xref">I-D.ietf-core-observe-multicast-notifications</a>]</span>.<a href="#section-8.2-3" class="pilcrow">¶</a></p>
 <p id="section-8.2-4">In addition, the following applies if the request establishes a long exchange and the server intends to reply with multiple responses.<a href="#section-8.2-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-8.2-5.1">
@@ -3470,7 +3469,7 @@ RES: 2.05 Content
 <p id="section-13-5">The same considerations on protected message fields for OSCORE discussed in <span><a href="https://rfc-editor.org/rfc/rfc8613#appendix-D.3" class="relref">Appendix D.3</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> hold for Group OSCORE.<a href="#section-13-5" class="pilcrow">¶</a></p>
 <p id="section-13-6">The same considerations on uniqueness of (key, nonce) pairs for OSCORE discussed in <span><a href="https://rfc-editor.org/rfc/rfc8613#appendix-D.4" class="relref">Appendix D.4</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> hold for Group OSCORE. This is further discussed in <a href="#ssec-key-nonce-uniqueness" class="auto internal xref">Section 13.3</a> of this document.<a href="#section-13-6" class="pilcrow">¶</a></p>
 <p id="section-13-7">The same considerations on unprotected message fields for OSCORE discussed in <span><a href="https://rfc-editor.org/rfc/rfc8613#appendix-D.5" class="relref">Appendix D.5</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> hold for Group OSCORE, with the following differences. First, the 'kid context' of request messages is part of the Additional Authenticated Data, thus safely enabling to keep long exchanges active beyond a possible change of ID Context (Gid), following a group rekeying (see <a href="#sec-cose-object-ext-aad" class="auto internal xref">Section 4.4</a>). Second, the countersignature included in a Group OSCORE message protected in group mode is computed also over the value of the OSCORE option, which is also part of the Additional Authenticated Data used in the signing process. This is further discussed in <a href="#ssec-cross-group-injection" class="auto internal xref">Section 13.7</a> of this document.<a href="#section-13-7" class="pilcrow">¶</a></p>
-<p id="section-13-8">As discussed in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-10#section-6.2.3" class="relref">Section 6.2.3</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>, Group OSCORE addresses security attacks against CoAP listed in Sections 11.2-11.6 of <span>[<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>, especially when run over IP multicast.<a href="#section-13-8" class="pilcrow">¶</a></p>
+<p id="section-13-8">As discussed in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-11#section-6.2.3" class="relref">Section 6.2.3</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>, Group OSCORE addresses security attacks against CoAP listed in Sections 11.2-11.6 of <span>[<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>, especially when run over IP multicast.<a href="#section-13-8" class="pilcrow">¶</a></p>
 <p id="section-13-9">The rest of this section first discusses security aspects to be taken into account when using Group OSCORE. Then it goes through aspects covered in the security considerations of OSCORE (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-12" class="relref">Section 12</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>), and discusses how they hold when Group OSCORE is used.<a href="#section-13-9" class="pilcrow">¶</a></p>
 <div id="ssec-group-mode-security">
 <section id="section-13.1">
@@ -3569,7 +3568,7 @@ If, when participating in the group rekeying, the current group members had not 
 <p id="section-13.5-2">This may result in a client using an old Security Context to protect a request, and a server using a different new Security Context to protect a corresponding response. As a consequence, clients may receive a response protected with a Security Context different from the one used to protect the corresponding request.<a href="#section-13.5-2" class="pilcrow">¶</a></p>
 <p id="section-13.5-3">In particular, a server may first get a request protected with the old Security Context, then install the new Security Context, and only after that produce a response to send back to the client. In such a case, as specified in <a href="#ssec-protect-response" class="auto internal xref">Section 8.3</a>, the server MUST protect the potential response using the new Security Context. Specifically, the server MUST include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response. This prevents the AEAD nonce from the request from being reused with the new Security Context.<a href="#section-13.5-3" class="pilcrow">¶</a></p>
 <p id="section-13.5-4">The client will process that response using the new Security Context, provided that it has installed the new security parameters and keying material before the message processing.<a href="#section-13.5-4" class="pilcrow">¶</a></p>
-<p id="section-13.5-5">In case block-wise transfer <span>[<a href="#RFC7959" class="cite xref">RFC7959</a>]</span> is used, the same considerations from <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-18#section-10.3" class="relref">Section 10.3</a> of [<a href="#I-D.ietf-ace-key-groupcomm" class="cite xref">I-D.ietf-ace-key-groupcomm</a>]</span> hold.<a href="#section-13.5-5" class="pilcrow">¶</a></p>
+<p id="section-13.5-5">In case block-wise transfer <span>[<a href="#RFC7959" class="cite xref">RFC7959</a>]</span> is used, the same considerations from <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-19#section-10.3" class="relref">Section 10.3</a> of [<a href="#I-D.ietf-ace-key-groupcomm" class="cite xref">I-D.ietf-ace-key-groupcomm</a>]</span> hold.<a href="#section-13.5-5" class="pilcrow">¶</a></p>
 <p id="section-13.5-6">Furthermore, as described below, a group rekeying may temporarily result in misaligned Security Contexts between the sender and recipient of a same message.<a href="#section-13.5-6" class="pilcrow">¶</a></p>
 <div id="ssec-key-rotation-late-sender">
 <section id="section-13.5.1">
@@ -3700,8 +3699,8 @@ Note that, by changing the Partial IV as discussed above, any member of G1 would
 <p id="section-13.9-3">If the client uses the group mode with its own Sender Key to protect a unicast request to a group member, an on-path adversary can, right then or later on, redirect that request to one/many different group member(s) over unicast, or to the whole OSCORE group over multicast. By doing so, the adversary can induce the target group member(s) to perform actions intended for one group member only. Note that the adversary can be external, i.e., they do not need to also be a member of the OSCORE group.<a href="#section-13.9-3" class="pilcrow">¶</a></p>
 <p id="section-13.9-4">This is due to the fact that the client is not able to indicate the single intended recipient in a way which is secure and possible to process for Group OSCORE on the server side. In particular, Group OSCORE does not protect network addressing information such as the IP address of the intended recipient server. It follows that the server(s) receiving the redirected request cannot assert whether that was the original intention of the client, and would thus simply assume so.<a href="#section-13.9-4" class="pilcrow">¶</a></p>
 <p id="section-13.9-5">The impact of such an attack depends especially on the REST method of the request, i.e., the Inner CoAP Code of the OSCORE request message. In particular, safe methods such as GET and FETCH would trigger (several) unintended responses from the targeted server(s), while not resulting in destructive behavior. On the other hand, non safe methods such as PUT, POST, and PATCH/iPATCH would result in the target server(s) taking active actions on their resources and possible cyber-physical environment, with the risk of destructive consequences and possible implications for safety.<a href="#section-13.9-5" class="pilcrow">¶</a></p>
-<p id="section-13.9-6">A client can instead use the pairwise mode as defined in <a href="#sec-pairwise-protection-req" class="auto internal xref">Section 9.3</a>, in order to protect a request sent to a single group member by using pairwise keying material (see <a href="#sec-derivation-pairwise" class="auto internal xref">Section 2.5</a>). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, a client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast. For an example where this is not fulfilled, see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-07#section-9.2.1" class="relref">Section 9.2.1</a> of [<a href="#I-D.ietf-core-observe-multicast-notifications" class="cite xref">I-D.ietf-core-observe-multicast-notifications</a>]</span>.<a href="#section-13.9-6" class="pilcrow">¶</a></p>
-<p id="section-13.9-7">The use of block-wise transfers <span>[<a href="#RFC7959" class="cite xref">RFC7959</a>]</span> with group communication for CoAP is as discussed in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-10#section-3.8" class="relref">Section 3.8</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>.<a href="#section-13.9-7" class="pilcrow">¶</a></p>
+<p id="section-13.9-6">A client can instead use the pairwise mode as defined in <a href="#sec-pairwise-protection-req" class="auto internal xref">Section 9.3</a>, in order to protect a request sent to a single group member by using pairwise keying material (see <a href="#sec-derivation-pairwise" class="auto internal xref">Section 2.5</a>). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, a client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast. For an example where this is not fulfilled, see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-09#section-9.2.1" class="relref">Section 9.2.1</a> of [<a href="#I-D.ietf-core-observe-multicast-notifications" class="cite xref">I-D.ietf-core-observe-multicast-notifications</a>]</span>.<a href="#section-13.9-6" class="pilcrow">¶</a></p>
+<p id="section-13.9-7">The use of block-wise transfers <span>[<a href="#RFC7959" class="cite xref">RFC7959</a>]</span> with group communication for CoAP is as discussed in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-11#section-3.8" class="relref">Section 3.8</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>.<a href="#section-13.9-7" class="pilcrow">¶</a></p>
 <p id="section-13.9-8">Additional considerations are discussed in <a href="#sec-synch-challenge-response" class="auto internal xref">Section 10</a>, with respect to requests including a CoAP Echo Option <span>[<a href="#RFC9175" class="cite xref">RFC9175</a>]</span> that have to be sent over unicast, as a challenge-response method for servers to achieve synchronization of clients' Sender Sequence Number.<a href="#section-13.9-8" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -3865,6 +3864,7 @@ Reference: [RFC-XXXX]
 </div>
 </section>
 </div>
+<div id="sec-combined-references">
 <section id="section-15">
       <h2 id="name-references">
 <a href="#section-15" class="section-number selfRef">15. </a><a href="#name-references" class="section-name selfRef">References</a>
@@ -3877,7 +3877,7 @@ Reference: [RFC-XXXX]
 <dl class="references">
 <dt id="I-D.ietf-core-groupcomm-bis">[I-D.ietf-core-groupcomm-bis]</dt>
         <dd>
-<span class="refAuthor">Dijk, E.</span>, <span class="refAuthor">Wang, C.</span>, and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Group Communication for the Constrained Application Protocol (CoAP)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-groupcomm-bis-10</span>, <time datetime="2023-10-23" class="refDate">23 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-10">https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-10</a>&gt;</span>. </dd>
+<span class="refAuthor">Dijk, E.</span>, <span class="refAuthor">Wang, C.</span>, and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Group Communication for the Constrained Application Protocol (CoAP)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-groupcomm-bis-11</span>, <time datetime="2024-04-24" class="refDate">24 April 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-11">https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-11</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="NIST-800-56A">[NIST-800-56A]</dt>
         <dd>
@@ -3962,11 +3962,11 @@ Reference: [RFC-XXXX]
 <dd class="break"></dd>
 <dt id="I-D.amsuess-core-cachable-oscore">[I-D.amsuess-core-cachable-oscore]</dt>
         <dd>
-<span class="refAuthor">Amsüss, C.</span> and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Cacheable OSCORE"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-amsuess-core-cachable-oscore-08</span>, <time datetime="2024-01-10" class="refDate">10 January 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-amsuess-core-cachable-oscore-08">https://datatracker.ietf.org/doc/html/draft-amsuess-core-cachable-oscore-08</a>&gt;</span>. </dd>
+<span class="refAuthor">Amsüss, C.</span> and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Cacheable OSCORE"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-amsuess-core-cachable-oscore-09</span>, <time datetime="2024-07-08" class="refDate">8 July 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-amsuess-core-cachable-oscore-09">https://datatracker.ietf.org/doc/html/draft-amsuess-core-cachable-oscore-09</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-ace-key-groupcomm">[I-D.ietf-ace-key-groupcomm]</dt>
         <dd>
-<span class="refAuthor">Palombini, F.</span> and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Key Provisioning for Group Communication using ACE"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-key-groupcomm-18</span>, <time datetime="2024-01-16" class="refDate">16 January 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-18">https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-18</a>&gt;</span>. </dd>
+<span class="refAuthor">Palombini, F.</span> and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Key Provisioning for Group Communication using ACE"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-key-groupcomm-19</span>, <time datetime="2024-04-30" class="refDate">30 April 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-19">https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-19</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-ace-key-groupcomm-oscore">[I-D.ietf-ace-key-groupcomm-oscore]</dt>
         <dd>
@@ -3974,15 +3974,15 @@ Reference: [RFC-XXXX]
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-observe-multicast-notifications">[I-D.ietf-core-observe-multicast-notifications]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span>, <span class="refAuthor">Höglund, R.</span>, <span class="refAuthor">Amsüss, C.</span>, and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Observe Notifications as CoAP Multicast Responses"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-observe-multicast-notifications-07</span>, <time datetime="2023-10-23" class="refDate">23 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-07">https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-07</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span>, <span class="refAuthor">Höglund, R.</span>, <span class="refAuthor">Amsüss, C.</span>, and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Observe Notifications as CoAP Multicast Responses"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-observe-multicast-notifications-09</span>, <time datetime="2024-07-08" class="refDate">8 July 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-09">https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-09</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-cose-cbor-encoded-cert">[I-D.ietf-cose-cbor-encoded-cert]</dt>
         <dd>
-<span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Raza, S.</span>, <span class="refAuthor">Höglund, J.</span>, and <span class="refAuthor">M. Furuhed</span>, <span class="refTitle">"CBOR Encoded X.509 Certificates (C509 Certificates)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cose-cbor-encoded-cert-07</span>, <time datetime="2023-10-20" class="refDate">20 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-07">https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-07</a>&gt;</span>. </dd>
+<span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Raza, S.</span>, <span class="refAuthor">Höglund, J.</span>, and <span class="refAuthor">M. Furuhed</span>, <span class="refTitle">"CBOR Encoded X.509 Certificates (C509 Certificates)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cose-cbor-encoded-cert-11</span>, <time datetime="2024-07-08" class="refDate">8 July 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-11">https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-11</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-iotops-security-protocol-comparison">[I-D.ietf-iotops-security-protocol-comparison]</dt>
         <dd>
-<span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Palombini, F.</span>, and <span class="refAuthor">M. Vučinić</span>, <span class="refTitle">"Comparison of CoAP Security Protocols"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-iotops-security-protocol-comparison-03</span>, <time datetime="2023-10-23" class="refDate">23 October 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-iotops-security-protocol-comparison-03">https://datatracker.ietf.org/doc/html/draft-ietf-iotops-security-protocol-comparison-03</a>&gt;</span>. </dd>
+<span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Palombini, F.</span>, and <span class="refAuthor">M. Vučinić</span>, <span class="refTitle">"Comparison of CoAP Security Protocols"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-iotops-security-protocol-comparison-06</span>, <time datetime="2024-03-20" class="refDate">20 March 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-iotops-security-protocol-comparison-06">https://datatracker.ietf.org/doc/html/draft-ietf-iotops-security-protocol-comparison-06</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-lwig-curve-representations">[I-D.ietf-lwig-curve-representations]</dt>
         <dd>
@@ -3990,7 +3990,7 @@ Reference: [RFC-XXXX]
 <dd class="break"></dd>
 <dt id="I-D.irtf-cfrg-det-sigs-with-noise">[I-D.irtf-cfrg-det-sigs-with-noise]</dt>
         <dd>
-<span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Thormarker, E.</span>, and <span class="refAuthor">S. Ruohomaa</span>, <span class="refTitle">"Deterministic ECDSA and EdDSA Signatures with Additional Randomness"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-irtf-cfrg-det-sigs-with-noise-00</span>, <time datetime="2022-08-08" class="refDate">8 August 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-det-sigs-with-noise-00">https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-det-sigs-with-noise-00</a>&gt;</span>. </dd>
+<span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Thormarker, E.</span>, and <span class="refAuthor">S. Ruohomaa</span>, <span class="refTitle">"Hedged ECDSA and EdDSA Signatures"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-irtf-cfrg-det-sigs-with-noise-03</span>, <time datetime="2024-03-16" class="refDate">16 March 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-det-sigs-with-noise-03">https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-det-sigs-with-noise-03</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.tiloca-core-groupcomm-proxy">[I-D.tiloca-core-groupcomm-proxy]</dt>
         <dd>
@@ -4056,6 +4056,7 @@ Reference: [RFC-XXXX]
 </section>
 </div>
 </section>
+</div>
 <div id="sec-requirements">
 <section id="appendix-A">
       <h2 id="name-assumptions-and-security-ob">
@@ -5010,7 +5011,7 @@ member is now optional to support and use for the Group Manager.<a href="#append
       </h2>
 <p id="appendix-E-1">Jiye Park contributed as a co-author of initial versions of this document.<a href="#appendix-E-1" class="pilcrow">¶</a></p>
 <p id="appendix-E-2">The authors sincerely thank <span class="contact-name">Christian Amsüss</span>, <span class="contact-name">Stefan Beck</span>, <span class="contact-name">Rolf Blom</span>, <span class="contact-name">Carsten Bormann</span>, <span class="contact-name">Esko Dijk</span>, <span class="contact-name">Martin Gunnarsson</span>, <span class="contact-name">Klaus Hartke</span>, <span class="contact-name">Richard Kelsey</span>, <span class="contact-name">Dave Robin</span>, <span class="contact-name">Jim Schaad</span>, <span class="contact-name">Ludwig Seitz</span>, <span class="contact-name">Peter van der Stok</span>, and <span class="contact-name">Erik Thormarker</span> for their feedback and comments.<a href="#appendix-E-2" class="pilcrow">¶</a></p>
-<p id="appendix-E-3">The work on this document has been partly supported by VINNOVA and the Celtic-Next project CRITISEC; the H2020 projects SIFIS-Home (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement 101020259); the SSF project SEC4Factory under the grant RIT17-0032; and the EIT-Digital High Impact Initiative ACTIVE.<a href="#appendix-E-3" class="pilcrow">¶</a></p>
+<p id="appendix-E-3">The work on this document has been partly supported by the Sweden's Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and CYPRESS; the H2020 projects SIFIS-Home (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement 101020259); the SSF project SEC4Factory under the grant RIT17-0032; and the EIT-Digital High Impact Initiative ACTIVE.<a href="#appendix-E-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">

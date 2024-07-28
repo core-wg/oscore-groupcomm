@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 29 August 2024                                     F. Palombini
+Expires: 29 January 2025                                    F. Palombini
                                                              J. Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                        26 February 2024
+                                                            28 July 2024
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 August 2024.
+   This Internet-Draft will expire on 29 January 2025.
 
 Copyright Notice
 
@@ -4075,9 +4075,8 @@ Table of Contents
               Dijk, E., Wang, C., and M. Tiloca, "Group Communication
               for the Constrained Application Protocol (CoAP)", Work in
               Progress, Internet-Draft, draft-ietf-core-groupcomm-bis-
-              10, 23 October 2023,
-              <https://datatracker.ietf.org/doc/html/draft-ietf-core-
-              groupcomm-bis-10>.
+              11, 24 April 2024, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-core-groupcomm-bis-11>.
 
    [NIST-800-56A]
               Barker, E., Chen, L., Roginsky, A., Vassilev, A., and R.
@@ -4176,16 +4175,16 @@ Table of Contents
    [I-D.amsuess-core-cachable-oscore]
               Amsüss, C. and M. Tiloca, "Cacheable OSCORE", Work in
               Progress, Internet-Draft, draft-amsuess-core-cachable-
-              oscore-08, 10 January 2024,
+              oscore-09, 8 July 2024,
               <https://datatracker.ietf.org/doc/html/draft-amsuess-core-
-              cachable-oscore-08>.
+              cachable-oscore-09>.
 
    [I-D.ietf-ace-key-groupcomm]
               Palombini, F. and M. Tiloca, "Key Provisioning for Group
               Communication using ACE", Work in Progress, Internet-
-              Draft, draft-ietf-ace-key-groupcomm-18, 16 January 2024,
+              Draft, draft-ietf-ace-key-groupcomm-19, 30 April 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-
-              groupcomm-18>.
+              groupcomm-19>.
 
    [I-D.ietf-ace-key-groupcomm-oscore]
               Tiloca, M., Park, J., and F. Palombini, "Key Management
@@ -4198,25 +4197,25 @@ Table of Contents
               Tiloca, M., Höglund, R., Amsüss, C., and F. Palombini,
               "Observe Notifications as CoAP Multicast Responses", Work
               in Progress, Internet-Draft, draft-ietf-core-observe-
-              multicast-notifications-07, 23 October 2023,
+              multicast-notifications-09, 8 July 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-core-
-              observe-multicast-notifications-07>.
+              observe-multicast-notifications-09>.
 
    [I-D.ietf-cose-cbor-encoded-cert]
               Mattsson, J. P., Selander, G., Raza, S., Höglund, J., and
               M. Furuhed, "CBOR Encoded X.509 Certificates (C509
               Certificates)", Work in Progress, Internet-Draft, draft-
-              ietf-cose-cbor-encoded-cert-07, 20 October 2023,
+              ietf-cose-cbor-encoded-cert-11, 8 July 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-cose-
-              cbor-encoded-cert-07>.
+              cbor-encoded-cert-11>.
 
    [I-D.ietf-iotops-security-protocol-comparison]
               Mattsson, J. P., Palombini, F., and M. Vučinić,
               "Comparison of CoAP Security Protocols", Work in Progress,
               Internet-Draft, draft-ietf-iotops-security-protocol-
-              comparison-03, 23 October 2023,
+              comparison-06, 20 March 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-iotops-
-              security-protocol-comparison-03>.
+              security-protocol-comparison-06>.
 
    [I-D.ietf-lwig-curve-representations]
               Struik, R., "Alternative Elliptic Curve Representations",
@@ -4226,12 +4225,11 @@ Table of Contents
               curve-representations-23>.
 
    [I-D.irtf-cfrg-det-sigs-with-noise]
-              Mattsson, J. P., Thormarker, E., and S. Ruohomaa,
-              "Deterministic ECDSA and EdDSA Signatures with Additional
-              Randomness", Work in Progress, Internet-Draft, draft-irtf-
-              cfrg-det-sigs-with-noise-00, 8 August 2022,
-              <https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-
-              det-sigs-with-noise-00>.
+              Mattsson, J. P., Thormarker, E., and S. Ruohomaa, "Hedged
+              ECDSA and EdDSA Signatures", Work in Progress, Internet-
+              Draft, draft-irtf-cfrg-det-sigs-with-noise-03, 16 March
+              2024, <https://datatracker.ietf.org/doc/html/draft-irtf-
+              cfrg-det-sigs-with-noise-03>.
 
    [I-D.tiloca-core-groupcomm-proxy]
               Tiloca, M. and E. Dijk, "Proxy Operations for CoAP Group
@@ -5209,11 +5207,12 @@ Acknowledgments
    Kelsey, Dave Robin, Jim Schaad, Ludwig Seitz, Peter van der Stok, and
    Erik Thormarker for their feedback and comments.
 
-   The work on this document has been partly supported by VINNOVA and
-   the Celtic-Next project CRITISEC; the H2020 projects SIFIS-Home
-   (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement
-   101020259); the SSF project SEC4Factory under the grant RIT17-0032;
-   and the EIT-Digital High Impact Initiative ACTIVE.
+   The work on this document has been partly supported by the Sweden's
+   Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and
+   CYPRESS; the H2020 projects SIFIS-Home (Grant agreement 952652) and
+   ARCADIAN-IoT (Grant agreement 101020259); the SSF project SEC4Factory
+   under the grant RIT17-0032; and the EIT-Digital High Impact
+   Initiative ACTIVE.
 
 Authors' Addresses
 
