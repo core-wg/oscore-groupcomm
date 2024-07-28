@@ -126,7 +126,7 @@ Table of Contents
    6.  Message Binding, Sequence Numbers, Freshness, and Replay
            Protection
      6.1.  Supporting Multiple Responses in Long Exchanges
-     6.2.  Synchronization and Freshness
+     6.2.  Freshness
      6.3.  Replay Protection
        6.3.1.  Replay Protection of Responses
    7.  Message Reception
@@ -143,7 +143,7 @@ Table of Contents
      9.4.  Verifying the Request
      9.5.  Protecting the Response
      9.6.  Verifying the Response
-   10. Challenge-Response Based Freshness and Synchronization
+   10. Challenge-Response Based Freshness and Replay Window Recovery
    11. Implementation Compliance
    12. Web Linking
    13. Security Considerations
@@ -2108,14 +2108,13 @@ Table of Contents
    the group as a client, and hence frees up the CoAP Token associated
    with the corresponding request.
 
-6.2.  Synchronization and Freshness
+6.2.  Freshness
 
    If the application requires freshness, e.g., according to time- or
    event-based policies (see Section 2.5.1 of [RFC9175]), a server can
-   use the approach in Section 10 as a variant of the procedure in
-   Appendix B.1.2 of [RFC8613], before delivering request messages from
-   a client to the application.  This also makes the server
-   (re-)synchronize with the client's Sender Sequence Number.
+   use the approach in Section 10 as a variant of the Challenge-Response
+   procedure based on the Echo Option [RFC9175], before delivering
+   request messages from a client to the application.
 
    Like in OSCORE [RFC8613], assuming an honest server, the message
    binding guarantees that a response is not older than the request it
@@ -3036,17 +3035,21 @@ Table of Contents
          receiving the response, in case the response is not verified
          successfully.
 
-10.  Challenge-Response Based Freshness and Synchronization
+10.  Challenge-Response Based Freshness and Replay Window Recovery
 
    This section describes how a server endpoint can verify freshness of
-   a request and synchronize with Sender Sequence Numbers of client
-   endpoints in the group.  Similarly to what is defined in
-   Appendix B.1.2 of [RFC8613], the server performs a challenge-response
-   exchange with a client, by using the Echo Option for CoAP specified
-   in Section 2 of [RFC9175].
+   a request by means of a challenge-response exchange with a client,
+   using the Echo Option for CoAP specified in Section 2 of [RFC9175].
+   The same mechanism, with small alterations, is also used by the
+   server when first processing a request using a Recipient Context
+   whose Replay Window was initialized as invalid.
 
-   Upon receiving a request from a particular client for the first time,
-   the server processes the message as described in this document, but,
+   If the application requires freshness, e.g., according to time- or
+   event-based policies (see Section 2.5.1 of [RFC9175]), a server
+   proceeds as described below, upon receiving a request from a
+   particular client for the first time.
+
+   The server processes the message as described in this document, but,
    even if valid, does not deliver it to the application.  Instead, the
    server replies to the client with a Group OSCORE protected 4.01
    (Unauthorized) response message, including only the Echo Option and
@@ -3140,11 +3143,10 @@ Table of Contents
    A server should not deliver requests from a given client to the
    application until one valid request from that same client has been
    verified as fresh, as conveying an echoed Echo Option.  A server may
-   perform the challenge-response described above at any time, if
-   synchronization with Sender Sequence Numbers of clients is lost,
-   e.g., after a device reboot occurred in an unprepared way.  A client
-   has to be ready to perform the challenge-response based on the Echo
-   Option if a server starts it.
+   perform the challenge-response described above at any time, e.g.,
+   after a device reboot occurred in an unprepared way.  A client has to
+   be ready to perform the challenge-response based on the Echo Option
+   if a server starts it.
 
    Message freshness is further discussed in Section 13.14.
 
@@ -3786,7 +3788,8 @@ Table of Contents
    Additional considerations are discussed in Section 10, with respect
    to requests including a CoAP Echo Option [RFC9175] that have to be
    sent over unicast, as a challenge-response method for servers to
-   achieve synchronization of clients' Sender Sequence Number.
+   achieve freshness or to initialize as valid a previously invalid
+   Replay Window.
 
 13.10.  End-to-end Protection
 
@@ -3836,12 +3839,10 @@ Table of Contents
    Group OSCORE, unless exchanges in the group rely only on unicast
    messages.
 
-   A server may not be synchronized with a client's Sender Sequence
-   Number, or a Replay Window may be initialized as invalid (see
+   A server's Replay Window may be initialized as invalid (see
    Section 2.6.1).  The server can either retrieve a new Group OSCORE
-   Security Context, or synchronize with the clients' Sender Sequence
-   Numbers before resuming to accept incoming messages from other group
-   members.
+   Security Context, or make a Replay Window valid (see Section 10)
+   before resuming to accept incoming messages from other group members.
 
 13.13.  Message Ordering
 
@@ -3868,13 +3869,13 @@ Table of Contents
    honesty of the client.  However, it can result in an impact on
    performance which is undesirable or unbearable, especially in large
    groups where many endpoints at the same time might join as new
-   members or lose synchronization.
+   members.
 
    Endpoints configured as silent servers are not able to perform the
    challenge-response described above, as they do not store a Sender
    Context to secure the 4.01 (Unauthorized) response to the client.
-   Thus, silent servers should adopt alternative approaches to achieve
-   and maintain synchronization with Sender Sequence Numbers of clients.
+   Thus, silent servers should adopt alternative approaches to make
+   their Replay Windows valid.
 
    Since requests including the Echo Option are sent over unicast, a
    server can be victim of the attack discussed in Section 13.9, in case
@@ -4037,11 +4038,11 @@ Table of Contents
    context' parameter, it becomes possible to understand that the
    responder endpoints are in the same group of the requester endpoint.
 
-   Furthermore, using the approach described in Section 10 to achieve
-   synchronization with a client's Sender Sequence Number may reveal
-   when a server device goes through a reboot.  This can be mitigated by
-   the server device storing the precise state of the Replay Window of
-   each known client on a clean shutdown.
+   Furthermore, using the approach described in Section 10 to make
+   Replay Windows valid may reveal when a server device goes through a
+   reboot.  This can be mitigated by the server device storing the
+   precise state of the Replay Window of each known client on a clean
+   shutdown.
 
    Finally, the approach described in Section 13.6 to prevent collisions
    of Group Identifiers from different Group Managers may reveal
@@ -4665,6 +4666,12 @@ D.1.  Version -21 to -22
       ID.
 
    *  Relax constrictions of Block-wise with group communication.
+
+   *  Removed the concept of synchronization with the Client's Sender
+      Sequence Number.
+
+   *  Improved content on Challenge-Response based freshness and Replay
+      Window recovery.
 
    *  Added IANA consideration on the "CoAP Option Numbers" registry.
 
