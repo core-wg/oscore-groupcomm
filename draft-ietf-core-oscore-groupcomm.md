@@ -637,8 +637,7 @@ The Group Manager MUST rekey the group without undue delay in case one or more e
 
 If required by the application, the Group Manager MUST rekey the group also before one or more new joining endpoints are added to the group, thus preserving backward security.
 
- Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see {{sec-group-key-management}}). The first Key Generation Number assigned to every group MUST be 0.
-
+Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see {{sec-group-key-management}}).
 
 The establishment of the new Security Context for the group takes the following steps.
 
@@ -1987,6 +1986,8 @@ As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple gr
 * Removed mentioning of the CBOR encoding of the HKDF Algorithm.
 
 * Rephrased consequences on loss of Recipient Contexts.
+
+* Removed requirement on 0 as initial value of the Key Generation Number.
 
 * Added IANA consideration on the "CoAP Option Numbers" registry.
 
