@@ -15,6 +15,11 @@ kw: Internet-Draft
 cat: std
 submissiontype: IETF
 
+venue:
+  group: Constrained RESTful Environments (core)
+  mail: core@ietf.org
+  github: core-wg/oscore-groupcomm
+
 coding: utf-8
 pi:    # can use array (if all yes) or hash here
 
