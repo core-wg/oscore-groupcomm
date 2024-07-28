@@ -1388,7 +1388,7 @@ The pairwise mode does not support external verifiers of source authentication a
 
 An endpoint implementing only a silent server does not support the pairwise mode.
 
-Endpoints using the CoAP Echo Option {{RFC9175}} and/or block-wise transfers {{RFC7959}} in a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set MUST support the pairwise mode. This applies, for example, to block-wise exchanges after a first block-wise request which targets all servers in the group and includes the CoAP Block2 option (see Section 3.8 of {{I-D.ietf-core-groupcomm-bis}}). This prevents the attack described in {{ssec-unicast-requests}}, which leverages requests sent over unicast to a single group member and protected in group mode.
+Endpoints using the CoAP Echo Option {{RFC9175}} in a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set MUST support the pairwise mode. This prevents the attack described in Section 13.9, which leverages requests sent over unicast to a single group member and protected in group mode.
 
 The pairwise mode cannot be used to protect messages intended for multiple recipients. In fact, the keying material used for the pairwise mode is shared only between two endpoints.
 
@@ -1767,7 +1767,9 @@ The impact of such an attack depends especially on the REST method of the reques
 
 A client can instead use the pairwise mode as defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, a client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast. For an example where this is not fulfilled, see {{Section 9.2.1 of I-D.ietf-core-observe-multicast-notifications}}.
 
-The use of block-wise transfers {{RFC7959}} with group communication for CoAP is as discussed in {{Section 3.8 of I-D.ietf-core-groupcomm-bis}}.
+The use of block-wise transfers {{RFC7959}} with group communication for CoAP is as discussed in {{Section 3.8 of I-D.ietf-core-groupcomm-bis}}. Note that, after a first block-wise request which targets all servers in the group and includes the CoAP Block2 option, following block-wise exchanges rely on unicast requests that should therefore be protected using the pairwise mode.
+
+Editor's note: The paragraph above will have to be re-checked against the Section "Block-Wise Transfer" of {{I-D.ietf-core-groupcomm-bis}}, in order to ensure that it is aligned with that.
 
 Additional considerations are discussed in {{sec-synch-challenge-response}}, with respect to requests including a CoAP Echo Option {{RFC9175}} that have to be sent over unicast, as a challenge-response method for servers to achieve synchronization of clients' Sender Sequence Number.
 
@@ -1990,6 +1992,8 @@ As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple gr
 * Removed requirement on 0 as initial value of the Key Generation Number.
 
 * Improved handling of responses from a server that changes Sender ID.
+
+* Relax constrictions of Block-wise with group communication.
 
 * Added IANA consideration on the "CoAP Option Numbers" registry.
 
