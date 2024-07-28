@@ -321,8 +321,8 @@ Table of Contents
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-   "OPTIONAL" in this document are to be interpreted as described in BCP
-   14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
    Readers are expected to be familiar with the terms and concepts
@@ -4635,7 +4635,7 @@ Appendix C.  Example of Group Identifier Format
 
 Appendix D.  Document Updates
 
-   RFC EDITOR: PLEASE REMOVE THIS SECTION.
+   This section is to be removed before publishing as an RFC.
 
 D.1.  Version -20 to -21
 
