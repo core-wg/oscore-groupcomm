@@ -1388,7 +1388,7 @@ The pairwise mode does not support external verifiers of source authentication a
 
 An endpoint implementing only a silent server does not support the pairwise mode.
 
-Endpoints using the CoAP Echo Option {{RFC9175}} in a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set MUST support the pairwise mode. This prevents the attack described in Section 13.9, which leverages requests sent over unicast to a single group member and protected in group mode.
+Endpoints using the CoAP Echo Option {{RFC9175}} in a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set MUST support the pairwise mode. This prevents the attack described in {{ssec-unicast-requests}}, which leverages requests sent over unicast to a single group member and protected in group mode.
 
 The pairwise mode cannot be used to protect messages intended for multiple recipients. In fact, the keying material used for the pairwise mode is shared only between two endpoints.
 
