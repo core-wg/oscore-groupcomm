@@ -173,7 +173,7 @@ This document defines the security protocol Group Object Security for Constraine
 The Constrained Application Protocol (CoAP) {{RFC7252}} is a web transfer protocol specifically designed for constrained devices and networks {{RFC7228}}. Group communication for CoAP {{I-D.ietf-core-groupcomm-bis}} addresses use cases where deployed devices benefit from a group communication model, for example to reduce latencies, improve performance, and reduce bandwidth utilization. Use cases include lighting control, integrated building control, software and firmware updates, parameter and configuration updates, commissioning of constrained networks, and emergency multicast (see {{sec-use-cases}}). Group communication for CoAP {{I-D.ietf-core-groupcomm-bis}} mainly uses UDP/IP multicast as the underlying data transport.
 
 Object Security for Constrained RESTful Environments (OSCORE) {{RFC8613}} describes a security protocol based on the exchange of protected CoAP messages. OSCORE builds on CBOR Object Signing and Encryption (COSE) {{RFC9052}}{{RFC9053}} and provides end-to-end encryption, integrity, replay protection, and binding of response to request between a sender and a recipient, independent of the transport layer also in the presence of intermediaries.
-To this end, a CoAP message is protected by including its payload (if any), certain options, and header fields into a COSE object, which is conveyed within the CoAP payload and the CoAP OSCORE option of the protected message, thereby replacing those message fields with an authenticated and encrypted object.
+To this end, a CoAP message is protected by including its payload (if any), certain options, and header fields into a COSE object, which is conveyed within the CoAP payload and the CoAP OSCORE Option of the protected message, thereby replacing those message fields with an authenticated and encrypted object.
 
 This document defines Group OSCORE, a security protocol for group communication with CoAP {{I-D.ietf-core-groupcomm-bis}} and for CoAP-mappable HTTP requests and responses, providing the same end-to-end security properties as OSCORE also in the case where requests have multiple recipients. In particular, the described protocol defines how OSCORE is used in a group communication setting to provide source authentication for group requests sent by a client to multiple servers, and for protection of the corresponding responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with any other member of the group for pairwise-protected OSCORE communication. Just like OSCORE, Group OSCORE is independent of the transport layer and works wherever CoAP does.
 
@@ -206,7 +206,7 @@ This document refers also to the following terminology.
 
 * Keying material: data that is necessary to establish and maintain secure communication among endpoints. This includes, for instance, keys and IVs {{RFC4949}}.
 
-* Authentication credential: information associated with an entity, including that entity's public key and parameters associated with the public key. Examples of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets {{RFC8392}}, X.509 certificates {{RFC5280}} and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}. Further details about authentication credentials are provided in {{sec-pub-key-format}}.
+* Authentication credential: information associated with an entity, including that entity's public key and parameters associated with the public key. Examples of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) {{RFC8392}}, X.509 certificates {{RFC5280}} and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}. Further details about authentication credentials are provided in {{sec-pub-key-format}}.
 
 * Group: a set of endpoints that share group keying material and security parameters (Common Context, see {{sec-context}}). That is, unless otherwise specified, the term group used in this document refers to a "security group" (see {{Section 2.1 of I-D.ietf-core-groupcomm-bis}}), not to be confused with "CoAP group" or "application group".
 
@@ -345,11 +345,11 @@ The Signature Encryption Key is derived as defined for Sender/Recipient Keys in 
 
 The new parameter Pairwise Key Agreement Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}). If this parameter is not set, the pairwise mode is not used in the group.
 
-If the HKDF Algorithm specified in the Common Context is "HKDF SHA-256" (identified as "HMAC 256/256", COSE algorithm encoding: 5), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-256" (COSE algorithm encoding: -27).
+If the HKDF Algorithm specified in the Common Context is "HKDF SHA-256" (identified as "HMAC 256/256"), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-256" (COSE algorithm encoding: -27).
 
-If the HKDF Algorithm specified in the Common Context is "HKDF SHA-512" (identified as "HMAC 512/512", COSE algorithm encoding: 7), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-512" (COSE algorithm encoding: -28).
+If the HKDF Algorithm specified in the Common Context is "HKDF SHA-512" (identified as "HMAC 512/512"), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-512" (COSE algorithm encoding: -28).
 
-Note that the HKDF Algorithm in the Common Context is denoted by the corresponding COSE HMAC Algorithm. For example, the HKDF Algorithm "HKDF SHA-256" is specified as the HMAC Algorithm "HMAC 256/256" (COSE algorithm encoding: 5).
+Note that the HKDF Algorithm in the Common Context is denoted by the corresponding COSE HMAC Algorithm. For example, the HKDF Algorithm "HKDF SHA-256" is specified as the HMAC Algorithm "HMAC 256/256".
 
 More generally, if Pairwise Key Agreement Algorithm is set, it MUST identify a COSE algorithm such that: i) it performs a direct ECDH Static-Static key agreement; and ii) it indicates the use of the same HKDF Algorithm used in the group as specified in the Common Context.
 
@@ -392,11 +392,11 @@ The authentication credentials of the endpoints in a group MUST be encoded accor
 
    If the authentication credentials are X.509 certificates {{RFC5280}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
 
-   If authentication credentials are CBOR Web Tokens (CWTs) or CWT Claims Sets {{RFC8392}}, the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.
+   If authentication credentials are CBOR Web Tokens (CWTs) or CWT Claims Sets (CCSs) {{RFC8392}}, the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.
 
 Authentication credentials are used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data when processing messages (see {{sec-cose-object-ext-aad}}). In both these cases, an endpoint in a group MUST treat authentication credentials as opaque data, i.e., by considering the same binary representation made available to other endpoints in the group, possibly through a designated trusted source (e.g., the Group Manager).
 
-For example, an X.509 certificate is provided as its direct binary serialization. If C509 certificates or CWTs are used as authentication credentials, each is provided as the binary serialization of a (possibly tagged) CBOR array. If CWT Claims Sets are used as authentication credentials, each is provided as the binary serialization of a CBOR map.
+For example, an X.509 certificate is provided as its direct binary serialization. If C509 certificates or CWTs are used as authentication credentials, each is provided as the binary serialization of a (possibly tagged) CBOR array. If CCSs are used as authentication credentials, each is provided as the binary serialization of a CBOR map.
 
 If authentication credentials are CWTs, then the untagged CWT associated with an entity is stored in the Security Context and used as authentication credential for that entity.
 
@@ -525,7 +525,9 @@ An adversary may leverage the above to perform a Denial of Service attack and pr
 
 The Security Context may contain a large and variable number of Recipient Contexts. A Recipient Context may need to be deleted, because the maximum number of Recipient Contexts has been reached (see {{ssec-sender-recipient-context}}), or due to some other reason.
 
-When a Recipient Context is deleted, information about previously received messages from the corresponding other endpoint is lost. Therefore, if the Recipient Context is derived again from the same Security Context, there is a risk that a replayed message is not detected. If one Recipient Context has been deleted from the current Security Context, then the Replay Window of any new Recipient Context in this Security Context MUST be initialized as invalid. Messages associated with a Recipient Context that has an invalid Replay Window MUST NOT be delivered to the application.
+When a Recipient Context is deleted, this does not only result in losing information about previously received messages from the corresponding other endpoint. It also results in the inability to be aware of the Security Contexts from which information has been lost.
+
+Therefore, if the Recipient Context is derived again from the same Security Context, there is a risk that a replayed message is not detected. If one Recipient Context has been deleted from the current Security Context, then the Replay Window of any new Recipient Context in this Security Context MUST be initialized as invalid. Messages associated with a Recipient Context that has an invalid Replay Window MUST NOT be delivered to the application.
 
 If the endpoint receives a request to process with the new Recipient Context and the endpoint supports the CoAP Echo Option {{RFC9175}}, then it is RECOMMENDED to follow the procedure specified in {{sec-synch-challenge-response}} which establishes a valid Replay Window. In particular, the endpoint MUST use its Partial IV when generating the AEAD nonce and MUST include the Partial IV in the response message conveying the Echo Option.
 
@@ -635,12 +637,11 @@ The Group Manager MUST rekey the group without undue delay in case one or more e
 
 If required by the application, the Group Manager MUST rekey the group also before one or more new joining endpoints are added to the group, thus preserving backward security.
 
- Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see {{sec-group-key-management}}). The first Key Generation Number assigned to every group MUST be 0.
-
+Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see {{sec-group-key-management}}).
 
 The establishment of the new Security Context for the group takes the following steps.
 
-1. The Group Manager MUST increment the Key Generation Number for the group by 1.
+1. The Group Manager MUST increment the Key Generation Number for the group by 1. It is up to the Group Manager what actions to take when a wrap-around of the Key Generation Number is detected.
 
 2. The Group Manager MUST build a set of stale Sender IDs including:
 
@@ -852,7 +853,7 @@ The external_aad of the Additional Authenticated Data (AAD) is different compare
 
 The same external_aad structure is used in group mode and pairwise mode for encryption/decryption (see {{Section 5.3 of RFC9052}}), as well as in group mode for computing and verifying the countersignature (see {{Sections 3.2 and 3.3 of RFC9338}}).
 
-In particular, the external_aad includes also the Signature Algorithm, the Group Encryption Algorithm, the Pairwise Key Agreement Algorithm, the value of the 'kid context' in the COSE object of the request, the OSCORE option of the protected message, the sender's authentication credential, and the Group Manager's authentication credential.
+In particular, the external_aad includes also the Signature Algorithm, the Group Encryption Algorithm, the Pairwise Key Agreement Algorithm, the value of the 'kid context' in the COSE object of the request, the OSCORE Option of the protected message, the sender's authentication credential, and the Group Manager's authentication credential.
 
 The external_aad SHALL be a CBOR array wrapped in a bstr object as defined below, following the notation of {{RFC8610}}:
 
@@ -896,7 +897,7 @@ Compared with {{Section 5.4 of RFC8613}}, the aad_array has the following differ
 
 * The new element 'OSCORE_option', containing the value of the OSCORE Option present in the protected message, encoded as a binary string. This prevents the attack described in {{ssec-cross-group-injection}} when using the group mode, as further explained  in {{sssec-cross-group-injection-group-mode}}.
 
-   Note for implementation: this construction requires the OSCORE option of the message to be generated and finalized before computing the ciphertext of the COSE_Encrypt0 object (when using the group mode or the pairwise mode) and before calculating the countersignature (when using the group mode). Also, the aad_array needs to be large enough to contain the largest possible OSCORE option.
+   Note for implementation: this construction requires the OSCORE Option of the message to be generated and finalized before computing the ciphertext of the COSE_Encrypt0 object (when using the group mode or the pairwise mode) and before calculating the countersignature (when using the group mode). Also, the aad_array needs to be large enough to contain the largest possible OSCORE Option.
 
 * The new element 'sender_cred', containing the sender's authentication credential. This parameter MUST be set to a CBOR byte string, which encodes the sender's authentication credential in its original binary representation made available to other endpoints in the group (see {{sec-pub-key-format}}).
 
@@ -918,7 +919,7 @@ The OSCORE header compression defined in {{Section 6 of RFC8613}} is used for co
 
 * When the Group OSCORE message is protected in pairwise mode, the message payload SHALL encode the ciphertext of the COSE object.
 
-* This document defines the usage of the sixth least significant bit, called "Group Flag", in the first byte of the OSCORE option containing the OSCORE flag bits. This flag bit is specified in {{iana-cons-flag-bits}}.
+* This document defines the usage of the sixth least significant bit, called "Group Flag", in the first byte of the OSCORE Option containing the OSCORE flag bits. This flag bit is specified in {{iana-cons-flag-bits}}.
 
 * The Group Flag MUST be set to 1 if the Group OSCORE message is protected using the group mode (see {{mess-processing}}).
 
@@ -965,7 +966,7 @@ where:
 
 This section covers a list of OSCORE Header Compression examples of Group OSCORE used in group mode (see {{sssec-example-cose-group}}) or in pairwise mode (see {{sssec-example-cose-pairwise}}).
 
-The examples assume that the COSE_Encrypt0 object is set (which means the CoAP message and cryptographic material is known). Note that the examples do not include the full CoAP unprotected message or the full Security Context, but only the input necessary to the compression mechanism, i.e., the COSE_Encrypt0 object. The output is the compressed COSE object as defined in {{compression}} and divided into two parts, since the object is transported in two CoAP fields: OSCORE option and payload.
+The examples assume that the COSE_Encrypt0 object is set (which means the CoAP message and cryptographic material is known). Note that the examples do not include the full CoAP unprotected message or the full Security Context, but only the input necessary to the compression mechanism, i.e., the COSE_Encrypt0 object. The output is the compressed COSE object as defined in {{compression}} and divided into two parts, since the object is transported in two CoAP fields: OSCORE Option and payload.
 
 The examples assume that the plaintext (see {{Section 5.3 of RFC8613}}) is 6 bytes long, and that the AEAD tag is 8 bytes long, hence resulting in a ciphertext which is 14 bytes long. When using the group mode, the COSE_Countersignature0 byte string as described in {{sec-cose-object}} is assumed to be 64 bytes long.
 
@@ -1101,9 +1102,9 @@ As defined in {{mess-processing}}, this is achieved by the client and server(s) 
 
 Upon leaving the group or before re-joining the group, a group member MUST terminate all the ongoing long exchanges that it has started in the group as a client, and hence frees up the CoAP Token associated with the corresponding request.
 
-## Synchronization and Freshness # {#sec-freshness}
+## Freshness # {#sec-freshness}
 
-If the application requires freshness, e.g., according to time- or event-based policies (see {{Section 2.5.1 of RFC9175}}), a server can use the approach in {{sec-synch-challenge-response}} as a variant of the procedure in {{Section B.1.2 of RFC8613}}, before delivering request messages from a client to the application. This also makes the server (re-)synchronize with the client's Sender Sequence Number.
+If the application requires freshness, e.g., according to time- or event-based policies (see {{Section 2.5.1 of RFC9175}}), a server can use the approach in {{sec-synch-challenge-response}} as a variant of the Challenge-Response procedure based on the Echo Option {{RFC9175}}, before delivering request messages from a client to the application.
 
 Like in OSCORE {{RFC8613}}, assuming an honest server, the message binding guarantees that a response is not older than the request it replies to. Therefore, building on {{Section 7.3 of RFC8613}}, the following properties hold for Group OSCORE.
 
@@ -1217,7 +1218,7 @@ Upon receiving a protected request with the Group Flag set to 1, following the p
 
 * In step 2, the decoding of the compressed COSE object follows {{compression}} of this document. In particular:
 
-   - If the server discards the request due to not retrieving a Security Context associated with the OSCORE group, the server MAY respond with a 4.01 (Unauthorized) error message. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
+   - If the server discards the request due to not retrieving a Security Context associated with the OSCORE group, the server MAY respond with a 4.01 (Unauthorized) error message. When doing so, the server MAY set an Outer Max-Age Option with value zero, and MAY include a descriptive string as diagnostic payload.
 
    - If the received 'kid context' matches an existing ID Context (Gid) but the received 'kid' does not match any Recipient ID in this Security Context, then the server MAY create a new Recipient Context for this Recipient ID and initialize it according to {{Section 3 of RFC8613}}, and also retrieve the authentication credential associated with the Recipient ID to be stored in the new Recipient Context. Such a configuration is application specific. If the application does not specify dynamic derivation of new Recipient Contexts, then the server SHALL stop processing the request.
 
@@ -1239,7 +1240,7 @@ Upon receiving a protected request with the Group Flag set to 1, following the p
 
       In particular, the Countersign_structure contains the context text string "CounterSignature0", the external_aad as defined in {{sec-cose-object-ext-aad}} of this document, and the ciphertext of the COSE object as payload.
 
-   - If the signature verification fails, the server SHALL stop processing the request, SHALL NOT update the Replay Window, and MAY respond with a 4.00 (Bad Request) response. Such a response MAY include an Outer Max-Age option with value zero, and its diagnostic payload MAY contain a string, which, if present, MUST be "Decryption failed" as if the decryption of the COSE object had failed.
+   - If the signature verification fails, the server SHALL stop processing the request, SHALL NOT update the Replay Window, and MAY respond with a 4.00 (Bad Request) response. Such a response MAY include an Outer Max-Age Option with value zero, and its diagnostic payload MAY contain a string, which, if present, MUST be "Decryption failed" as if the decryption of the COSE object had failed.
 
    - When decrypting the COSE object using the Recipient Key, the Group Encryption Algorithm from the Common Context MUST be used.
 
@@ -1341,11 +1342,11 @@ Note that a client may receive a response protected with a Security Context diff
 
    * The ordering and the replay protection of responses received from the server during the long exchange are performed as per {{sec-replay-protection-responses}} of this document, by using the Response Number associated with that server within that long exchange. In case of unsuccessful decryption and verification of a response, the client SHALL NOT update the Response Number associated with the server.
 
-   * When receiving the first valid response from the server within the long exchange, the client MUST store the current kid "kid1" of that server for that long exchange. If the 'kid' field is included in the OSCORE option of the response, its value specifies "kid1". If the request was protected in pairwise mode (see {{sec-pairwise-protection-req}}), the 'kid' field may not be present in the OSCORE option of the response (see {{sec-cose-object-kid}}). In this case, the client assumes "kid1" to be the Recipient ID for the server to which the request was intended for.
+   * When receiving the first valid response from the server within the long exchange, the client MUST store the kid "kid1" of that server for that long exchange. If the 'kid' field is included in the OSCORE Option of the response, its value specifies "kid1". If the request was protected in pairwise mode (see {{sec-pairwise-protection-req}}), the 'kid' field may not be present in the OSCORE Option of the response (see {{sec-cose-object-kid}}). In this case, the client assumes "kid1" to be the Recipient ID for the server to which the request was intended for.
 
-   * When receiving another valid response to the same request from the same server - which can be identified and recognized through the same public key used to verify the countersignature and included in the server's authentication credential - the client determines the current kid "kid2" of the server as above for "kid1", and MUST check whether "kid2" is equal to the stored "kid1".
+   * When receiving another valid response to the same request from the same server - which can be identified and recognized through the same public key used to verify the countersignature and included in the server's authentication credential - the client determines the kid "kid2" of the server as above for "kid1", and MUST check whether "kid2" is equal to the stored "kid1".
 
-      If "kid1" and "kid2" are different, the client SHOULD NOT accept the response as valid to be delivered to the application, and SHOULD NOT update the Response Number associated with the server. Exceptions can apply if the client has a means of preserving the order of responses in a more elaborate way out of the scope of this document, or the client application does not require response ordering altogether.
+      If "kid1" and "kid2" are different, the client SHOULD NOT accept the response as valid to be delivered to the application, and SHOULD NOT update the Response Number associated with the server. Exceptions can apply as the client can retain the information required to order the responses, or if the client application does not require response ordering altogether. Servers MUST NOT rely on clients tolerating this, unless it was explicitly agreed on (e.g., as part of the group's setup).
 
    Note that, if "kid2" is different from "kid1" and the 'kid' field is omitted from the response - which is possible if the request was protected in pairwise mode - then the client will compute a wrong keystream to decrypt the countersignature (i.e., by using "kid1" rather than "kid2" in the 'id' field of the 'info' array in {{sssec-encrypted-signature-keystream}}), thus subsequently failing to verify the countersignature and discarding the response.
 
@@ -1387,7 +1388,7 @@ The pairwise mode does not support external verifiers of source authentication a
 
 An endpoint implementing only a silent server does not support the pairwise mode.
 
-Endpoints using the CoAP Echo Option {{RFC9175}} and/or block-wise transfers {{RFC7959}} in a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set MUST support the pairwise mode. This applies, for example, to block-wise exchanges after a first block-wise request which targets all servers in the group and includes the CoAP Block2 option (see Section 3.8 of {{I-D.ietf-core-groupcomm-bis}}). This prevents the attack described in {{ssec-unicast-requests}}, which leverages requests sent over unicast to a single group member and protected in group mode.
+Endpoints using the CoAP Echo Option {{RFC9175}} in a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set MUST support the pairwise mode. This prevents the attack described in {{ssec-unicast-requests}}, which leverages requests sent over unicast to a single group member and protected in group mode.
 
 The pairwise mode cannot be used to protect messages intended for multiple recipients. In fact, the keying material used for the pairwise mode is shared only between two endpoints.
 
@@ -1421,7 +1422,7 @@ Furthermore, when sending a request that establishes a long exchange, what is sp
 
 Upon receiving a protected request with the Group Flag set to 0, following the procedure in {{sec-message-reception}}, a server SHALL proceed as described in {{Section 8.2 of RFC8613}}, with the differences summarized in {{sec-differences-oscore-pairwise}} of this document. The following differences also apply.
 
-* If the server discards the request due to not retrieving a Security Context associated with the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.01 (Unauthorized) error message or a 4.02 (Bad Option) error message, respectively. When doing so, the server MAY set an Outer Max-Age option with value zero, and MAY include a descriptive string as diagnostic payload.
+* If the server discards the request due to not retrieving a Security Context associated with the OSCORE group or to not supporting the pairwise mode, the server MAY respond with a 4.01 (Unauthorized) error message or a 4.02 (Bad Option) error message, respectively. When doing so, the server MAY set an Outer Max-Age Option with value zero, and MAY include a descriptive string as diagnostic payload.
 
 * If a new Recipient Context is created for this Recipient ID, new Pairwise Sender/Recipient Keys are also derived (see {{key-derivation-pairwise}}). The new Pairwise Sender/Recipient Keys are deleted if the Recipient Context is deleted as a result of the message not being successfully verified.
 
@@ -1471,19 +1472,21 @@ Upon receiving a protected response with the Group Flag set to 0, following the 
 
    - The possible deletion of a Recipient Context created upon receiving the response, in case the response is not verified successfully.
 
-# Challenge-Response Based Freshness and Synchronization # {#sec-synch-challenge-response}
+# Challenge-Response Based Freshness and Replay Window Recovery # {#sec-synch-challenge-response}
 
-This section describes how a server endpoint can verify freshness of a request and synchronize with Sender Sequence Numbers of client endpoints in the group. Similarly to what is defined in {{Section B.1.2 of RFC8613}}, the server performs a challenge-response exchange with a client, by using the Echo Option for CoAP specified in {{Section 2 of RFC9175}}.
+This section describes how a server endpoint can verify freshness of a request by means of a challenge-response exchange with a client, using the Echo Option for CoAP specified in {{Section 2 of RFC9175}}. The same mechanism, with small alterations, is also used by the server when first processing a request using a Recipient Context whose Replay Window was initialized as invalid.
 
-Upon receiving a request from a particular client for the first time, the server processes the message as described in this document, but, even if valid, does not deliver it to the application. Instead, the server replies to the client with a Group OSCORE protected 4.01 (Unauthorized) response message, including only the Echo Option and no diagnostic payload. The server MUST use its Partial IV when generating the AEAD nonce for protecting the response conveying the Echo Option, and MUST include the Partial IV in the response.
+If the application requires freshness, e.g., according to time- or event-based policies (see {{Section 2.5.1 of RFC9175}}), a server proceeds as described below, upon receiving a request from a particular client for the first time.
 
-The Echo option value SHOULD NOT be reused; if it is reused, it MUST be highly unlikely to have been recently used with this client. Since this response is protected with the Security Context used in the group, the client will consider the response valid upon successfully decrypting and verifying it.
+The server processes the message as described in this document, but, even if valid, does not deliver it to the application. Instead, the server replies to the client with a Group OSCORE protected 4.01 (Unauthorized) response message, including only the Echo Option and no diagnostic payload. The server MUST use its Partial IV when generating the AEAD nonce for protecting the response conveying the Echo Option, and MUST include the Partial IV in the response.
+
+The Echo Option value SHOULD NOT be reused; if it is reused, it MUST be highly unlikely to have been recently used with this client. Since this response is protected with the Security Context used in the group, the client will consider the response valid upon successfully decrypting and verifying it.
 
 The server stores the Echo Option value included in the response together with the pair (gid,kid), where 'gid' is the Group Identifier of the OSCORE group and 'kid' is the Sender ID of the client in the group. These are specified in the 'kid context' and 'kid' fields of the OSCORE Option of the request, respectively. After a group rekeying has been completed and a new Security Context has been established in the group, which results also in a new Group Identifier (see {{sec-group-key-management}}), the server MUST delete all the stored Echo values associated with members of the group.
 
 Upon receiving a 4.01 (Unauthorized) response that includes an Echo Option and originates from a verified group member, the subsequent client request echoing the Echo Option value MUST be sent as a unicast message to the same server.
 
-If in the group the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, the client MUST use the pairwise mode to protect the request, as per {{sec-pairwise-protection-req}}. Note that, as defined in {{sec-pairwise-protection}}, endpoints that are members of such a group and that use the Echo Option support the pairwise mode. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are not set, only the group mode can be used. Hence, requests including the Echo option can be protected only with the Group Mode, with the caveat due to the risk for those requests to be redirected to a different server than the intended one, as discussed in {{ssec-unicast-requests}}.
+If in the group the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, the client MUST use the pairwise mode to protect the request, as per {{sec-pairwise-protection-req}}. Note that, as defined in {{sec-pairwise-protection}}, endpoints that are members of such a group and that use the Echo Option support the pairwise mode. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are not set, only the group mode can be used. Hence, requests including the Echo Option can be protected only with the Group Mode, with the caveat due to the risk for those requests to be redirected to a different server than the intended one, as discussed in {{ssec-unicast-requests}}.
 
 The client does not necessarily resend the same request, but can instead send a more recent one, if the application permits it. This allows the client to not retain previously sent requests for full retransmission, unless the application explicitly requires otherwise. In either case, the client uses a fresh Sender Sequence Number value from its own Sender Context. If the client stores requests for possible retransmission with the Echo Option, it should not store a given request for longer than a preconfigured time interval. Note that the unicast request echoing the Echo Option is correctly treated and processed, since the 'kid context' field including the Group Identifier of the OSCORE group is still present in the OSCORE Option as part of the COSE object (see {{sec-cose-object}}).
 
@@ -1505,7 +1508,7 @@ If the verifications above are successful, the server considers the Recipient Co
 
 * In case the Replay Window is already valid, the server discards the verification result and accepts the request as fresh or treats it as a replay, according to the existing Replay Window.
 
-A server should not deliver requests from a given client to the application until one valid request from that same client has been verified as fresh, as conveying an echoed Echo Option. A server may perform the challenge-response described above at any time, if synchronization with Sender Sequence Numbers of clients is lost, e.g., after a device reboot occurred in an unprepared way. A client has to be ready to perform the challenge-response based on the Echo Option if a server starts it.
+A server should not deliver requests from a given client to the application until one valid request from that same client has been verified as fresh, as conveying an echoed Echo Option. A server may perform the challenge-response described above at any time, e.g., after a device reboot occurred in an unprepared way. A client has to be ready to perform the challenge-response based on the Echo Option if a server starts it.
 
 Message freshness is further discussed in {{ssec-seccons-freshness}}.
 
@@ -1576,7 +1579,7 @@ The same considerations on protected message fields for OSCORE discussed in {{Se
 
 The same considerations on uniqueness of (key, nonce) pairs for OSCORE discussed in {{Section D.4 of RFC8613}} hold for Group OSCORE. This is further discussed in {{ssec-key-nonce-uniqueness}} of this document.
 
-The same considerations on unprotected message fields for OSCORE discussed in {{Section D.5 of RFC8613}} hold for Group OSCORE, with the following differences. First, the 'kid context' of request messages is part of the Additional Authenticated Data, thus safely enabling to keep long exchanges active beyond a possible change of ID Context (Gid), following a group rekeying (see {{sec-cose-object-ext-aad}}). Second, the countersignature included in a Group OSCORE message protected in group mode is computed also over the value of the OSCORE option, which is also part of the Additional Authenticated Data used in the signing process. This is further discussed in {{ssec-cross-group-injection}} of this document.
+The same considerations on unprotected message fields for OSCORE discussed in {{Section D.5 of RFC8613}} hold for Group OSCORE, with the following differences. First, the 'kid context' of request messages is part of the Additional Authenticated Data, thus safely enabling to keep long exchanges active beyond a possible change of ID Context (Gid), following a group rekeying (see {{sec-cose-object-ext-aad}}). Second, the countersignature included in a Group OSCORE message protected in group mode is computed also over the value of the OSCORE Option, which is also part of the Additional Authenticated Data used in the signing process. This is further discussed in {{ssec-cross-group-injection}} of this document.
 
 As discussed in {{Section 6.2.3 of I-D.ietf-core-groupcomm-bis}}, Group OSCORE addresses security attacks against CoAP listed in Sections 11.2-11.6 of {{RFC7252}}, especially when run over IP multicast.
 
@@ -1692,9 +1695,9 @@ A same endpoint is allowed to and would likely use the same pair (private key, a
 
 When a sender endpoint sends a message protected in pairwise mode to a recipient endpoint in an OSCORE group, a malicious group member may attempt to inject the message to a different OSCORE group also including the same endpoints (see {{ssec-cross-group-injection-attack}}).
 
-This practically relies on altering the content of the OSCORE option, and having the same MAC in the ciphertext still correctly validating, which has a success probability depending on the size of the MAC.
+This practically relies on altering the content of the OSCORE Option, and having the same MAC in the ciphertext still correctly validating, which has a success probability depending on the size of the MAC.
 
-As discussed in {{sssec-cross-group-injection-group-mode}}, the attack is practically infeasible if the message is protected in group mode, thanks to the countersignature also bound to the OSCORE option through the Additional Authenticated Data used in the signing process (see {{sec-cose-object-ext-aad}}).
+As discussed in {{sssec-cross-group-injection-group-mode}}, the attack is practically infeasible if the message is protected in group mode, thanks to the countersignature also bound to the OSCORE Option through the Additional Authenticated Data used in the signing process (see {{sec-cose-object-ext-aad}}).
 
 ### Attack Description {#ssec-cross-group-injection-attack}
 
@@ -1710,7 +1713,7 @@ Let us consider:
 
 When X sends a message M1 addressed to Y in G1 and protected in pairwise mode, Z can intercept M1, and attempt to forge a valid message M2 to be injected in G2, making it appear as still sent by X to Y and valid to be accepted.
 
-More in detail, Z intercepts and stops message M1, and forges a message M2 by changing the value of the OSCORE option from M1 as follows: the 'kid context' is set to G2 (rather than G1); and the 'kid' is set to Sid2 (rather than Sid1). Then, Z injects message M2 as addressed to Y in G2.
+More in detail, Z intercepts and stops message M1, and forges a message M2 by changing the value of the OSCORE Option from M1 as follows: the 'kid context' is set to G2 (rather than G1); and the 'kid' is set to Sid2 (rather than Sid1). Then, Z injects message M2 as addressed to Y in G2.
 
 Upon receiving M2, there is a probability equal to 2^-64 that Y successfully verifies the same unchanged MAC by using the Pairwise Recipient Key associated with X in G2.
 
@@ -1718,7 +1721,7 @@ Note that Z does not know the pairwise keys of X and Y, since it does not know a
 
 ### Attack Prevention in Group Mode {#sssec-cross-group-injection-group-mode}
 
-When a Group OSCORE message is protected in group mode, the countersignature is computed also over the value of the OSCORE option, which is part of the Additional Authenticated Data used in the signing process (see {{sec-cose-object-ext-aad}}).
+When a Group OSCORE message is protected in group mode, the countersignature is computed also over the value of the OSCORE Option, which is part of the Additional Authenticated Data used in the signing process (see {{sec-cose-object-ext-aad}}).
 
 That is, other than over the ciphertext, the countersignature is computed over: the ID Context (Gid) and the Partial IV, which are always present in requests; as well as the Sender ID of the message originator, which is always present in requests as well as in responses to requests protected in group mode.
 
@@ -1726,7 +1729,7 @@ Since the signing process takes as input also the ciphertext of the COSE_Encrypt
 
 This makes it practically infeasible to perform the attack described in {{ssec-cross-group-injection-attack}}, since it would require the adversary to additionally forge a valid countersignature that replaces the original one in the forged message M2.
 
-If, hypothetically, the countersignature did not cover the OSCORE option:
+If, hypothetically, the countersignature did not cover the OSCORE Option:
 
 * The attack described in {{ssec-cross-group-injection-attack}} would still be possible against response messages protected in group mode, since the same unchanged countersignature from message M1 would be also valid in message M2.
 
@@ -1766,9 +1769,11 @@ The impact of such an attack depends especially on the REST method of the reques
 
 A client can instead use the pairwise mode as defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, a client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast. For an example where this is not fulfilled, see {{Section 9.2.1 of I-D.ietf-core-observe-multicast-notifications}}.
 
-The use of block-wise transfers {{RFC7959}} with group communication for CoAP is as discussed in {{Section 3.8 of I-D.ietf-core-groupcomm-bis}}.
+The use of block-wise transfers {{RFC7959}} with group communication for CoAP is as discussed in {{Section 3.8 of I-D.ietf-core-groupcomm-bis}}. Note that, after a first block-wise request which targets all servers in the group and includes the CoAP Block2 Option, following block-wise exchanges rely on unicast requests that should therefore be protected using the pairwise mode.
 
-Additional considerations are discussed in {{sec-synch-challenge-response}}, with respect to requests including a CoAP Echo Option {{RFC9175}} that have to be sent over unicast, as a challenge-response method for servers to achieve synchronization of clients' Sender Sequence Number.
+Editor's note: The paragraph above will have to be re-checked against the Section "Block-Wise Transfer" of {{I-D.ietf-core-groupcomm-bis}}, in order to ensure that it is aligned with that.
+
+Additional considerations are discussed in {{sec-synch-challenge-response}}, with respect to requests including a CoAP Echo Option {{RFC9175}} that have to be sent over unicast, as a challenge-response method for servers to achieve freshness or to initialize as valid a previously invalid Replay Window.
 
 ## End-to-end Protection {#ssec-e2e-protection}
 
@@ -1791,7 +1796,7 @@ Note that the Partial IV of an endpoint does not necessarily grow monotonically.
 
 Since one-to-many communication such as multicast usually involves unreliable transports, the simplification of the Replay Window to a size of 1 suggested in {{Section 7.4 of RFC8613}} is not viable with Group OSCORE, unless exchanges in the group rely only on unicast messages.
 
-A server may not be synchronized with a client's Sender Sequence Number, or a Replay Window may be initialized as invalid (see {{ssec-loss-mutable-context}}). The server can either retrieve a new Group OSCORE Security Context, or synchronize with the clients' Sender Sequence Numbers before resuming to accept incoming messages from other group members.
+A server's Replay Window may be initialized as invalid (see {{ssec-loss-mutable-context}}). The server can either retrieve a new Group OSCORE Security Context, or make a Replay Window valid (see {{sec-synch-challenge-response}}) before resuming to accept incoming messages from other group members.
 
 ## Message Ordering {#ssec-seccons-ordering}
 
@@ -1803,9 +1808,9 @@ In case the Partial IV was omitted in a response, this indicates that it was the
 
 As in OSCORE, Group OSCORE provides only the guarantee that the request is not older than the Group OSCORE Security Context used to protect it. Other aspects of freshness are discussed in {{sec-freshness}}.
 
-The challenge-response approach described in {{sec-synch-challenge-response}} provides an assurance of freshness of the request without depending on the honesty of the client. However, it can result in an impact on performance which is undesirable or unbearable, especially in large groups where many endpoints at the same time might join as new members or lose synchronization.
+The challenge-response approach described in {{sec-synch-challenge-response}} provides an assurance of freshness of the request without depending on the honesty of the client. However, it can result in an impact on performance which is undesirable or unbearable, especially in large groups where many endpoints at the same time might join as new members.
 
-Endpoints configured as silent servers are not able to perform the challenge-response described above, as they do not store a Sender Context to secure the 4.01 (Unauthorized) response to the client. Thus, silent servers should adopt alternative approaches to achieve and maintain synchronization with Sender Sequence Numbers of clients.
+Endpoints configured as silent servers are not able to perform the challenge-response described above, as they do not store a Sender Context to secure the 4.01 (Unauthorized) response to the client. Thus, silent servers should adopt alternative approaches to make their Replay Windows valid.
 
 Since requests including the Echo Option are sent over unicast, a server can be victim of the attack discussed in {{ssec-unicast-requests}}, in case such requests are protected in group mode. Instead, protecting those requests with the pairwise mode prevents the attack above. In fact, only the very server involved in the challenge-response exchange is able to derive the pairwise key used by the client to protect the request including the Echo Option.
 
@@ -1855,7 +1860,7 @@ Group OSCORE ensures end-to-end integrity protection and encryption of the messa
 
 * When protecting a message in group mode, the countersignature is encrypted by using a keystream derived from the group keying material (see {{compression}} and {{sssec-encrypted-signature-keystream}}). This ensures group privacy. That is, an attacker cannot track an endpoint over two groups by linking messages between the two groups, unless being also a member of those groups.
 
-Furthermore, the following privacy considerations hold about the OSCORE option, which may reveal information on the communicating endpoints.
+Furthermore, the following privacy considerations hold about the OSCORE Option, which may reveal information on the communicating endpoints.
 
 * The 'kid' parameter, which is intended to help a recipient endpoint to find the right Recipient Context, may reveal information about the Sender Endpoint. When both a request and the corresponding responses include the 'kid' parameter, this may reveal information about both a client sending a request and all the possibly replying servers sending their own individual response.
 
@@ -1863,7 +1868,7 @@ Furthermore, the following privacy considerations hold about the OSCORE option, 
 
 When receiving a group request, each of the recipient endpoints can reply with a response that includes its Sender ID as 'kid' parameter. All these responses will be matchable with the request through the CoAP Token. Thus, even if these responses do not include a 'kid context' parameter, it becomes possible to understand that the responder endpoints are in the same group of the requester endpoint.
 
-Furthermore, using the approach described in {{sec-synch-challenge-response}} to achieve synchronization with a client's Sender Sequence Number may reveal when a server device goes through a reboot. This can be mitigated by the server device storing the precise state of the Replay Window of each known client on a clean shutdown.
+Furthermore, using the approach described in {{sec-synch-challenge-response}} to make Replay Windows valid may reveal when a server device goes through a reboot. This can be mitigated by the server device storing the precise state of the Replay Window of each known client on a clean shutdown.
 
 Finally, the approach described in {{ssec-gid-collision}} to prevent collisions of Group Identifiers from different Group Managers may reveal information about events in the respective OSCORE groups. In particular, a Group Identifier changes when the corresponding group is rekeyed. Thus, Group Managers might use the shared list of Group Identifiers to infer the rate and patterns of group membership changes triggering a group rekeying, e.g., due to newly joined members or evicted (compromised) members. In order to alleviate this privacy concern, it should be hidden from the Group Managers which exact Group Manager has currently assigned which Group Identifiers in its OSCORE groups.
 
@@ -1981,6 +1986,24 @@ As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple gr
 {:removeinrfc}
 
 ## Version -21 to -22 ## {#sec-21-22}
+
+* Removed mentioning of the CBOR encoding of the HKDF Algorithm.
+
+* Rephrased consequences on loss of Recipient Contexts.
+
+* Removed requirement on 0 as initial value of the Key Generation Number.
+
+* Improved handling of responses from a server that changes Sender ID.
+
+* Relax constrictions of Block-wise with group communication.
+
+* Removed the concept of synchronization with the Client's Sender Sequence Number.
+
+* Improved content on Challenge-Response based freshness and Replay Window recovery.
+
+* Use the acronym CCSs for CWT Claims Sets.
+
+* Mentioned wrap-around of the Key Generation Number.
 
 * Added IANA consideration on the "CoAP Option Numbers" registry.
 
@@ -2163,11 +2186,11 @@ member is now optional to support and use for the Group Manager.
 
 * Sender IDs not recycled in the group under the same Gid.
 
-* Processing and description of the Group Flag bit in the OSCORE option.
+* Processing and description of the Group Flag bit in the OSCORE Option.
 
 * Usage of the pairwise mode for multicast requests.
 
-* Clarifications on synchronization using the Echo option.
+* Clarifications on synchronization using the Echo Option.
 
 * General format of context parameters and external_aad elements, supporting future registered COSE algorithms (new Appendix).
 
@@ -2287,7 +2310,7 @@ member is now optional to support and use for the Group Manager.
 
 * Content re-organization for COSE Object and OSCORE header compression.
 
-* Defined the Pairwise Flag bit for the OSCORE option.
+* Defined the Pairwise Flag bit for the OSCORE Option.
 
 * Supporting CoAP Observe for group requests and responses.
 
@@ -2297,7 +2320,7 @@ member is now optional to support and use for the Group Manager.
 
 * More considerations on replay protection and Security Contexts upon key renewal.
 
-* Security considerations on Group OSCORE for unicast requests, also as affecting the usage of the Echo option.
+* Security considerations on Group OSCORE for unicast requests, also as affecting the usage of the Echo Option.
 
 * Clarification on different types of groups considered (application/security/CoAP).
 
@@ -2359,9 +2382,9 @@ member is now optional to support and use for the Group Manager.
 
 * Described possible provisioning of new Sender ID in case of Partial IV wrap-around (see Section 2.2).
 
-* The former signature bit in the Flag Byte of the OSCORE option value is reverted to reserved (see Section 4.1).
+* The former signature bit in the Flag Byte of the OSCORE Option value is reverted to reserved (see Section 4.1).
 
-* Updated examples of compressed COSE object, now with the sixth less significant bit in the Flag Byte of the OSCORE option value set to 0 (see Section 4.3).
+* Updated examples of compressed COSE object, now with the sixth less significant bit in the Flag Byte of the OSCORE Option value set to 0 (see Section 4.3).
 
 * Relaxed statements on sending error messages (see Section 6).
 
@@ -2415,7 +2438,7 @@ member is now optional to support and use for the Group Manager.
 
 * Updated Appendix D.2, adding a pointer to draft-palombini-ace-key-groupcomm about retrieval of nodes' public keys through the Group Manager.
 
-* Minor updates to Appendix E.3 about Challenge-Response synchronization of sequence numbers based on the Echo option from draft-ietf-core-echo-request-tag.
+* Minor updates to Appendix E.3 about Challenge-Response synchronization of sequence numbers based on the Echo Option from draft-ietf-core-echo-request-tag.
 
 ## Version -00 to -01 ## {#sec-00-01}
 
