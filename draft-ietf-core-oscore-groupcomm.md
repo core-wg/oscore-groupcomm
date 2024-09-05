@@ -51,7 +51,8 @@ author:
         country: Sweden
         email: francesca.palombini@ericsson.com
       -
-        ins: J. Mattsson
+        initials: J.
+        surname: Preuß Mattsson
         name: John Preuß Mattsson
         org: Ericsson AB
         street: Torshamnsgatan 23
