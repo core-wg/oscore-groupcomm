@@ -116,7 +116,7 @@ Table of Contents
      4.1.  Countersignature
        4.1.1.  Clarifications on Using a Countersignature
      4.2.  The 'kid' and 'kid context' parameters
-     4.3.  AEAD Nonce
+     4.3.  Nonce Computation
      4.4.  external_aad
    5.  OSCORE Header Compression
      5.1.  Keystream Derivation for Countersignature Encryption
@@ -536,10 +536,10 @@ Table of Contents
 
    *  If only one among the AEAD Algorithm and the Group Encryption
       Algorithm is set (see Section 2.1.1 and Section 2.1.6), the length
-      of the Common IV is the AEAD nonce length for the set algorithm.
+      of the Common IV is the nonce length for the set algorithm.
 
    *  If both the AEAD Algorithm and the Group Encryption Algorithm are
-      set, the length of the Common IV is the greatest AEAD nonce length
+      set, the length of the Common IV is the greatest nonce length
       among those of the two algorithms.
 
 2.1.4.  Authentication Credential Format
@@ -647,11 +647,11 @@ Table of Contents
 
    *  If only one among the AEAD Algorithm and the Group Encryption
       Algorithm is set (see Section 2.1.1 and Section 2.1.6), then L is
-      the AEAD nonce length for the set algorithm.
+      the nonce length for the set algorithm.
 
    *  If both the AEAD Algorithm and the Group Encryption Algorithm are
-      set, then L is the smallest AEAD nonce length among those of the
-      two algorithms.
+      set, then L is the smallest nonce length among those of the two
+      algorithms.
 
    With the exception of the authentication credential of the sender
    endpoint, a receiver endpoint can derive a complete Security Context
@@ -1004,7 +1004,7 @@ Table of Contents
    up-to-date the mutable part in non-volatile memory (e.g., due to
    limited number of write operations), the endpoint MUST be able to
    detect a loss of the mutable Security Context, to prevent the re-use
-   of a nonce with the same AEAD key, and to handle incoming replayed
+   of a nonce with the same key, and to handle incoming replayed
    messages.
 
 2.6.1.1.  Total Loss
@@ -1012,7 +1012,7 @@ Table of Contents
    In case a loss of the Sender Context and/or of the Recipient Contexts
    is detected (e.g., following a reboot occurred in an unprepared way),
    the endpoint MUST NOT protect further messages using this Security
-   Context, to avoid reusing an AEAD nonce with the same AEAD key.
+   Context, to avoid reusing a nonce with the same key.
 
    Before resuming its operations in the group, the endpoint MUST
    retrieve new Security Context parameters from the Group Manager (see
@@ -1020,7 +1020,7 @@ Table of Contents
    Recipient Contexts (see Section 2.2).  Since the new Sender Context
    includes newly derived encryption keys, an endpoint will not reuse
    the same pair (key, nonce), even when it is a server using the
-   Partial IV of (old re-injected) requests to build the AEAD nonce for
+   Partial IV of (old re-injected) requests to build the nonce for
    protecting the responses.
 
    From then on, the endpoint MUST use the latest installed Sender
@@ -1079,8 +1079,8 @@ Table of Contents
    Context and the endpoint supports the CoAP Echo Option [RFC9175],
    then it is RECOMMENDED to follow the procedure specified in
    Section 10 which establishes a valid Replay Window.  In particular,
-   the endpoint MUST use its Partial IV when generating the AEAD nonce
-   and MUST include the Partial IV in the response message conveying the
+   the endpoint MUST use its Partial IV when generating the nonce and
+   MUST include the Partial IV in the response message conveying the
    Echo Option.
 
    Alternatively, the endpoint MAY retrieve or wait for new Security
@@ -1245,8 +1245,8 @@ Table of Contents
    groups under its control.  Within each of such groups, the Group
    Manager assigns unique Sender IDs (and thus Recipient IDs) to the
    respective group members.  The maximum length of Sender IDs depends
-   on the length of the AEAD nonce for the algorithms used in the group
-   (see Section 2.2).
+   on the length of the nonce for the algorithms used in the group (see
+   Section 2.2).
 
    According to a hierarchical approach, the Gid value assigned to a
    group is associated with a dedicated space for the values of Sender
@@ -1744,17 +1744,21 @@ Table of Contents
    Identifier value (Gid) of the group.  That is, unlike in [RFC8613],
    the 'kid context' parameter is always present in requests.
 
-4.3.  AEAD Nonce
+4.3.  Nonce Computation
 
-   The AEAD nonce is constructed like in OSCORE, with the difference
-   that step 4 in Section 5.2 of [RFC8613] is replaced with:
+   The nonce is constructed like in OSCORE, with the difference that
+   step 4 in Section 5.2 of [RFC8613] is replaced with:
 
    A. and then XOR with the X bytes from the Common IV's start, where X
-   is the length in bytes of the AEAD nonce.
+   is the length in bytes of the nonce.
 
    For example, if X = 7 and the Common IV is
    0x00112233445566778899aabbcc (13 bytes), then the bytes to XOR are
    0x00112233445566 (7 bytes).
+
+   The constructed nonce is in fact used as AEAD nonce by the AEAD
+   Algorithm (see Section 2.1.1) and by the Group Encryption Algorithm
+   when this is an AEAD algorithm (see Section 2.1.6).
 
 4.4.  external_aad
 
@@ -2093,8 +2097,8 @@ Table of Contents
 6.  Message Binding, Sequence Numbers, Freshness, and Replay Protection
 
    Like OSCORE, Group OSCORE provides message binding of responses to
-   requests, as well as uniqueness of AEAD (key, nonce) pair (see
-   Sections 7.1 and 7.2 of [RFC8613], respectively).
+   requests, as well as uniqueness of (key, nonce) pair (see Sections
+   7.1 and 7.2 of [RFC8613], respectively).
 
 6.1.  Supporting Multiple Responses in Long Exchanges
 
@@ -2556,9 +2560,9 @@ Table of Contents
 
    *  In step 3, if any of the following two conditions holds, the
       server MUST include its Sender Sequence Number as Partial IV in
-      the response and use it to build the AEAD nonce to protect the
-      response.  This prevents the server from reusing the AEAD nonce
-      from the request together with the same encryption key.
+      the response and use it to build the nonce to protect the
+      response.  This prevents the server from reusing the nonce from
+      the request together with the same encryption key.
 
       -  The response is not the first response that the server sends to
          the request.
@@ -2986,8 +2990,8 @@ Table of Contents
          responses within the long exchange established by the request.
 
       -  The rules for the inclusion of the server's Sender Sequence
-         Number as Partial IV in a response, as used to build the AEAD
-         nonce to protect the response.
+         Number as Partial IV in a response, as used to build the nonce
+         to protect the response.
 
       -  The rules for the inclusion of the ID Context (Gid) in the 'kid
          context' parameter of a response, if the ID Context used for
@@ -3068,8 +3072,8 @@ Table of Contents
    server replies to the client with a Group OSCORE protected 4.01
    (Unauthorized) response message, including only the Echo Option and
    no diagnostic payload.  The server MUST use its Partial IV when
-   generating the AEAD nonce for protecting the response conveying the
-   Echo Option, and MUST include the Partial IV in the response.
+   generating the nonce for protecting the response conveying the Echo
+   Option, and MUST include the Partial IV in the response.
 
    The Echo Option value SHOULD NOT be reused; if it is reused, it MUST
    be highly unlikely to have been recently used with this client.
@@ -3529,9 +3533,9 @@ Table of Contents
    case, as specified in Section 8.3, the server MUST protect the
    potential response using the new Security Context.  Specifically, the
    server MUST include its Sender Sequence Number as Partial IV in the
-   response and use it to build the AEAD nonce to protect the response.
-   This prevents the AEAD nonce from the request from being reused with
-   the new Security Context.
+   response and use it to build the nonce to protect the response.  This
+   prevents the nonce from the request from being reused with the new
+   Security Context.
 
    The client will process that response using the new Security Context,
    provided that it has installed the new security parameters and keying
@@ -3600,10 +3604,10 @@ Table of Contents
    different non-synchronized Group Managers, it is possible for Group
    Identifiers of different groups to coincide.
 
-   This does not impair the security of the AEAD algorithm.  In fact, as
-   long as the Master Secret is different for different groups and this
-   condition holds over time, AEAD keys are different among different
-   groups.
+   This does not impair the security of the AEAD Algorithm and of the
+   Group Encryption Algorithm.  In fact, as long as the Master Secret is
+   different for different groups and this condition holds over time,
+   keys are different among different groups.
 
    In case multiple groups use the same IP multicast address, the entity
    assigning that address may help limiting the chances to experience
@@ -3855,7 +3859,7 @@ Table of Contents
 
    As in OSCORE [RFC8613], also Group OSCORE relies on Sender Sequence
    Numbers included in the COSE message field 'Partial IV' and used to
-   build AEAD nonces.
+   build nonces.
 
    Note that the Partial IV of an endpoint does not necessarily grow
    monotonically.  For instance, upon exhaustion of the endpoint's
@@ -3947,8 +3951,8 @@ Table of Contents
    As discussed in Section 2.6.2, an endpoint that experiences an
    exhaustion of its own Sender Sequence Number space MUST NOT protect
    further messages including a Partial IV, until it has derived a new
-   Sender Context.  This prevents the endpoint to reuse the same AEAD
-   nonce with the same Sender Key.
+   Sender Context.  This prevents the endpoint to reuse the same nonce
+   with the same Sender Key.
 
    In order to renew its own Sender Context, the endpoint SHOULD inform
    the Group Manager, which can either renew the whole Security Context
@@ -3957,8 +3961,8 @@ Table of Contents
    Context, and in particular a new Sender Key.
 
    Additionally, the same considerations from Section 12.6 of [RFC8613]
-   hold for Group OSCORE, about building the AEAD nonce and the secrecy
-   of the Security Context parameters.
+   hold for Group OSCORE, about building the nonce and the secrecy of
+   the Security Context parameters.
 
    The group mode uses the "encrypt-then-sign" construction, i.e., the
    countersignature is computed over the COSE_Encrypt0 object (see
@@ -4760,7 +4764,7 @@ D.5.  Version -17 to -18
       Algorithm".
 
    *  Ensured a single Common IV, also when the two encryption
-      algorithms have different AEAD nonce sizes.
+      algorithms have different nonce sizes.
 
    *  Guidelines on the Pairwise Key Agreement Algorithm and derivation
       of the Diffie-Hellman secret.
