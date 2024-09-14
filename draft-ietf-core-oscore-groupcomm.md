@@ -1536,6 +1536,14 @@ For endpoints that support the group mode, the following applies.
 
 * For endpoints that use authenticated encryption, the AEAD algorithm AES-CCM-16-64-128 defined in {{Section 4.2 of RFC9053}} is mandatory to implement as Group Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}).
 
+* {{Section 6 of RFC9459}} mandates that COSE libraries supporting either the AES-CTR or AES-CBC algorithm and accepting Additional Authenticated Data (AAD) as input must return an error if one of these non-AEAD content encryption algorithms is selected.
+
+  In case the used Group Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}) does not provide integrity protection, the following applies.
+
+  When invoking the execution of the Group Encryption Algorithm, the Group OSCORE implementation MUST NOT provide any AAD to the COSE library, unless AAD is always expected as input. In the latter case, the AAD will not be protected by the Group Encryption Algorithm, which is unable to do so.
+
+  If the used COSE library adheres to the mandate in {{Section 6 of RFC9459}}, then a Group OSCORE implementation requires that the COSE library supports using the Group Encryption Algorithm without taking AAD as input.
+
 * For many constrained IoT devices it is problematic to support more than one signature algorithm. Existing devices can be expected to support either EdDSA or ECDSA. In order to enable as much interoperability as we can reasonably achieve, the following applies with respect to the Signature Algorithm (see {{ssec-common-context-cs-alg}}).
 
    Less constrained endpoints SHOULD implement both: the EdDSA signature algorithm together with the elliptic curve Ed25519 {{RFC8032}}; and the ECDSA signature algorithm together with the elliptic curve P-256.
