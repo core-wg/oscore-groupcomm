@@ -739,7 +739,7 @@ The occurrence of such an event and how long it would take to occur depend on th
 
 #### Recycling of Sender IDs ### {#sec-sid-recycling}
 
-From the moment when a Gid is assigned to a group until the moment a new Gid is assigned to that same group, the Group Manager MUST NOT reassign a Sender ID within the group. This prevents to reuse a Sender ID ('kid') with the same triple (Gid, Master Secret, Master Salt). Within this restriction, the Group Manager can assign a Sender ID used under an old Gid value (including under a same, recycled Gid value), thus avoiding Sender ID values to irrecoverably grow in size.
+From the moment when a Gid is assigned to a group until the moment a new Gid is assigned to that same group, the Group Manager MUST NOT reassign a Sender ID within the group. This prevents from reusing a Sender ID ('kid') with the same triple (Gid, Master Secret, Master Salt). Within this restriction, the Group Manager can assign a Sender ID used under an old Gid value (including under a same, recycled Gid value), thus avoiding Sender ID values to irrecoverably grow in size.
 
 Even when an endpoint joining a group is recognized as a current member of that group, e.g., through the ongoing secure communication association, the Group Manager MUST assign a new Sender ID different than the one currently used by the endpoint in the group, unless the group is rekeyed first and a new Gid value is established.
 
@@ -1106,7 +1106,7 @@ Response with ciphertext = 0x60b035059d9ef5667c5a0710823b and no Partial IV.
 
 # Message Binding, Sequence Numbers, Freshness, and Replay Protection
 
-Like OSCORE, Group OSCORE provides message binding of responses to requests, as well as uniqueness of (key, nonce) pair (see {{Sections 7.1 and 7.2 of RFC8613}}, respectively).
+Like OSCORE, Group OSCORE provides message binding of responses to requests, as well as uniqueness of (key, nonce) pairs (see {{Sections 7.1 and 7.2 of RFC8613}}, respectively).
 
 ## Supporting Multiple Responses in Long Exchanges # {#sec-long-exchanges}
 
@@ -1548,7 +1548,7 @@ For endpoints that support the group mode, the following applies.
 
   If the used COSE library adheres to the mandate in {{Section 6 of RFC9459}}, then a Group OSCORE implementation requires that the COSE library supports using the Group Encryption Algorithm without taking AAD as input.
 
-* For many constrained IoT devices it is problematic to support more than one signature algorithm. Existing devices can be expected to support either EdDSA or ECDSA. In order to enable as much interoperability as we can reasonably achieve, the following applies with respect to the Signature Algorithm (see {{ssec-common-context-cs-alg}}).
+* For many constrained IoT devices, it is problematic to support more than one signature algorithm. Existing devices can be expected to support either EdDSA or ECDSA. In order to enable as much interoperability as we can reasonably achieve, the following applies with respect to the Signature Algorithm (see {{ssec-common-context-cs-alg}}).
 
    Less constrained endpoints SHOULD implement both: the EdDSA signature algorithm together with the elliptic curve Ed25519 {{RFC8032}}; and the ECDSA signature algorithm together with the elliptic curve P-256.
 
@@ -1625,7 +1625,7 @@ The group mode defined in {{mess-processing}} relies on commonly shared group ke
 
    On the other hand, proof of group membership is always ensured by construction through the strict management of the group keying material (see {{sec-group-key-management}}). That is, the group is rekeyed in case of members' leaving, and the current group members are informed of former group members. Thus, a current group member storing the latest group keying material does not store the authentication credential of any former group member.
 
-   This allows a recipient endpoint to rely on the stored authentication credentials and public keys included therein, in order to always confidently assert the group membership of a sender endpoint when processing an incoming message, i.e., to assert that the sender endpoint was a group member when it signed the message. In turn, this prevents a former group member to possibly re-sign and inject in the group a stored message that was protected with old keying material.
+   This allows a recipient endpoint to rely on the stored authentication credentials and public keys included therein, in order to always confidently assert the group membership of a sender endpoint when processing an incoming message, i.e., to assert that the sender endpoint was a group member when it signed the message. In turn, this prevents a former group member from possibly re-signing and injecting in the group a stored message that was protected with old keying material.
 
    A case in point is a group where the Group Encryption Algorithm does not provide integrity protection; a group member leaves the group; and, after the group rekeying, associates with the group as external signature checker (see {{sec-processing-signature-checker}}). When doing so, it obtains from the Group Manager the new Signature Encryption Key, from which it can derive keystreams for encrypting and decrypting the countersignatures of messages protected in group mode.
 
@@ -1773,7 +1773,7 @@ By doing so, an endpoint X member of a group G1 cannot perform the following att
 
 1. X sets up a group G2 where it acts as Group Manager.
 
-2. X makes G2 a "clone" of G1, i.e., G1 and G2 use the same algorithms and have the same Master Secret, Master Salt and ID Context.
+2. X makes G2 a "clone" of G1, i.e., G1 and G2 use the same algorithms and have the same Master Secret, Master Salt, and ID Context.
 
 3. X collects a message M sent to G1 and injects it in G2.
 
@@ -1852,7 +1852,7 @@ In the interest of avoiding otherwise unnecessary uses of such an approach, the 
 
 The same considerations from {{Section 12.6 of RFC8613}} about the maximum Sender Sequence Number hold for Group OSCORE.
 
-As discussed in {{ssec-wrap-around-partial-iv}}, an endpoint that experiences an exhaustion of its own Sender Sequence Number space MUST NOT protect further messages including a Partial IV, until it has derived a new Sender Context. This prevents the endpoint to reuse the same nonce with the same Sender Key.
+As discussed in {{ssec-wrap-around-partial-iv}}, an endpoint that experiences an exhaustion of its own Sender Sequence Number space MUST NOT protect further messages including a Partial IV, until it has derived a new Sender Context. This prevents the endpoint from reusing the same nonce with the same Sender Key.
 
 In order to renew its own Sender Context, the endpoint SHOULD inform the Group Manager, which can either renew the whole Security Context by means of group rekeying, or provide only that endpoint with a new Sender ID value. In either case, the endpoint derives a new Sender Context, and in particular a new Sender Key.
 
