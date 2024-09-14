@@ -859,7 +859,9 @@ The value of the 'kid context' parameter in the 'unprotected' field of request m
 
 The AEAD nonce is constructed like in OSCORE, with the difference that step 4 in {{Section 5.2 of RFC8613}} is replaced with:
 
-A. and then XOR with the X least significant bits of the Common IV, where X is the length in bits of the AEAD nonce.
+A. and then XOR with the X bytes from the Common IV's start, where X is the length in bytes of the AEAD nonce.
+
+For example, if X = 7 and the Common IV is 0x00112233445566778899aabbcc (13 bytes), then the bytes to XOR are 0x00112233445566 (7 bytes).
 
 ## external_aad # {#sec-cose-object-ext-aad}
 
