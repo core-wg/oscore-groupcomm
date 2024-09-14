@@ -2488,7 +2488,8 @@ In particular, the Countersign_structure contains the context text string "Count
 <a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-aead-nonce" class="section-name selfRef">AEAD Nonce</a>
         </h3>
 <p id="section-4.3-1">The AEAD nonce is constructed like in OSCORE, with the difference that step 4 in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-5.2" class="relref">Section 5.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> is replaced with:<a href="#section-4.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.3-2">A. and then XOR with the X least significant bits of the Common IV, where X is the length in bits of the AEAD nonce.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">A. and then XOR with the X bytes from the Common IV's start, where X is the length in bytes of the AEAD nonce.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3-3">For example, if X = 7 and the Common IV is 0x00112233445566778899aabbcc (13 bytes), then the bytes to XOR are 0x00112233445566 (7 bytes).<a href="#section-4.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-cose-object-ext-aad">
