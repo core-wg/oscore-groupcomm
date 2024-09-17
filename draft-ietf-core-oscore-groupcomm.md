@@ -88,6 +88,12 @@ normative:
   RFC9175:
   RFC9338:
   RFC9459:
+  COSE.Algorithms:
+    author:
+      org: IANA
+    date: false
+    title: COSE Algorithms
+    target: https://www.iana.org/assignments/cose/cose.xhtml#algorithms
   NIST-800-56A:
     author:
       -
@@ -300,6 +306,10 @@ The Common Context may be acquired from the Group Manager (see {{group-manager}}
 ### AEAD Algorithm ## {#ssec-common-context-aead-alg}
 
 The AEAD Algorithm (see {{Section 3.1 of RFC8613}}) SHALL identify the COSE AEAD algorithm to use for encryption and decryption when messages are protected using the pairwise mode (see {{sec-pairwise-protection}}). This algorithm MUST provide integrity protection. If this parameter is not set, the pairwise mode is not used in the group.
+
+### HKDF Algorithm ## {#ssec-common-context-hkdf-alg}
+
+The HKDF Algorithm (see {{Section 3.1 of RFC8613}}) SHALL identify the used key derivation function, which MUST be one of the HMAC-based HKDF {{RFC5869}} algorithms defined for COSE (see {{Section 5.1 of RFC9053}}) and registered at {{COSE.Algorithms}}.
 
 ### ID Context ## {#ssec-common-context-id-context}
 
