@@ -565,14 +565,12 @@ Table of Contents
    protection.  If this parameter is not set, the group mode is not used
    in the group.
 
-   The following non-authenticated algorithms can be used as Group
-   Encryption Algorithm: A128CBC, A192CBC, and A256CBC [RFC9459].  The
-   non-authenticated algorithm ChaCha20 [ChaCha] is also suitable to
-   consider, although using it will first require its registration in
-   the "COSE Algorithms" Registry.
-
-   The following non-authenticated algorithms MUST NOT be used as Group
-   Encryption Algorithm: A128CTR, A192CTR, and A256CTR [RFC9459].
+   A non-authenticated algorithm MUST NOT be used as Group Encryption
+   Algorithm if it is not possible to ensure uniqueness of the (key,
+   nonce) pairs.  This is the case, for instance, for A128CTR, A192CTR,
+   and A256CTR [RFC9459].  Instead, examples of non-authenticated
+   algorithms that can be used as Group Encryption Algorithm are
+   A128CBC, A192CBC, and A256CBC [RFC9459].
 
 2.1.7.  Signature Algorithm
 
@@ -4239,9 +4237,6 @@ Table of Contents
               <https://www.rfc-editor.org/rfc/rfc9459>.
 
 15.2.  Informative References
-
-   [ChaCha]   Bernstein, D. J., "ChaCha, a variant of Salsa20", January
-              2008, <http://cr.yp.to/chacha/chacha-20080128.pdf>.
 
    [Degabriele]
               Degabriele, J. P., Lehmann, A., Paterson, K. G., Smart, N.
