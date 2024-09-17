@@ -86,14 +86,15 @@ Table of Contents
    2.  Security Context
      2.1.  Common Context
        2.1.1.  AEAD Algorithm
-       2.1.2.  ID Context
-       2.1.3.  Common IV
-       2.1.4.  Authentication Credential Format
-       2.1.5.  Group Manager Authentication Credential
-       2.1.6.  Group Encryption Algorithm
-       2.1.7.  Signature Algorithm
-       2.1.8.  Signature Encryption Key
-       2.1.9.  Pairwise Key Agreement Algorithm
+       2.1.2.  HKDF Algorithm
+       2.1.3.  ID Context
+       2.1.4.  Common IV
+       2.1.5.  Authentication Credential Format
+       2.1.6.  Group Manager Authentication Credential
+       2.1.7.  Group Encryption Algorithm
+       2.1.8.  Signature Algorithm
+       2.1.9.  Signature Encryption Key
+       2.1.10. Pairwise Key Agreement Algorithm
      2.2.  Sender Context and Recipient Context
      2.3.  Establishment of Security Context Parameters
      2.4.  Authentication Credentials
@@ -425,29 +426,29 @@ Table of Contents
 
       -  The new parameter Authentication Credential Format, specifying
          the format of authentication credentials used in the group (see
-         Section 2.1.4).
+         Section 2.1.5).
 
       -  The new parameter Group Manager Authentication Credential,
          specifying the authentication credential of the Group Manager
-         responsible for the group (see Section 2.1.5).
+         responsible for the group (see Section 2.1.6).
 
       -  For the group mode, the Common Context is extended with the
          following new parameters.
 
          o  Group Encryption Algorithm, used for encrypting and
             decrypting messages protected in group mode (see
-            Section 2.1.6).
+            Section 2.1.7).
 
          o  Signature Algorithm, used for computing and verifying the
             countersignature of messages protected in group mode (see
-            Section 2.1.7).
+            Section 2.1.8).
 
          o  Signature Encryption Key, used for encrypting and decrypting
             the countersignature of messages protected in group mode
-            (see Section 2.1.8).
+            (see Section 2.1.9).
 
       -  For the pairwise mode, the Common Context is extended with a
-         Pairwise Key Agreement Algorithm (see Section 2.1.9) used for
+         Pairwise Key Agreement Algorithm (see Section 2.1.10) used for
          the agreement on a static-static Diffie-Hellman shared secret,
          from which pairwise keys are derived (see Section 2.5.1).
 
@@ -519,7 +520,14 @@ Table of Contents
    algorithm MUST provide integrity protection.  If this parameter is
    not set, the pairwise mode is not used in the group.
 
-2.1.2.  ID Context
+2.1.2.  HKDF Algorithm
+
+   The HKDF Algorithm (see Section 3.1 of [RFC8613]) SHALL identify the
+   used key derivation function, which MUST be one of the HMAC-based
+   HKDF [RFC5869] algorithms defined for COSE (see Section 5.1 of
+   [RFC9053]) and registered at [COSE.Algorithms].
+
+2.1.3.  ID Context
 
    The ID Context parameter (see Sections 3.1 and 3.3 of [RFC8613])
    SHALL contain the Group Identifier (Gid) of the group.  The choice of
@@ -528,27 +536,27 @@ Table of Contents
    to specify how to handle potential collisions between Gids (see
    Section 13.6).
 
-2.1.3.  Common IV
+2.1.4.  Common IV
 
    The Common IV parameter (see Section 3.1 of [RFC8613]) SHALL identify
    the Common IV used in the group.  Differently from OSCORE, the length
    of the Common IV is determined as follows.
 
    *  If only one among the AEAD Algorithm and the Group Encryption
-      Algorithm is set (see Section 2.1.1 and Section 2.1.6), the length
+      Algorithm is set (see Section 2.1.1 and Section 2.1.7), the length
       of the Common IV is the nonce length for the set algorithm.
 
    *  If both the AEAD Algorithm and the Group Encryption Algorithm are
       set, the length of the Common IV is the greatest nonce length
       among those of the two algorithms.
 
-2.1.4.  Authentication Credential Format
+2.1.5.  Authentication Credential Format
 
    The new parameter Authentication Credential Format specifies the
    format of authentication credentials used in the group.  Further
    details on authentication credentials are compiled in Section 2.4.
 
-2.1.5.  Group Manager Authentication Credential
+2.1.6.  Group Manager Authentication Credential
 
    The new parameter Group Manager Authentication Credential specifies
    the authentication credential of the Group Manager, including the
@@ -557,7 +565,7 @@ Table of Contents
    provisioning of the Group Manager's authentication credential to the
    group members are out of the scope of this document.
 
-2.1.6.  Group Encryption Algorithm
+2.1.7.  Group Encryption Algorithm
 
    The new parameter Group Encryption Algorithm identifies the algorithm
    to use for encryption and decryption, when messages are protected in
@@ -572,7 +580,7 @@ Table of Contents
    algorithms that can be used as Group Encryption Algorithm are
    A128CBC, A192CBC, and A256CBC [RFC9459].
 
-2.1.7.  Signature Algorithm
+2.1.8.  Signature Algorithm
 
    The new parameter Signature Algorithm identifies the digital
    signature algorithm used for computing and verifying the
@@ -581,7 +589,7 @@ Table of Contents
    Section 8).  If this parameter is not set, the group mode is not used
    in the group.
 
-2.1.8.  Signature Encryption Key
+2.1.9.  Signature Encryption Key
 
    The new parameter Signature Encryption Key specifies the encryption
    key for deriving a keystream to encrypt/decrypt a countersignature,
@@ -594,7 +602,7 @@ Table of Contents
    *  The 'id' element of the 'info' array is the empty byte string.
 
    *  The 'alg_aead' element of the 'info' array specifies the Group
-      Encryption Algorithm from the Common Context (see Section 2.1.6),
+      Encryption Algorithm from the Common Context (see Section 2.1.7),
       encoded as a CBOR integer or text string, consistently with the
       "Value" field in the "COSE Algorithms" Registry for this
       algorithm.
@@ -604,11 +612,11 @@ Table of Contents
 
    *  L and the 'L' element of the 'info' array are the size of the key
       for the Group Encryption Algorithm specified in the Common Context
-      (see Section 2.1.6), in bytes.  While the obtained Signature
+      (see Section 2.1.7), in bytes.  While the obtained Signature
       Encryption Key is never used with the Group Encryption Algorithm,
       its length was chosen to obtain a matching level of security.
 
-2.1.9.  Pairwise Key Agreement Algorithm
+2.1.10.  Pairwise Key Agreement Algorithm
 
    The new parameter Pairwise Key Agreement Algorithm identifies the
    elliptic curve Diffie-Hellman algorithm used to derive a static-
@@ -644,7 +652,7 @@ Table of Contents
    is determined as follows.
 
    *  If only one among the AEAD Algorithm and the Group Encryption
-      Algorithm is set (see Section 2.1.1 and Section 2.1.6), then L is
+      Algorithm is set (see Section 2.1.1 and Section 2.1.7), then L is
       the nonce length for the set algorithm.
 
    *  If both the AEAD Algorithm and the Group Encryption Algorithm are
@@ -689,7 +697,7 @@ Table of Contents
    modifications compared to Section 3.2.1 of [RFC8613].
 
    *  If Group Encryption Algorithm in the Common Context is set (see
-      Section 2.1.6), then the 'alg_aead' element of the 'info' array
+      Section 2.1.7), then the 'alg_aead' element of the 'info' array
       MUST specify Group Encryption Algorithm from the Common Context as
       a CBOR integer or text string, consistently with the "Value" field
       in the "COSE Algorithms" Registry for this algorithm.
@@ -701,23 +709,23 @@ Table of Contents
 
    *  When deriving the Common IV, the 'L' element of the 'info' array
       MUST specify the length of the Common IV in bytes, which is
-      determined as defined in Section 2.1.3.
+      determined as defined in Section 2.1.4.
 
 2.4.  Authentication Credentials
 
    The authentication credentials of the endpoints in a group MUST be
    encoded according to the format used in the group, as indicated by
    the Authentication Credential Format parameter in the Common Context
-   (see Section 2.1.4).  The authentication credential of the Group
+   (see Section 2.1.5).  The authentication credential of the Group
    Manager SHOULD be encoded according to that same format.  The format
    of authentication credentials MUST provide the public key and a
    comprehensive set of information related to the public key algorithm,
    including, e.g., the used elliptic curve (when applicable).
 
    If Group Encryption Algorithm in the Common Context is not set (see
-   Section 2.1.6), then the public key algorithm is the Pairwise Key
-   Agreement Algorithm used in the group (see Section 2.1.9), else the
-   Signature Algorithm used in the group (see Section 2.1.7).
+   Section 2.1.7), then the public key algorithm is the Pairwise Key
+   Agreement Algorithm used in the group (see Section 2.1.10), else the
+   Signature Algorithm used in the group (see Section 2.1.8).
 
    If the authentication credentials are X.509 certificates [RFC5280] or
    C509 certificates [I-D.ietf-cose-cbor-encoded-cert], the public key
@@ -1460,7 +1468,7 @@ Table of Contents
    for two reasons.  First, as further discussed in Section 13.1, it
    ensures that the group mode can be used securely, even in a group
    where the Group Encryption Algorithm does not provide integrity
-   protection (see Section 2.1.6) and external signature checkers are
+   protection (see Section 2.1.7) and external signature checkers are
    used (see Section 8.5).  Second, it ensures that the wrong (old)
    authentication credential associated with a group member A is never
    used with a sender ID that used to be associated with A and has been
@@ -1605,13 +1613,13 @@ Table of Contents
       authentication credential associated with that entity is the end-
       entity certificate or end-entity untagged CWT.
 
-   *  The current Signature Encryption Key (see Section 2.1.8).
+   *  The current Signature Encryption Key (see Section 2.1.9).
 
    *  The identifiers of the algorithms used in the group (see
       Section 2), i.e.: i) Group Encryption Algorithm and Signature
       Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement
       Algorithm, if such parameters are set in the Common Context (see
-      Section 2.1.1 and Section 2.1.9).
+      Section 2.1.1 and Section 2.1.10).
 
    A signature checker MUST be authorized before it can retrieve such
    information, for example with the use of
@@ -1756,7 +1764,7 @@ Table of Contents
 
    The constructed nonce is used as AEAD nonce by the AEAD Algorithm
    (see Section 2.1.1) and by the Group Encryption Algorithm when this
-   is an AEAD algorithm (see Section 2.1.6).
+   is an AEAD algorithm (see Section 2.1.7).
 
 4.4.  external_aad
 
@@ -1813,7 +1821,7 @@ Table of Contents
       Furthermore, the 'algorithms' array additionally includes:
 
       -  'alg_group_enc', which specifies Group Encryption Algorithm
-         from the Common Context (see Section 2.1.6).  This parameter
+         from the Common Context (see Section 2.1.7).  This parameter
          MUST be set to the CBOR simple value null (0xf6) if the
          parameter Group Encryption Algorithm in the Common Context is
          not set.  Otherwise, regardless of whether the endpoint
@@ -1823,7 +1831,7 @@ Table of Contents
          Registry for this algorithm.
 
       -  'alg_signature', which specifies Signature Algorithm from the
-         Common Context (see Section 2.1.7).  This parameter MUST be set
+         Common Context (see Section 2.1.8).  This parameter MUST be set
          to the CBOR simple value null (0xf6) if the parameter Signature
          Algorithm in the Common Context is not set.  Otherwise,
          regardless of whether the endpoint supports the group mode or
@@ -1833,7 +1841,7 @@ Table of Contents
 
       -  'alg_pairwise_key_agreement', which specifies Pairwise Key
          Agreement Algorithm from the Common Context (see
-         Section 2.1.9).  This parameter MUST be set to the CBOR simple
+         Section 2.1.10).  This parameter MUST be set to the CBOR simple
          value null (0xf6) if Pairwise Key Agreement Algorithm in the
          Common Context is not set.  Otherwise, regardless of whether
          the endpoint supports the pairwise mode or not, this parameter
@@ -1940,7 +1948,7 @@ Table of Contents
       and not included in the response.
 
    *  IKM is the Signature Encryption Key from the Common Context (see
-      Section 2.1.8).
+      Section 2.1.9).
 
    *  info is the serialization of a CBOR array consisting of (the
       notation follows [RFC8610]):
@@ -1967,7 +1975,7 @@ Table of Contents
       the CBOR simple value false (0xf4) otherwise.
 
    *  L is the size of the countersignature, as per Signature Algorithm
-      from the Common Context (see Section 2.1.7), in bytes.
+      from the Common Context (see Section 2.1.8), in bytes.
 
 5.2.  Examples of Compressed COSE Objects
 
@@ -3178,18 +3186,18 @@ Table of Contents
    *  For endpoints that use authenticated encryption, the AEAD
       algorithm AES-CCM-16-64-128 defined in Section 4.2 of [RFC9053] is
       mandatory to implement as Group Encryption Algorithm (see
-      Section 2.1.6).
+      Section 2.1.7).
 
    *  For endpoints that use non-authenticated encryption, the algorithm
       A128CBC defined in Section 5 of [RFC9459] is mandatory to
-      implement as Group Encryption Algorithm (see Section 2.1.6).
+      implement as Group Encryption Algorithm (see Section 2.1.7).
 
    *  Section 6 of [RFC9459] mandates that COSE libraries supporting
       either the AES-CTR or AES-CBC algorithm and accepting Additional
       Authenticated Data (AAD) as input must return an error if one of
       these non-AEAD content encryption algorithms is selected.
 
-      In case the used Group Encryption Algorithm (see Section 2.1.6)
+      In case the used Group Encryption Algorithm (see Section 2.1.7)
       does not provide integrity protection, the following applies.
 
       When invoking the execution of the Group Encryption Algorithm, the
@@ -3208,7 +3216,7 @@ Table of Contents
       expected to support either EdDSA or ECDSA.  In order to enable as
       much interoperability as we can reasonably achieve, the following
       applies with respect to the Signature Algorithm (see
-      Section 2.1.7).
+      Section 2.1.8).
 
       Less constrained endpoints SHOULD implement both: the EdDSA
       signature algorithm together with the elliptic curve Ed25519
@@ -3240,7 +3248,7 @@ Table of Contents
 
    *  The ECDH-SS + HKDF-256 algorithm specified in Section 6.3.1 of
       [RFC9053] is mandatory to implement as Pairwise Key Agreement
-      Algorithm (see Section 2.1.9).
+      Algorithm (see Section 2.1.10).
 
    *  In order to enable as much interoperability as we can reasonably
       achieve in the presence of constrained devices (see above), the
@@ -4141,6 +4149,11 @@ Table of Contents
 15.  References
 
 15.1.  Normative References
+
+   [COSE.Algorithms]
+              IANA, "COSE Algorithms",
+              <https://www.iana.org/assignments/cose/
+              cose.xhtml#algorithms>.
 
    [I-D.ietf-core-groupcomm-bis]
               Dijk, E., Wang, C., and M. Tiloca, "Group Communication
