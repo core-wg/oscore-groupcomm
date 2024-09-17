@@ -3180,6 +3180,10 @@ Table of Contents
       mandatory to implement as Group Encryption Algorithm (see
       Section 2.1.6).
 
+   *  For endpoints that use non-authenticated encryption, the algorithm
+      A128CBC defined in Section 5 of [RFC9459] is mandatory to
+      implement as Group Encryption Algorithm (see Section 2.1.6).
+
    *  Section 6 of [RFC9459] mandates that COSE libraries supporting
       either the AES-CTR or AES-CBC algorithm and accepting Additional
       Authenticated Data (AAD) as input must return an error if one of
