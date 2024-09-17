@@ -132,14 +132,6 @@ informative:
   RFC8392:
   RFC9147:
   RFC9200:
-  ChaCha:
-    author:
-      -
-        ins: D. J. Bernstein
-        name: Daniel J. Bernstein
-    title: ChaCha, a variant of Salsa20
-    date: 2008-01
-    target: http://cr.yp.to/chacha/chacha-20080128.pdf
   Degabriele:
     author:
       -
@@ -333,9 +325,7 @@ The new parameter Group Manager Authentication Credential specifies the authenti
 
 The new parameter Group Encryption Algorithm identifies the algorithm to use for encryption and decryption, when messages are protected in group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection. If this parameter is not set, the group mode is not used in the group.
 
-The following non-authenticated algorithms can be used as Group Encryption Algorithm: A128CBC, A192CBC, and A256CBC {{RFC9459}}. The non-authenticated algorithm ChaCha20 {{ChaCha}} is also suitable to consider, although using it will first require its registration in the "COSE Algorithms" Registry.
-
-The following non-authenticated algorithms MUST NOT be used as Group Encryption Algorithm: A128CTR, A192CTR, and A256CTR {{RFC9459}}.
+A non-authenticated algorithm MUST NOT be used as Group Encryption Algorithm if it is not possible to ensure uniqueness of the (key, nonce) pairs. This is the case, for instance, for A128CTR, A192CTR, and A256CTR {{RFC9459}}. Instead, examples of non-authenticated algorithms that can be used as Group Encryption Algorithm are A128CBC, A192CBC, and A256CBC {{RFC9459}}.
 
 ### Signature Algorithm ## {#ssec-common-context-cs-alg}
 
