@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 18 March 2025                                      F. Palombini
+Expires: 21 March 2025                                      F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                       14 September 2024
+                                                       17 September 2024
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 March 2025.
+   This Internet-Draft will expire on 21 March 2025.
 
 Copyright Notice
 
@@ -1749,16 +1749,16 @@ Table of Contents
    The nonce is constructed like in OSCORE, with the difference that
    step 4 in Section 5.2 of [RFC8613] is replaced with:
 
-   A. and then XOR with the X bytes from the Common IV's start, where X
-   is the length in bytes of the nonce.
+   A. and then XOR with X bytes from the Common IV's start, where X is
+   the length in bytes of the nonce.
 
    For example, if X = 7 and the Common IV is
    0x00112233445566778899aabbcc (13 bytes), then the bytes to XOR are
    0x00112233445566 (7 bytes).
 
-   The constructed nonce is in fact used as AEAD nonce by the AEAD
-   Algorithm (see Section 2.1.1) and by the Group Encryption Algorithm
-   when this is an AEAD algorithm (see Section 2.1.6).
+   The constructed nonce is used as AEAD nonce by the AEAD Algorithm
+   (see Section 2.1.1) and by the Group Encryption Algorithm when this
+   is an AEAD algorithm (see Section 2.1.6).
 
 4.4.  external_aad
 
