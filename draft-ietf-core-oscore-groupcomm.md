@@ -236,7 +236,7 @@ This document refers to a group as a set of endpoints sharing keying material an
 How the Security Context is established by the group members is out of scope for this document, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to tell which Security Context was latest established.
 
 An endpoint of the group may use the group mode (see {{mess-processing}}), the pairwise mode (see {{sec-pairwise-protection}}), or both, depending on the modes it supports and on the parameters of the Security Context.
-The Security Context of Group OSCORE extends the OSCORE Security Context defined in {{Section 3 of RFC8613}} as follows (see {{fig-additional-context-information}}). 
+The Security Context of Group OSCORE extends the OSCORE Security Context defined in {{Section 3 of RFC8613}} as follows (see {{fig-additional-context-information}}).
 
 <!---
 FP 16-09: Possible additional text re necessity to add additional parameters.
@@ -602,7 +602,7 @@ The distribution of a new Gid and Master Secret may result in temporarily misali
 
 # The Group Manager # {#group-manager}
 
-As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant Security Context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s). This document is based on the existence of an entity called Group Manager that is responsible for the group, but it does not mandate how the Group Manager interacts with the group members. 
+As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant Security Context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s). This document is based on the existence of an entity called Group Manager that is responsible for the group, but it does not mandate how the Group Manager interacts with the group members.
 
 The Group Manager is responsible for performing the following tasks:
 
