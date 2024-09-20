@@ -561,7 +561,7 @@ From then on, the endpoint MUST use its latest installed Sender Context to prote
 
 ### Retrieving New Security Context Parameters {#sec-group-re-join}
 
-The Group Manager can assist an endpoint with an incomplete Sender Context to retrieve missing data of the Security Context and thereby become fully operational in the group again. The two main options for the Group Manager are described in this section: i) assignment of a new Sender ID to the endpoint (see {{new-sender-id}}); and ii) establishment of a new Security Context for the group (see {{new-sec-context}}). The update of the Replay Window in each of the Recipient Contexts is discussed in {{ssec-loss-mutable-context}}.
+The Group Manager can assist an endpoint with an incomplete Sender Context to retrieve missing data of the Security Context and thereby become fully operational in the group again. The two main options for the Group Manager are: i) assignment of a new Sender ID to the endpoint (see {{new-sender-id}}); and ii) establishment of a new Security Context for the group (see {{new-sec-context}}). The update of the Replay Window in each of the Recipient Contexts is discussed in {{ssec-loss-mutable-context}}.
 
 As group membership changes, or as group members get new Sender IDs (see {{new-sender-id}}), so do the relevant Recipient IDs that the other endpoints need to keep track of. As a consequence, group members may end up retaining stale Recipient Contexts, that are no longer useful to verify incoming secure messages.
 
@@ -571,7 +571,7 @@ Furthermore, applications MAY define policies to: i) delete (long-)unused Recipi
 
 #### New Sender ID for the Endpoint {#new-sender-id}
 
-The Group Manager may assign a new Sender ID to an endpoint, while leaving the Gid, Master Secret, and Master Salt unchanged in the group. In this case, the Group Manager MUST assign a Sender ID that has not been used in the group since the latest time when the current Gid value was assigned to the group (see {{sec-group-key-management}}).
+The Group Manager may assign a new Sender ID to an endpoint, while leaving the Gid, Master Secret, and Master Salt unchanged in the group. In this case, the Group Manager assigns a Sender ID that has not been used in the group since the latest time when the current Gid value was assigned to the group (see {{sec-group-key-management}}).
 
 Having retrieved the new Sender ID, and potentially other missing data of the immutable Security Context, the endpoint can derive a new Sender Context (see {{ssec-sender-recipient-context}}). When doing so, the endpoint resets the Sender Sequence Number in its Sender Context to 0, and derives a new Sender Key. This is in turn used to possibly derive new Pairwise Sender Keys.
 
@@ -608,226 +608,6 @@ From then on, it can resume processing new messages for the considered group. In
 * It SHOULD use only its latest installed Recipient Contexts to process incoming messages, unless application policies admit to temporarily retain and use the old, recent, Security Context (see {{ssec-key-rotation-late-sender}}).
 
 The distribution of a new Gid and Master Secret may result in temporarily misaligned Security Contexts among group members. In particular, this may result in a group member not being able to process messages received right after a new Gid and Master Secret have been distributed. A discussion on practical consequences and possible ways to address them, as well as on how to handle the old Security Context, is provided in {{ssec-key-rotation}}.
-
-# The Group Manager # {#group-manager}
-
-As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant Security Context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s).
-
-This document is based on the existence of an entity called Group Manager that is responsible for the group, but it does not mandate how the Group Manager interacts with the group members. The list of responsibilities of the Group Manager is compiled in {{sec-group-manager}}.
-
-The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. Within each of such groups, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. The maximum length of Sender IDs depends on the length of the nonce for the algorithms used in the group (see {{ssec-sender-recipient-context}}).
-
-According to a hierarchical approach, the Gid value assigned to a group is associated with a dedicated space for the values of Sender ID and Recipient ID of the members of that group. When an endpoint (re-)joins a group, it is provided with the current Gid to use in the group. The Group Manager also assigns an integer Key Generation Number counter to each of its groups, identifying the current version of the keying material used in that group. Further details about identifiers and keys are provided in {{sec-group-key-management}}.
-
-The Group Manager maintains records of the authentication credentials of endpoints in a group, and provides information about the group and its members to other group members (see {{setup}}), and to external entities with a specific role (see {{sec-additional-entities}}).
-
-
-
-## Set-up of New Endpoints # {#setup}
-
-From the Group Manager, an endpoint acquires group data such as the Gid and OSCORE input parameters including its own Sender ID, with which it can derive the Sender Context.
-
-When joining the group or later on as a group member, an endpoint can also retrieve from the Group Manager the authentication credential of the Group Manager as well as the authentication credential and other information associated with other members of the group, with which it can derive the corresponding Recipient Context. An application can configure a group member to asynchronously retrieve information about Recipient Contexts, e.g., by Observing {{RFC7641}} a resource at the Group Manager to get updates on the group membership.
-
-Upon endpoints' joining, the Group Manager collects their authentication credentials and MUST verify proof-of-possession of the respective private key. Together with the requested authentication credentials of other group members, the Group Manager MUST provide the joining endpoints with the Sender ID of the associated group members and the current Key Generation Number in the group (see {{sec-group-key-management}}).
-
-An endpoint may join a group, for example, by explicitly interacting with the responsible Group Manager, or by being configured with some tool performing the tasks of the Group Manager. When becoming members of a group, endpoints are not required to know how many and what endpoints are in the same group.
-
-Communications that the Group Manager has with joining endpoints and group members MUST be secured. Specific details on how to secure such communications are out of the scope of this document.
-
-The Group Manager MUST verify that the joining endpoint is authorized to join the group. To this end, the Group Manager can directly authorize the joining endpoint, or expect it to provide authorization evidence previously obtained from a trusted entity. Further details about the authorization of joining endpoints are out of the scope of this document.
-
-In case of successful authorization check, the Group Manager provides the joining endpoint with the keying material to initialize the Security Context. The actual provisioning of keying material and parameters to the joining endpoint is out of the scope of this document.
-
-One realization of a Group Manager is specified in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for authentication and authorization in constrained environments {{RFC9200}}.
-
-## Management of Group Keying Material # {#sec-group-key-management}
-
-In order to establish a new Security Context for a group, the Group Manager MUST generate and assign to the group a new Group Identifier (Gid) and a new value for the Master Secret parameter. When doing so, a new value for the Master Salt parameter MAY also be generated and assigned to the group. When establishing the new Security Context, the Group Manager should preserve the current value of the Sender ID of each group member.
-
-The specific group key management scheme used to distribute new keying material is out of the scope of this document. A simple group key management scheme is defined in {{I-D.ietf-ace-key-groupcomm-oscore}}. When possible, the delivery of rekeying messages should use a reliable transport, in order to reduce chances of group members missing a rekeying instance.
-
-The set of group members should not be assumed as fixed, i.e., the group membership is subject to changes, possibly on a frequent basis.
-
-The Group Manager MUST rekey the group without undue delay in case one or more endpoints leave the group. An endpoint may leave the group at own initiative, or may be evicted from the group by the Group Manager, e.g., in case the endpoint is compromised, or is suspected to be compromised. In either case, rekeying the group excludes such endpoints from future communications in the group, and thus preserves forward security. If a network node is compromised or suspected to be compromised, the Group Manager MUST evict from the group all the endpoints hosted by that node that are member of the group and rekey the group accordingly.
-
-If required by the application, the Group Manager MUST rekey the group also before one or more new joining endpoints are added to the group, thus preserving backward security.
-
-Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see below).
-
-The establishment of the new Security Context for the group takes the following steps.
-
-1. The Group Manager MUST increment the Key Generation Number for the group by 1. It is up to the Group Manager what actions to take when a wrap-around of the Key Generation Number is detected.
-
-2. The Group Manager MUST build a set of stale Sender IDs including:
-
-   - The Sender IDs that, during the current Gid, were both assigned to an endpoint and subsequently relinquished (see {{new-sender-id}}).
-
-   - The current Sender IDs of the group members that the upcoming group rekeying aims to exclude from future group communications, if any.
-
-3. The Group Manager rekeys the group, by distributing:
-
-   - The new keying material, i.e., the new Master Secret, the new Gid and (optionally) the new Master Salt.
-
-   - The new Key Generation Number from step 1.
-
-   - The set of stale Sender IDs from step 2.
-
-   Further information may be distributed, depending on the specific group key management scheme used in the group.
-
-When receiving the new group keying material, a group member considers the received stale Sender IDs and performs the following actions.
-
-* The group member MUST remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group.
-
-* The group member MUST delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.
-
-After that, the group member installs the new keying material and derives the corresponding new Security Context.
-
-A group member might miss one or more consecutive instances of group rekeying. As a result, the group member will retain old group keying material with Key Generation Number GEN\_OLD. Eventually, the group member can notice the discrepancy, e.g., by repeatedly failing to verify incoming messages, or by explicitly querying the Group Manager for the current Key Generation Number. Once the group member gains knowledge of having missed a group rekeying, it MUST delete the old keying material it stores.
-
-Then, the group member proceeds according to the following steps.
-
-1. The group member retrieves from the Group Manager the current group keying material, together with the current Key Generation Number GEN\_NEW. The group member MUST NOT install the obtained group keying material yet.
-
-2. The group member asks the Group Manager for the set of stale Sender IDs.
-
-3. If no exact indication can be obtained from the Group Manager, the group member MUST remove all the authentication credentials from its list of group members' authentication credentials used in the group and MUST delete all its Recipient Contexts used in the group.
-
-   Otherwise, the group member MUST remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group, and MUST delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.
-
-4. The group member installs the current group keying material, and derives the corresponding new Security Context.
-
-Alternatively, the group member can re-join the group. In such a case, the group member MUST take one of the following two actions.
-
-* First, the group member performs steps 2 and 3 above. Then, the group member re-joins the group.
-
-* The group member re-joins the group with the same roles it currently has in the group, and, during the re-joining process, it asks the Group Manager for the authentication credentials of all the current group members.
-
-   Then, given Z the set of authentication credentials received from the Group Manager, the group member removes every authentication credential which is not in Z from its list of group members' authentication credentials used in the group, and deletes each of its Recipient Contexts used in the group that does not include any of the authentication credentials in Z.
-
-By removing authentication credentials and deleting Recipient Contexts associated with stale Sender IDs, it is ensured that a recipient endpoint storing the latest group keying material does not store the authentication credentials of sender endpoints that are not current group members. This in turn allows group members to rely on stored authentication credentials to confidently assert the group membership of sender endpoints, when receiving incoming messages protected in group mode (see {{mess-processing}}).
-
-Such a strictness in managing the authentication credentials and Recipient Contexts associated with other group members is required for two reasons. First, as further discussed in {{ssec-group-mode-security}}, it ensures that the group mode can be used securely, even in a group where the Group Encryption Algorithm does not provide integrity protection (see {{ssec-common-context-cs-enc-alg}}) and external signature checkers are used (see {{sec-processing-signature-checker}}). Second, it ensures that the wrong (old) authentication credential associated with a group member A is never used with a Sender ID that used to be associated with A and has been later issued to a different group member B (see {{sec-sid-recycling}}), thus preventing the need to recover from an identity mix-up.
-
-### Recycling of Identifiers ###
-
-This section specifies how the Group Manager handles and possibly reassigns Gid values and Sender ID values in a group.
-
-#### Recycling of Group Identifiers ### {#sec-gid-recycling}
-
-Since the Gid value changes every time a group is rekeyed, it can happen that, after several rekeying instances, the whole space of Gid values has been used for the group in question. When this happens, the Group Manager has no available Gid values to use that have never been assigned to the group during the group's lifetime.
-
-The occurrence of such an event and how long it would take to occur depend on the format and encoding of Gid values used in the group (see, e.g., {{gid-ex}}), as well as on the frequency of rekeying instances yielding a change of Gid value. Independently for each group under its control, the Group Manager can take one of the two following approaches.
-
-* The Group Manager does not reassign Gid values. That is, once the whole space of Gid values has been used for a group, the Group Manager terminates the group and may re-establish a new group.
-
-* While the Gid value changes every time a group is rekeyed, the Group Manager can reassign Gid values previously used during a group's lifetime. By doing so, the group can continue to exist even once the whole space of Gid values has been used.
-
-   The Group Manager MAY support and use this approach. In such a case, the Group Manager MUST take additional actions when handling Gid values and rekeying the group, as specified below.
-
-   When a node (re-)joins the group and it is provided with the current Gid to use in the group, the Group Manager considers such a Gid as the Birth Gid of that endpoint for that group. For each group member, the Group Manager MUST store the latest corresponding Birth Gid until that member leaves the group. In case the endpoint has in fact re-joined the group, the newly determined Birth Gid overwrites the one currently stored.
-
-   When establishing a new Security Context for the group, the Group Manager takes the additional following step between steps 1 and 2 of {{sec-group-key-management}}.
-
-   A. The Group Manager MUST check if the new Gid to be distributed is equal to the Birth Gid of any of the current group members. If any of such "elder members" is found in the group, then:
-
-   -  The Group Manager MUST evict the elder members from the group. That is, the Group Manager MUST terminate their membership and, in the following steps, it MUST rekey the group in such a way that the new keying material is not provided to those evicted elder members.
-
-      This ensures that any response from the same server to the request of a long exchange can never successfully match against the request of two different long exchanges.
-
-      In fact, the excluded elder members could eventually re-join the group, thus terminating any of their ongoing long exchanges (see {{sec-long-exchanges}}).
-
-      Therefore, it is ensured by construction that no client can have with the same server two ongoing long exchanges, such that the two respective requests were protected using the same Partial IV, Gid, and Sender ID.
-
-#### Recycling of Sender IDs ### {#sec-sid-recycling}
-
-From the moment when a Gid is assigned to a group until the moment a new Gid is assigned to that same group, the Group Manager MUST NOT reassign a Sender ID within the group. This prevents from reusing a Sender ID ('kid') with the same triple (Gid, Master Secret, Master Salt). Within this restriction, the Group Manager can assign a Sender ID used under an old Gid value (including under a same, recycled Gid value), thus avoiding Sender ID values to irrecoverably grow in size.
-
-Even when an endpoint joining a group is recognized as a current member of that group, e.g., through the ongoing secure communication association, the Group Manager MUST assign a new Sender ID different than the one currently used by the endpoint in the group, unless the group is rekeyed first and a new Gid value is established.
-
-#### Relation between Identifiers and Keying Material
-
-{{fig-key-material-diagram}} overviews the different identifiers and keying material components, considering their relation and possible reuse across group rekeying.
-
-~~~~~~~~~~~
-Components changed in lockstep
-    upon a group rekeying
-+----------------------------+            * Changing a kid does not
-|                            |              need changing the Group ID
-| Master               Group |<--> kid1
-| Secret <---> o <--->  ID   |            * A kid is not reassigned
-|              ^             |<--> kid2     under the ongoing usage of
-|              |             |              the current Group ID
-|              |             |<--> kid3
-|              v             |            * Upon changing the Group ID,
-|         Master Salt        | ... ...      every current kid should
-|         (optional)         |              be preserved for efficient
-|                            |              key rollover
-| The Key Generation Number  |
-| is incremented by 1        |            * After changing Group ID, an
-|                            |              unused kid can be assigned,
-+----------------------------+              even if it was used before
-                                            the Group ID change
-~~~~~~~~~~~
-{: #fig-key-material-diagram title="Relations among keying material components." artwork-align="center"}
-
-
-
-## Support for Signature Checkers # {#sec-additional-entities}
-
-The Group Manager may serve signature checkers, e.g., intermediary gateways, which verify  countersignatures of messages protected in group mode (see {{sec-processing-signature-checker}}). These entities do not join a group as members, but can retrieve authentication credentials of group members and other selected group data from the Group Manager.
-
-In order to verify countersignatures of messages in a group, a signature checker needs to retrieve the following information about the group:
-
-* The current ID Context (Gid) used in the group.
-
-* The authentication credentials of the group members and of the Group Manager.
-
-  If the signature checker is provided with a CWT for a given entity, then the authentication credential associated with that entity is the untagged CWT.
-
-  If the signature checker is provided with a chain or a bag of X.509 / C509 certificates or of CWTs for a given entity, then the authentication credential associated with that entity is the end-entity certificate or end-entity untagged CWT.
-
-* The current Signature Encryption Key (see {{ssec-common-context-group-enc-key}}).
-
-* The identifiers of the algorithms used in the group (see {{sec-context}}), i.e.: i) Group Encryption Algorithm and Signature Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement Algorithm, if such parameters are set in the Common Context (see {{ssec-common-context-aead-alg}} and {{ssec-common-context-dh-alg}}).
-
-A signature checker MUST be authorized before it can retrieve such information, for example with the use of {{I-D.ietf-ace-key-groupcomm-oscore}}.
-
-
-## Responsibilities of the Group Manager ## {#sec-group-manager}
-
-The Group Manager is responsible for performing the following tasks:
-
-1. Creating and managing OSCORE groups. This includes the assignment of a Gid to every newly created group, ensuring uniqueness of Gids within the set of its OSCORE groups and, optionally, the secure recycling of Gids.
-
-2. Defining policies for authorizing the joining of its OSCORE groups.
-
-3. Handling the join process to add new endpoints as group members.
-
-4. Establishing the Common Context part of the Security Context, and providing it to authorized group members during the join process, together with the corresponding Sender Context.
-
-5. Updating the Key Generation Number and the Gid of its OSCORE groups, upon renewing the respective Security Context.
-
-6. Generating and managing Sender IDs within its OSCORE groups, as well as assigning and providing them to new endpoints during the join process, or to current group members upon request of renewal or re-joining. This includes ensuring that:
-
-   - Each Sender ID is unique within each of the OSCORE groups;
-
-   - Each Sender ID is not reassigned within the same group since the latest time when the current Gid value was assigned to the group. That is, the Sender ID is not reassigned even to a current group member re-joining the same group, without a rekeying happening first.
-
-7. Defining communication policies for each of its OSCORE groups, and signaling them to new endpoints during the join process.
-
-8. Renewing the Security Context of an OSCORE group upon membership change, by revoking and renewing common security parameters and keying material (rekeying).
-
-9. Providing the management keying material that a new endpoint requires to participate in the rekeying process, consistently with the key management scheme used in the group joined by the new endpoint.
-
-10. Assisting a group member that has missed a group rekeying instance to understand which authentication credentials and Recipient Contexts to delete, as associated with former group members.
-
-11. Acting as key repository, in order to handle the authentication credentials of the members of its OSCORE groups, and providing such authentication credentials to other members of the same group upon request. The actual storage of authentication credentials may be entrusted to a separate secure storage device or service.
-
-12. Validating that the format and parameters of authentication credentials of group members are consistent with the public key algorithm and related parameters used in the respective OSCORE group.
-
-The Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}} provides this functionality.
-
 
 # The COSE Object # {#sec-cose-object}
 
@@ -1376,7 +1156,11 @@ Note that a client may receive a response protected with a Security Context diff
 
 ## External Signature Checkers # {#sec-processing-signature-checker}
 
-When receiving a message protected in group mode, a signature checker (see {{sec-additional-entities}}) proceeds as follows.
+When a message is protected in group mode, it is possible for designated external signature checkers, e.g., intermediary gateways, to verify the countersignature of the message.
+
+Since they do not join a group as members, external signature checkers need to retrieve from the Group Manager the authentication credentials of group members and other selected group data, such as the current Signature Encryption Key (see {{ssec-common-context-group-enc-key}}). The support for signature checkers from the Group Manager is defined in {{sec-additional-entities}}.
+
+When receiving a message protected in group mode, a signature checker proceeds as follows.
 
 * The signature checker retrieves the encrypted countersignature ENC_SIGNATURE from the message payload, and computes the original countersignature SIGNATURE as
 
@@ -1594,6 +1378,209 @@ RES: 2.05 Content
     </sensors/light>;if="sensor"
 ~~~~~~~~~~~~~~~~~
 {: #fig-web-link-example title="Example of using the \"gosc\" attribute in a web link." artwork-align="center"}
+
+# The Group Manager # {#group-manager}
+
+As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant Security Context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s).
+
+This document is based on the existence of an entity called Group Manager that is responsible for the group, but it does not mandate how the Group Manager interacts with the group members. The list of responsibilities of the Group Manager is compiled in {{sec-group-manager}}.
+
+The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. Within each of such groups, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. The maximum length of Sender IDs depends on the length of the nonce for the algorithms used in the group (see {{ssec-sender-recipient-context}}).
+
+According to a hierarchical approach, the Gid value assigned to a group is associated with a dedicated space for the values of Sender ID and Recipient ID of the members of that group. When an endpoint (re-)joins a group, it is provided with the current Gid to use in the group. The Group Manager also assigns an integer Key Generation Number counter to each of its groups, identifying the current version of the keying material used in that group. Further details about identifiers and keys are provided in {{sec-group-key-management}}.
+
+The Group Manager maintains records of the authentication credentials of endpoints in a group, and provides information about the group and its members to other group members (see {{setup}}). Optionally, the Group Manager provides information about the group and its members to external entities with a specific role, such as signature checkers (see {{sec-additional-entities}}).
+
+## Set-up of New Endpoints # {#setup}
+
+From the Group Manager, an endpoint acquires group data such as the Gid and OSCORE input parameters including its own Sender ID, with which it can derive the Sender Context.
+
+When joining the group or later on as a group member, an endpoint can also retrieve from the Group Manager the authentication credential of the Group Manager as well as the authentication credential and other information associated with other members of the group, with which it can derive the corresponding Recipient Context. An application can configure a group member to asynchronously retrieve information about Recipient Contexts, e.g., by Observing {{RFC7641}} a resource at the Group Manager to get updates on the group membership.
+
+Upon endpoints' joining, the Group Manager collects their authentication credentials and MUST verify proof-of-possession of the respective private key. Together with the requested authentication credentials of other group members, the Group Manager MUST provide the joining endpoints with the Sender ID of the associated group members and the current Key Generation Number in the group (see {{sec-group-key-management}}).
+
+An endpoint may join a group, for example, by explicitly interacting with the responsible Group Manager, or by being configured with some tool performing the tasks of the Group Manager. When becoming members of a group, endpoints are not required to know how many and what endpoints are in the same group.
+
+Communications that the Group Manager has with joining endpoints and group members MUST be secured. Specific details on how to secure such communications are out of the scope of this document.
+
+The Group Manager MUST verify that the joining endpoint is authorized to join the group. To this end, the Group Manager can directly authorize the joining endpoint, or expect it to provide authorization evidence previously obtained from a trusted entity. Further details about the authorization of joining endpoints are out of the scope of this document.
+
+In case of successful authorization check, the Group Manager provides the joining endpoint with the keying material to initialize the Security Context. The actual provisioning of keying material and parameters to the joining endpoint is out of the scope of this document.
+
+One realization of a Group Manager is specified in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for authentication and authorization in constrained environments {{RFC9200}}.
+
+## Management of Group Keying Material # {#sec-group-key-management}
+
+In order to establish a new Security Context for a group, the Group Manager MUST generate and assign to the group a new Group Identifier (Gid) and a new value for the Master Secret parameter. When doing so, a new value for the Master Salt parameter MAY also be generated and assigned to the group. When establishing the new Security Context, the Group Manager should preserve the current value of the Sender ID of each group member.
+
+The specific group key management scheme used to distribute new keying material is out of the scope of this document. A simple group key management scheme is defined in {{I-D.ietf-ace-key-groupcomm-oscore}}. When possible, the delivery of rekeying messages should use a reliable transport, in order to reduce chances of group members missing a rekeying instance.
+
+The set of group members should not be assumed as fixed, i.e., the group membership is subject to changes, possibly on a frequent basis.
+
+The Group Manager MUST rekey the group without undue delay in case one or more endpoints leave the group. An endpoint may leave the group at own initiative, or may be evicted from the group by the Group Manager, e.g., in case the endpoint is compromised, or is suspected to be compromised. In either case, rekeying the group excludes such endpoints from future communications in the group, and thus preserves forward security. If a network node is compromised or suspected to be compromised, the Group Manager MUST evict from the group all the endpoints hosted by that node that are member of the group and rekey the group accordingly.
+
+If required by the application, the Group Manager MUST rekey the group also before one or more new joining endpoints are added to the group, thus preserving backward security.
+
+Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see below).
+
+The establishment of the new Security Context for the group takes the following steps.
+
+1. The Group Manager MUST increment the Key Generation Number for the group by 1. It is up to the Group Manager what actions to take when a wrap-around of the Key Generation Number is detected.
+
+2. The Group Manager MUST build a set of stale Sender IDs including:
+
+   - The Sender IDs that, during the current Gid, were both assigned to an endpoint and subsequently relinquished (see {{new-sender-id}}).
+
+   - The current Sender IDs of the group members that the upcoming group rekeying aims to exclude from future group communications, if any.
+
+3. The Group Manager rekeys the group, by distributing:
+
+   - The new keying material, i.e., the new Master Secret, the new Gid and (optionally) the new Master Salt.
+
+   - The new Key Generation Number from step 1.
+
+   - The set of stale Sender IDs from step 2.
+
+   Further information may be distributed, depending on the specific group key management scheme used in the group.
+
+When receiving the new group keying material, a group member considers the received stale Sender IDs and performs the following actions.
+
+* The group member MUST remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group.
+
+* The group member MUST delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.
+
+After that, the group member installs the new keying material and derives the corresponding new Security Context.
+
+A group member might miss one or more consecutive instances of group rekeying. As a result, the group member will retain old group keying material with Key Generation Number GEN\_OLD. Eventually, the group member can notice the discrepancy, e.g., by repeatedly failing to verify incoming messages, or by explicitly querying the Group Manager for the current Key Generation Number. Once the group member gains knowledge of having missed a group rekeying, it MUST delete the old keying material it stores.
+
+Then, the group member proceeds according to the following steps.
+
+1. The group member retrieves from the Group Manager the current group keying material, together with the current Key Generation Number GEN\_NEW. The group member MUST NOT install the obtained group keying material yet.
+
+2. The group member asks the Group Manager for the set of stale Sender IDs.
+
+3. If no exact indication can be obtained from the Group Manager, the group member MUST remove all the authentication credentials from its list of group members' authentication credentials used in the group and MUST delete all its Recipient Contexts used in the group.
+
+   Otherwise, the group member MUST remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group, and MUST delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.
+
+4. The group member installs the current group keying material, and derives the corresponding new Security Context.
+
+Alternatively, the group member can re-join the group. In such a case, the group member MUST take one of the following two actions.
+
+* First, the group member performs steps 2 and 3 above. Then, the group member re-joins the group.
+
+* The group member re-joins the group with the same roles it currently has in the group, and, during the re-joining process, it asks the Group Manager for the authentication credentials of all the current group members.
+
+   Then, given Z the set of authentication credentials received from the Group Manager, the group member removes every authentication credential which is not in Z from its list of group members' authentication credentials used in the group, and deletes each of its Recipient Contexts used in the group that does not include any of the authentication credentials in Z.
+
+By removing authentication credentials and deleting Recipient Contexts associated with stale Sender IDs, it is ensured that a recipient endpoint storing the latest group keying material does not store the authentication credentials of sender endpoints that are not current group members. This in turn allows group members to rely on stored authentication credentials to confidently assert the group membership of sender endpoints, when receiving incoming messages protected in group mode (see {{mess-processing}}).
+
+Such a strictness in managing the authentication credentials and Recipient Contexts associated with other group members is required for two reasons. First, as further discussed in {{ssec-group-mode-security}}, it ensures that the group mode can be used securely, even in a group where the Group Encryption Algorithm does not provide integrity protection (see {{ssec-common-context-cs-enc-alg}}) and external signature checkers are used (see {{sec-processing-signature-checker}}). Second, it ensures that the wrong (old) authentication credential associated with a group member A is never used with a Sender ID that used to be associated with A and has been later issued to a different group member B (see {{sec-sid-recycling}}), thus preventing the need to recover from an identity mix-up.
+
+### Recycling of Identifiers ###
+
+This section specifies how the Group Manager handles and possibly reassigns Gid values and Sender ID values in a group.
+
+#### Recycling of Group Identifiers ### {#sec-gid-recycling}
+
+Since the Gid value changes every time a group is rekeyed, it can happen that, after several rekeying instances, the whole space of Gid values has been used for the group in question. When this happens, the Group Manager has no available Gid values to use that have never been assigned to the group during the group's lifetime.
+
+The occurrence of such an event and how long it would take to occur depend on the format and encoding of Gid values used in the group (see, e.g., {{gid-ex}}), as well as on the frequency of rekeying instances yielding a change of Gid value. Independently for each group under its control, the Group Manager can take one of the two following approaches.
+
+* The Group Manager does not reassign Gid values. That is, once the whole space of Gid values has been used for a group, the Group Manager terminates the group and may re-establish a new group.
+
+* While the Gid value changes every time a group is rekeyed, the Group Manager can reassign Gid values previously used during a group's lifetime. By doing so, the group can continue to exist even once the whole space of Gid values has been used.
+
+  The Group Manager MAY support and use this approach, according to what is specified in {{gid-reassignment}}.
+
+#### Recycling of Sender IDs ### {#sec-sid-recycling}
+
+From the moment when a Gid is assigned to a group until the moment a new Gid is assigned to that same group, the Group Manager MUST NOT reassign a Sender ID within the group. This prevents from reusing a Sender ID ('kid') with the same triple (Gid, Master Secret, Master Salt). Within this restriction, the Group Manager can assign a Sender ID used under an old Gid value (including under a same, recycled Gid value), thus avoiding Sender ID values to irrecoverably grow in size.
+
+Even when an endpoint joining a group is recognized as a current member of that group, e.g., through the ongoing secure communication association, the Group Manager MUST assign a new Sender ID different than the one currently used by the endpoint in the group, unless the group is rekeyed first and a new Gid value is established.
+
+#### Relation between Identifiers and Keying Material
+
+{{fig-key-material-diagram}} overviews the different identifiers and keying material components, considering their relation and possible reuse across group rekeying.
+
+~~~~~~~~~~~
+Components changed in lockstep
+    upon a group rekeying
++----------------------------+            * Changing a kid does not
+|                            |              need changing the Group ID
+| Master               Group |<--> kid1
+| Secret <---> o <--->  ID   |            * A kid is not reassigned
+|              ^             |<--> kid2     under the ongoing usage of
+|              |             |              the current Group ID
+|              |             |<--> kid3
+|              v             |            * Upon changing the Group ID,
+|         Master Salt        | ... ...      every current kid should
+|         (optional)         |              be preserved for efficient
+|                            |              key rollover
+| The Key Generation Number  |
+| is incremented by 1        |            * After changing Group ID, an
+|                            |              unused kid can be assigned,
++----------------------------+              even if it was used before
+                                            the Group ID change
+~~~~~~~~~~~
+{: #fig-key-material-diagram title="Relations among keying material components." artwork-align="center"}
+
+
+
+## Support for Signature Checkers # {#sec-additional-entities}
+
+The Group Manager may serve signature checkers, e.g., intermediary gateways, which verify  countersignatures of messages protected in group mode (see {{sec-processing-signature-checker}}). These entities do not join a group as members, but can retrieve authentication credentials of group members and other selected group data from the Group Manager.
+
+In order to verify countersignatures of messages in a group, a signature checker needs to retrieve the following information about the group:
+
+* The current ID Context (Gid) used in the group.
+
+* The authentication credentials of the group members and of the Group Manager.
+
+  If the signature checker is provided with a CWT for a given entity, then the authentication credential associated with that entity is the untagged CWT.
+
+  If the signature checker is provided with a chain or a bag of X.509 / C509 certificates or of CWTs for a given entity, then the authentication credential associated with that entity is the end-entity certificate or end-entity untagged CWT.
+
+* The current Signature Encryption Key (see {{ssec-common-context-group-enc-key}}).
+
+* The identifiers of the algorithms used in the group (see {{sec-context}}), i.e.: i) Group Encryption Algorithm and Signature Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement Algorithm, if such parameters are set in the Common Context (see {{ssec-common-context-aead-alg}} and {{ssec-common-context-dh-alg}}).
+
+A signature checker MUST be authorized before it can retrieve such information, for example with the use of {{I-D.ietf-ace-key-groupcomm-oscore}}.
+
+
+## Responsibilities of the Group Manager ## {#sec-group-manager}
+
+The Group Manager is responsible for performing the following tasks:
+
+1. Creating and managing OSCORE groups. This includes the assignment of a Gid to every newly created group, ensuring uniqueness of Gids within the set of its OSCORE groups and, optionally, the secure recycling of Gids.
+
+2. Defining policies for authorizing the joining of its OSCORE groups.
+
+3. Handling the join process to add new endpoints as group members.
+
+4. Establishing the Common Context part of the Security Context, and providing it to authorized group members during the join process, together with the corresponding Sender Context.
+
+5. Updating the Key Generation Number and the Gid of its OSCORE groups, upon renewing the respective Security Context.
+
+6. Generating and managing Sender IDs within its OSCORE groups, as well as assigning and providing them to new endpoints during the join process, or to current group members upon request of renewal or re-joining. This includes ensuring that:
+
+   - Each Sender ID is unique within each of the OSCORE groups;
+
+   - Each Sender ID is not reassigned within the same group since the latest time when the current Gid value was assigned to the group. That is, the Sender ID is not reassigned even to a current group member re-joining the same group, without a rekeying happening first.
+
+7. Defining communication policies for each of its OSCORE groups, and signaling them to new endpoints during the join process.
+
+8. Renewing the Security Context of an OSCORE group upon membership change, by revoking and renewing common security parameters and keying material (rekeying).
+
+9. Providing the management keying material that a new endpoint requires to participate in the rekeying process, consistently with the key management scheme used in the group joined by the new endpoint.
+
+10. Assisting a group member that has missed a group rekeying instance to understand which authentication credentials and Recipient Contexts to delete, as associated with former group members.
+
+11. Acting as key repository, in order to handle the authentication credentials of the members of its OSCORE groups, and providing such authentication credentials to other members of the same group upon request. The actual storage of authentication credentials may be entrusted to a separate secure storage device or service.
+
+12. Validating that the format and parameters of authentication credentials of group members are consistent with the public key algorithm and related parameters used in the respective OSCORE group.
+
+The Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}} provides this functionality.
 
 # Security Considerations  # {#sec-security-considerations}
 
@@ -2012,6 +1999,26 @@ Using an immutable Group Prefix for a group with a Group Manager that does not r
 
 As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple groups managed by different non-synchronized Group Managers, it is possible that Group Identifiers of different groups coincide at some point in time. In this case, a recipient has to handle coinciding Group Identifiers, and has to try using different Security Contexts to process an incoming message, until the right one is found and the message is correctly verified. Therefore, it is favorable that Group Identifiers from different Group Managers have a size that result in a small probability of collision. How small this probability should be is up to system designers.
 
+# Reassignment of Group Identifiers {#gid-reassignment}
+
+As defined in {{sec-gid-recycling}}, the Group manager MAY support and perform the reassignment of Gid values previously used during a group's lifetime. This enables the group to continue to exist even once the whole space of Gid values has been used.
+
+If the Group Manager uses this approach, the Group Manager MUST take additional actions when handling Gid values and rekeying the group, as specified below.
+
+When a node (re-)joins the group and it is provided with the current Gid to use in the group, the Group Manager considers such a Gid as the Birth Gid of that endpoint for that group. For each group member, the Group Manager MUST store the latest corresponding Birth Gid until that member leaves the group. In case the endpoint has in fact re-joined the group, the newly determined Birth Gid overwrites the one currently stored.
+
+When establishing a new Security Context for the group, the Group Manager takes the additional following step between steps 1 and 2 of {{sec-group-key-management}}.
+
+A. The Group Manager MUST check if the new Gid to be distributed is equal to the Birth Gid of any of the current group members. If any of such "elder members" is found in the group, then:
+
+- The Group Manager MUST evict the elder members from the group. That is, the Group Manager MUST terminate their membership and, in the following steps, it MUST rekey the group in such a way that the new keying material is not provided to those evicted elder members.
+
+  This ensures that any response from the same server to the request of a long exchange can never successfully match against the request of two different long exchanges.
+
+  In fact, the excluded elder members could eventually re-join the group, thus terminating any of their ongoing long exchanges (see {{sec-long-exchanges}}).
+
+  Therefore, it is ensured by construction that no client can have with the same server two ongoing long exchanges, such that the two respective requests were protected using the same Partial IV, Gid, and Sender ID.
+
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
 
@@ -2026,6 +2033,8 @@ As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple gr
 * Easier description of using Common IV to compute the nonce.
 
 * Consistent use of "nonce", "key", and "AEAD key".
+
+* Repositioned content about the Group Manager.
 
 * Editorial improvements.
 
