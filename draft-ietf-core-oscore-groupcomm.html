@@ -13,18 +13,18 @@
 <meta content="
        This document defines the security protocol Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of CoAP messages exchanged between members of a group, e.g., sent over IP multicast. In particular, the described protocol defines how OSCORE is used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with any other member of the group for pairwise OSCORE communication. Group OSCORE can be used between endpoints communicating with CoAP or CoAP-mappable HTTP. 
     " name="description">
-<meta content="xml2rfc 3.23.0" name="generator">
+<meta content="xml2rfc 3.23.1" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-core-oscore-groupcomm-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.23.0
-    Python 3.12.3
+  xml2rfc 3.23.1
+    Python 3.12.6
     ConfigArgParse 1.7
-    google-i18n-address 3.1.0
+    google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.4
     lxml 4.9.4
-    platformdirs 4.2.2
+    platformdirs 4.3.6
     pycountry 22.3.5
     PyYAML 6.0.1
     requests 2.32.3
@@ -1032,7 +1032,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Tiloca, et al.</td>
-<td class="center">Expires 9 March 2025</td>
+<td class="center">Expires 24 March 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1045,12 +1045,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-core-oscore-groupcomm-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-09-05" class="published">5 September 2024</time>
+<time datetime="2024-09-20" class="published">20 September 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-03-09">9 March 2025</time></dd>
+<dd class="expires"><time datetime="2025-03-24">24 March 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1115,7 +1115,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 9 March 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 24 March 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1162,28 +1162,31 @@ svg :is([fill="white"], [fill^="#fff"]) {
                     <p id="section-toc.1-1.2.2.1.2.1.1" class="keepWithNext"><a href="#section-2.1.1" class="auto internal xref">2.1.1</a>.  <a href="#name-aead-algorithm" class="internal xref">AEAD Algorithm</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1.2.2">
-                    <p id="section-toc.1-1.2.2.1.2.2.1"><a href="#section-2.1.2" class="auto internal xref">2.1.2</a>.  <a href="#name-id-context" class="internal xref">ID Context</a></p>
+                    <p id="section-toc.1-1.2.2.1.2.2.1"><a href="#section-2.1.2" class="auto internal xref">2.1.2</a>.  <a href="#name-hkdf-algorithm" class="internal xref">HKDF Algorithm</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1.2.3">
-                    <p id="section-toc.1-1.2.2.1.2.3.1"><a href="#section-2.1.3" class="auto internal xref">2.1.3</a>.  <a href="#name-common-iv" class="internal xref">Common IV</a></p>
+                    <p id="section-toc.1-1.2.2.1.2.3.1"><a href="#section-2.1.3" class="auto internal xref">2.1.3</a>.  <a href="#name-id-context" class="internal xref">ID Context</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1.2.4">
-                    <p id="section-toc.1-1.2.2.1.2.4.1"><a href="#section-2.1.4" class="auto internal xref">2.1.4</a>.  <a href="#name-authentication-credential-f" class="internal xref">Authentication Credential Format</a></p>
+                    <p id="section-toc.1-1.2.2.1.2.4.1"><a href="#section-2.1.4" class="auto internal xref">2.1.4</a>.  <a href="#name-common-iv" class="internal xref">Common IV</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1.2.5">
-                    <p id="section-toc.1-1.2.2.1.2.5.1"><a href="#section-2.1.5" class="auto internal xref">2.1.5</a>.  <a href="#name-group-manager-authenticatio" class="internal xref">Group Manager Authentication Credential</a></p>
+                    <p id="section-toc.1-1.2.2.1.2.5.1"><a href="#section-2.1.5" class="auto internal xref">2.1.5</a>.  <a href="#name-authentication-credential-f" class="internal xref">Authentication Credential Format</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1.2.6">
-                    <p id="section-toc.1-1.2.2.1.2.6.1"><a href="#section-2.1.6" class="auto internal xref">2.1.6</a>.  <a href="#name-group-encryption-algorithm" class="internal xref">Group Encryption Algorithm</a></p>
+                    <p id="section-toc.1-1.2.2.1.2.6.1"><a href="#section-2.1.6" class="auto internal xref">2.1.6</a>.  <a href="#name-group-manager-authenticatio" class="internal xref">Group Manager Authentication Credential</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1.2.7">
-                    <p id="section-toc.1-1.2.2.1.2.7.1"><a href="#section-2.1.7" class="auto internal xref">2.1.7</a>.  <a href="#name-signature-algorithm" class="internal xref">Signature Algorithm</a></p>
+                    <p id="section-toc.1-1.2.2.1.2.7.1"><a href="#section-2.1.7" class="auto internal xref">2.1.7</a>.  <a href="#name-group-encryption-algorithm" class="internal xref">Group Encryption Algorithm</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1.2.8">
-                    <p id="section-toc.1-1.2.2.1.2.8.1"><a href="#section-2.1.8" class="auto internal xref">2.1.8</a>.  <a href="#name-signature-encryption-key" class="internal xref">Signature Encryption Key</a></p>
+                    <p id="section-toc.1-1.2.2.1.2.8.1"><a href="#section-2.1.8" class="auto internal xref">2.1.8</a>.  <a href="#name-signature-algorithm" class="internal xref">Signature Algorithm</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1.2.9">
-                    <p id="section-toc.1-1.2.2.1.2.9.1"><a href="#section-2.1.9" class="auto internal xref">2.1.9</a>.  <a href="#name-pairwise-key-agreement-algo" class="internal xref">Pairwise Key Agreement Algorithm</a></p>
+                    <p id="section-toc.1-1.2.2.1.2.9.1"><a href="#section-2.1.9" class="auto internal xref">2.1.9</a>.  <a href="#name-signature-encryption-key" class="internal xref">Signature Encryption Key</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1.2.10">
+                    <p id="section-toc.1-1.2.2.1.2.10.1"><a href="#section-2.1.10" class="auto internal xref">2.1.10</a>. <a href="#name-pairwise-key-agreement-algo" class="internal xref">Pairwise Key Agreement Algorithm</a></p>
 </li>
                 </ul>
 </li>
@@ -1266,7 +1269,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-the-kid-and-kid-context-par" class="internal xref">The 'kid' and 'kid context' parameters</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
-                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-aead-nonce" class="internal xref">AEAD Nonce</a></p>
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-nonce-computation" class="internal xref">Nonce Computation</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.4">
                 <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="auto internal xref">4.4</a>.  <a href="#name-external_aad" class="internal xref">external_aad</a></p>
@@ -1573,7 +1576,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <p id="section-1-2">Object Security for Constrained RESTful Environments (OSCORE) <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> describes a security protocol based on the exchange of protected CoAP messages. OSCORE builds on CBOR Object Signing and Encryption (COSE) <span>[<a href="#RFC9052" class="cite xref">RFC9052</a>]</span><span>[<a href="#RFC9053" class="cite xref">RFC9053</a>]</span> and provides end-to-end encryption, integrity, replay protection, and binding of response to request between a sender and a recipient, independent of the transport layer also in the presence of intermediaries.
 To this end, a CoAP message is protected by including its payload (if any), certain options, and header fields into a COSE object, which is conveyed within the CoAP payload and the CoAP OSCORE Option of the protected message, thereby replacing those message fields with an authenticated and encrypted object.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">This document defines Group OSCORE, a security protocol for group communication with CoAP <span>[<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span> and for CoAP-mappable HTTP requests and responses, providing the same end-to-end security properties as OSCORE also in the case where requests have multiple recipients. In particular, the described protocol defines how OSCORE is used in a group communication setting to provide source authentication for group requests sent by a client to multiple servers, and for protection of the corresponding responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with any other member of the group for pairwise-protected OSCORE communication. Just like OSCORE, Group OSCORE is independent of the transport layer and works wherever CoAP does.<a href="#section-1-3" class="pilcrow">¶</a></p>
-<p id="section-1-4">As with OSCORE, it is possible to combine Group OSCORE with communication security on other layers. One example is the use of transport layer security, such as DTLS <span>[<a href="#RFC9147" class="cite xref">RFC9147</a>]</span>, between one client and one proxy (and vice versa), or between one proxy and one server (and vice versa). This prevents observers from accessing addressing information conveyed in CoAP options that would not be protected by Group OSCORE, but would be protected by DTLS. These options include Uri-Host, Uri-Port, and Proxy-Uri. Note that DTLS does not define how to secure messages sent over IP multicast.
+<p id="section-1-4">As with OSCORE, it is possible to combine Group OSCORE with communication security on other layers. One example is the use of transport layer security, such as DTLS <span>[<a href="#RFC9147" class="cite xref">RFC9147</a>]</span>, between one client and one proxy, or between one proxy and one server. This prevents observers from accessing addressing information conveyed in CoAP options that would not be protected by Group OSCORE, but would be protected by DTLS. These options include Uri-Host, Uri-Port, and Proxy-Uri. Note that DTLS does not define how to secure messages sent over IP multicast and cannot be used for end-to-end protection over a proxy.
 Group OSCORE is also intended to work with OSCORE-capable proxies <span>[<a href="#I-D.ietf-core-oscore-capable-proxies" class="cite xref">I-D.ietf-core-oscore-capable-proxies</a>]</span> thereby enabling, for example, nested OSCORE operations with OSCORE-protected communication between a CoAP client and a proxy, carrying messages that are additionally protected with Group OSCORE between the CoAP client and the target CoAP servers.<a href="#section-1-4" class="pilcrow">¶</a></p>
 <p id="section-1-5">Group OSCORE defines two modes of operation, that can be used independently or together:<a href="#section-1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -1581,7 +1584,7 @@ Group OSCORE is also intended to work with OSCORE-capable proxies <span>[<a href
           <p id="section-1-6.1.1">In the group mode, Group OSCORE requests and responses are digitally signed with the private key of the sender and the signature is embedded in the protected CoAP message. The group mode supports all COSE signature algorithms as well as signature verification by intermediaries. This mode is defined in <a href="#mess-processing" class="auto internal xref">Section 8</a>.<a href="#section-1-6.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-1-6.2">
-          <p id="section-1-6.2.1">In the pairwise mode, two group members exchange OSCORE requests and responses (typically) over unicast, and the messages are protected with symmetric keys. These symmetric keys are derived from Diffie-Hellman shared secrets, calculated with the asymmetric keys of the sender and recipient, allowing for shorter integrity tags and therefore lower message overhead. This mode is defined in <a href="#sec-pairwise-protection" class="auto internal xref">Section 9</a>.<a href="#section-1-6.2.1" class="pilcrow">¶</a></p>
+          <p id="section-1-6.2.1">In the pairwise mode, two group members exchange OSCORE requests and responses (typically) over unicast, and the messages are protected with symmetric keys not known by the other group members. These symmetric keys are derived from Diffie-Hellman shared secrets, calculated with the asymmetric keys of the sender and recipient, allowing for shorter integrity tags and therefore lower message overhead. This mode is defined in <a href="#sec-pairwise-protection" class="auto internal xref">Section 9</a>.<a href="#section-1-6.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-1-7">Both modes provide source authentication of CoAP messages. The application decides what mode to use, potentially on a per-message basis. Such decisions can be based, for instance, on pre-configured policies or dynamic assessing of the target recipient and/or resource, among other things. One important case is when requests are protected in group mode, and responses in pairwise mode. Since such responses convey shorter integrity tags instead of bigger, full-fledged signatures, this significantly reduces the message overhead in case of many responses to one request.<a href="#section-1-7" class="pilcrow">¶</a></p>
@@ -1655,27 +1658,27 @@ The Security Context of Group OSCORE extends the OSCORE Security Context defined
           <p id="section-2-4.1.1">One Common Context, shared by all the endpoints in the group and extended as defined below.<a href="#section-2-4.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2-4.1.2.1">
-              <p id="section-2-4.1.2.1.1">The new parameter Authentication Credential Format, specifying the format of authentication credentials used in the group (see <a href="#ssec-common-context-authcred-format" class="auto internal xref">Section 2.1.4</a>).<a href="#section-2-4.1.2.1.1" class="pilcrow">¶</a></p>
+              <p id="section-2-4.1.2.1.1">The new parameter Authentication Credential Format, specifying the format of authentication credentials used in the group (see <a href="#ssec-common-context-authcred-format" class="auto internal xref">Section 2.1.5</a>).<a href="#section-2-4.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2-4.1.2.2">
-              <p id="section-2-4.1.2.2.1">The new parameter Group Manager Authentication Credential, specifying the authentication credential of the Group Manager responsible for the group (see <a href="#ssec-common-context-gm-pub-key" class="auto internal xref">Section 2.1.5</a>).<a href="#section-2-4.1.2.2.1" class="pilcrow">¶</a></p>
+              <p id="section-2-4.1.2.2.1">The new parameter Group Manager Authentication Credential, specifying the authentication credential of the Group Manager responsible for the group (see <a href="#ssec-common-context-gm-pub-key" class="auto internal xref">Section 2.1.6</a>).<a href="#section-2-4.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2-4.1.2.3">
               <p id="section-2-4.1.2.3.1">For the group mode, the Common Context is extended with the following new parameters.<a href="#section-2-4.1.2.3.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2-4.1.2.3.2.1">
-                  <p id="section-2-4.1.2.3.2.1.1">Group Encryption Algorithm, used for encrypting and decrypting messages protected in group mode (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.6</a>).<a href="#section-2-4.1.2.3.2.1.1" class="pilcrow">¶</a></p>
+                  <p id="section-2-4.1.2.3.2.1.1">Group Encryption Algorithm, used for encrypting and decrypting messages protected in group mode (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-2-4.1.2.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2-4.1.2.3.2.2">
-                  <p id="section-2-4.1.2.3.2.2.1">Signature Algorithm, used for computing and verifying the countersignature of messages protected in group mode (see <a href="#ssec-common-context-cs-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-2-4.1.2.3.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-2-4.1.2.3.2.2.1">Signature Algorithm, used for computing and verifying the countersignature of messages protected in group mode (see <a href="#ssec-common-context-cs-alg" class="auto internal xref">Section 2.1.8</a>).<a href="#section-2-4.1.2.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2-4.1.2.3.2.3">
-                  <p id="section-2-4.1.2.3.2.3.1">Signature Encryption Key, used for encrypting and decrypting the countersignature of messages protected in group mode (see <a href="#ssec-common-context-group-enc-key" class="auto internal xref">Section 2.1.8</a>).<a href="#section-2-4.1.2.3.2.3.1" class="pilcrow">¶</a></p>
+                  <p id="section-2-4.1.2.3.2.3.1">Signature Encryption Key, used for encrypting and decrypting the countersignature of messages protected in group mode (see <a href="#ssec-common-context-group-enc-key" class="auto internal xref">Section 2.1.9</a>).<a href="#section-2-4.1.2.3.2.3.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
             <li class="normal" id="section-2-4.1.2.4">
-              <p id="section-2-4.1.2.4.1">For the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm (see <a href="#ssec-common-context-dh-alg" class="auto internal xref">Section 2.1.9</a>) used for the agreement on a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see <a href="#key-derivation-pairwise" class="auto internal xref">Section 2.5.1</a>).<a href="#section-2-4.1.2.4.1" class="pilcrow">¶</a></p>
+              <p id="section-2-4.1.2.4.1">For the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm (see <a href="#ssec-common-context-dh-alg" class="auto internal xref">Section 2.1.10</a>) used for the agreement on a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see <a href="#key-derivation-pairwise" class="auto internal xref">Section 2.5.1</a>).<a href="#section-2-4.1.2.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </li>
@@ -1749,95 +1752,104 @@ The Common Context may be acquired from the Group Manager (see <a href="#group-m
 <p id="section-2.1.1-1">The AEAD Algorithm (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>) <span class="bcp14">SHALL</span> identify the COSE AEAD algorithm to use for encryption and decryption when messages are protected using the pairwise mode (see <a href="#sec-pairwise-protection" class="auto internal xref">Section 9</a>). This algorithm <span class="bcp14">MUST</span> provide integrity protection. If this parameter is not set, the pairwise mode is not used in the group.<a href="#section-2.1.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="ssec-common-context-id-context">
+<div id="ssec-common-context-hkdf-alg">
 <section id="section-2.1.2">
-          <h4 id="name-id-context">
-<a href="#section-2.1.2" class="section-number selfRef">2.1.2. </a><a href="#name-id-context" class="section-name selfRef">ID Context</a>
+          <h4 id="name-hkdf-algorithm">
+<a href="#section-2.1.2" class="section-number selfRef">2.1.2. </a><a href="#name-hkdf-algorithm" class="section-name selfRef">HKDF Algorithm</a>
           </h4>
-<p id="section-2.1.2-1">The ID Context parameter (see Sections <a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">3.1</a> and <a href="https://rfc-editor.org/rfc/rfc8613#section-3.3" class="relref">3.3</a> of <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>) <span class="bcp14">SHALL</span> contain the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in <a href="#gid-ex" class="auto internal xref">Appendix C</a>. The application needs to specify how to handle potential collisions between Gids (see <a href="#ssec-gid-collision" class="auto internal xref">Section 13.6</a>).<a href="#section-2.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.2-1">The HKDF Algorithm (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>) <span class="bcp14">SHALL</span> identify the used key derivation function, which <span class="bcp14">MUST</span> be one of the HMAC-based HKDF <span>[<a href="#RFC5869" class="cite xref">RFC5869</a>]</span> algorithms defined for COSE (see <span><a href="https://rfc-editor.org/rfc/rfc9053#section-5.1" class="relref">Section 5.1</a> of [<a href="#RFC9053" class="cite xref">RFC9053</a>]</span>) and registered at <span>[<a href="#COSE.Algorithms" class="cite xref">COSE.Algorithms</a>]</span>.<a href="#section-2.1.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="ssec-common-context-id-context">
+<section id="section-2.1.3">
+          <h4 id="name-id-context">
+<a href="#section-2.1.3" class="section-number selfRef">2.1.3. </a><a href="#name-id-context" class="section-name selfRef">ID Context</a>
+          </h4>
+<p id="section-2.1.3-1">The ID Context parameter (see Sections <a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">3.1</a> and <a href="https://rfc-editor.org/rfc/rfc8613#section-3.3" class="relref">3.3</a> of <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>) <span class="bcp14">SHALL</span> contain the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in <a href="#gid-ex" class="auto internal xref">Appendix C</a>. The application needs to specify how to handle potential collisions between Gids (see <a href="#ssec-gid-collision" class="auto internal xref">Section 13.6</a>).<a href="#section-2.1.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-common-common-iv">
-<section id="section-2.1.3">
+<section id="section-2.1.4">
           <h4 id="name-common-iv">
-<a href="#section-2.1.3" class="section-number selfRef">2.1.3. </a><a href="#name-common-iv" class="section-name selfRef">Common IV</a>
+<a href="#section-2.1.4" class="section-number selfRef">2.1.4. </a><a href="#name-common-iv" class="section-name selfRef">Common IV</a>
           </h4>
-<p id="section-2.1.3-1">The Common IV parameter (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>) <span class="bcp14">SHALL</span> identify the Common IV used in the group. Differently from OSCORE, the length of the Common IV is determined as follows.<a href="#section-2.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.4-1">The Common IV parameter (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>) <span class="bcp14">SHALL</span> identify the Common IV used in the group. Differently from OSCORE, the length of the Common IV is determined as follows.<a href="#section-2.1.4-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.1.3-2.1">
-              <p id="section-2.1.3-2.1.1">If only one among the AEAD Algorithm and the Group Encryption Algorithm is set (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a> and <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.6</a>), the length of the Common IV is the AEAD nonce length for the set algorithm.<a href="#section-2.1.3-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-2.1.4-2.1">
+              <p id="section-2.1.4-2.1.1">If only one among the AEAD Algorithm and the Group Encryption Algorithm is set (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a> and <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>), the length of the Common IV is the nonce length for the set algorithm.<a href="#section-2.1.4-2.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.1.3-2.2">
-              <p id="section-2.1.3-2.2.1">If both the AEAD Algorithm and the Group Encryption Algorithm are set, the length of the Common IV is the greatest AEAD nonce length among those of the two algorithms.<a href="#section-2.1.3-2.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-2.1.4-2.2">
+              <p id="section-2.1.4-2.2.1">If both the AEAD Algorithm and the Group Encryption Algorithm are set, the length of the Common IV is the greatest nonce length among those of the two algorithms.<a href="#section-2.1.4-2.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
 </div>
 <div id="ssec-common-context-authcred-format">
-<section id="section-2.1.4">
+<section id="section-2.1.5">
           <h4 id="name-authentication-credential-f">
-<a href="#section-2.1.4" class="section-number selfRef">2.1.4. </a><a href="#name-authentication-credential-f" class="section-name selfRef">Authentication Credential Format</a>
+<a href="#section-2.1.5" class="section-number selfRef">2.1.5. </a><a href="#name-authentication-credential-f" class="section-name selfRef">Authentication Credential Format</a>
           </h4>
-<p id="section-2.1.4-1">The new parameter Authentication Credential Format specifies the format of authentication credentials used in the group. Further details on authentication credentials are compiled in <a href="#sec-pub-key-format" class="auto internal xref">Section 2.4</a>.<a href="#section-2.1.4-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.5-1">The new parameter Authentication Credential Format specifies the format of authentication credentials used in the group. Further details on authentication credentials are compiled in <a href="#sec-pub-key-format" class="auto internal xref">Section 2.4</a>.<a href="#section-2.1.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-common-context-gm-pub-key">
-<section id="section-2.1.5">
+<section id="section-2.1.6">
           <h4 id="name-group-manager-authenticatio">
-<a href="#section-2.1.5" class="section-number selfRef">2.1.5. </a><a href="#name-group-manager-authenticatio" class="section-name selfRef">Group Manager Authentication Credential</a>
+<a href="#section-2.1.6" class="section-number selfRef">2.1.6. </a><a href="#name-group-manager-authenticatio" class="section-name selfRef">Group Manager Authentication Credential</a>
           </h4>
-<p id="section-2.1.5-1">The new parameter Group Manager Authentication Credential specifies the authentication credential of the Group Manager, including the Group Manager's public key. The endpoint <span class="bcp14">MUST</span> achieve proof-of-possession of the corresponding private key. Further details on the provisioning of the Group Manager's authentication credential to the group members are out of the scope of this document.<a href="#section-2.1.5-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.6-1">The new parameter Group Manager Authentication Credential specifies the authentication credential of the Group Manager, including the Group Manager's public key. The endpoint <span class="bcp14">MUST</span> achieve proof-of-possession of the corresponding private key. Further details on the provisioning of the Group Manager's authentication credential to the group members are out of the scope of this document.<a href="#section-2.1.6-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-common-context-cs-enc-alg">
-<section id="section-2.1.6">
+<section id="section-2.1.7">
           <h4 id="name-group-encryption-algorithm">
-<a href="#section-2.1.6" class="section-number selfRef">2.1.6. </a><a href="#name-group-encryption-algorithm" class="section-name selfRef">Group Encryption Algorithm</a>
+<a href="#section-2.1.7" class="section-number selfRef">2.1.7. </a><a href="#name-group-encryption-algorithm" class="section-name selfRef">Group Encryption Algorithm</a>
           </h4>
-<p id="section-2.1.6-1">The new parameter Group Encryption Algorithm identifies the algorithm to use for encryption and decryption, when messages are protected in group mode (see <a href="#mess-processing" class="auto internal xref">Section 8</a>). This algorithm <span class="bcp14">MAY</span> provide integrity protection. If this parameter is not set, the group mode is not used in the group.<a href="#section-2.1.6-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.7-1">The new parameter Group Encryption Algorithm identifies the algorithm to use for encryption and decryption, when messages are protected in group mode (see <a href="#mess-processing" class="auto internal xref">Section 8</a>). This algorithm <span class="bcp14">MAY</span> provide integrity protection. If this parameter is not set, the group mode is not used in the group.<a href="#section-2.1.7-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.7-2">A non-authenticated algorithm <span class="bcp14">MUST NOT</span> be used as Group Encryption Algorithm if it is not possible to ensure uniqueness of the (key, nonce) pairs. This is the case, for instance, for A128CTR, A192CTR, and A256CTR <span>[<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>. Instead, examples of non-authenticated algorithms that can be used as Group Encryption Algorithm are A128CBC, A192CBC, and A256CBC <span>[<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>.<a href="#section-2.1.7-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-common-context-cs-alg">
-<section id="section-2.1.7">
+<section id="section-2.1.8">
           <h4 id="name-signature-algorithm">
-<a href="#section-2.1.7" class="section-number selfRef">2.1.7. </a><a href="#name-signature-algorithm" class="section-name selfRef">Signature Algorithm</a>
+<a href="#section-2.1.8" class="section-number selfRef">2.1.8. </a><a href="#name-signature-algorithm" class="section-name selfRef">Signature Algorithm</a>
           </h4>
-<p id="section-2.1.7-1">The new parameter Signature Algorithm identifies the digital signature algorithm used for computing and verifying the countersignature on the COSE object (see Sections <a href="https://rfc-editor.org/rfc/rfc9338#section-3.2" class="relref">3.2</a> and <a href="https://rfc-editor.org/rfc/rfc9338#section-3.3" class="relref">3.3</a> of <span>[<a href="#RFC9338" class="cite xref">RFC9338</a>]</span>), when messages are protected in group mode (see <a href="#mess-processing" class="auto internal xref">Section 8</a>). If this parameter is not set, the group mode is not used in the group.<a href="#section-2.1.7-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.8-1">The new parameter Signature Algorithm identifies the digital signature algorithm used for computing and verifying the countersignature on the COSE object (see Sections <a href="https://rfc-editor.org/rfc/rfc9338#section-3.2" class="relref">3.2</a> and <a href="https://rfc-editor.org/rfc/rfc9338#section-3.3" class="relref">3.3</a> of <span>[<a href="#RFC9338" class="cite xref">RFC9338</a>]</span>), when messages are protected in group mode (see <a href="#mess-processing" class="auto internal xref">Section 8</a>). If this parameter is not set, the group mode is not used in the group.<a href="#section-2.1.8-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-common-context-group-enc-key">
-<section id="section-2.1.8">
+<section id="section-2.1.9">
           <h4 id="name-signature-encryption-key">
-<a href="#section-2.1.8" class="section-number selfRef">2.1.8. </a><a href="#name-signature-encryption-key" class="section-name selfRef">Signature Encryption Key</a>
+<a href="#section-2.1.9" class="section-number selfRef">2.1.9. </a><a href="#name-signature-encryption-key" class="section-name selfRef">Signature Encryption Key</a>
           </h4>
-<p id="section-2.1.8-1">The new parameter Signature Encryption Key specifies the encryption key for deriving a keystream to encrypt/decrypt a countersignature, when a message is protected in group mode (see <a href="#mess-processing" class="auto internal xref">Section 8</a>).<a href="#section-2.1.8-1" class="pilcrow">¶</a></p>
-<p id="section-2.1.8-2">The Signature Encryption Key is derived as defined for Sender/Recipient Keys in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2.1" class="relref">Section 3.2.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, with the following differences.<a href="#section-2.1.8-2" class="pilcrow">¶</a></p>
+<p id="section-2.1.9-1">The new parameter Signature Encryption Key specifies the encryption key for deriving a keystream to encrypt/decrypt a countersignature, when a message is protected in group mode (see <a href="#mess-processing" class="auto internal xref">Section 8</a>).<a href="#section-2.1.9-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.9-2">The Signature Encryption Key is derived as defined for Sender/Recipient Keys in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2.1" class="relref">Section 3.2.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, with the following differences.<a href="#section-2.1.9-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.1.8-3.1">
-              <p id="section-2.1.8-3.1.1">The 'id' element of the 'info' array is the empty byte string.<a href="#section-2.1.8-3.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-2.1.9-3.1">
+              <p id="section-2.1.9-3.1.1">The 'id' element of the 'info' array is the empty byte string.<a href="#section-2.1.9-3.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.1.8-3.2">
-              <p id="section-2.1.8-3.2.1">The 'alg_aead' element of the 'info' array specifies the Group Encryption Algorithm from the Common Context (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.6</a>), encoded as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.<a href="#section-2.1.8-3.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-2.1.9-3.2">
+              <p id="section-2.1.9-3.2.1">The 'alg_aead' element of the 'info' array specifies the Group Encryption Algorithm from the Common Context (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>), encoded as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.<a href="#section-2.1.9-3.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.1.8-3.3">
-              <p id="section-2.1.8-3.3.1">The 'type' element of the 'info' array is "SEKey". The label is an ASCII string and does not include a trailing NUL byte.<a href="#section-2.1.8-3.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-2.1.9-3.3">
+              <p id="section-2.1.9-3.3.1">The 'type' element of the 'info' array is "SEKey". The label is an ASCII string and does not include a trailing NUL byte.<a href="#section-2.1.9-3.3.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.1.8-3.4">
-              <p id="section-2.1.8-3.4.1">L and the 'L' element of the 'info' array are the size of the key for the Group Encryption Algorithm specified in the Common Context (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.6</a>), in bytes. While the obtained Signature Encryption Key is never used with the Group Encryption Algorithm, its length was chosen to obtain a matching level of security.<a href="#section-2.1.8-3.4.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-2.1.9-3.4">
+              <p id="section-2.1.9-3.4.1">L and the 'L' element of the 'info' array are the size of the key for the Group Encryption Algorithm specified in the Common Context (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>), in bytes. While the obtained Signature Encryption Key is never used with the Group Encryption Algorithm, its length was chosen to obtain a matching level of security.<a href="#section-2.1.9-3.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
 </div>
 <div id="ssec-common-context-dh-alg">
-<section id="section-2.1.9">
+<section id="section-2.1.10">
           <h4 id="name-pairwise-key-agreement-algo">
-<a href="#section-2.1.9" class="section-number selfRef">2.1.9. </a><a href="#name-pairwise-key-agreement-algo" class="section-name selfRef">Pairwise Key Agreement Algorithm</a>
+<a href="#section-2.1.10" class="section-number selfRef">2.1.10. </a><a href="#name-pairwise-key-agreement-algo" class="section-name selfRef">Pairwise Key Agreement Algorithm</a>
           </h4>
-<p id="section-2.1.9-1">The new parameter Pairwise Key Agreement Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see <a href="#key-derivation-pairwise" class="auto internal xref">Section 2.5.1</a>) to protect messages with the pairwise mode (see <a href="#sec-pairwise-protection" class="auto internal xref">Section 9</a>). If this parameter is not set, the pairwise mode is not used in the group.<a href="#section-2.1.9-1" class="pilcrow">¶</a></p>
-<p id="section-2.1.9-2">If the HKDF Algorithm specified in the Common Context is "HKDF SHA-256" (identified as "HMAC 256/256"), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-256" (COSE algorithm encoding: -27).<a href="#section-2.1.9-2" class="pilcrow">¶</a></p>
-<p id="section-2.1.9-3">If the HKDF Algorithm specified in the Common Context is "HKDF SHA-512" (identified as "HMAC 512/512"), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-512" (COSE algorithm encoding: -28).<a href="#section-2.1.9-3" class="pilcrow">¶</a></p>
-<p id="section-2.1.9-4">Note that the HKDF Algorithm in the Common Context is denoted by the corresponding COSE HMAC Algorithm. For example, the HKDF Algorithm "HKDF SHA-256" is specified as the HMAC Algorithm "HMAC 256/256".<a href="#section-2.1.9-4" class="pilcrow">¶</a></p>
-<p id="section-2.1.9-5">More generally, if Pairwise Key Agreement Algorithm is set, it <span class="bcp14">MUST</span> identify a COSE algorithm such that: i) it performs a direct ECDH Static-Static key agreement; and ii) it indicates the use of the same HKDF Algorithm used in the group as specified in the Common Context.<a href="#section-2.1.9-5" class="pilcrow">¶</a></p>
+<p id="section-2.1.10-1">The new parameter Pairwise Key Agreement Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see <a href="#key-derivation-pairwise" class="auto internal xref">Section 2.5.1</a>) to protect messages with the pairwise mode (see <a href="#sec-pairwise-protection" class="auto internal xref">Section 9</a>). If this parameter is not set, the pairwise mode is not used in the group.<a href="#section-2.1.10-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.10-2">If the HKDF Algorithm specified in the Common Context is "HKDF SHA-256" (identified as "HMAC 256/256"), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-256" (COSE algorithm encoding: -27).<a href="#section-2.1.10-2" class="pilcrow">¶</a></p>
+<p id="section-2.1.10-3">If the HKDF Algorithm specified in the Common Context is "HKDF SHA-512" (identified as "HMAC 512/512"), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-512" (COSE algorithm encoding: -28).<a href="#section-2.1.10-3" class="pilcrow">¶</a></p>
+<p id="section-2.1.10-4">Note that the HKDF Algorithm in the Common Context is denoted by the corresponding COSE HMAC Algorithm. For example, the HKDF Algorithm "HKDF SHA-256" is specified as the HMAC Algorithm "HMAC 256/256".<a href="#section-2.1.10-4" class="pilcrow">¶</a></p>
+<p id="section-2.1.10-5">More generally, if Pairwise Key Agreement Algorithm is set, it <span class="bcp14">MUST</span> identify a COSE algorithm such that: i) it performs a direct ECDH Static-Static key agreement; and ii) it indicates the use of the same HKDF Algorithm used in the group as specified in the Common Context.<a href="#section-2.1.10-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1851,10 +1863,10 @@ The Common Context may be acquired from the Group Manager (see <a href="#group-m
 <p id="section-2.2-2">The maximum length of a Sender ID in bytes equals L minus 6, where L is determined as follows.<a href="#section-2.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2.2-3.1">
-            <p id="section-2.2-3.1.1">If only one among the AEAD Algorithm and the Group Encryption Algorithm is set (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a> and <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.6</a>), then L is the AEAD nonce length for the set algorithm.<a href="#section-2.2-3.1.1" class="pilcrow">¶</a></p>
+            <p id="section-2.2-3.1.1">If only one among the AEAD Algorithm and the Group Encryption Algorithm is set (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a> and <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>), then L is the nonce length for the set algorithm.<a href="#section-2.2-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-2.2-3.2">
-            <p id="section-2.2-3.2.1">If both the AEAD Algorithm and the Group Encryption Algorithm are set, then L is the smallest AEAD nonce length among those of the two algorithms.<a href="#section-2.2-3.2.1" class="pilcrow">¶</a></p>
+            <p id="section-2.2-3.2.1">If both the AEAD Algorithm and the Group Encryption Algorithm are set, then L is the smallest nonce length among those of the two algorithms.<a href="#section-2.2-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-2.2-4">With the exception of the authentication credential of the sender endpoint, a receiver endpoint can derive a complete Security Context from a received Group OSCORE message and the Common Context (see <a href="#ssec-establishment-context-parameters" class="auto internal xref">Section 2.3</a>).<a href="#section-2.2-4" class="pilcrow">¶</a></p>
@@ -1872,13 +1884,13 @@ The Common Context may be acquired from the Group Manager (see <a href="#group-m
 <p id="section-2.3-2">The derivation of Sender/Recipient Keys and of the Common IV defined in OSCORE applies also to Group OSCORE, with the following modifications compared to <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2.1" class="relref">Section 3.2.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-2.3-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2.3-3.1">
-            <p id="section-2.3-3.1.1">If Group Encryption Algorithm in the Common Context is set (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.6</a>), then the 'alg_aead' element of the 'info' array <span class="bcp14">MUST</span> specify Group Encryption Algorithm from the Common Context as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.<a href="#section-2.3-3.1.1" class="pilcrow">¶</a></p>
+            <p id="section-2.3-3.1.1">If Group Encryption Algorithm in the Common Context is set (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>), then the 'alg_aead' element of the 'info' array <span class="bcp14">MUST</span> specify Group Encryption Algorithm from the Common Context as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.<a href="#section-2.3-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-2.3-3.2">
             <p id="section-2.3-3.2.1">If Group Encryption Algorithm in the Common Context is not set, then the 'alg_aead' element of the 'info' array <span class="bcp14">MUST</span> specify AEAD Algorithm from the Common Context (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a>), as per <span><a href="https://rfc-editor.org/rfc/rfc8613#section-5.4" class="relref">Section 5.4</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>.<a href="#section-2.3-3.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-2.3-3.3">
-            <p id="section-2.3-3.3.1">When deriving the Common IV, the 'L' element of the 'info' array <span class="bcp14">MUST</span> specify the length of the Common IV in bytes, which is determined as defined in <a href="#ssec-common-common-iv" class="auto internal xref">Section 2.1.3</a>.<a href="#section-2.3-3.3.1" class="pilcrow">¶</a></p>
+            <p id="section-2.3-3.3.1">When deriving the Common IV, the 'L' element of the 'info' array <span class="bcp14">MUST</span> specify the length of the Common IV in bytes, which is determined as defined in <a href="#ssec-common-common-iv" class="auto internal xref">Section 2.1.4</a>.<a href="#section-2.3-3.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1888,8 +1900,8 @@ The Common Context may be acquired from the Group Manager (see <a href="#group-m
         <h3 id="name-authentication-credentials">
 <a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-authentication-credentials" class="section-name selfRef">Authentication Credentials</a>
         </h3>
-<p id="section-2.4-1">The authentication credentials of the endpoints in a group <span class="bcp14">MUST</span> be encoded according to the format used in the group, as indicated by the Authentication Credential Format parameter in the Common Context (see <a href="#ssec-common-context-authcred-format" class="auto internal xref">Section 2.1.4</a>). The authentication credential of the Group Manager <span class="bcp14">SHOULD</span> be encoded according to that same format. The format of authentication credentials <span class="bcp14">MUST</span> provide the public key and a comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).<a href="#section-2.4-1" class="pilcrow">¶</a></p>
-<p id="section-2.4-2">If Group Encryption Algorithm in the Common Context is not set (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.6</a>), then the public key algorithm is the Pairwise Key Agreement Algorithm used in the group (see <a href="#ssec-common-context-dh-alg" class="auto internal xref">Section 2.1.9</a>), else the Signature Algorithm used in the group (see <a href="#ssec-common-context-cs-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-2.4-2" class="pilcrow">¶</a></p>
+<p id="section-2.4-1">The authentication credentials of the endpoints in a group <span class="bcp14">MUST</span> be encoded according to the format used in the group, as indicated by the Authentication Credential Format parameter in the Common Context (see <a href="#ssec-common-context-authcred-format" class="auto internal xref">Section 2.1.5</a>). The authentication credential of the Group Manager <span class="bcp14">SHOULD</span> be encoded according to that same format. The format of authentication credentials <span class="bcp14">MUST</span> provide the public key and a comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).<a href="#section-2.4-1" class="pilcrow">¶</a></p>
+<p id="section-2.4-2">If Group Encryption Algorithm in the Common Context is not set (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>), then the public key algorithm is the Pairwise Key Agreement Algorithm used in the group (see <a href="#ssec-common-context-dh-alg" class="auto internal xref">Section 2.1.10</a>), else the Signature Algorithm used in the group (see <a href="#ssec-common-context-cs-alg" class="auto internal xref">Section 2.1.8</a>).<a href="#section-2.4-2" class="pilcrow">¶</a></p>
 <p id="section-2.4-3">If the authentication credentials are X.509 certificates <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> or C509 certificates <span>[<a href="#I-D.ietf-cose-cbor-encoded-cert" class="cite xref">I-D.ietf-cose-cbor-encoded-cert</a>]</span>, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.<a href="#section-2.4-3" class="pilcrow">¶</a></p>
 <p id="section-2.4-4">If authentication credentials are CBOR Web Tokens (CWTs) or CWT Claims Sets (CCSs) <span>[<a href="#RFC8392" class="cite xref">RFC8392</a>]</span>, the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.<a href="#section-2.4-4" class="pilcrow">¶</a></p>
 <p id="section-2.4-5">Authentication credentials are used to derive pairwise keys (see <a href="#key-derivation-pairwise" class="auto internal xref">Section 2.5.1</a>) and are included in the external additional authenticated data when processing messages (see <a href="#sec-cose-object-ext-aad" class="auto internal xref">Section 4.4</a>). In both these cases, an endpoint in a group <span class="bcp14">MUST</span> treat authentication credentials as opaque data, i.e., by considering the same binary representation made available to other endpoints in the group, possibly through a designated trusted source (e.g., the Group Manager).<a href="#section-2.4-5" class="pilcrow">¶</a></p>
@@ -2042,14 +2054,14 @@ In case the other endpoint's public key has COSE Key Type "EC2" (e.g., for the c
 <a href="#section-2.6.1" class="section-number selfRef">2.6.1. </a><a href="#name-loss-of-mutable-security-co" class="section-name selfRef">Loss of Mutable Security Context</a>
           </h4>
 <p id="section-2.6.1-1">An endpoint may lose its mutable Security Context, e.g., due to a reboot occurred in an unprepared way (see <a href="#ssec-loss-mutable-context-total" class="auto internal xref">Section 2.6.1.1</a>) or due to a deleted Recipient Context (see <a href="#ssec-loss-mutable-context-overflow" class="auto internal xref">Section 2.6.1.2</a>).<a href="#section-2.6.1-1" class="pilcrow">¶</a></p>
-<p id="section-2.6.1-2">If it is not feasible or practically possible to store and maintain up-to-date the mutable part in non-volatile memory (e.g., due to limited number of write operations), the endpoint <span class="bcp14">MUST</span> be able to detect a loss of the mutable Security Context, to prevent the re-use of a nonce with the same AEAD key, and to handle incoming replayed messages.<a href="#section-2.6.1-2" class="pilcrow">¶</a></p>
+<p id="section-2.6.1-2">If it is not feasible or practically possible to store and maintain up-to-date the mutable part in non-volatile memory (e.g., due to limited number of write operations), the endpoint <span class="bcp14">MUST</span> be able to detect a loss of the mutable Security Context, to prevent the re-use of a nonce with the same key, and to handle incoming replayed messages.<a href="#section-2.6.1-2" class="pilcrow">¶</a></p>
 <div id="ssec-loss-mutable-context-total">
 <section id="section-2.6.1.1">
             <h5 id="name-total-loss">
 <a href="#section-2.6.1.1" class="section-number selfRef">2.6.1.1. </a><a href="#name-total-loss" class="section-name selfRef">Total Loss</a>
             </h5>
-<p id="section-2.6.1.1-1">In case a loss of the Sender Context and/or of the Recipient Contexts is detected (e.g., following a reboot occurred in an unprepared way), the endpoint <span class="bcp14">MUST NOT</span> protect further messages using this Security Context, to avoid reusing an AEAD nonce with the same AEAD key.<a href="#section-2.6.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-2.6.1.1-2">Before resuming its operations in the group, the endpoint <span class="bcp14">MUST</span> retrieve new Security Context parameters from the Group Manager (see <a href="#sec-group-re-join" class="auto internal xref">Section 2.6.3</a>) and use them to derive a new Sender Context and Recipient Contexts (see <a href="#ssec-sender-recipient-context" class="auto internal xref">Section 2.2</a>). Since the new Sender Context includes newly derived encryption keys, an endpoint will not reuse the same pair (key, nonce), even when it is a server using the Partial IV of (old re-injected) requests to build the AEAD nonce for protecting the responses.<a href="#section-2.6.1.1-2" class="pilcrow">¶</a></p>
+<p id="section-2.6.1.1-1">In case a loss of the Sender Context and/or of the Recipient Contexts is detected (e.g., following a reboot occurred in an unprepared way), the endpoint <span class="bcp14">MUST NOT</span> protect further messages using this Security Context, to avoid reusing a nonce with the same key.<a href="#section-2.6.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.6.1.1-2">Before resuming its operations in the group, the endpoint <span class="bcp14">MUST</span> retrieve new Security Context parameters from the Group Manager (see <a href="#sec-group-re-join" class="auto internal xref">Section 2.6.3</a>) and use them to derive a new Sender Context and Recipient Contexts (see <a href="#ssec-sender-recipient-context" class="auto internal xref">Section 2.2</a>). Since the new Sender Context includes newly derived encryption keys, an endpoint will not reuse the same pair (key, nonce), even when it is a server using the Partial IV of (old re-injected) requests to build the nonce for protecting the responses.<a href="#section-2.6.1.1-2" class="pilcrow">¶</a></p>
 <p id="section-2.6.1.1-3">From then on, the endpoint <span class="bcp14">MUST</span> use the latest installed Sender Context to protect outgoing messages. Newly derived Recipient Contexts will have a Replay Window which is initialized as valid.<a href="#section-2.6.1.1-3" class="pilcrow">¶</a></p>
 <p id="section-2.6.1.1-4">If an endpoint is not configured as silent server and is not able to establish an updated Sender Context, e.g., because of lack of connectivity with the Group Manager, then the endpoint <span class="bcp14">MUST NOT</span> protect further messages using the current Security Context and <span class="bcp14">MUST NOT</span> accept incoming messages from other group members, as currently unable to detect possible replays.<a href="#section-2.6.1.1-4" class="pilcrow">¶</a></p>
 <p id="section-2.6.1.1-5">If an endpoint is configured as silent server and is not able to establish an updated Security Context, e.g., because of lack of connectivity with the Group Manager, then the endpoint <span class="bcp14">MUST NOT</span> accept incoming messages from other group members, as currently unable to detect possible replays.<a href="#section-2.6.1.1-5" class="pilcrow">¶</a></p>
@@ -2064,7 +2076,7 @@ In case the other endpoint's public key has COSE Key Type "EC2" (e.g., for the c
 <p id="section-2.6.1.2-1">The Security Context may contain a large and variable number of Recipient Contexts. A Recipient Context may need to be deleted, because the maximum number of Recipient Contexts has been reached (see <a href="#ssec-sender-recipient-context" class="auto internal xref">Section 2.2</a>), or due to some other reason.<a href="#section-2.6.1.2-1" class="pilcrow">¶</a></p>
 <p id="section-2.6.1.2-2">When a Recipient Context is deleted, this does not only result in losing information about previously received messages from the corresponding other endpoint. It also results in the inability to be aware of the Security Contexts from which information has been lost.<a href="#section-2.6.1.2-2" class="pilcrow">¶</a></p>
 <p id="section-2.6.1.2-3">Therefore, if the Recipient Context is derived again from the same Security Context, there is a risk that a replayed message is not detected. If one Recipient Context has been deleted from the current Security Context, then the Replay Window of any new Recipient Context in this Security Context <span class="bcp14">MUST</span> be initialized as invalid. Messages associated with a Recipient Context that has an invalid Replay Window <span class="bcp14">MUST NOT</span> be delivered to the application.<a href="#section-2.6.1.2-3" class="pilcrow">¶</a></p>
-<p id="section-2.6.1.2-4">If the endpoint receives a request to process with the new Recipient Context and the endpoint supports the CoAP Echo Option <span>[<a href="#RFC9175" class="cite xref">RFC9175</a>]</span>, then it is <span class="bcp14">RECOMMENDED</span> to follow the procedure specified in <a href="#sec-synch-challenge-response" class="auto internal xref">Section 10</a> which establishes a valid Replay Window. In particular, the endpoint <span class="bcp14">MUST</span> use its Partial IV when generating the AEAD nonce and <span class="bcp14">MUST</span> include the Partial IV in the response message conveying the Echo Option.<a href="#section-2.6.1.2-4" class="pilcrow">¶</a></p>
+<p id="section-2.6.1.2-4">If the endpoint receives a request to process with the new Recipient Context and the endpoint supports the CoAP Echo Option <span>[<a href="#RFC9175" class="cite xref">RFC9175</a>]</span>, then it is <span class="bcp14">RECOMMENDED</span> to follow the procedure specified in <a href="#sec-synch-challenge-response" class="auto internal xref">Section 10</a> which establishes a valid Replay Window. In particular, the endpoint <span class="bcp14">MUST</span> use its Partial IV when generating the nonce and <span class="bcp14">MUST</span> include the Partial IV in the response message conveying the Echo Option.<a href="#section-2.6.1.2-4" class="pilcrow">¶</a></p>
 <p id="section-2.6.1.2-5">Alternatively, the endpoint <span class="bcp14">MAY</span> retrieve or wait for new Security Context parameters from the Group Manager and derive new Sender and Recipient Contexts, as defined in <a href="#ssec-loss-mutable-context-total" class="auto internal xref">Section 2.6.1.1</a>. In this case the Replay Windows of all Recipient Contexts become valid if they are not already.<a href="#section-2.6.1.2-5" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2159,7 +2171,7 @@ In case the other endpoint's public key has COSE Key Type "EC2" (e.g., for the c
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-the-group-manager" class="section-name selfRef">The Group Manager</a>
       </h2>
 <p id="section-3-1">As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant Security Context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s). This document is based on the existence of an entity called Group Manager that is responsible for the group, but it does not mandate how the Group Manager interacts with the group members. The list of responsibilities of the Group Manager is compiled in <a href="#sec-group-manager" class="auto internal xref">Section 3.4</a>.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<p id="section-3-2">The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. Within each of such groups, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. The maximum length of Sender IDs depends on the length of the AEAD nonce for the algorithms used in the group (see <a href="#ssec-sender-recipient-context" class="auto internal xref">Section 2.2</a>).<a href="#section-3-2" class="pilcrow">¶</a></p>
+<p id="section-3-2">The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. Within each of such groups, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. The maximum length of Sender IDs depends on the length of the nonce for the algorithms used in the group (see <a href="#ssec-sender-recipient-context" class="auto internal xref">Section 2.2</a>).<a href="#section-3-2" class="pilcrow">¶</a></p>
 <p id="section-3-3">According to a hierarchical approach, the Gid value assigned to a group is associated with a dedicated space for the values of Sender ID and Recipient ID of the members of that group. When an endpoint (re-)joins a group, it is provided with the current Gid to use in the group. The Group Manager also assigns an integer Key Generation Number counter to each of its groups, identifying the current version of the keying material used in that group. Further details about identifiers and keys are provided in <a href="#sec-group-key-management" class="auto internal xref">Section 3.2</a>.<a href="#section-3-3" class="pilcrow">¶</a></p>
 <p id="section-3-4">The Group Manager maintains records of the authentication credentials of endpoints in a group, and provides information about the group and its members to other group members (see <a href="#setup" class="auto internal xref">Section 3.1</a>), and to external entities with a specific role (see <a href="#sec-additional-entities" class="auto internal xref">Section 3.3</a>).<a href="#section-3-4" class="pilcrow">¶</a></p>
 <div id="setup">
@@ -2261,7 +2273,7 @@ Then, given Z, the set of authentication credentials received from the Group Man
 </li>
         </ul>
 <p id="section-3.2-17">By removing authentication credentials and deleting Recipient Contexts associated with stale Sender IDs, it is ensured that a recipient endpoint storing the latest group keying material does not store the authentication credentials of sender endpoints that are not current group members. This in turn allows group members to rely on stored authentication credentials to confidently assert the group membership of sender endpoints, when receiving incoming messages protected in group mode (see <a href="#mess-processing" class="auto internal xref">Section 8</a>).<a href="#section-3.2-17" class="pilcrow">¶</a></p>
-<p id="section-3.2-18">Such a strictness in managing the authentication credentials and Recipient Contexts associated with other group members is required for two reasons. First, as further discussed in <a href="#ssec-group-mode-security" class="auto internal xref">Section 13.1</a>, it ensures that the group mode can be used securely, even in a group where the Group Encryption Algorithm does not provide integrity protection (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.6</a>) and external signature checkers are used (see <a href="#sec-processing-signature-checker" class="auto internal xref">Section 8.5</a>). Second, it ensures that the wrong (old) authentication credential associated with a group member A is never used with a sender ID that used to be associated with A and has been later issued to a different group member B (see <a href="#sec-sid-recycling" class="auto internal xref">Section 3.2.1.2</a>), thus preventing the need to recover from an identity mix-up.<a href="#section-3.2-18" class="pilcrow">¶</a></p>
+<p id="section-3.2-18">Such a strictness in managing the authentication credentials and Recipient Contexts associated with other group members is required for two reasons. First, as further discussed in <a href="#ssec-group-mode-security" class="auto internal xref">Section 13.1</a>, it ensures that the group mode can be used securely, even in a group where the Group Encryption Algorithm does not provide integrity protection (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>) and external signature checkers are used (see <a href="#sec-processing-signature-checker" class="auto internal xref">Section 8.5</a>). Second, it ensures that the wrong (old) authentication credential associated with a group member A is never used with a sender ID that used to be associated with A and has been later issued to a different group member B (see <a href="#sec-sid-recycling" class="auto internal xref">Section 3.2.1.2</a>), thus preventing the need to recover from an identity mix-up.<a href="#section-3.2-18" class="pilcrow">¶</a></p>
 <div id="recycling-of-identifiers">
 <section id="section-3.2.1">
           <h4 id="name-recycling-of-identifiers">
@@ -2309,7 +2321,7 @@ Therefore, it is ensured by construction that no client can have with the same s
             <h5 id="name-recycling-of-sender-ids">
 <a href="#section-3.2.1.2" class="section-number selfRef">3.2.1.2. </a><a href="#name-recycling-of-sender-ids" class="section-name selfRef">Recycling of Sender IDs</a>
             </h5>
-<p id="section-3.2.1.2-1">From the moment when a Gid is assigned to a group until the moment a new Gid is assigned to that same group, the Group Manager <span class="bcp14">MUST NOT</span> reassign a Sender ID within the group. This prevents to reuse a Sender ID ('kid') with the same triple (Gid, Master Secret, Master Salt). Within this restriction, the Group Manager can assign a Sender ID used under an old Gid value (including under a same, recycled Gid value), thus avoiding Sender ID values to irrecoverably grow in size.<a href="#section-3.2.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2.1.2-1">From the moment when a Gid is assigned to a group until the moment a new Gid is assigned to that same group, the Group Manager <span class="bcp14">MUST NOT</span> reassign a Sender ID within the group. This prevents from reusing a Sender ID ('kid') with the same triple (Gid, Master Secret, Master Salt). Within this restriction, the Group Manager can assign a Sender ID used under an old Gid value (including under a same, recycled Gid value), thus avoiding Sender ID values to irrecoverably grow in size.<a href="#section-3.2.1.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.2.1.2-2">Even when an endpoint joining a group is recognized as a current member of that group, e.g., through the ongoing secure communication association, the Group Manager <span class="bcp14">MUST</span> assign a new Sender ID different than the one currently used by the endpoint in the group, unless the group is rekeyed first and a new Gid value is established.<a href="#section-3.2.1.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2372,10 +2384,10 @@ If the signature checker is provided with a CWT for a given entity, then the aut
 If the signature checker is provided with a chain or a bag of X.509 / C509 certificates or of CWTs for a given entity, then the authentication credential associated with that entity is the end-entity certificate or end-entity untagged CWT.<a href="#section-3.3-3.2.3" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.3-3.3">
-            <p id="section-3.3-3.3.1">The current Signature Encryption Key (see <a href="#ssec-common-context-group-enc-key" class="auto internal xref">Section 2.1.8</a>).<a href="#section-3.3-3.3.1" class="pilcrow">¶</a></p>
+            <p id="section-3.3-3.3.1">The current Signature Encryption Key (see <a href="#ssec-common-context-group-enc-key" class="auto internal xref">Section 2.1.9</a>).<a href="#section-3.3-3.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.3-3.4">
-            <p id="section-3.3-3.4.1">The identifiers of the algorithms used in the group (see <a href="#sec-context" class="auto internal xref">Section 2</a>), i.e.: i) Group Encryption Algorithm and Signature Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement Algorithm, if such parameters are set in the Common Context (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a> and <a href="#ssec-common-context-dh-alg" class="auto internal xref">Section 2.1.9</a>).<a href="#section-3.3-3.4.1" class="pilcrow">¶</a></p>
+            <p id="section-3.3-3.4.1">The identifiers of the algorithms used in the group (see <a href="#sec-context" class="auto internal xref">Section 2</a>), i.e.: i) Group Encryption Algorithm and Signature Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement Algorithm, if such parameters are set in the Common Context (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a> and <a href="#ssec-common-context-dh-alg" class="auto internal xref">Section 2.1.10</a>).<a href="#section-3.3-3.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-3.3-4">A signature checker <span class="bcp14">MUST</span> be authorized before it can retrieve such information, for example with the use of <span>[<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
@@ -2482,11 +2494,13 @@ In particular, the Countersign_structure contains the context text string "Count
 </div>
 <div id="sec-cose-object-aead-nonce">
 <section id="section-4.3">
-        <h3 id="name-aead-nonce">
-<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-aead-nonce" class="section-name selfRef">AEAD Nonce</a>
+        <h3 id="name-nonce-computation">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-nonce-computation" class="section-name selfRef">Nonce Computation</a>
         </h3>
-<p id="section-4.3-1">The AEAD nonce is constructed like in OSCORE, with the difference that step 4 in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-5.2" class="relref">Section 5.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> is replaced with:<a href="#section-4.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.3-2">A. and then XOR with the X least significant bits of the Common IV, where X is the length in bits of the AEAD nonce.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3-1">The nonce is constructed like in OSCORE, with the difference that step 4 in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-5.2" class="relref">Section 5.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> is replaced with:<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">A. and then XOR with X bytes from the Common IV's start, where X is the length in bytes of the nonce.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3-3">For example, if X = 7 and the Common IV is 0x00112233445566778899aabbcc (13 bytes), then the bytes to XOR are 0x00112233445566 (7 bytes).<a href="#section-4.3-3" class="pilcrow">¶</a></p>
+<p id="section-4.3-4">The constructed nonce is used as AEAD nonce by the AEAD Algorithm (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a>) and by the Group Encryption Algorithm when this is an AEAD algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-4.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-cose-object-ext-aad">
@@ -2534,13 +2548,13 @@ The parameter 'alg_aead' <span class="bcp14">MUST</span> be set to the CBOR simp
 Furthermore, the 'algorithms' array additionally includes:<a href="#section-4.4-7.1.3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.4-7.1.4.1">
-                <p id="section-4.4-7.1.4.1.1">'alg_group_enc', which specifies Group Encryption Algorithm from the Common Context (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.6</a>). This parameter <span class="bcp14">MUST</span> be set to the CBOR simple value <code>null</code> (0xf6) if the parameter Group Encryption Algorithm in the Common Context is not set. Otherwise, regardless of whether the endpoint supports the group mode or not, this parameter <span class="bcp14">MUST</span> specify Group Encryption Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.<a href="#section-4.4-7.1.4.1.1" class="pilcrow">¶</a></p>
+                <p id="section-4.4-7.1.4.1.1">'alg_group_enc', which specifies Group Encryption Algorithm from the Common Context (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>). This parameter <span class="bcp14">MUST</span> be set to the CBOR simple value <code>null</code> (0xf6) if the parameter Group Encryption Algorithm in the Common Context is not set. Otherwise, regardless of whether the endpoint supports the group mode or not, this parameter <span class="bcp14">MUST</span> specify Group Encryption Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.<a href="#section-4.4-7.1.4.1.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-4.4-7.1.4.2">
-                <p id="section-4.4-7.1.4.2.1">'alg_signature', which specifies Signature Algorithm from the Common Context (see <a href="#ssec-common-context-cs-alg" class="auto internal xref">Section 2.1.7</a>). This parameter <span class="bcp14">MUST</span> be set to the CBOR simple value <code>null</code> (0xf6) if the parameter Signature Algorithm in the Common Context is not set. Otherwise, regardless of whether the endpoint supports the group mode or not, this parameter <span class="bcp14">MUST</span> specify Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.<a href="#section-4.4-7.1.4.2.1" class="pilcrow">¶</a></p>
+                <p id="section-4.4-7.1.4.2.1">'alg_signature', which specifies Signature Algorithm from the Common Context (see <a href="#ssec-common-context-cs-alg" class="auto internal xref">Section 2.1.8</a>). This parameter <span class="bcp14">MUST</span> be set to the CBOR simple value <code>null</code> (0xf6) if the parameter Signature Algorithm in the Common Context is not set. Otherwise, regardless of whether the endpoint supports the group mode or not, this parameter <span class="bcp14">MUST</span> specify Signature Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.<a href="#section-4.4-7.1.4.2.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-4.4-7.1.4.3">
-                <p id="section-4.4-7.1.4.3.1">'alg_pairwise_key_agreement', which specifies Pairwise Key Agreement Algorithm from the Common Context (see <a href="#ssec-common-context-dh-alg" class="auto internal xref">Section 2.1.9</a>). This parameter <span class="bcp14">MUST</span> be set to the CBOR simple value <code>null</code> (0xf6) if Pairwise Key Agreement Algorithm in the Common Context is not set. Otherwise, regardless of whether the endpoint supports the pairwise mode or not, this parameter <span class="bcp14">MUST</span> specify Pairwise Key Agreement Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.<a href="#section-4.4-7.1.4.3.1" class="pilcrow">¶</a></p>
+                <p id="section-4.4-7.1.4.3.1">'alg_pairwise_key_agreement', which specifies Pairwise Key Agreement Algorithm from the Common Context (see <a href="#ssec-common-context-dh-alg" class="auto internal xref">Section 2.1.10</a>). This parameter <span class="bcp14">MUST</span> be set to the CBOR simple value <code>null</code> (0xf6) if Pairwise Key Agreement Algorithm in the Common Context is not set. Otherwise, regardless of whether the endpoint supports the pairwise mode or not, this parameter <span class="bcp14">MUST</span> specify Pairwise Key Agreement Algorithm as a CBOR integer or text string, consistently with the "Value" field in the "COSE Algorithms" Registry for this algorithm.<a href="#section-4.4-7.1.4.3.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -2614,7 +2628,7 @@ where KEYSTREAM is derived as per <a href="#sssec-encrypted-signature-keystream"
             <p id="section-5.1-5.1.1">salt takes as value the Partial IV (PIV) used to protect M. Note that, if M is a response, salt takes as value either: i) the fresh Partial IV generated by the server and included in the response; or ii) the same Partial IV of the request generated by the client and not included in the response.<a href="#section-5.1-5.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-5.1-5.2">
-            <p id="section-5.1-5.2.1">IKM is the Signature Encryption Key from the Common Context (see <a href="#ssec-common-context-group-enc-key" class="auto internal xref">Section 2.1.8</a>).<a href="#section-5.1-5.2.1" class="pilcrow">¶</a></p>
+            <p id="section-5.1-5.2.1">IKM is the Signature Encryption Key from the Common Context (see <a href="#ssec-common-context-group-enc-key" class="auto internal xref">Section 2.1.9</a>).<a href="#section-5.1-5.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-5.1-5.3">
             <p id="section-5.1-5.3.1">info is the serialization of a CBOR array consisting of (the notation follows <span>[<a href="#RFC8610" class="cite xref">RFC8610</a>]</span>):<a href="#section-5.1-5.3.1" class="pilcrow">¶</a></p>
@@ -2644,7 +2658,7 @@ Note that, in case of group rekeying, a server might use a different Gid when pr
             <p id="section-5.1-8.3.1">type is the CBOR simple value <code>true</code> (0xf5) if M is a request, or the CBOR simple value <code>false</code> (0xf4) otherwise.<a href="#section-5.1-8.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-5.1-8.4">
-            <p id="section-5.1-8.4.1">L is the size of the countersignature, as per Signature Algorithm from the Common Context (see <a href="#ssec-common-context-cs-alg" class="auto internal xref">Section 2.1.7</a>), in bytes.<a href="#section-5.1-8.4.1" class="pilcrow">¶</a></p>
+            <p id="section-5.1-8.4.1">L is the size of the countersignature, as per Signature Algorithm from the Common Context (see <a href="#ssec-common-context-cs-alg" class="auto internal xref">Section 2.1.8</a>), in bytes.<a href="#section-5.1-8.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2818,7 +2832,7 @@ Note that, in case of group rekeying, a server might use a different Gid when pr
       <h2 id="name-message-binding-sequence-nu">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-message-binding-sequence-nu" class="section-name selfRef">Message Binding, Sequence Numbers, Freshness, and Replay Protection</a>
       </h2>
-<p id="section-6-1">Like OSCORE, Group OSCORE provides message binding of responses to requests, as well as uniqueness of AEAD (key, nonce) pair (see Sections <a href="https://rfc-editor.org/rfc/rfc8613#section-7.1" class="relref">7.1</a> and <a href="https://rfc-editor.org/rfc/rfc8613#section-7.2" class="relref">7.2</a> of <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, respectively).<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-1">Like OSCORE, Group OSCORE provides message binding of responses to requests, as well as uniqueness of (key, nonce) pairs (see Sections <a href="https://rfc-editor.org/rfc/rfc8613#section-7.1" class="relref">7.1</a> and <a href="https://rfc-editor.org/rfc/rfc8613#section-7.2" class="relref">7.2</a> of <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, respectively).<a href="#section-6-1" class="pilcrow">¶</a></p>
 <div id="sec-long-exchanges">
 <section id="section-6.1">
         <h3 id="name-supporting-multiple-respons">
@@ -3056,7 +3070,7 @@ In addition, the following applies if the server intends to reply with multiple 
             </ul>
 </li>
           <li class="normal" id="section-8.3-3.2">
-            <p id="section-8.3-3.2.1">In step 3, if any of the following two conditions holds, the server <span class="bcp14">MUST</span> include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response. This prevents the server from reusing the AEAD nonce from the request together with the same encryption key.<a href="#section-8.3-3.2.1" class="pilcrow">¶</a></p>
+            <p id="section-8.3-3.2.1">In step 3, if any of the following two conditions holds, the server <span class="bcp14">MUST</span> include its Sender Sequence Number as Partial IV in the response and use it to build the nonce to protect the response. This prevents the server from reusing the nonce from the request together with the same encryption key.<a href="#section-8.3-3.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-8.3-3.2.2.1">
                 <p id="section-8.3-3.2.2.1.1">The response is not the first response that the server sends to the request.<a href="#section-8.3-3.2.2.1.1" class="pilcrow">¶</a></p>
@@ -3319,7 +3333,7 @@ where KEYSTREAM is derived as per <a href="#sssec-encrypted-signature-keystream"
                 <p id="section-9.5-2.1.2.2.1">The use of the stored value of the 'kid' and 'kid context' parameters, if the server intends to reply with multiple responses within the long exchange established by the request.<a href="#section-9.5-2.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-9.5-2.1.2.3">
-                <p id="section-9.5-2.1.2.3.1">The rules for the inclusion of the server's Sender Sequence Number as Partial IV in a response, as used to build the AEAD nonce to protect the response.<a href="#section-9.5-2.1.2.3.1" class="pilcrow">¶</a></p>
+                <p id="section-9.5-2.1.2.3.1">The rules for the inclusion of the server's Sender Sequence Number as Partial IV in a response, as used to build the nonce to protect the response.<a href="#section-9.5-2.1.2.3.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-9.5-2.1.2.4">
                 <p id="section-9.5-2.1.2.4.1">The rules for the inclusion of the ID Context (Gid) in the 'kid context' parameter of a response, if the ID Context used for the response differs from the one used to verify the request (see <a href="#sec-group-key-management" class="auto internal xref">Section 3.2</a>), also for helping the client to synchronize.<a href="#section-9.5-2.1.2.4.1" class="pilcrow">¶</a></p>
@@ -3377,7 +3391,7 @@ where KEYSTREAM is derived as per <a href="#sssec-encrypted-signature-keystream"
       </h2>
 <p id="section-10-1">This section describes how a server endpoint can verify freshness of a request by means of a challenge-response exchange with a client, using the Echo Option for CoAP specified in <span><a href="https://rfc-editor.org/rfc/rfc9175#section-2" class="relref">Section 2</a> of [<a href="#RFC9175" class="cite xref">RFC9175</a>]</span>. The same mechanism, with small alterations, is also used by the server when first processing a request using a Recipient Context whose Replay Window was initialized as invalid.<a href="#section-10-1" class="pilcrow">¶</a></p>
 <p id="section-10-2">If the application requires freshness, e.g., according to time- or event-based policies (see <span><a href="https://rfc-editor.org/rfc/rfc9175#section-2.5.1" class="relref">Section 2.5.1</a> of [<a href="#RFC9175" class="cite xref">RFC9175</a>]</span>), a server proceeds as described below, upon receiving a request from a particular client for the first time.<a href="#section-10-2" class="pilcrow">¶</a></p>
-<p id="section-10-3">The server processes the message as described in this document, but, even if valid, does not deliver it to the application. Instead, the server replies to the client with a Group OSCORE protected 4.01 (Unauthorized) response message, including only the Echo Option and no diagnostic payload. The server <span class="bcp14">MUST</span> use its Partial IV when generating the AEAD nonce for protecting the response conveying the Echo Option, and <span class="bcp14">MUST</span> include the Partial IV in the response.<a href="#section-10-3" class="pilcrow">¶</a></p>
+<p id="section-10-3">The server processes the message as described in this document, but, even if valid, does not deliver it to the application. Instead, the server replies to the client with a Group OSCORE protected 4.01 (Unauthorized) response message, including only the Echo Option and no diagnostic payload. The server <span class="bcp14">MUST</span> use its Partial IV when generating the nonce for protecting the response conveying the Echo Option, and <span class="bcp14">MUST</span> include the Partial IV in the response.<a href="#section-10-3" class="pilcrow">¶</a></p>
 <p id="section-10-4">The Echo Option value <span class="bcp14">SHOULD NOT</span> be reused; if it is reused, it <span class="bcp14">MUST</span> be highly unlikely to have been recently used with this client. Since this response is protected with the Security Context used in the group, the client will consider the response valid upon successfully decrypting and verifying it.<a href="#section-10-4" class="pilcrow">¶</a></p>
 <p id="section-10-5">The server stores the Echo Option value included in the response together with the pair (gid,kid), where 'gid' is the Group Identifier of the OSCORE group and 'kid' is the Sender ID of the client in the group. These are specified in the 'kid context' and 'kid' fields of the OSCORE Option of the request, respectively. After a group rekeying has been completed and a new Security Context has been established in the group, which results also in a new Group Identifier (see <a href="#sec-group-key-management" class="auto internal xref">Section 3.2</a>), the server <span class="bcp14">MUST</span> delete all the stored Echo values associated with members of the group.<a href="#section-10-5" class="pilcrow">¶</a></p>
 <p id="section-10-6">Upon receiving a 4.01 (Unauthorized) response that includes an Echo Option and originates from a verified group member, the subsequent client request echoing the Echo Option value <span class="bcp14">MUST</span> be sent as a unicast message to the same server.<a href="#section-10-6" class="pilcrow">¶</a></p>
@@ -3424,17 +3438,29 @@ where KEYSTREAM is derived as per <a href="#sssec-encrypted-signature-keystream"
 <p id="section-11-3">For endpoints that support the group mode, the following applies.<a href="#section-11-3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-11-4.1">
-          <p id="section-11-4.1.1">For endpoints that use authenticated encryption, the AEAD algorithm AES-CCM-16-64-128 defined in <span><a href="https://rfc-editor.org/rfc/rfc9053#section-4.2" class="relref">Section 4.2</a> of [<a href="#RFC9053" class="cite xref">RFC9053</a>]</span> is mandatory to implement as Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.6</a>).<a href="#section-11-4.1.1" class="pilcrow">¶</a></p>
+          <p id="section-11-4.1.1">For endpoints that use authenticated encryption, the AEAD algorithm AES-CCM-16-64-128 defined in <span><a href="https://rfc-editor.org/rfc/rfc9053#section-4.2" class="relref">Section 4.2</a> of [<a href="#RFC9053" class="cite xref">RFC9053</a>]</span> is mandatory to implement as Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-11-4.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-11-4.2">
-          <p id="section-11-4.2.1">For many constrained IoT devices it is problematic to support more than one signature algorithm. Existing devices can be expected to support either EdDSA or ECDSA. In order to enable as much interoperability as we can reasonably achieve, the following applies with respect to the Signature Algorithm (see <a href="#ssec-common-context-cs-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-11-4.2.1" class="pilcrow">¶</a></p>
-<p id="section-11-4.2.2">
-Less constrained endpoints <span class="bcp14">SHOULD</span> implement both: the EdDSA signature algorithm together with the elliptic curve Ed25519 <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; and the ECDSA signature algorithm together with the elliptic curve P-256.<a href="#section-11-4.2.2" class="pilcrow">¶</a></p>
-<p id="section-11-4.2.3">
-Constrained endpoints <span class="bcp14">SHOULD</span> implement: the EdDSA signature algorithm together with the elliptic curve Ed25519 <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; or the ECDSA signature algorithm together with the elliptic curve P-256.<a href="#section-11-4.2.3" class="pilcrow">¶</a></p>
+          <p id="section-11-4.2.1">For endpoints that use non-authenticated encryption, the algorithm A128CBC defined in <span><a href="https://rfc-editor.org/rfc/rfc9459#section-5" class="relref">Section 5</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span> is mandatory to implement as Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-11-4.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-11-4.3">
-          <p id="section-11-4.3.1">Endpoints that implement the ECDSA signature algorithm <span class="bcp14">MAY</span> use "deterministic ECDSA" as specified in <span>[<a href="#RFC6979" class="cite xref">RFC6979</a>]</span>. Pure deterministic elliptic-curve signature algorithms such as deterministic ECDSA and EdDSA have the advantage of not requiring access to a source of high-quality randomness. However, these signature algorithms have been shown vulnerable to some side-channel and fault injection attacks due to their determinism, which can result in extracting a device's private key. As suggested in <span><a href="https://rfc-editor.org/rfc/rfc9053#section-2.1.1" class="relref">Section 2.1.1</a> of [<a href="#RFC9053" class="cite xref">RFC9053</a>]</span>, this can be addressed by combining both randomness and determinism <span>[<a href="#I-D.irtf-cfrg-det-sigs-with-noise" class="cite xref">I-D.irtf-cfrg-det-sigs-with-noise</a>]</span>.<a href="#section-11-4.3.1" class="pilcrow">¶</a></p>
+          <p id="section-11-4.3.1"><span><a href="https://rfc-editor.org/rfc/rfc9459#section-6" class="relref">Section 6</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span> mandates that COSE libraries supporting either the AES-CTR or AES-CBC algorithm and accepting Additional Authenticated Data (AAD) as input must return an error if one of these non-AEAD content encryption algorithms is selected.<a href="#section-11-4.3.1" class="pilcrow">¶</a></p>
+<p id="section-11-4.3.2">
+In case the used Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>) does not provide integrity protection, the following applies.<a href="#section-11-4.3.2" class="pilcrow">¶</a></p>
+<p id="section-11-4.3.3">
+When invoking the execution of the Group Encryption Algorithm, the Group OSCORE implementation <span class="bcp14">MUST NOT</span> provide any AAD to the COSE library, unless AAD is always expected as input. In the latter case, the AAD will not be protected by the Group Encryption Algorithm, which is unable to do so.<a href="#section-11-4.3.3" class="pilcrow">¶</a></p>
+<p id="section-11-4.3.4">
+If the used COSE library adheres to the mandate in <span><a href="https://rfc-editor.org/rfc/rfc9459#section-6" class="relref">Section 6</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>, then a Group OSCORE implementation requires that the COSE library supports using the Group Encryption Algorithm without taking AAD as input.<a href="#section-11-4.3.4" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-11-4.4">
+          <p id="section-11-4.4.1">For many constrained IoT devices, it is problematic to support more than one signature algorithm. Existing devices can be expected to support either EdDSA or ECDSA. In order to enable as much interoperability as we can reasonably achieve, the following applies with respect to the Signature Algorithm (see <a href="#ssec-common-context-cs-alg" class="auto internal xref">Section 2.1.8</a>).<a href="#section-11-4.4.1" class="pilcrow">¶</a></p>
+<p id="section-11-4.4.2">
+Less constrained endpoints <span class="bcp14">SHOULD</span> implement both: the EdDSA signature algorithm together with the elliptic curve Ed25519 <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; and the ECDSA signature algorithm together with the elliptic curve P-256.<a href="#section-11-4.4.2" class="pilcrow">¶</a></p>
+<p id="section-11-4.4.3">
+Constrained endpoints <span class="bcp14">SHOULD</span> implement: the EdDSA signature algorithm together with the elliptic curve Ed25519 <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; or the ECDSA signature algorithm together with the elliptic curve P-256.<a href="#section-11-4.4.3" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-11-4.5">
+          <p id="section-11-4.5.1">Endpoints that implement the ECDSA signature algorithm <span class="bcp14">MAY</span> use "deterministic ECDSA" as specified in <span>[<a href="#RFC6979" class="cite xref">RFC6979</a>]</span>. Pure deterministic elliptic-curve signature algorithms such as deterministic ECDSA and EdDSA have the advantage of not requiring access to a source of high-quality randomness. However, these signature algorithms have been shown vulnerable to some side-channel and fault injection attacks due to their determinism, which can result in extracting a device's private key. As suggested in <span><a href="https://rfc-editor.org/rfc/rfc9053#section-2.1.1" class="relref">Section 2.1.1</a> of [<a href="#RFC9053" class="cite xref">RFC9053</a>]</span>, this can be addressed by combining both randomness and determinism <span>[<a href="#I-D.irtf-cfrg-det-sigs-with-noise" class="cite xref">I-D.irtf-cfrg-det-sigs-with-noise</a>]</span>.<a href="#section-11-4.5.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-11-5">For endpoints that support the pairwise mode, the following applies.<a href="#section-11-5" class="pilcrow">¶</a></p>
@@ -3443,7 +3469,7 @@ Constrained endpoints <span class="bcp14">SHOULD</span> implement: the EdDSA sig
           <p id="section-11-6.1.1">The AEAD algorithm AES-CCM-16-64-128 defined in <span><a href="https://rfc-editor.org/rfc/rfc9053#section-4.2" class="relref">Section 4.2</a> of [<a href="#RFC9053" class="cite xref">RFC9053</a>]</span> is mandatory to implement as AEAD Algorithm (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a>).<a href="#section-11-6.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-11-6.2">
-          <p id="section-11-6.2.1">The ECDH-SS + HKDF-256 algorithm specified in <span><a href="https://rfc-editor.org/rfc/rfc9053#section-6.3.1" class="relref">Section 6.3.1</a> of [<a href="#RFC9053" class="cite xref">RFC9053</a>]</span> is mandatory to implement as Pairwise Key Agreement Algorithm (see <a href="#ssec-common-context-dh-alg" class="auto internal xref">Section 2.1.9</a>).<a href="#section-11-6.2.1" class="pilcrow">¶</a></p>
+          <p id="section-11-6.2.1">The ECDH-SS + HKDF-256 algorithm specified in <span><a href="https://rfc-editor.org/rfc/rfc9053#section-6.3.1" class="relref">Section 6.3.1</a> of [<a href="#RFC9053" class="cite xref">RFC9053</a>]</span> is mandatory to implement as Pairwise Key Agreement Algorithm (see <a href="#ssec-common-context-dh-alg" class="auto internal xref">Section 2.1.10</a>).<a href="#section-11-6.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-11-6.3">
           <p id="section-11-6.3.1">In order to enable as much interoperability as we can reasonably achieve in the presence of constrained devices (see above), the following applies.<a href="#section-11-6.3.1" class="pilcrow">¶</a></p>
@@ -3517,7 +3543,7 @@ Furthermore, if the used Group Encryption Algorithm does not provide integrity p
 <p id="section-13.1-2.3.3">
 On the other hand, proof of group membership is always ensured by construction through the strict management of the group keying material (see <a href="#sec-group-key-management" class="auto internal xref">Section 3.2</a>). That is, the group is rekeyed in case of members' leaving, and the current group members are informed of former group members. Thus, a current group member storing the latest group keying material does not store the authentication credential of any former group member.<a href="#section-13.1-2.3.3" class="pilcrow">¶</a></p>
 <p id="section-13.1-2.3.4">
-This allows a recipient endpoint to rely on the stored authentication credentials and public keys included therein, in order to always confidently assert the group membership of a sender endpoint when processing an incoming message, i.e., to assert that the sender endpoint was a group member when it signed the message. In turn, this prevents a former group member to possibly re-sign and inject in the group a stored message that was protected with old keying material.<a href="#section-13.1-2.3.4" class="pilcrow">¶</a></p>
+This allows a recipient endpoint to rely on the stored authentication credentials and public keys included therein, in order to always confidently assert the group membership of a sender endpoint when processing an incoming message, i.e., to assert that the sender endpoint was a group member when it signed the message. In turn, this prevents a former group member from possibly re-signing and injecting in the group a stored message that was protected with old keying material.<a href="#section-13.1-2.3.4" class="pilcrow">¶</a></p>
 <p id="section-13.1-2.3.5">
 A case in point is a group where the Group Encryption Algorithm does not provide integrity protection; a group member leaves the group; and, after the group rekeying, associates with the group as external signature checker (see <a href="#sec-processing-signature-checker" class="auto internal xref">Section 8.5</a>). When doing so, it obtains from the Group Manager the new Signature Encryption Key, from which it can derive keystreams for encrypting and decrypting the countersignatures of messages protected in group mode.<a href="#section-13.1-2.3.5" class="pilcrow">¶</a></p>
 <p id="section-13.1-2.3.6">
@@ -3592,7 +3618,7 @@ If, when participating in the group rekeying, the current group members had not 
         </h3>
 <p id="section-13.5-1">A group member can receive a message shortly after the group has been rekeyed, and new security parameters and keying material have been distributed by the Group Manager.<a href="#section-13.5-1" class="pilcrow">¶</a></p>
 <p id="section-13.5-2">This may result in a client using an old Security Context to protect a request, and a server using a different new Security Context to protect a corresponding response. As a consequence, clients may receive a response protected with a Security Context different from the one used to protect the corresponding request.<a href="#section-13.5-2" class="pilcrow">¶</a></p>
-<p id="section-13.5-3">In particular, a server may first get a request protected with the old Security Context, then install the new Security Context, and only after that produce a response to send back to the client. In such a case, as specified in <a href="#ssec-protect-response" class="auto internal xref">Section 8.3</a>, the server <span class="bcp14">MUST</span> protect the potential response using the new Security Context. Specifically, the server <span class="bcp14">MUST</span> include its Sender Sequence Number as Partial IV in the response and use it to build the AEAD nonce to protect the response. This prevents the AEAD nonce from the request from being reused with the new Security Context.<a href="#section-13.5-3" class="pilcrow">¶</a></p>
+<p id="section-13.5-3">In particular, a server may first get a request protected with the old Security Context, then install the new Security Context, and only after that produce a response to send back to the client. In such a case, as specified in <a href="#ssec-protect-response" class="auto internal xref">Section 8.3</a>, the server <span class="bcp14">MUST</span> protect the potential response using the new Security Context. Specifically, the server <span class="bcp14">MUST</span> include its Sender Sequence Number as Partial IV in the response and use it to build the nonce to protect the response. This prevents the nonce from the request from being reused with the new Security Context.<a href="#section-13.5-3" class="pilcrow">¶</a></p>
 <p id="section-13.5-4">The client will process that response using the new Security Context, provided that it has installed the new security parameters and keying material before the message processing.<a href="#section-13.5-4" class="pilcrow">¶</a></p>
 <p id="section-13.5-5">In case block-wise transfer <span>[<a href="#RFC7959" class="cite xref">RFC7959</a>]</span> is used, the same considerations from <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-19#section-10.3" class="relref">Section 10.3</a> of [<a href="#I-D.ietf-ace-key-groupcomm" class="cite xref">I-D.ietf-ace-key-groupcomm</a>]</span> hold.<a href="#section-13.5-5" class="pilcrow">¶</a></p>
 <p id="section-13.5-6">Furthermore, as described below, a group rekeying may temporarily result in misaligned Security Contexts between the sender and recipient of a same message.<a href="#section-13.5-6" class="pilcrow">¶</a></p>
@@ -3626,7 +3652,7 @@ If, when participating in the group rekeying, the current group members had not 
 <a href="#section-13.6" class="section-number selfRef">13.6. </a><a href="#name-collision-of-group-identifi" class="section-name selfRef">Collision of Group Identifiers</a>
         </h3>
 <p id="section-13.6-1">In case endpoints are deployed in multiple groups managed by different non-synchronized Group Managers, it is possible for Group Identifiers of different groups to coincide.<a href="#section-13.6-1" class="pilcrow">¶</a></p>
-<p id="section-13.6-2">This does not impair the security of the AEAD algorithm. In fact, as long as the Master Secret is different for different groups and this condition holds over time, AEAD keys are different among different groups.<a href="#section-13.6-2" class="pilcrow">¶</a></p>
+<p id="section-13.6-2">This does not impair the security of the AEAD Algorithm and of the Group Encryption Algorithm. In fact, as long as the Master Secret is different for different groups and this condition holds over time, keys are different among different groups.<a href="#section-13.6-2" class="pilcrow">¶</a></p>
 <p id="section-13.6-3">In case multiple groups use the same IP multicast address, the entity assigning that address may help limiting the chances to experience such collisions of Group Identifiers. In particular, it may allow the Group Managers of those groups using the same IP multicast address to share their respective list of assigned Group Identifiers currently in use.<a href="#section-13.6-3" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -3703,7 +3729,7 @@ Note that, by changing the Partial IV as discussed above, any member of G1 would
             <p id="section-13.8-3.1.1">X sets up a group G2 where it acts as Group Manager.<a href="#section-13.8-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-13.8-3.2">
-            <p id="section-13.8-3.2.1">X makes G2 a "clone" of G1, i.e., G1 and G2 use the same algorithms and have the same Master Secret, Master Salt and ID Context.<a href="#section-13.8-3.2.1" class="pilcrow">¶</a></p>
+            <p id="section-13.8-3.2.1">X makes G2 a "clone" of G1, i.e., G1 and G2 use the same algorithms and have the same Master Secret, Master Salt, and ID Context.<a href="#section-13.8-3.2.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-13.8-3.3">
             <p id="section-13.8-3.3.1">X collects a message M sent to G1 and injects it in G2.<a href="#section-13.8-3.3.1" class="pilcrow">¶</a></p>
@@ -3754,7 +3780,7 @@ Note that, by changing the Partial IV as discussed above, any member of G1 would
         <h3 id="name-replay-protection-2">
 <a href="#section-13.12" class="section-number selfRef">13.12. </a><a href="#name-replay-protection-2" class="section-name selfRef">Replay Protection</a>
         </h3>
-<p id="section-13.12-1">As in OSCORE <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, also Group OSCORE relies on Sender Sequence Numbers included in the COSE message field 'Partial IV' and used to build AEAD nonces.<a href="#section-13.12-1" class="pilcrow">¶</a></p>
+<p id="section-13.12-1">As in OSCORE <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, also Group OSCORE relies on Sender Sequence Numbers included in the COSE message field 'Partial IV' and used to build nonces.<a href="#section-13.12-1" class="pilcrow">¶</a></p>
 <p id="section-13.12-2">Note that the Partial IV of an endpoint does not necessarily grow monotonically. For instance, upon exhaustion of the endpoint's Sender Sequence Number space, the endpoint's Partial IV space also gets exhausted. As discussed in <a href="#sec-group-re-join" class="auto internal xref">Section 2.6.3</a>, this results either in the endpoint being individually rekeyed and getting a new Sender ID, or in the establishment of a new Security Context in the group. Therefore, uniqueness of (key, nonce) pairs (see <a href="#ssec-key-nonce-uniqueness" class="auto internal xref">Section 13.3</a>) is preserved also when a new Security Context is established.<a href="#section-13.12-2" class="pilcrow">¶</a></p>
 <p id="section-13.12-3">Since one-to-many communication such as multicast usually involves unreliable transports, the simplification of the Replay Window to a size of 1 suggested in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-7.4" class="relref">Section 7.4</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> is not viable with Group OSCORE, unless exchanges in the group rely only on unicast messages.<a href="#section-13.12-3" class="pilcrow">¶</a></p>
 <p id="section-13.12-4">A server's Replay Window may be initialized as invalid (see <a href="#ssec-loss-mutable-context" class="auto internal xref">Section 2.6.1</a>). The server can either retrieve a new Group OSCORE Security Context, or make a Replay Window valid (see <a href="#sec-synch-challenge-response" class="auto internal xref">Section 10</a>) before resuming to accept incoming messages from other group members.<a href="#section-13.12-4" class="pilcrow">¶</a></p>
@@ -3796,9 +3822,9 @@ Note that, by changing the Partial IV as discussed above, any member of G1 would
 <a href="#section-13.16" class="section-number selfRef">13.16. </a><a href="#name-cryptographic-consideration" class="section-name selfRef">Cryptographic Considerations</a>
         </h3>
 <p id="section-13.16-1">The same considerations from <span><a href="https://rfc-editor.org/rfc/rfc8613#section-12.6" class="relref">Section 12.6</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> about the maximum Sender Sequence Number hold for Group OSCORE.<a href="#section-13.16-1" class="pilcrow">¶</a></p>
-<p id="section-13.16-2">As discussed in <a href="#ssec-wrap-around-partial-iv" class="auto internal xref">Section 2.6.2</a>, an endpoint that experiences an exhaustion of its own Sender Sequence Number space <span class="bcp14">MUST NOT</span> protect further messages including a Partial IV, until it has derived a new Sender Context. This prevents the endpoint to reuse the same AEAD nonce with the same Sender Key.<a href="#section-13.16-2" class="pilcrow">¶</a></p>
+<p id="section-13.16-2">As discussed in <a href="#ssec-wrap-around-partial-iv" class="auto internal xref">Section 2.6.2</a>, an endpoint that experiences an exhaustion of its own Sender Sequence Number space <span class="bcp14">MUST NOT</span> protect further messages including a Partial IV, until it has derived a new Sender Context. This prevents the endpoint from reusing the same nonce with the same Sender Key.<a href="#section-13.16-2" class="pilcrow">¶</a></p>
 <p id="section-13.16-3">In order to renew its own Sender Context, the endpoint <span class="bcp14">SHOULD</span> inform the Group Manager, which can either renew the whole Security Context by means of group rekeying, or provide only that endpoint with a new Sender ID value. In either case, the endpoint derives a new Sender Context, and in particular a new Sender Key.<a href="#section-13.16-3" class="pilcrow">¶</a></p>
-<p id="section-13.16-4">Additionally, the same considerations from <span><a href="https://rfc-editor.org/rfc/rfc8613#section-12.6" class="relref">Section 12.6</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> hold for Group OSCORE, about building the AEAD nonce and the secrecy of the Security Context parameters.<a href="#section-13.16-4" class="pilcrow">¶</a></p>
+<p id="section-13.16-4">Additionally, the same considerations from <span><a href="https://rfc-editor.org/rfc/rfc8613#section-12.6" class="relref">Section 12.6</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> hold for Group OSCORE, about building the nonce and the secrecy of the Security Context parameters.<a href="#section-13.16-4" class="pilcrow">¶</a></p>
 <p id="section-13.16-5">The group mode uses the "encrypt-then-sign" construction, i.e., the countersignature is computed over the COSE_Encrypt0 object (see <a href="#sec-cose-object-unprotected-field" class="auto internal xref">Section 4.1</a>). This is motivated by enabling signature checkers (see <a href="#sec-additional-entities" class="auto internal xref">Section 3.3</a>), which do not join a group as members but are allowed to verify countersignatures of messages protected in group mode without being able to decrypt them (see <a href="#sec-processing-signature-checker" class="auto internal xref">Section 8.5</a>).<a href="#section-13.16-5" class="pilcrow">¶</a></p>
 <p id="section-13.16-6">If the Group Encryption Algorithm used in group mode provides integrity protection, countersignatures of COSE_Encrypt0 with short authentication tags do not provide the security properties associated with the same algorithm used in COSE_Sign (see <span><a href="https://rfc-editor.org/rfc/rfc9338#section-6" class="relref">Section 6</a> of [<a href="#RFC9338" class="cite xref">RFC9338</a>]</span>). To provide 128-bit security against collision attacks, the tag length <span class="bcp14">MUST</span> be at least 256-bits. A countersignature of a COSE_Encrypt0 with AES-CCM-16-64-128 provides at most 32 bits of integrity protection.<a href="#section-13.16-6" class="pilcrow">¶</a></p>
 <p id="section-13.16-7">The derivation of pairwise keys defined in <a href="#key-derivation-pairwise" class="auto internal xref">Section 2.5.1</a> is compatible with ECDSA and EdDSA asymmetric keys, but is not compatible with RSA asymmetric keys.<a href="#section-13.16-7" class="pilcrow">¶</a></p>
@@ -3922,6 +3948,10 @@ Reference: [RFC-XXXX]
 <a href="#section-15.1" class="section-number selfRef">15.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
+<dt id="COSE.Algorithms">[COSE.Algorithms]</dt>
+        <dd>
+<span class="refAuthor">IANA</span>, <span class="refTitle">"COSE Algorithms"</span>, <span>&lt;<a href="https://www.iana.org/assignments/cose/cose.xhtml#algorithms">https://www.iana.org/assignments/cose/cose.xhtml#algorithms</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="I-D.ietf-core-groupcomm-bis">[I-D.ietf-core-groupcomm-bis]</dt>
         <dd>
 <span class="refAuthor">Dijk, E.</span>, <span class="refAuthor">Wang, C.</span>, and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Group Communication for the Constrained Application Protocol (CoAP)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-groupcomm-bis-11</span>, <time datetime="2024-04-24" class="refDate">24 April 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-11">https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-11</a>&gt;</span>. </dd>
@@ -3991,8 +4021,12 @@ Reference: [RFC-XXXX]
 <span class="refAuthor">Amsüss, C.</span>, <span class="refAuthor">Preuß Mattsson, J.</span>, and <span class="refAuthor">G. Selander</span>, <span class="refTitle">"Constrained Application Protocol (CoAP): Echo, Request-Tag, and Token Processing"</span>, <span class="seriesInfo">RFC 9175</span>, <span class="seriesInfo">DOI 10.17487/RFC9175</span>, <time datetime="2022-02" class="refDate">February 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9175">https://www.rfc-editor.org/rfc/rfc9175</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9338">[RFC9338]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Schaad, J.</span>, <span class="refTitle">"CBOR Object Signing and Encryption (COSE): Countersignatures"</span>, <span class="seriesInfo">STD 96</span>, <span class="seriesInfo">RFC 9338</span>, <span class="seriesInfo">DOI 10.17487/RFC9338</span>, <time datetime="2022-12" class="refDate">December 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9338">https://www.rfc-editor.org/rfc/rfc9338</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9459">[RFC9459]</dt>
+      <dd>
+<span class="refAuthor">Housley, R.</span> and <span class="refAuthor">H. Tschofenig</span>, <span class="refTitle">"CBOR Object Signing and Encryption (COSE): AES-CTR and AES-CBC"</span>, <span class="seriesInfo">RFC 9459</span>, <span class="seriesInfo">DOI 10.17487/RFC9459</span>, <time datetime="2023-09" class="refDate">September 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9459">https://www.rfc-editor.org/rfc/rfc9459</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
@@ -4349,7 +4383,7 @@ In a 1-to-N communication model, only a single client transmits data to the CoAP
             <p id="appendix-D.5-1.5.1">Renamed "Signature Encryption Algorithm" to "Group Encryption Algorithm".<a href="#appendix-D.5-1.5.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-D.5-1.6">
-            <p id="appendix-D.5-1.6.1">Ensured a single Common IV, also when the two encryption algorithms have different AEAD nonce sizes.<a href="#appendix-D.5-1.6.1" class="pilcrow">¶</a></p>
+            <p id="appendix-D.5-1.6.1">Ensured a single Common IV, also when the two encryption algorithms have different nonce sizes.<a href="#appendix-D.5-1.6.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-D.5-1.7">
             <p id="appendix-D.5-1.7.1">Guidelines on the Pairwise Key Agreement Algorithm and derivation of the Diffie-Hellman secret.<a href="#appendix-D.5-1.7.1" class="pilcrow">¶</a></p>

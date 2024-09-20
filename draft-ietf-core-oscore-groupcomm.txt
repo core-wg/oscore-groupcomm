@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 9 March 2025                                       F. Palombini
+Expires: 24 March 2025                                      F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                        5 September 2024
+                                                       20 September 2024
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 March 2025.
+   This Internet-Draft will expire on 24 March 2025.
 
 Copyright Notice
 
@@ -86,14 +86,15 @@ Table of Contents
    2.  Security Context
      2.1.  Common Context
        2.1.1.  AEAD Algorithm
-       2.1.2.  ID Context
-       2.1.3.  Common IV
-       2.1.4.  Authentication Credential Format
-       2.1.5.  Group Manager Authentication Credential
-       2.1.6.  Group Encryption Algorithm
-       2.1.7.  Signature Algorithm
-       2.1.8.  Signature Encryption Key
-       2.1.9.  Pairwise Key Agreement Algorithm
+       2.1.2.  HKDF Algorithm
+       2.1.3.  ID Context
+       2.1.4.  Common IV
+       2.1.5.  Authentication Credential Format
+       2.1.6.  Group Manager Authentication Credential
+       2.1.7.  Group Encryption Algorithm
+       2.1.8.  Signature Algorithm
+       2.1.9.  Signature Encryption Key
+       2.1.10. Pairwise Key Agreement Algorithm
      2.2.  Sender Context and Recipient Context
      2.3.  Establishment of Security Context Parameters
      2.4.  Authentication Credentials
@@ -116,7 +117,7 @@ Table of Contents
      4.1.  Countersignature
        4.1.1.  Clarifications on Using a Countersignature
      4.2.  The 'kid' and 'kid context' parameters
-     4.3.  AEAD Nonce
+     4.3.  Nonce Computation
      4.4.  external_aad
    5.  OSCORE Header Compression
      5.1.  Keystream Derivation for Countersignature Encryption
@@ -252,18 +253,18 @@ Table of Contents
    As with OSCORE, it is possible to combine Group OSCORE with
    communication security on other layers.  One example is the use of
    transport layer security, such as DTLS [RFC9147], between one client
-   and one proxy (and vice versa), or between one proxy and one server
-   (and vice versa).  This prevents observers from accessing addressing
-   information conveyed in CoAP options that would not be protected by
-   Group OSCORE, but would be protected by DTLS.  These options include
-   Uri-Host, Uri-Port, and Proxy-Uri. Note that DTLS does not define how
-   to secure messages sent over IP multicast.  Group OSCORE is also
-   intended to work with OSCORE-capable proxies
-   [I-D.ietf-core-oscore-capable-proxies] thereby enabling, for example,
-   nested OSCORE operations with OSCORE-protected communication between
-   a CoAP client and a proxy, carrying messages that are additionally
-   protected with Group OSCORE between the CoAP client and the target
-   CoAP servers.
+   and one proxy, or between one proxy and one server.  This prevents
+   observers from accessing addressing information conveyed in CoAP
+   options that would not be protected by Group OSCORE, but would be
+   protected by DTLS.  These options include Uri-Host, Uri-Port, and
+   Proxy-Uri. Note that DTLS does not define how to secure messages sent
+   over IP multicast and cannot be used for end-to-end protection over a
+   proxy.  Group OSCORE is also intended to work with OSCORE-capable
+   proxies [I-D.ietf-core-oscore-capable-proxies] thereby enabling, for
+   example, nested OSCORE operations with OSCORE-protected communication
+   between a CoAP client and a proxy, carrying messages that are
+   additionally protected with Group OSCORE between the CoAP client and
+   the target CoAP servers.
 
    Group OSCORE defines two modes of operation, that can be used
    independently or together:
@@ -277,11 +278,11 @@ Table of Contents
 
    *  In the pairwise mode, two group members exchange OSCORE requests
       and responses (typically) over unicast, and the messages are
-      protected with symmetric keys.  These symmetric keys are derived
-      from Diffie-Hellman shared secrets, calculated with the asymmetric
-      keys of the sender and recipient, allowing for shorter integrity
-      tags and therefore lower message overhead.  This mode is defined
-      in Section 9.
+      protected with symmetric keys not known by the other group
+      members.  These symmetric keys are derived from Diffie-Hellman
+      shared secrets, calculated with the asymmetric keys of the sender
+      and recipient, allowing for shorter integrity tags and therefore
+      lower message overhead.  This mode is defined in Section 9.
 
    Both modes provide source authentication of CoAP messages.  The
    application decides what mode to use, potentially on a per-message
@@ -425,29 +426,29 @@ Table of Contents
 
       -  The new parameter Authentication Credential Format, specifying
          the format of authentication credentials used in the group (see
-         Section 2.1.4).
+         Section 2.1.5).
 
       -  The new parameter Group Manager Authentication Credential,
          specifying the authentication credential of the Group Manager
-         responsible for the group (see Section 2.1.5).
+         responsible for the group (see Section 2.1.6).
 
       -  For the group mode, the Common Context is extended with the
          following new parameters.
 
          o  Group Encryption Algorithm, used for encrypting and
             decrypting messages protected in group mode (see
-            Section 2.1.6).
+            Section 2.1.7).
 
          o  Signature Algorithm, used for computing and verifying the
             countersignature of messages protected in group mode (see
-            Section 2.1.7).
+            Section 2.1.8).
 
          o  Signature Encryption Key, used for encrypting and decrypting
             the countersignature of messages protected in group mode
-            (see Section 2.1.8).
+            (see Section 2.1.9).
 
       -  For the pairwise mode, the Common Context is extended with a
-         Pairwise Key Agreement Algorithm (see Section 2.1.9) used for
+         Pairwise Key Agreement Algorithm (see Section 2.1.10) used for
          the agreement on a static-static Diffie-Hellman shared secret,
          from which pairwise keys are derived (see Section 2.5.1).
 
@@ -519,7 +520,14 @@ Table of Contents
    algorithm MUST provide integrity protection.  If this parameter is
    not set, the pairwise mode is not used in the group.
 
-2.1.2.  ID Context
+2.1.2.  HKDF Algorithm
+
+   The HKDF Algorithm (see Section 3.1 of [RFC8613]) SHALL identify the
+   used key derivation function, which MUST be one of the HMAC-based
+   HKDF [RFC5869] algorithms defined for COSE (see Section 5.1 of
+   [RFC9053]) and registered at [COSE.Algorithms].
+
+2.1.3.  ID Context
 
    The ID Context parameter (see Sections 3.1 and 3.3 of [RFC8613])
    SHALL contain the Group Identifier (Gid) of the group.  The choice of
@@ -528,27 +536,27 @@ Table of Contents
    to specify how to handle potential collisions between Gids (see
    Section 13.6).
 
-2.1.3.  Common IV
+2.1.4.  Common IV
 
    The Common IV parameter (see Section 3.1 of [RFC8613]) SHALL identify
    the Common IV used in the group.  Differently from OSCORE, the length
    of the Common IV is determined as follows.
 
    *  If only one among the AEAD Algorithm and the Group Encryption
-      Algorithm is set (see Section 2.1.1 and Section 2.1.6), the length
-      of the Common IV is the AEAD nonce length for the set algorithm.
+      Algorithm is set (see Section 2.1.1 and Section 2.1.7), the length
+      of the Common IV is the nonce length for the set algorithm.
 
    *  If both the AEAD Algorithm and the Group Encryption Algorithm are
-      set, the length of the Common IV is the greatest AEAD nonce length
+      set, the length of the Common IV is the greatest nonce length
       among those of the two algorithms.
 
-2.1.4.  Authentication Credential Format
+2.1.5.  Authentication Credential Format
 
    The new parameter Authentication Credential Format specifies the
    format of authentication credentials used in the group.  Further
    details on authentication credentials are compiled in Section 2.4.
 
-2.1.5.  Group Manager Authentication Credential
+2.1.6.  Group Manager Authentication Credential
 
    The new parameter Group Manager Authentication Credential specifies
    the authentication credential of the Group Manager, including the
@@ -557,7 +565,7 @@ Table of Contents
    provisioning of the Group Manager's authentication credential to the
    group members are out of the scope of this document.
 
-2.1.6.  Group Encryption Algorithm
+2.1.7.  Group Encryption Algorithm
 
    The new parameter Group Encryption Algorithm identifies the algorithm
    to use for encryption and decryption, when messages are protected in
@@ -565,7 +573,14 @@ Table of Contents
    protection.  If this parameter is not set, the group mode is not used
    in the group.
 
-2.1.7.  Signature Algorithm
+   A non-authenticated algorithm MUST NOT be used as Group Encryption
+   Algorithm if it is not possible to ensure uniqueness of the (key,
+   nonce) pairs.  This is the case, for instance, for A128CTR, A192CTR,
+   and A256CTR [RFC9459].  Instead, examples of non-authenticated
+   algorithms that can be used as Group Encryption Algorithm are
+   A128CBC, A192CBC, and A256CBC [RFC9459].
+
+2.1.8.  Signature Algorithm
 
    The new parameter Signature Algorithm identifies the digital
    signature algorithm used for computing and verifying the
@@ -574,7 +589,7 @@ Table of Contents
    Section 8).  If this parameter is not set, the group mode is not used
    in the group.
 
-2.1.8.  Signature Encryption Key
+2.1.9.  Signature Encryption Key
 
    The new parameter Signature Encryption Key specifies the encryption
    key for deriving a keystream to encrypt/decrypt a countersignature,
@@ -587,7 +602,7 @@ Table of Contents
    *  The 'id' element of the 'info' array is the empty byte string.
 
    *  The 'alg_aead' element of the 'info' array specifies the Group
-      Encryption Algorithm from the Common Context (see Section 2.1.6),
+      Encryption Algorithm from the Common Context (see Section 2.1.7),
       encoded as a CBOR integer or text string, consistently with the
       "Value" field in the "COSE Algorithms" Registry for this
       algorithm.
@@ -597,11 +612,11 @@ Table of Contents
 
    *  L and the 'L' element of the 'info' array are the size of the key
       for the Group Encryption Algorithm specified in the Common Context
-      (see Section 2.1.6), in bytes.  While the obtained Signature
+      (see Section 2.1.7), in bytes.  While the obtained Signature
       Encryption Key is never used with the Group Encryption Algorithm,
       its length was chosen to obtain a matching level of security.
 
-2.1.9.  Pairwise Key Agreement Algorithm
+2.1.10.  Pairwise Key Agreement Algorithm
 
    The new parameter Pairwise Key Agreement Algorithm identifies the
    elliptic curve Diffie-Hellman algorithm used to derive a static-
@@ -637,12 +652,12 @@ Table of Contents
    is determined as follows.
 
    *  If only one among the AEAD Algorithm and the Group Encryption
-      Algorithm is set (see Section 2.1.1 and Section 2.1.6), then L is
-      the AEAD nonce length for the set algorithm.
+      Algorithm is set (see Section 2.1.1 and Section 2.1.7), then L is
+      the nonce length for the set algorithm.
 
    *  If both the AEAD Algorithm and the Group Encryption Algorithm are
-      set, then L is the smallest AEAD nonce length among those of the
-      two algorithms.
+      set, then L is the smallest nonce length among those of the two
+      algorithms.
 
    With the exception of the authentication credential of the sender
    endpoint, a receiver endpoint can derive a complete Security Context
@@ -682,7 +697,7 @@ Table of Contents
    modifications compared to Section 3.2.1 of [RFC8613].
 
    *  If Group Encryption Algorithm in the Common Context is set (see
-      Section 2.1.6), then the 'alg_aead' element of the 'info' array
+      Section 2.1.7), then the 'alg_aead' element of the 'info' array
       MUST specify Group Encryption Algorithm from the Common Context as
       a CBOR integer or text string, consistently with the "Value" field
       in the "COSE Algorithms" Registry for this algorithm.
@@ -694,23 +709,23 @@ Table of Contents
 
    *  When deriving the Common IV, the 'L' element of the 'info' array
       MUST specify the length of the Common IV in bytes, which is
-      determined as defined in Section 2.1.3.
+      determined as defined in Section 2.1.4.
 
 2.4.  Authentication Credentials
 
    The authentication credentials of the endpoints in a group MUST be
    encoded according to the format used in the group, as indicated by
    the Authentication Credential Format parameter in the Common Context
-   (see Section 2.1.4).  The authentication credential of the Group
+   (see Section 2.1.5).  The authentication credential of the Group
    Manager SHOULD be encoded according to that same format.  The format
    of authentication credentials MUST provide the public key and a
    comprehensive set of information related to the public key algorithm,
    including, e.g., the used elliptic curve (when applicable).
 
    If Group Encryption Algorithm in the Common Context is not set (see
-   Section 2.1.6), then the public key algorithm is the Pairwise Key
-   Agreement Algorithm used in the group (see Section 2.1.9), else the
-   Signature Algorithm used in the group (see Section 2.1.7).
+   Section 2.1.7), then the public key algorithm is the Pairwise Key
+   Agreement Algorithm used in the group (see Section 2.1.10), else the
+   Signature Algorithm used in the group (see Section 2.1.8).
 
    If the authentication credentials are X.509 certificates [RFC5280] or
    C509 certificates [I-D.ietf-cose-cbor-encoded-cert], the public key
@@ -995,7 +1010,7 @@ Table of Contents
    up-to-date the mutable part in non-volatile memory (e.g., due to
    limited number of write operations), the endpoint MUST be able to
    detect a loss of the mutable Security Context, to prevent the re-use
-   of a nonce with the same AEAD key, and to handle incoming replayed
+   of a nonce with the same key, and to handle incoming replayed
    messages.
 
 2.6.1.1.  Total Loss
@@ -1003,7 +1018,7 @@ Table of Contents
    In case a loss of the Sender Context and/or of the Recipient Contexts
    is detected (e.g., following a reboot occurred in an unprepared way),
    the endpoint MUST NOT protect further messages using this Security
-   Context, to avoid reusing an AEAD nonce with the same AEAD key.
+   Context, to avoid reusing a nonce with the same key.
 
    Before resuming its operations in the group, the endpoint MUST
    retrieve new Security Context parameters from the Group Manager (see
@@ -1011,7 +1026,7 @@ Table of Contents
    Recipient Contexts (see Section 2.2).  Since the new Sender Context
    includes newly derived encryption keys, an endpoint will not reuse
    the same pair (key, nonce), even when it is a server using the
-   Partial IV of (old re-injected) requests to build the AEAD nonce for
+   Partial IV of (old re-injected) requests to build the nonce for
    protecting the responses.
 
    From then on, the endpoint MUST use the latest installed Sender
@@ -1070,8 +1085,8 @@ Table of Contents
    Context and the endpoint supports the CoAP Echo Option [RFC9175],
    then it is RECOMMENDED to follow the procedure specified in
    Section 10 which establishes a valid Replay Window.  In particular,
-   the endpoint MUST use its Partial IV when generating the AEAD nonce
-   and MUST include the Partial IV in the response message conveying the
+   the endpoint MUST use its Partial IV when generating the nonce and
+   MUST include the Partial IV in the response message conveying the
    Echo Option.
 
    Alternatively, the endpoint MAY retrieve or wait for new Security
@@ -1236,8 +1251,8 @@ Table of Contents
    groups under its control.  Within each of such groups, the Group
    Manager assigns unique Sender IDs (and thus Recipient IDs) to the
    respective group members.  The maximum length of Sender IDs depends
-   on the length of the AEAD nonce for the algorithms used in the group
-   (see Section 2.2).
+   on the length of the nonce for the algorithms used in the group (see
+   Section 2.2).
 
    According to a hierarchical approach, the Gid value assigned to a
    group is associated with a dedicated space for the values of Sender
@@ -1453,7 +1468,7 @@ Table of Contents
    for two reasons.  First, as further discussed in Section 13.1, it
    ensures that the group mode can be used securely, even in a group
    where the Group Encryption Algorithm does not provide integrity
-   protection (see Section 2.1.6) and external signature checkers are
+   protection (see Section 2.1.7) and external signature checkers are
    used (see Section 8.5).  Second, it ensures that the wrong (old)
    authentication credential associated with a group member A is never
    used with a sender ID that used to be associated with A and has been
@@ -1532,7 +1547,7 @@ Table of Contents
 
    From the moment when a Gid is assigned to a group until the moment a
    new Gid is assigned to that same group, the Group Manager MUST NOT
-   reassign a Sender ID within the group.  This prevents to reuse a
+   reassign a Sender ID within the group.  This prevents from reusing a
    Sender ID ('kid') with the same triple (Gid, Master Secret, Master
    Salt).  Within this restriction, the Group Manager can assign a
    Sender ID used under an old Gid value (including under a same,
@@ -1598,13 +1613,13 @@ Table of Contents
       authentication credential associated with that entity is the end-
       entity certificate or end-entity untagged CWT.
 
-   *  The current Signature Encryption Key (see Section 2.1.8).
+   *  The current Signature Encryption Key (see Section 2.1.9).
 
    *  The identifiers of the algorithms used in the group (see
       Section 2), i.e.: i) Group Encryption Algorithm and Signature
       Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement
       Algorithm, if such parameters are set in the Common Context (see
-      Section 2.1.1 and Section 2.1.9).
+      Section 2.1.1 and Section 2.1.10).
 
    A signature checker MUST be authorized before it can retrieve such
    information, for example with the use of
@@ -1735,13 +1750,21 @@ Table of Contents
    Identifier value (Gid) of the group.  That is, unlike in [RFC8613],
    the 'kid context' parameter is always present in requests.
 
-4.3.  AEAD Nonce
+4.3.  Nonce Computation
 
-   The AEAD nonce is constructed like in OSCORE, with the difference
-   that step 4 in Section 5.2 of [RFC8613] is replaced with:
+   The nonce is constructed like in OSCORE, with the difference that
+   step 4 in Section 5.2 of [RFC8613] is replaced with:
 
-   A. and then XOR with the X least significant bits of the Common IV,
-   where X is the length in bits of the AEAD nonce.
+   A. and then XOR with X bytes from the Common IV's start, where X is
+   the length in bytes of the nonce.
+
+   For example, if X = 7 and the Common IV is
+   0x00112233445566778899aabbcc (13 bytes), then the bytes to XOR are
+   0x00112233445566 (7 bytes).
+
+   The constructed nonce is used as AEAD nonce by the AEAD Algorithm
+   (see Section 2.1.1) and by the Group Encryption Algorithm when this
+   is an AEAD algorithm (see Section 2.1.7).
 
 4.4.  external_aad
 
@@ -1798,7 +1821,7 @@ Table of Contents
       Furthermore, the 'algorithms' array additionally includes:
 
       -  'alg_group_enc', which specifies Group Encryption Algorithm
-         from the Common Context (see Section 2.1.6).  This parameter
+         from the Common Context (see Section 2.1.7).  This parameter
          MUST be set to the CBOR simple value null (0xf6) if the
          parameter Group Encryption Algorithm in the Common Context is
          not set.  Otherwise, regardless of whether the endpoint
@@ -1808,7 +1831,7 @@ Table of Contents
          Registry for this algorithm.
 
       -  'alg_signature', which specifies Signature Algorithm from the
-         Common Context (see Section 2.1.7).  This parameter MUST be set
+         Common Context (see Section 2.1.8).  This parameter MUST be set
          to the CBOR simple value null (0xf6) if the parameter Signature
          Algorithm in the Common Context is not set.  Otherwise,
          regardless of whether the endpoint supports the group mode or
@@ -1818,7 +1841,7 @@ Table of Contents
 
       -  'alg_pairwise_key_agreement', which specifies Pairwise Key
          Agreement Algorithm from the Common Context (see
-         Section 2.1.9).  This parameter MUST be set to the CBOR simple
+         Section 2.1.10).  This parameter MUST be set to the CBOR simple
          value null (0xf6) if Pairwise Key Agreement Algorithm in the
          Common Context is not set.  Otherwise, regardless of whether
          the endpoint supports the pairwise mode or not, this parameter
@@ -1925,7 +1948,7 @@ Table of Contents
       and not included in the response.
 
    *  IKM is the Signature Encryption Key from the Common Context (see
-      Section 2.1.8).
+      Section 2.1.9).
 
    *  info is the serialization of a CBOR array consisting of (the
       notation follows [RFC8610]):
@@ -1952,7 +1975,7 @@ Table of Contents
       the CBOR simple value false (0xf4) otherwise.
 
    *  L is the size of the countersignature, as per Signature Algorithm
-      from the Common Context (see Section 2.1.7), in bytes.
+      from the Common Context (see Section 2.1.8), in bytes.
 
 5.2.  Examples of Compressed COSE Objects
 
@@ -2080,8 +2103,8 @@ Table of Contents
 6.  Message Binding, Sequence Numbers, Freshness, and Replay Protection
 
    Like OSCORE, Group OSCORE provides message binding of responses to
-   requests, as well as uniqueness of AEAD (key, nonce) pair (see
-   Sections 7.1 and 7.2 of [RFC8613], respectively).
+   requests, as well as uniqueness of (key, nonce) pairs (see Sections
+   7.1 and 7.2 of [RFC8613], respectively).
 
 6.1.  Supporting Multiple Responses in Long Exchanges
 
@@ -2543,9 +2566,9 @@ Table of Contents
 
    *  In step 3, if any of the following two conditions holds, the
       server MUST include its Sender Sequence Number as Partial IV in
-      the response and use it to build the AEAD nonce to protect the
-      response.  This prevents the server from reusing the AEAD nonce
-      from the request together with the same encryption key.
+      the response and use it to build the nonce to protect the
+      response.  This prevents the server from reusing the nonce from
+      the request together with the same encryption key.
 
       -  The response is not the first response that the server sends to
          the request.
@@ -2973,8 +2996,8 @@ Table of Contents
          responses within the long exchange established by the request.
 
       -  The rules for the inclusion of the server's Sender Sequence
-         Number as Partial IV in a response, as used to build the AEAD
-         nonce to protect the response.
+         Number as Partial IV in a response, as used to build the nonce
+         to protect the response.
 
       -  The rules for the inclusion of the ID Context (Gid) in the 'kid
          context' parameter of a response, if the ID Context used for
@@ -3055,8 +3078,8 @@ Table of Contents
    server replies to the client with a Group OSCORE protected 4.01
    (Unauthorized) response message, including only the Echo Option and
    no diagnostic payload.  The server MUST use its Partial IV when
-   generating the AEAD nonce for protecting the response conveying the
-   Echo Option, and MUST include the Partial IV in the response.
+   generating the nonce for protecting the response conveying the Echo
+   Option, and MUST include the Partial IV in the response.
 
    The Echo Option value SHOULD NOT be reused; if it is reused, it MUST
    be highly unlikely to have been recently used with this client.
@@ -3163,14 +3186,37 @@ Table of Contents
    *  For endpoints that use authenticated encryption, the AEAD
       algorithm AES-CCM-16-64-128 defined in Section 4.2 of [RFC9053] is
       mandatory to implement as Group Encryption Algorithm (see
-      Section 2.1.6).
-
-   *  For many constrained IoT devices it is problematic to support more
-      than one signature algorithm.  Existing devices can be expected to
-      support either EdDSA or ECDSA.  In order to enable as much
-      interoperability as we can reasonably achieve, the following
-      applies with respect to the Signature Algorithm (see
       Section 2.1.7).
+
+   *  For endpoints that use non-authenticated encryption, the algorithm
+      A128CBC defined in Section 5 of [RFC9459] is mandatory to
+      implement as Group Encryption Algorithm (see Section 2.1.7).
+
+   *  Section 6 of [RFC9459] mandates that COSE libraries supporting
+      either the AES-CTR or AES-CBC algorithm and accepting Additional
+      Authenticated Data (AAD) as input must return an error if one of
+      these non-AEAD content encryption algorithms is selected.
+
+      In case the used Group Encryption Algorithm (see Section 2.1.7)
+      does not provide integrity protection, the following applies.
+
+      When invoking the execution of the Group Encryption Algorithm, the
+      Group OSCORE implementation MUST NOT provide any AAD to the COSE
+      library, unless AAD is always expected as input.  In the latter
+      case, the AAD will not be protected by the Group Encryption
+      Algorithm, which is unable to do so.
+
+      If the used COSE library adheres to the mandate in Section 6 of
+      [RFC9459], then a Group OSCORE implementation requires that the
+      COSE library supports using the Group Encryption Algorithm without
+      taking AAD as input.
+
+   *  For many constrained IoT devices, it is problematic to support
+      more than one signature algorithm.  Existing devices can be
+      expected to support either EdDSA or ECDSA.  In order to enable as
+      much interoperability as we can reasonably achieve, the following
+      applies with respect to the Signature Algorithm (see
+      Section 2.1.8).
 
       Less constrained endpoints SHOULD implement both: the EdDSA
       signature algorithm together with the elliptic curve Ed25519
@@ -3202,7 +3248,7 @@ Table of Contents
 
    *  The ECDH-SS + HKDF-256 algorithm specified in Section 6.3.1 of
       [RFC9053] is mandatory to implement as Pairwise Key Agreement
-      Algorithm (see Section 2.1.9).
+      Algorithm (see Section 2.1.10).
 
    *  In order to enable as much interoperability as we can reasonably
       achieve in the presence of constrained devices (see above), the
@@ -3359,9 +3405,9 @@ Table of Contents
       order to always confidently assert the group membership of a
       sender endpoint when processing an incoming message, i.e., to
       assert that the sender endpoint was a group member when it signed
-      the message.  In turn, this prevents a former group member to
-      possibly re-sign and inject in the group a stored message that was
-      protected with old keying material.
+      the message.  In turn, this prevents a former group member from
+      possibly re-signing and injecting in the group a stored message
+      that was protected with old keying material.
 
       A case in point is a group where the Group Encryption Algorithm
       does not provide integrity protection; a group member leaves the
@@ -3497,9 +3543,9 @@ Table of Contents
    case, as specified in Section 8.3, the server MUST protect the
    potential response using the new Security Context.  Specifically, the
    server MUST include its Sender Sequence Number as Partial IV in the
-   response and use it to build the AEAD nonce to protect the response.
-   This prevents the AEAD nonce from the request from being reused with
-   the new Security Context.
+   response and use it to build the nonce to protect the response.  This
+   prevents the nonce from the request from being reused with the new
+   Security Context.
 
    The client will process that response using the new Security Context,
    provided that it has installed the new security parameters and keying
@@ -3568,10 +3614,10 @@ Table of Contents
    different non-synchronized Group Managers, it is possible for Group
    Identifiers of different groups to coincide.
 
-   This does not impair the security of the AEAD algorithm.  In fact, as
-   long as the Master Secret is different for different groups and this
-   condition holds over time, AEAD keys are different among different
-   groups.
+   This does not impair the security of the AEAD Algorithm and of the
+   Group Encryption Algorithm.  In fact, as long as the Master Secret is
+   different for different groups and this condition holds over time,
+   keys are different among different groups.
 
    In case multiple groups use the same IP multicast address, the entity
    assigning that address may help limiting the chances to experience
@@ -3709,7 +3755,7 @@ Table of Contents
    1.  X sets up a group G2 where it acts as Group Manager.
 
    2.  X makes G2 a "clone" of G1, i.e., G1 and G2 use the same
-       algorithms and have the same Master Secret, Master Salt and ID
+       algorithms and have the same Master Secret, Master Salt, and ID
        Context.
 
    3.  X collects a message M sent to G1 and injects it in G2.
@@ -3823,7 +3869,7 @@ Table of Contents
 
    As in OSCORE [RFC8613], also Group OSCORE relies on Sender Sequence
    Numbers included in the COSE message field 'Partial IV' and used to
-   build AEAD nonces.
+   build nonces.
 
    Note that the Partial IV of an endpoint does not necessarily grow
    monotonically.  For instance, upon exhaustion of the endpoint's
@@ -3915,7 +3961,7 @@ Table of Contents
    As discussed in Section 2.6.2, an endpoint that experiences an
    exhaustion of its own Sender Sequence Number space MUST NOT protect
    further messages including a Partial IV, until it has derived a new
-   Sender Context.  This prevents the endpoint to reuse the same AEAD
+   Sender Context.  This prevents the endpoint from reusing the same
    nonce with the same Sender Key.
 
    In order to renew its own Sender Context, the endpoint SHOULD inform
@@ -3925,8 +3971,8 @@ Table of Contents
    Context, and in particular a new Sender Key.
 
    Additionally, the same considerations from Section 12.6 of [RFC8613]
-   hold for Group OSCORE, about building the AEAD nonce and the secrecy
-   of the Security Context parameters.
+   hold for Group OSCORE, about building the nonce and the secrecy of
+   the Security Context parameters.
 
    The group mode uses the "encrypt-then-sign" construction, i.e., the
    countersignature is computed over the COSE_Encrypt0 object (see
@@ -4104,6 +4150,11 @@ Table of Contents
 
 15.1.  Normative References
 
+   [COSE.Algorithms]
+              IANA, "COSE Algorithms",
+              <https://www.iana.org/assignments/cose/
+              cose.xhtml#algorithms>.
+
    [I-D.ietf-core-groupcomm-bis]
               Dijk, E., Wang, C., and M. Tiloca, "Group Communication
               for the Constrained Application Protocol (CoAP)", Work in
@@ -4196,6 +4247,11 @@ Table of Contents
               Countersignatures", STD 96, RFC 9338,
               DOI 10.17487/RFC9338, December 2022,
               <https://www.rfc-editor.org/rfc/rfc9338>.
+
+   [RFC9459]  Housley, R. and H. Tschofenig, "CBOR Object Signing and
+              Encryption (COSE): AES-CTR and AES-CBC", RFC 9459,
+              DOI 10.17487/RFC9459, September 2023,
+              <https://www.rfc-editor.org/rfc/rfc9459>.
 
 15.2.  Informative References
 
@@ -4720,7 +4776,7 @@ D.5.  Version -17 to -18
       Algorithm".
 
    *  Ensured a single Common IV, also when the two encryption
-      algorithms have different AEAD nonce sizes.
+      algorithms have different nonce sizes.
 
    *  Guidelines on the Pairwise Key Agreement Algorithm and derivation
       of the Diffie-Hellman secret.
