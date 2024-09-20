@@ -365,8 +365,8 @@ Table of Contents
 
    *  Group Manager: an entity responsible for a group, neither required
       to be an actual group member nor to take part in the group
-      communication.  The responsibilities of the Group Manager are
-      listed in Section 3.4.
+      communication.  The operations of the Group Manager are defined in
+      Section 3 and its responsibilities are listed in Section 3.4.
 
    *  Silent server: a member of a group that performs only group mode
       processing on incoming requests and never sends responses
@@ -412,9 +412,10 @@ Table of Contents
    How the Security Context is established by the group members is out
    of scope for this document, but if there is more than one Security
    Context applicable to a message, then the endpoints MUST be able to
-   tell which Security Context was latest established.  How to manage
-   information about the group is described in terms of a Group Manager
-   (see Section 3).
+   tell which Security Context was latest established.  The management
+   of information about the group (i.e., identifiers, OSCORE input
+   parameters, and keying material) is described in terms of a Group
+   Manager (see Section 3).
 
    An endpoint of the group may use the group mode (see Section 8), the
    pairwise mode (see Section 9), or both, depending on the modes it
@@ -1156,7 +1157,7 @@ Table of Contents
 2.6.3.1.  New Sender ID for the Endpoint
 
    The Group Manager may assign a new Sender ID to an endpoint, while
-   leaving the Gid, Master Secret and Master Salt unchanged in the
+   leaving the Gid, Master Secret, and Master Salt unchanged in the
    group.  In this case, the Group Manager MUST assign a Sender ID that
    has not been used in the group since the latest time when the current
    Gid value was assigned to the group (see Section 3.2).
@@ -1242,11 +1243,12 @@ Table of Contents
    As with OSCORE, endpoints communicating with Group OSCORE need to
    establish the relevant Security Context.  Group OSCORE endpoints need
    to acquire OSCORE input parameters, information about the group(s)
-   and about other endpoints in the group(s).  This document is based on
-   the existence of an entity called Group Manager that is responsible
-   for the group, but it does not mandate how the Group Manager
-   interacts with the group members.  The list of responsibilities of
-   the Group Manager is compiled in Section 3.4.
+   and about other endpoints in the group(s).
+
+   This document is based on the existence of an entity called Group
+   Manager that is responsible for the group, but it does not mandate
+   how the Group Manager interacts with the group members.  The list of
+   responsibilities of the Group Manager is compiled in Section 3.4.
 
    The Group Manager assigns unique Group Identifiers (Gids) to the
    groups under its control.  Within each of such groups, the Group
@@ -1343,7 +1345,7 @@ Table of Contents
    The Group Manager MUST rekey the group without undue delay in case
    one or more endpoints leave the group.  An endpoint may leave the
    group at own initiative, or may be evicted from the group by the
-   Group Manager, e.g., in case an endpoint is compromised, or is
+   Group Manager, e.g., in case the endpoint is compromised, or is
    suspected to be compromised.  In either case, rekeying the group
    excludes such endpoints from future communications in the group, and
    thus preserves forward security.  If a network node is compromised or
@@ -1357,7 +1359,7 @@ Table of Contents
 
    Separately for each group, the value of the Key Generation Number
    increases by one each time the Group Manager distributes new keying
-   material to that group (see Section 3.2).
+   material to that group (see below).
 
    The establishment of the new Security Context for the group takes the
    following steps.
@@ -1448,7 +1450,7 @@ Table of Contents
       asks the Group Manager for the authentication credentials of all
       the current group members.
 
-      Then, given Z, the set of authentication credentials received from
+      Then, given Z the set of authentication credentials received from
       the Group Manager, the group member removes every authentication
       credential which is not in Z from its list of group members'
       authentication credentials used in the group, and deletes each of
@@ -1472,7 +1474,7 @@ Table of Contents
    protection (see Section 2.1.7) and external signature checkers are
    used (see Section 8.5).  Second, it ensures that the wrong (old)
    authentication credential associated with a group member A is never
-   used with a sender ID that used to be associated with A and has been
+   used with a Sender ID that used to be associated with A and has been
    later issued to a different group member B (see Section 3.2.1.2),
    thus preventing the need to recover from an identity mix-up.
 
@@ -2546,7 +2548,7 @@ Table of Contents
    Note that the server always protects a response with the Sender
    Context from its latest Security Context, and that establishing a new
    Security Context resets the Sender Sequence Number to 0 (see
-   Section 3.2).
+   Section 2.6.3.1 and Section 2.6.3.2).
 
    *  In step 2, the Additional Authenticated Data is modified as
       described in Section 4 of this document.
@@ -2865,8 +2867,8 @@ Table of Contents
    through ECDH.
 
    The pairwise mode does not support external verifiers of source
-   authentication and message integrity like the group mode does (see
-   Section 8.5).
+   authentication and message integrity like the group mode does, e.g.,
+   for external signature checkers (see Section 8.5).
 
    An endpoint implementing only a silent server does not support the
    pairwise mode.
@@ -2986,11 +2988,12 @@ Table of Contents
       respect to the following points.
 
       -  The protection of a response when using a different Security
-         Context than the one used to protect the corresponding request.
-         That is, the server always protects a response with the Sender
-         Context from its latest Security Context, and establishing a
-         new Security Context resets the Sender Sequence Number to 0
-         (see Section 3.2).
+         Context than the one used to verify the corresponding request
+         (see Section 3.2).  That is, the server always protects a
+         response with the Sender Context from its latest Security
+         Context, and establishing a new Security Context resets the
+         Sender Sequence Number to 0 (see Section 2.6.3.1 and
+         Section 2.6.3.2).
 
       -  The use of the stored value of the 'kid' and 'kid context'
          parameters, if the server intends to reply with multiple
@@ -3492,7 +3495,7 @@ Table of Contents
       Manager.  In fact, from the moment when a Gid is assigned to a
       group until the moment when a new Gid is assigned to that same
       group, the Group Manager does not reassign a Sender ID within the
-      group (see Section 3.2).
+      group (see Section 3.2.1.2).
 
    *  The case A in Appendix D.4 of [RFC8613] concerns all requests as
       well as all responses including a Partial IV (e.g., Observe
@@ -3553,8 +3556,7 @@ Table of Contents
    material before the message processing.
 
    In case block-wise transfer [RFC7959] is used, the same
-   considerations from Section 10.3 of [I-D.ietf-ace-key-groupcomm]
-   hold.
+   considerations from Section 10.3 of [RFC9594] hold.
 
    Furthermore, as described below, a group rekeying may temporarily
    result in misaligned Security Contexts between the sender and
@@ -4269,13 +4271,6 @@ Table of Contents
               <https://datatracker.ietf.org/doc/html/draft-amsuess-core-
               cachable-oscore-09>.
 
-   [I-D.ietf-ace-key-groupcomm]
-              Palombini, F. and M. Tiloca, "Key Provisioning for Group
-              Communication using ACE", Work in Progress, Internet-
-              Draft, draft-ietf-ace-key-groupcomm-19, 30 April 2024,
-              <https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-
-              groupcomm-19>.
-
    [I-D.ietf-ace-key-groupcomm-oscore]
               Tiloca, M., Park, J., and F. Palombini, "Key Management
               for OSCORE Groups in ACE", Work in Progress, Internet-
@@ -4394,6 +4389,12 @@ Table of Contents
               Constrained Environments Using the OAuth 2.0 Framework
               (ACE-OAuth)", RFC 9200, DOI 10.17487/RFC9200, August 2022,
               <https://www.rfc-editor.org/rfc/rfc9200>.
+
+   [RFC9594]  Palombini, F. and M. Tiloca, "Key Provisioning for Group
+              Communication Using Authentication and Authorization for
+              Constrained Environments (ACE)", RFC 9594,
+              DOI 10.17487/RFC9594, September 2024,
+              <https://www.rfc-editor.org/rfc/rfc9594>.
 
    [Thormarker]
               Thormarker, E., "On using the same key pair for Ed25519
@@ -4689,11 +4690,11 @@ Appendix C.  Example of Group Identifier Format
    in the group, its Gid will assume value '0xb1f05c'.
 
    Using an immutable Group Prefix for a group with a Group Manager that
-   cannot reassign Gid values (see Section 3.2) limits the total number
-   of rekeying instances.  With a Group Manager that does reassign Gid
-   values, it limits the maximum active number of rekeying instances
-   that a CoAP observation [RFC7641] can persist through.  In either
-   case, the group epoch size needs to be chosen depending on the
+   does not reassign Gid values (see Section 3.2.1.1) limits the total
+   number of rekeying instances.  With a Group Manager that does
+   reassign Gid values, it limits the maximum active number of rekeying
+   instances that a CoAP observation [RFC7641] can persist through.  In
+   either case, the group epoch size needs to be chosen depending on the
    expected rate of rekeying instances.
 
    As discussed in Section 13.6, if endpoints are deployed in multiple
