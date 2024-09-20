@@ -2013,6 +2013,20 @@ As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple gr
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
 
+## Version -22 to -23 ## {#sec-22-23}
+
+* Examples of non-AEAD algorithms as Group Encryption Algorithm.
+
+* Implementation compliance on non-AEAD algorithms.
+
+* Clarified that the HKDF Algorithm must be an HMAC-based HKDF.
+
+* Easier description of using Common IV to compute the nonce.
+
+* Consistent use of "nonce", "key", and "AEAD key".
+
+* Editorial improvements.
+
 ## Version -21 to -22 ## {#sec-21-22}
 
 * Removed mentioning of the CBOR encoding of the HKDF Algorithm.
