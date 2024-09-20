@@ -183,28 +183,29 @@ Table of Contents
    Appendix B.  List of Use Cases
    Appendix C.  Example of Group Identifier Format
    Appendix D.  Document Updates
-     D.1.  Version -21 to -22
-     D.2.  Version -20 to -21
-     D.3.  Version -19 to -20
-     D.4.  Version -18 to -19
-     D.5.  Version -17 to -18
-     D.6.  Version -16 to -17
-     D.7.  Version -15 to -16
-     D.8.  Version -14 to -15
-     D.9.  Version -13 to -14
-     D.10. Version -12 to -13
-     D.11. Version -11 to -12
-     D.12. Version -10 to -11
-     D.13. Version -09 to -10
-     D.14. Version -08 to -09
-     D.15. Version -07 to -08
-     D.16. Version -06 to -07
-     D.17. Version -05 to -06
-     D.18. Version -04 to -05
-     D.19. Version -03 to -04
-     D.20. Version -02 to -03
-     D.21. Version -01 to -02
-     D.22. Version -00 to -01
+     D.1.  Version -22 to -23
+     D.2.  Version -21 to -22
+     D.3.  Version -20 to -21
+     D.4.  Version -19 to -20
+     D.5.  Version -18 to -19
+     D.6.  Version -17 to -18
+     D.7.  Version -16 to -17
+     D.8.  Version -15 to -16
+     D.9.  Version -14 to -15
+     D.10. Version -13 to -14
+     D.11. Version -12 to -13
+     D.12. Version -11 to -12
+     D.13. Version -10 to -11
+     D.14. Version -09 to -10
+     D.15. Version -08 to -09
+     D.16. Version -07 to -08
+     D.17. Version -06 to -07
+     D.18. Version -05 to -06
+     D.19. Version -04 to -05
+     D.20. Version -03 to -04
+     D.21. Version -02 to -03
+     D.22. Version -01 to -02
+     D.23. Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -4710,7 +4711,21 @@ Appendix D.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-D.1.  Version -21 to -22
+D.1.  Version -22 to -23
+
+   *  Examples of non-AEAD algorithms as Group Encryption Algorithm.
+
+   *  Implementation compliance on non-AEAD algorithms.
+
+   *  Clarified that the HKDF Algorithm must be an HMAC-based HKDF.
+
+   *  Easier description of using Common IV to compute the nonce.
+
+   *  Consistent use of "nonce", "key", and "AEAD key".
+
+   *  Editorial improvements.
+
+D.2.  Version -21 to -22
 
    *  Removed mentioning of the CBOR encoding of the HKDF Algorithm.
 
@@ -4740,7 +4755,7 @@ D.1.  Version -21 to -22
 
    *  Editorial improvements.
 
-D.2.  Version -20 to -21
+D.3.  Version -20 to -21
 
    *  Updated author list.
 
@@ -4751,17 +4766,17 @@ D.2.  Version -20 to -21
 
    *  Editorial: expanded name of the "CoRE Parameters" registry group.
 
-D.3.  Version -19 to -20
+D.4.  Version -19 to -20
 
    *  Change Controller for the target attribute "gosc" set to "IETF".
 
-D.4.  Version -18 to -19
+D.5.  Version -18 to -19
 
    *  Unified presentation of handling of multiple responses.
 
    *  Added Rikard Höglund as Contributor.
 
-D.5.  Version -17 to -18
+D.6.  Version -17 to -18
 
    *  Changed document title.
 
@@ -4806,13 +4821,13 @@ D.5.  Version -17 to -18
 
    *  Clarifications, fixes and editorial improvements.
 
-D.6.  Version -16 to -17
+D.7.  Version -16 to -17
 
    *  Definition and registration of the target attribute "gosc".
 
    *  Reference update and editorial fixes.
 
-D.7.  Version -15 to -16
+D.8.  Version -15 to -16
 
    *  Clients "SHOULD" use the group mode for one-to-many requests.
 
@@ -4825,11 +4840,11 @@ D.7.  Version -15 to -16
 
    *  Editorial improvements.
 
-D.8.  Version -14 to -15
+D.9.  Version -14 to -15
 
    *  Updated references and editorial fixes.
 
-D.9.  Version -13 to -14
+D.10.  Version -13 to -14
 
    *  Replaced "node" with "endpoint" where appropriate.
 
@@ -4856,7 +4871,7 @@ D.9.  Version -13 to -14
 
    *  Clarifications and editorial improvements.
 
-D.10.  Version -12 to -13
+D.11.  Version -12 to -13
 
    *  Fixes in the derivation of the Group Encryption Key.
 
@@ -4864,7 +4879,7 @@ D.10.  Version -12 to -13
 
    *  Changed UCCS to CCS.
 
-D.11.  Version -11 to -12
+D.12.  Version -11 to -12
 
    *  No mode of operation is mandatory to support.
 
@@ -4902,7 +4917,7 @@ D.11.  Version -11 to -12
 
    *  Fixes and editorial improvements.
 
-D.12.  Version -10 to -11
+D.13.  Version -10 to -11
 
    *  Loss of Recipient Contexts due to their overflow.
 
@@ -4949,7 +4964,7 @@ D.12.  Version -10 to -11
 
    *  Fixes and editorial improvements.
 
-D.13.  Version -09 to -10
+D.14.  Version -09 to -10
 
    *  Removed 'Counter Signature Key Parameters' from the Common
       Context.
@@ -4987,7 +5002,7 @@ D.13.  Version -09 to -10
 
    *  Overall clarifications and editorial revision.
 
-D.14.  Version -08 to -09
+D.15.  Version -08 to -09
 
    *  Pairwise keys are discarded after group rekeying.
 
@@ -5025,7 +5040,7 @@ D.14.  Version -08 to -09
 
    *  Clarifications and editorial improvements.
 
-D.15.  Version -07 to -08
+D.16.  Version -07 to -08
 
    *  Clarified relation between pairwise mode and group communication
       (Section 1).
@@ -5089,7 +5104,7 @@ D.15.  Version -07 to -08
 
    *  Editorial improvements.
 
-D.16.  Version -06 to -07
+D.17.  Version -06 to -07
 
    *  Updated abstract and introduction.
 
@@ -5121,7 +5136,7 @@ D.16.  Version -06 to -07
    *  New pairwise mode, using pairwise keying material for both
       requests and responses.
 
-D.17.  Version -05 to -06
+D.18.  Version -05 to -06
 
    *  Group IDs mandated to be unique under the same Group Manager.
 
@@ -5149,7 +5164,7 @@ D.17.  Version -05 to -06
 
    *  Editorial improvements.
 
-D.18.  Version -04 to -05
+D.19.  Version -04 to -05
 
    *  Added references to draft-dijk-core-groupcomm-bis.
 
@@ -5168,7 +5183,7 @@ D.18.  Version -04 to -05
    *  New "Counter Signature Key Parameters" IANA Registry
       (Section 9.2).
 
-D.19.  Version -03 to -04
+D.20.  Version -03 to -04
 
    *  Added the new "Counter Signature Parameters" in the Common Context
       (see Section 2).
@@ -5212,7 +5227,7 @@ D.19.  Version -03 to -04
    *  New IANA Registry "Counter Signature Parameters" (see
       Section 9.1).
 
-D.20.  Version -02 to -03
+D.21.  Version -02 to -03
 
    *  Revised structure and phrasing for improved readability and better
       alignment with draft-ietf-core-object-security.
@@ -5246,7 +5261,7 @@ D.20.  Version -02 to -03
    *  Revised Appendix D, now giving a short high-level description of a
       new endpoint set-up.
 
-D.21.  Version -01 to -02
+D.22.  Version -01 to -02
 
    *  Terminology has been made more aligned with RFC7252 and draft-
       ietf-core-object-security: i) "client" and "server" replace the
@@ -5281,7 +5296,7 @@ D.21.  Version -01 to -02
       synchronization of sequence numbers based on the Echo Option from
       draft-ietf-core-echo-request-tag.
 
-D.22.  Version -00 to -01
+D.23.  Version -00 to -01
 
    *  Section 1.1 has been updated with the definition of group as
       "security group".
