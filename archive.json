@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-08-01T00:51:29.885328+00:00",
+  "timestamp": "2024-09-22T01:03:51.390072+00:00",
   "repo": "core-wg/oscore-groupcomm",
   "labels": [
     {
@@ -19,14 +19,14 @@
       "color": "a2eeef"
     },
     {
-      "name": "help wanted",
-      "description": "Extra attention is needed",
-      "color": "008672"
-    },
-    {
       "name": "good first issue",
       "description": "Good for newcomers",
       "color": "7057ff"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
     },
     {
       "name": "invalid",
@@ -42,6 +42,11 @@
       "name": "wontfix",
       "description": "This will not be worked on",
       "color": "ffffff"
+    },
+    {
+      "name": "CA review 20230324",
+      "description": "",
+      "color": "C2BAD3"
     }
   ],
   "issues": [
@@ -98,16 +103,24 @@
       "id": "MDU6SXNzdWU0MjM5NDE3NDU=",
       "title": "Choice of signature Algorithm(s)",
       "url": "https://github.com/core-wg/oscore-groupcomm/issues/7",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "emanjon",
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "I think we need some more discussion of which signature algorithms to use. Candidates would be:\r\n\r\nAlgorithm                 Signature size    Security level\r\nECDSA secp224r1 (P-224)   56 bytes          112\r\nECDSA secp256r1 (P-256)   64 bytes          128\r\nECDSA secp256k1           64 bytes          128\r\nEd25519                   64 bytes          128\r\n\r\nThe CFRG review of EDHOC brought up the qeustion if not P-224 would be a better choice if the main goal is to get smaller messages. ECDSA with P-224 has the obvious advantage of having signatures that are 8 bytes shorter.\r\n\r\n112-bit security is according to NIST ok to use until 2030.\r\n\r\nECDSA wih P-224 is significantly faster than ECDSA with P-256, around 2/3 the number of operations/time. secp256k1 is around 300 % faster than secp256r1. Harder to find comparisions with Ed25519. Most of the speed will depend on the curve, but EdDSA (Schnorr) also have other advantages that speed up signing compared to ECDSA. Ed25519 verify is likely at least as fast as ECDSA with P-224 on all platforms and significantly faster for signing on all platforms. On some platforms I think Ed25519 is significantly faster also for verification.\r\n\r\nIn terms of number of implementation, I think ECDSA with P-256 in is the lead, with ECDSA P-224 as second, and Ed25519 in last place.\r\n\r\nI am leaning towards that P-224 should probably be supported (then ES224 need to be standardized in COSE). The other three are already registered for COSE. The harder question is which should be MTI. Several people have stated that latency is of uthermost importance, in case the current choice of Ed25519 as MTI is likely the correct choice.\r\n\r\nA good but a little bit dated comparision of different algorithms on ARM processors:\r\nhttps://datatracker.ietf.org/meeting/92/materials/slides-92-lwig-3\r\n\r\nThe choice also depends on if there are fast implementations available. Assembly optimized version of the NIST curves is likely as fast or faster than a curve25519 implementation written in C.\r\n\r\nhttps://github.com/kmackay/micro-ecc has very fast implementations (for ARM) of ECDH and ECDSA with secp160r1, secp192r1, secp224r1, secp256r1, and secp256k1. I cannot find anything similar for EdDSA.\r\n",
       "createdAt": "2019-03-21T21:06:00Z",
-      "updatedAt": "2019-03-21T21:06:00Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2021-10-24T18:58:46Z",
+      "closedAt": "2021-10-24T18:58:46Z",
+      "comments": [
+        {
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The text added with the commit above is aligned to the rationale used in EDHOC [1], thus expecting not-too-constrained devices to support both EdDSA and ECDSA, while constrained devices to support EdDSA or ECDSA. The same rationale applies also to the support of curves X25519 and P-256 for Diffie-Hellman secret calculation.\r\n\r\n[1] https://datatracker.ietf.org/doc/html/draft-ietf-lake-edhoc-11#section-7",
+          "createdAt": "2021-10-03T18:59:46Z",
+          "updatedAt": "2021-10-03T18:59:46Z"
+        }
+      ]
     },
     {
       "number": 8,
@@ -1117,15 +1130,15 @@
       "id": "MDU6SXNzdWU3Njg4MjQzNzQ=",
       "title": "Convenience and security of one key pair for Diffie-Hellman and signing",
       "url": "https://github.com/core-wg/oscore-groupcomm/issues/72",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "marco-tiloca-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Elaborate on the convenience together with the security [DeGabriele] of using the same key pair for Diffie-Hellman (in pairwise mode) and for signing (in group mode). This can extend the text in Section 10.13 \"Cryptographic Considerations\".\r\n\r\n\r\n[DeGabriele] Degabriele, J., Lehmann, A., Paterson, K., Smart, N., and M. Strefler, \"On the Joint Security of Encryption and Signature in EMV\", December 2011. https://eprint.iacr.org/2011/615",
       "createdAt": "2020-12-16T12:43:25Z",
-      "updatedAt": "2021-05-09T09:50:40Z",
-      "closedAt": null,
+      "updatedAt": "2021-10-24T18:58:32Z",
+      "closedAt": "2021-10-24T18:58:32Z",
       "comments": [
         {
           "author": "marco-tiloca-sics",
@@ -1133,6 +1146,13 @@
           "body": "Addressed in https://github.com/core-wg/oscore-groupcomm/commit/1fe710c720aab07b50af876d17e9fa72a55efc18 and https://github.com/core-wg/oscore-groupcomm/commit/92122dc8952d364f69f99b490f7afd5d1d20753f",
           "createdAt": "2021-05-09T09:50:40Z",
           "updatedAt": "2021-05-09T09:50:40Z"
+        },
+        {
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This was addressed in v -12 through the commits above, building on [1] and adapting the derivation of pairwise keys accordingly. Followed-up by issue #73\r\n\r\n[1] https://eprint.iacr.org/2021/509",
+          "createdAt": "2021-10-24T18:58:32Z",
+          "updatedAt": "2021-10-24T18:58:32Z"
         }
       ]
     },
@@ -1141,15 +1161,15 @@
       "id": "MDU6SXNzdWU3OTAwMDA3OTI=",
       "title": "Concerns with EC key joint signature and DH usage",
       "url": "https://github.com/core-wg/oscore-groupcomm/issues/73",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gselander",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Provide better justification for the security of the use of the same public key in pairwise and group modes.\r\n\r\nhttps://mailarchive.ietf.org/arch/msg/core/ujj_I-LlqW9fq__quh-YqKS0fF0/\r\n",
       "createdAt": "2021-01-20T13:57:01Z",
-      "updatedAt": "2021-05-09T09:50:45Z",
-      "closedAt": null,
+      "updatedAt": "2021-10-24T18:58:09Z",
+      "closedAt": "2021-10-24T18:58:09Z",
       "comments": [
         {
           "author": "marco-tiloca-sics",
@@ -1157,6 +1177,13 @@
           "body": "Addressed in https://github.com/core-wg/oscore-groupcomm/commit/1fe710c720aab07b50af876d17e9fa72a55efc18 and https://github.com/core-wg/oscore-groupcomm/commit/92122dc8952d364f69f99b490f7afd5d1d20753f",
           "createdAt": "2021-05-09T09:50:45Z",
           "updatedAt": "2021-05-09T09:50:45Z"
+        },
+        {
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This was addressed in v -12 through the commits above, building on [1] and adapting the derivation of pairwise keys accordingly. Follow-up of issue #72.\r\n\r\n[1] https://eprint.iacr.org/2021/509",
+          "createdAt": "2021-10-24T18:58:08Z",
+          "updatedAt": "2021-10-24T18:58:08Z"
         }
       ]
     },
@@ -1261,15 +1288,15 @@
       "id": "MDU6SXNzdWU4OTQ5NjUwNjA=",
       "title": "80-byte source authentication is a big problem",
       "url": "https://github.com/core-wg/oscore-groupcomm/issues/81",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "emanjon",
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "The current design where the sender \"countersign\" it's own AEAD creates 80-byte source authentication when everything except CCM_8 is used. E.g. AES-CCM, AES-GCM, and ChaCha20-Poly1305.  This make Group OSCORE impossible to use in many situations such as the 75 bytes in some cellular network broadcast (even with CCM_8).\r\n \r\nIt would be very strange to force people wanting to use AES-CCM, AES-GCM, or ChaCha20-Poly1305 or other 16-bit tag algorithms in pair-wise to use 80-byte source authentication, when it can trivially by done with 64 bytes. While the TLS conclusions regarding CCM_8 is misleading, I think there will be a trend toward 128 bit tags. Many deployments for government and financial institutions always use 128 bit tags.\r\n\r\nAnother big disadvantage with the current design is that the user to chose between more useless in the signature mode and less security in pair-wise. In the signature mode, the tag provides no security and you want as small as possible. For pair-wise many application would definitly want to use 16 bytes tags, e.g. application aligning with the CSNA suite.\r\n\r\n8-16 additional bytes overhead for the signature mode makes a big difference. Group OSCORE without the useless AEAD tag could be used, but Group OSCORE with the tag cannot.",
       "createdAt": "2021-05-19T03:59:19Z",
-      "updatedAt": "2021-05-19T06:52:13Z",
-      "closedAt": null,
+      "updatedAt": "2021-10-24T18:57:33Z",
+      "closedAt": "2021-10-24T18:57:33Z",
       "comments": [
         {
           "author": "cabo",
@@ -1277,6 +1304,27 @@
           "body": "I agree with the reasoning above, but have a question anyway:\r\nIs the AEAD authenticator actually \"useless\"?  Doesn't it protect against DoSing the signature verifier?",
           "createdAt": "2021-05-19T06:52:13Z",
           "updatedAt": "2021-05-19T06:52:13Z"
+        },
+        {
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This issue was also addressed in version -12, by admitting that the group mode could also use an encryption algorithm without integrity tag as Signature Encryption Algorithm.\r\n\r\nIf an encryption algorithm with integrity tag is used anyway, the tag does not help against a DoS based on inducing the message recipient to verify a bad signature. As also clarified in version -12 [1][2], the signature verification must happen and be successfully completed before proceeding with the decryption of the COSE object.\r\n\r\n\r\n[1] https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-12#section-8.2\r\n[2] https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-12#section-8.4",
+          "createdAt": "2021-10-03T20:10:30Z",
+          "updatedAt": "2021-10-03T20:10:30Z"
+        },
+        {
+          "author": "chrysn",
+          "authorAssociation": "MEMBER",
+          "body": ">  Is the AEAD authenticator actually \"useless\"? Doesn't it protect against DoSing the signature verifier?\r\n\r\nThe verifier could check the AEAD tag on the encrypted part first. The text says that \"The server MUST perform signature verification before decrypting the COSE object\" (with exceptions only for those that can't), but that's not ruling out verification of the tag. (Granted, many cryptographic APIs don't support doing these things separately).\r\n\r\n(Obtaining a valid tag on an encrypted signature is probably as easy or hard as obtaining a valid tag on the encrypted payload -- once an attacker has that, and either can be used to pester the server until the client's request on that seqno gets through and the obtained tag is burned).",
+          "createdAt": "2021-10-14T08:48:12Z",
+          "updatedAt": "2021-10-14T08:48:12Z"
+        },
+        {
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As per the follow-up side discussion, no further text is needed.",
+          "createdAt": "2021-10-24T18:57:33Z",
+          "updatedAt": "2021-10-24T18:57:33Z"
         }
       ]
     },
@@ -1501,16 +1549,62 @@
       "id": "MDU6SXNzdWU5NTY3NzY2NDY=",
       "title": "Clarify derivation of Group Encryption Key",
       "url": "https://github.com/core-wg/oscore-groupcomm/issues/96",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "marco-tiloca-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "In Section 2.1.6 \"Group Encryption Key\", explicitly mention that the 'id' element of the 'info' array is the empty byte string.\r\n\r\nThis is consistent with the derivation of the Common IV inherited from https://datatracker.ietf.org/doc/html/rfc8613#section-3.2.1",
       "createdAt": "2021-07-30T14:04:49Z",
-      "updatedAt": "2021-07-30T14:04:49Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2021-09-16T16:12:57Z",
+      "closedAt": "2021-09-16T16:12:57Z",
+      "comments": [
+        {
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "And fix an error: the value of L should not be the size of the output of the HKDF. It should be the size of the keys used the Signature Encryption Algorithm, consistently with the derivation of the Sender/Recipient key.",
+          "createdAt": "2021-09-16T16:03:24Z",
+          "updatedAt": "2021-09-16T16:03:24Z"
+        }
+      ]
+    },
+    {
+      "number": 105,
+      "id": "I_kwDOB2KWK85lwfC9",
+      "title": "Merge section 6.2 and 6.4",
+      "url": "https://github.com/core-wg/oscore-groupcomm/issues/105",
+      "state": "CLOSED",
+      "author": "gselander",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "\r\nFrom Section 13.12 :\r\n\"As discussed in [Section 6.2](https://core-wg.github.io/oscore-groupcomm/draft-ietf-core-oscore-groupcomm.html#sec-synch-seq-num), a Replay Window may be initialized as not valid \"\r\n\r\nSection 6.2 is essentially one paragraph long and, does not discuss the above. It can be merged with 6.4 which is also about replay protection. The reference in 13.12 also needs to be fixed.",
+      "createdAt": "2023-05-12T08:39:24Z",
+      "updatedAt": "2023-05-15T11:20:40Z",
+      "closedAt": "2023-05-12T09:12:26Z",
+      "comments": [
+        {
+          "author": "chrysn",
+          "authorAssociation": "MEMBER",
+          "body": "Is there any difference between the SSN being out of sync and the replay window being initialized as not valid?",
+          "createdAt": "2023-05-14T10:40:45Z",
+          "updatedAt": "2023-05-14T10:40:45Z"
+        },
+        {
+          "author": "gselander",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Good question, which text are you reading? Perhaps we wouldn't use the term \"initialized as not valid\" for SSN being out of sync, but they can both serve as examples of how a replay window became invalid.",
+          "createdAt": "2023-05-15T10:22:23Z",
+          "updatedAt": "2023-05-15T10:22:23Z"
+        },
+        {
+          "author": "chrysn",
+          "authorAssociation": "MEMBER",
+          "body": "The place I've seen \"not synchronized or the RW is invalid\" is in the\ncommit that fixed this issue (hence replying here).\n\nI think the expression \"not having / knowing a valid Replay Window\" is\nthe most descriptive, as SSN \"synchronization\" to me reads like there is\na tighter coupling than there actually is.\n\nSo maybe\n\n-A server may not be synchronized[...]\n+A server may not have a valid Replay Window (typically stemming from\nloss of mutable security context in any form of\n{{ssec-loss-mutable-context}}).\n",
+          "createdAt": "2023-05-15T11:20:40Z",
+          "updatedAt": "2023-05-15T11:20:40Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -1530,7 +1624,7 @@
       "baseRepository": "core-wg/oscore-groupcomm",
       "baseRefName": "master",
       "baseRefOid": "1aa6a22e24fe4efd3edb7abc8232e2557abfe309",
-      "headRepository": "emanjon/oscore-groupcomm",
+      "headRepository": null,
       "headRefName": "patch-1",
       "headRefOid": "ca3bc0853d0ae1975a324a5be1e75a3826d315d4",
       "closedAt": "2018-10-11T16:19:58Z",
@@ -1676,7 +1770,7 @@
       "baseRepository": "core-wg/oscore-groupcomm",
       "baseRefName": "master",
       "baseRefOid": "0e93b41a17658f3f252b80161077fc65a5431205",
-      "headRepository": "emanjon/oscore-groupcomm",
+      "headRepository": null,
       "headRefName": "patch-2",
       "headRefOid": "c866aa51cf64f74b987be98cc9ac74ceed5a9506",
       "closedAt": "2020-02-06T15:25:12Z",
@@ -1935,7 +2029,7 @@
       "baseRepository": "core-wg/oscore-groupcomm",
       "baseRefName": "master",
       "baseRefOid": "df97ef75050917fa40b6527e5c0a4f154494672e",
-      "headRepository": "emanjon/oscore-groupcomm",
+      "headRepository": null,
       "headRefName": "patch-3",
       "headRefOid": "d5abbe6ed39012230ebdde08827dc7d6fbd0ec29",
       "closedAt": "2021-06-22T08:20:56Z",
@@ -1969,7 +2063,7 @@
       "baseRepository": "core-wg/oscore-groupcomm",
       "baseRefName": "master",
       "baseRefOid": "df97ef75050917fa40b6527e5c0a4f154494672e",
-      "headRepository": "emanjon/oscore-groupcomm",
+      "headRepository": null,
       "headRefName": "patch-4",
       "headRefOid": "97ab1616b1995a9e7ef202ef22b8b603101b9deb",
       "closedAt": "2021-06-22T10:08:01Z",
@@ -2024,7 +2118,7 @@
       "baseRepository": "core-wg/oscore-groupcomm",
       "baseRefName": "master",
       "baseRefOid": "df97ef75050917fa40b6527e5c0a4f154494672e",
-      "headRepository": "emanjon/oscore-groupcomm",
+      "headRepository": null,
       "headRefName": "patch-5",
       "headRefOid": "1a1af992d7acfc3fe3a39eafd532add23feba16d",
       "closedAt": "2021-06-22T10:50:26Z",
@@ -2065,7 +2159,7 @@
       "baseRepository": "core-wg/oscore-groupcomm",
       "baseRefName": "master",
       "baseRefOid": "df97ef75050917fa40b6527e5c0a4f154494672e",
-      "headRepository": "emanjon/oscore-groupcomm",
+      "headRepository": null,
       "headRefName": "patch-6",
       "headRefOid": "b665adc4f70aaa0a7af1331659d1a834b954489a",
       "closedAt": "2021-06-22T07:57:33Z",
@@ -2108,6 +2202,1345 @@
       "mergeCommit": {
         "oid": "696f599c4d266fe9a3bd18f7bdcc25f9212fddb1"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 97,
+      "id": "PR_kwDOB2KWK840D5Ii",
+      "title": "V 14",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/97",
+      "state": "MERGED",
+      "author": "marco-tiloca-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2022-03-07T18:37:36Z",
+      "updatedAt": "2022-09-05T13:55:15Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "2e75eafa10b475772e528e1891883e3593d8269a",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "v-14",
+      "headRefOid": "532534ebd3240215b2b6a5e9ac0bdd73ac90d0f9",
+      "closedAt": "2022-03-07T18:37:43Z",
+      "mergedAt": "2022-03-07T18:37:43Z",
+      "mergedBy": "marco-tiloca-sics",
+      "mergeCommit": {
+        "oid": "709d83917d37e59ac59fdbe3a61652966924786c"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOB2KWK841xXKG",
+          "commit": {
+            "abbreviatedOid": "a1d5c68"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-03-07T19:07:12Z",
+          "updatedAt": "2022-03-07T19:07:12Z",
+          "comments": [
+            {
+              "originalPosition": 56,
+              "body": "but why?\r\n\r\nRFC 8949 does not mention \"nil\".\r\nRFC 8610 has \"nil\" as a way to specify a CBOR null (\"null\" works too), but there is no CBOR simple value \"nil\".  The second paragraph of RFC 8610 may be  a bit misleading...",
+              "createdAt": "2022-03-07T19:07:12Z",
+              "updatedAt": "2022-03-07T19:07:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK841xaBT",
+          "commit": {
+            "abbreviatedOid": "a1d5c68"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-03-07T19:18:26Z",
+          "updatedAt": "2022-03-07T19:18:26Z",
+          "comments": [
+            {
+              "originalPosition": 56,
+              "body": "That was in an old commit and the change was reverted :-) That changelog item is not present now in v -14, which only uses CBOR simple value \"null\".",
+              "createdAt": "2022-03-07T19:18:26Z",
+              "updatedAt": "2022-03-07T19:18:27Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 98,
+      "id": "PR_kwDOB2KWK84_ii5d",
+      "title": "Response handling and security properties",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/98",
+      "state": "MERGED",
+      "author": "marco-tiloca-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR is about the following points:\r\n\r\n* Explicit handling of multiple non-notification responses from the same server to the same group request. The handling relies on the same rationale used for notifications, in order to detect replays and ensure ordering of responses from the same server. From a general point of view, this relates to the issue at https://github.com/core-wg/core-responses/issues/2\r\n\r\n* Improved presentation of the security properties ensured by Group OSCORE, by following more closely the parlance and structure used for OSCORE in RFC 8613.\r\n\r\n* Improved listing of operations defined for the group mode that are inherited by the pairwise mode.\r\n\r\n* Have \"SHOULD\" (not \"MUST\") for using the group mode to protect a request intended to multiple recipients. An exception is a Deterministic Request as defined in [1], which is always protected with the pairwise mode, even in the case where it is intended to multiple servers.\r\n\r\n* Editorial fixes.\r\n\r\n\r\n[1] https://datatracker.ietf.org/doc/draft-amsuess-core-cachable-oscore/",
+      "createdAt": "2022-09-24T10:52:06Z",
+      "updatedAt": "2022-10-24T15:12:22Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "7d65bf4a0eb2f3823626941ced94be1bfd896ce3",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "responses-and-properties",
+      "headRefOid": "0a233d4af4335275ffa2d5523bc6c89572df6e51",
+      "closedAt": "2022-10-24T15:12:22Z",
+      "mergedAt": "2022-10-24T15:12:22Z",
+      "mergedBy": "marco-tiloca-sics",
+      "mergeCommit": {
+        "oid": "3b255e80c7229c488fe15a52a55b960f9408a26b"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOB2KWK85D9IYq",
+          "commit": {
+            "abbreviatedOid": "6770895"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-10-13T05:50:32Z",
+          "updatedAt": "2022-10-13T05:50:33Z",
+          "comments": [
+            {
+              "originalPosition": 62,
+              "body": "Nit: uniquess -> uniqueness ",
+              "createdAt": "2022-10-13T05:50:32Z",
+              "updatedAt": "2022-10-13T05:50:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85D9JLK",
+          "commit": {
+            "abbreviatedOid": "6770895"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-10-13T05:53:04Z",
+          "updatedAt": "2022-10-13T05:53:04Z",
+          "comments": [
+            {
+              "originalPosition": 80,
+              "body": "To terminate a _Non-Notification Group Exchange_ it would be about deleting the associated Token? Is it worth mentioning how the termination is done here or elsewhere?",
+              "createdAt": "2022-10-13T05:53:04Z",
+              "updatedAt": "2022-10-13T05:53:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85D9RDW",
+          "commit": {
+            "abbreviatedOid": "6770895"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-10-13T06:21:49Z",
+          "updatedAt": "2022-10-13T06:21:49Z",
+          "comments": [
+            {
+              "originalPosition": 121,
+              "body": "_the associated Response Number is initialized to the Partial IV of the first successfully verified non-notification response_ Meaning the first one that actually contains a Partial IV? (As the first one may not).",
+              "createdAt": "2022-10-13T06:21:49Z",
+              "updatedAt": "2022-10-13T06:21:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85D9VST",
+          "commit": {
+            "abbreviatedOid": "6770895"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-10-13T06:36:11Z",
+          "updatedAt": "2022-10-13T06:36:12Z",
+          "comments": [
+            {
+              "originalPosition": 225,
+              "body": "Could be rephrased to avoid double negative?\r\n\r\n_That is, if the server receives an observation request and does not register the observation, then any following 2.xx response from the server to that request MUST NOT be a notification._\r\n\r\n-> \r\n\r\n_That is, if the server receives an observation request and registers the observation, then any following 2.xx response from the server to that request MUST be a notification._",
+              "createdAt": "2022-10-13T06:36:11Z",
+              "updatedAt": "2022-10-13T06:36:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85D9X2O",
+          "commit": {
+            "abbreviatedOid": "6770895"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-10-13T06:45:03Z",
+          "updatedAt": "2022-10-13T06:45:03Z",
+          "comments": [
+            {
+              "originalPosition": 320,
+              "body": "Is it needed to list these points here? The beginning paragraph of this section says _\"The following differences also apply.\"_, so it is focusing on the differences. The points listed here seem to be the same as in {ssec-verify-request}",
+              "createdAt": "2022-10-13T06:45:03Z",
+              "updatedAt": "2022-10-13T06:45:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85D9b1o",
+          "commit": {
+            "abbreviatedOid": "6770895"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "I have checked the PR and left a few comments. To me the content looks good and consistent with our earlier discussions.",
+          "createdAt": "2022-10-13T06:59:23Z",
+          "updatedAt": "2022-10-13T06:59:23Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOB2KWK85D9gAG",
+          "commit": {
+            "abbreviatedOid": "6770895"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-10-13T07:14:02Z",
+          "updatedAt": "2022-10-13T07:14:02Z",
+          "comments": [
+            {
+              "originalPosition": 320,
+              "body": "Can be closed after discussions with Marco. (The diff is actually compared to Section 8.2 of RFC8613).",
+              "createdAt": "2022-10-13T07:14:02Z",
+              "updatedAt": "2022-10-13T07:14:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85D9jpn",
+          "commit": {
+            "abbreviatedOid": "6770895"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-10-13T07:25:37Z",
+          "updatedAt": "2022-10-13T07:25:37Z",
+          "comments": [
+            {
+              "originalPosition": 80,
+              "body": "As a comparison, RFC 7641 uses quite high-level language on what terminating an observation means. We can add that the CoAP Token associated with the corresponding request is freed up.",
+              "createdAt": "2022-10-13T07:25:37Z",
+              "updatedAt": "2022-10-13T07:25:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85D9kKm",
+          "commit": {
+            "abbreviatedOid": "6770895"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-10-13T07:26:44Z",
+          "updatedAt": "2022-10-13T07:26:44Z",
+          "comments": [
+            {
+              "originalPosition": 121,
+              "body": "Yes, however:\r\n\r\n- This has to be read together with the later sentence: \" Given a group request, implementations need to make sure that the corresponding non-notification response from a server without Partial IV is considered the oldest from that server.\"\r\n\r\n- This text has the same construction and uses the same parlance as the text in Section 4.1.3.5.2 of RFC 8613 about how OSCORE handles notifications.\r\n\r\nIt's good to mirror as much as possible what OSCORE says for notifications.",
+              "createdAt": "2022-10-13T07:26:44Z",
+              "updatedAt": "2022-10-13T07:26:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85D9kYe",
+          "commit": {
+            "abbreviatedOid": "6770895"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-10-13T07:27:04Z",
+          "updatedAt": "2022-10-13T07:27:05Z",
+          "comments": [
+            {
+              "originalPosition": 225,
+              "body": "Sounds better, thanks!",
+              "createdAt": "2022-10-13T07:27:05Z",
+              "updatedAt": "2022-10-13T07:27:05Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 99,
+      "id": "PR_kwDOB2KWK85EzcKW",
+      "title": "Gosc target attr",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/99",
+      "state": "MERGED",
+      "author": "marco-tiloca-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2022-12-08T15:32:53Z",
+      "updatedAt": "2023-04-15T08:17:17Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "3b255e80c7229c488fe15a52a55b960f9408a26b",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "gosc-target-attr",
+      "headRefOid": "85911033589947b289a86651a92bb55e6ce4f5b3",
+      "closedAt": "2022-12-20T15:29:28Z",
+      "mergedAt": "2022-12-20T15:29:28Z",
+      "mergedBy": "marco-tiloca-sics",
+      "mergeCommit": {
+        "oid": "078f2ee2f858050ba017037710d77dbc3a10128b"
+      },
+      "comments": [
+        {
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "body": "It looks good to me also. The only point I had was to maybe have a more descriptive title for the web link figure.\r\n`{: #fig-web-link-example title=\"The Web Link.\" artwork-align=\"center\"}`\r\n\r\nSomething like the below perhaps?\r\n_Usage of the \"gosc\" attribute in a web link_\r\n",
+          "createdAt": "2022-12-19T13:10:43Z",
+          "updatedAt": "2022-12-19T13:10:43Z"
+        },
+        {
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks @rikard-sics , good point! Just to emphasize that it is an example, we may go for:\r\n\r\n> Example of using the \"gosc\" attribute in a web link.",
+          "createdAt": "2022-12-19T15:49:57Z",
+          "updatedAt": "2022-12-19T15:49:57Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOB2KWK85I3O23",
+          "commit": {
+            "abbreviatedOid": "9106dd5"
+          },
+          "author": "gselander",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-12-19T08:02:32Z",
+          "updatedAt": "2022-12-19T08:02:32Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 100,
+      "id": "PR_kwDOB2KWK85MzWJU",
+      "title": "Replace CCS abbreviation with its full form",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/100",
+      "state": "MERGED",
+      "author": "chrysn",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "So far, it was used 1x in abbreviated form, and 2x as \"CWT Claims Sets (CCS)\". The abbreviation was problematic the way it was used while being a reference into RFC8392, it was not defined there.\r\n\r\n---\r\n\r\nI'm not 100% happy with dropping the term \"CCS\" because it having an abbreviation is a good pointer for users to see that this is an established, good and compact thing to use (right?), but I'd rather spare readers the confusion of clicking through to 8392 and not finding the letters \"CCS\".\r\n\r\nI'd be happy with any better handling of the possible confusion, this is just the best I'm coming up with.",
+      "createdAt": "2023-03-24T06:23:07Z",
+      "updatedAt": "2023-04-03T09:05:24Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "900b7312fc863cb13d2fe54f392b492a35a47885",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "expand-ccs",
+      "headRefOid": "d67ea610bc4734a43323fdd6adcb2dbd704408ff",
+      "closedAt": "2023-03-26T02:35:20Z",
+      "mergedAt": "2023-03-26T02:35:20Z",
+      "mergedBy": "marco-tiloca-sics",
+      "mergeCommit": {
+        "oid": "1d5e44d392d88b7ffb5ccb6d434ca09d8e24d008"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 101,
+      "id": "PR_kwDOB2KWK85N1vlE",
+      "title": "KID discovery: may be pairwise",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/101",
+      "state": "MERGED",
+      "author": "chrysn",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "Quoting a review that's being written:\r\n\r\n> * 9 / 9.1, \" a sender can use the pairwise mode to protect a message\r\n  sent to (but not intended for) multiple recipients\": This refers to\r\n  the service roughly outlined in 9.1, but 9.1 describes \"a resource to\r\n  which a client can send a group request\".\r\n\r\nThis proposes a fix, and makes up for the added text by removing a sentence.",
+      "createdAt": "2023-04-07T14:01:36Z",
+      "updatedAt": "2024-07-01T16:25:58Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "1d5e44d392d88b7ffb5ccb6d434ca09d8e24d008",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "kid-discovery-may-be-pairwise",
+      "headRefOid": "e93744b2be5027f4218e5234ea836c02746aa61a",
+      "closedAt": "2023-05-07T08:07:25Z",
+      "mergedAt": "2023-05-07T08:07:25Z",
+      "mergedBy": "marco-tiloca-sics",
+      "mergeCommit": {
+        "oid": "a81a54759440707c38546ba939e1af8c816d4a7b"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 102,
+      "id": "PR_kwDOB2KWK85N1zit",
+      "title": "gid-ex: Enhance consideration input for epoch length in Gid-reusing GMs",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/102",
+      "state": "MERGED",
+      "author": "chrysn",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "This is a proposal from my upcoming review:\r\n\r\n> C, \"Thus, the expected highest rate for addition/removal of group\r\n  members and consequent group rekeying should be taken into account for\r\n  a proper dimensioning of the Group Epoch size.\" When the GM is capable\r\n  of reassigning GIDs, is this really a concern? I'd expect that if\r\n  triggers to rekeyings happen with a frequency in the order of\r\n  magnitude of the rekeying time, then the rekeyings themselves would be\r\n  delayed rather than churning through parallel rekeyings. (See also the\r\n  comment about \"undue delay\" -- and if that wording is not accepted,\r\n  the GM can still make the \"evict device\" operation take some time). So\r\n  rekeyings would always be roughly ordered, and even a nibble of group\r\n  epoch values would by far suffice.",
+      "createdAt": "2023-04-07T14:21:12Z",
+      "updatedAt": "2023-05-14T10:23:28Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "1d5e44d392d88b7ffb5ccb6d434ca09d8e24d008",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "better-criteria-for-epoch-size-and-rekeying-frequency",
+      "headRefOid": "1d0b89060a3c3f5ce1162904fb708129e6ff62f4",
+      "closedAt": "2023-05-12T16:01:20Z",
+      "mergedAt": "2023-05-12T16:01:20Z",
+      "mergedBy": "marco-tiloca-sics",
+      "mergeCommit": {
+        "oid": "40da3aa33a9a3e71d0e98f68865399d43cacb818"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 103,
+      "id": "PR_kwDOB2KWK85N2wCb",
+      "title": "Change replay-protection-non-notifications section",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/103",
+      "state": "CLOSED",
+      "author": "chrysn",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "In my review at https://mailarchive.ietf.org/arch/msg/core/yAiNmM9_FxhSIvmXpt4WGt8bBx0, I wrote:\r\n\r\n>   In particular, I'm playing around with wording updates for 6.4.1 -- if\r\n>   this item is acted on before I've made a more concrete suggestion via\r\n>   PR, please remind me to revisit that section.\r\n\r\nThese are the changes that came out of said playing-around. They are certainly not suitable for direct inclusion, but I think they could be the base for a clearer paragraph. In particular, this\r\n\r\n* shift the focus from the differences between single responses, Observe and non-notification exchanges to the commonality, showing how the general rules apply in principle (but can be simplified for special cases),\r\n* remove the limitation that Observe and non-notification exchanges can not be mixed (Why not? That'd be up to the document that describes the new options that introduce non-notification exchanges.), and\r\n* makes things more opt-in (replay protection is only needed for non-idempotent response handlers, ordering is wholly optional)\r\n\r\nSee also a few comments inline.",
+      "createdAt": "2023-04-07T20:11:22Z",
+      "updatedAt": "2023-07-11T14:22:36Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "1d5e44d392d88b7ffb5ccb6d434ca09d8e24d008",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "non-notification-simplifications",
+      "headRefOid": "1ee645285f27b9aec86ca94161e869a0e68f9f1d",
+      "closedAt": "2023-07-11T14:22:36Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This was addressed when addressing the topic of unified handling of multiple responses at large in https://github.com/core-wg/oscore-groupcomm/pull/107 , now merged and added to version -19 of the Internet Draft [1].\r\n\r\n[1] https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-groupcomm-19",
+          "createdAt": "2023-07-11T14:22:36Z",
+          "updatedAt": "2023-07-11T14:22:36Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 104,
+      "id": "PR_kwDOB2KWK85OwpmW",
+      "title": "Gs clarifications",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/104",
+      "state": "MERGED",
+      "author": "gselander",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Test changes for discussion",
+      "createdAt": "2023-04-20T11:55:44Z",
+      "updatedAt": "2023-05-06T10:13:05Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "1d5e44d392d88b7ffb5ccb6d434ca09d8e24d008",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "gs-clarifications",
+      "headRefOid": "7d2f255098830b45ad17161e73b4cb0e60de1875",
+      "closedAt": "2023-05-06T10:13:05Z",
+      "mergedAt": "2023-05-06T10:13:05Z",
+      "mergedBy": "marco-tiloca-sics",
+      "mergeCommit": {
+        "oid": "2f879e6eda59712bd206efffb8e357b15b2c3e4f"
+      },
+      "comments": [
+        {
+          "author": "gselander",
+          "authorAssociation": "COLLABORATOR",
+          "body": "There is still room to remove redundant information, also in the parts I have edited. So this is still work in progress TBC.",
+          "createdAt": "2023-04-21T11:55:13Z",
+          "updatedAt": "2023-04-21T11:55:13Z"
+        },
+        {
+          "author": "gselander",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This became a monster PR. The main ambition was trying to clarify some parts where I think the motivation was spread out over multiple sections, which lead me to some rewrites. At the same time I fixed some of the issues and changes proposed in the shepherd's review.",
+          "createdAt": "2023-05-04T14:25:31Z",
+          "updatedAt": "2023-05-04T14:25:31Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 106,
+      "id": "PR_kwDOB2KWK85QZa0v",
+      "title": "Freshness and ordering",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/106",
+      "state": "MERGED",
+      "author": "gselander",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Working on this cluster of issues.",
+      "createdAt": "2023-05-12T15:10:43Z",
+      "updatedAt": "2023-05-25T15:08:16Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "1e7873835e8325237b969473297b90559296aedc",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "freshness-and-ordering",
+      "headRefOid": "110243d04e9c32aa152f3884a29e9413bfdc995c",
+      "closedAt": "2023-05-25T15:08:16Z",
+      "mergedAt": "2023-05-25T15:08:16Z",
+      "mergedBy": "marco-tiloca-sics",
+      "mergeCommit": {
+        "oid": "5f3810c90b6624f2d8e9cb035b9e2e314afc44fa"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOB2KWK85VYCfx",
+          "commit": {
+            "abbreviatedOid": "110243d"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-05-18T09:29:12Z",
+          "updatedAt": "2023-05-18T09:29:13Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "`A server may not be synchronized with a client's Sender Sequence Number, or a Replay Window may be initialized as invalid (see {{ssec-loss-mutable-context}}). The server can either retrieve a new Group OSCORE Security Context, or synchronize with the clients' Sender Sequence Numbers before resuming to accept incoming messages from other group members.`",
+              "createdAt": "2023-05-18T09:29:12Z",
+              "updatedAt": "2023-05-18T09:29:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85VYC-h",
+          "commit": {
+            "abbreviatedOid": "110243d"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-05-18T09:30:32Z",
+          "updatedAt": "2023-05-18T09:30:32Z",
+          "comments": [
+            {
+              "originalPosition": 24,
+              "body": "`Assuming that the other endpoint is honest, Group OSCORE provides relative ordering of received messages. For a given Group OSCORE Security Context, the received Partial IV (when included) allows the recipient endpoint to determine the order in which requests or responses were sent by the other endpoint. In case the Partial IV was omitted in a response, this indicates that it was the oldest response from the sender endpoint to the corresponding request (like notification responses in OSCORE, see {{Section 7.4.1 of RFC8613}}). A received response is not older than the corresponding request.`",
+              "createdAt": "2023-05-18T09:30:32Z",
+              "updatedAt": "2023-05-18T09:30:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85VYDXU",
+          "commit": {
+            "abbreviatedOid": "110243d"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-05-18T09:31:42Z",
+          "updatedAt": "2023-05-18T09:31:43Z",
+          "comments": [
+            {
+              "originalPosition": 29,
+              "body": "`As in OSCORE, Group OSCORE provides only the guarantee that the request is not older than the Group OSCORE Security Context used to protect it. Other aspects of freshness are discussed in {{sec-freshness}}.`",
+              "createdAt": "2023-05-18T09:31:42Z",
+              "updatedAt": "2023-05-18T09:31:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85VYDmF",
+          "commit": {
+            "abbreviatedOid": "110243d"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-05-18T09:32:19Z",
+          "updatedAt": "2023-05-18T09:32:19Z",
+          "comments": [
+            {
+              "originalPosition": 43,
+              "body": "`Like in OSCORE (see {{Section 12.5 of RFC8613}}), a server may verify the aliveness of the client by using the CoAP Echo Option {{RFC9175}} as described in {{sec-synch-challenge-response}}.`",
+              "createdAt": "2023-05-18T09:32:19Z",
+              "updatedAt": "2023-05-18T09:32:19Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 107,
+      "id": "PR_kwDOB2KWK85UZieO",
+      "title": "Unified handling of multiple responses",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/107",
+      "state": "MERGED",
+      "author": "marco-tiloca-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-07-01T10:31:03Z",
+      "updatedAt": "2023-07-06T14:41:23Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "1969137fc47248b1641e0958433e044bf6c0d0bd",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "unified-resp-handling",
+      "headRefOid": "f36e4cee74663796bae6e986400f8ae205e8ba1f",
+      "closedAt": "2023-07-06T14:41:23Z",
+      "mergedAt": "2023-07-06T14:41:23Z",
+      "mergedBy": "marco-tiloca-sics",
+      "mergeCommit": {
+        "oid": "cf504aca0cb0e4b8906a72f60512e545e63879da"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOB2KWK85aEwdk",
+          "commit": {
+            "abbreviatedOid": "e16ecc4"
+          },
+          "author": "gselander",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-07-03T13:25:56Z",
+          "updatedAt": "2023-07-03T13:25:56Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "Do we need the paragraph \"More formally, ...\"?",
+              "createdAt": "2023-07-03T13:25:56Z",
+              "updatedAt": "2023-07-03T13:25:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85aE2tW",
+          "commit": {
+            "abbreviatedOid": "e16ecc4"
+          },
+          "author": "gselander",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-07-03T13:39:31Z",
+          "updatedAt": "2023-07-03T13:39:31Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "Why \"would\" the elder member eventually re-join? Is it necessarily so, or should it be \"could\"?",
+              "createdAt": "2023-07-03T13:39:31Z",
+              "updatedAt": "2023-07-03T13:39:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85aE8u2",
+          "commit": {
+            "abbreviatedOid": "e16ecc4"
+          },
+          "author": "gselander",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-07-03T13:53:33Z",
+          "updatedAt": "2023-07-03T13:53:33Z",
+          "comments": [
+            {
+              "originalPosition": 136,
+              "body": "OLD\r\nThe client MUST stop processing responses from a server, if those have\r\nNEW\r\nThe client MUST stop processing responses from a server, if a response has",
+              "createdAt": "2023-07-03T13:53:33Z",
+              "updatedAt": "2023-07-03T13:53:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85aFna6",
+          "commit": {
+            "abbreviatedOid": "e16ecc4"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-07-03T15:32:29Z",
+          "updatedAt": "2023-07-03T15:32:30Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "Not necessarily, it can be removed.",
+              "createdAt": "2023-07-03T15:32:29Z",
+              "updatedAt": "2023-07-03T15:32:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85aFnmr",
+          "commit": {
+            "abbreviatedOid": "e16ecc4"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-07-03T15:33:02Z",
+          "updatedAt": "2023-07-03T15:33:03Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "\"could\" is fine",
+              "createdAt": "2023-07-03T15:33:02Z",
+              "updatedAt": "2023-07-03T15:33:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85aFnyH",
+          "commit": {
+            "abbreviatedOid": "e16ecc4"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-07-03T15:33:33Z",
+          "updatedAt": "2023-07-03T15:33:33Z",
+          "comments": [
+            {
+              "originalPosition": 136,
+              "body": "Even better:\r\n\r\nNEW:\r\nThe client MUST stop processing a response from a server, if that response has",
+              "createdAt": "2023-07-03T15:33:33Z",
+              "updatedAt": "2023-07-03T15:33:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85aJNMC",
+          "commit": {
+            "abbreviatedOid": "e16ecc4"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-07-04T08:30:41Z",
+          "updatedAt": "2023-07-04T08:30:41Z",
+          "comments": [
+            {
+              "originalPosition": 77,
+              "body": "Why leave a choice to do it upon leaving, or before re-joining? It may be simpler to limit it to one case: \"upon leaving the group\"",
+              "createdAt": "2023-07-04T08:30:41Z",
+              "updatedAt": "2023-07-04T08:30:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85aJPMR",
+          "commit": {
+            "abbreviatedOid": "e16ecc4"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-07-04T08:35:09Z",
+          "updatedAt": "2023-07-04T08:35:09Z",
+          "comments": [
+            {
+              "originalPosition": 96,
+              "body": "Considering the discovery method described in the end of \"Message Processing in Pairwise Mode\", and in \"Pre-Conditions\", can it make more sense to say one of the following?\r\n_there is at most a single valid response and only from one_\r\nor\r\n_there is at most a single protected response and only from one_",
+              "createdAt": "2023-07-04T08:35:09Z",
+              "updatedAt": "2023-07-04T08:35:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85aJR2b",
+          "commit": {
+            "abbreviatedOid": "e16ecc4"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-07-04T08:40:43Z",
+          "updatedAt": "2023-07-04T08:40:44Z",
+          "comments": [
+            {
+              "originalPosition": 220,
+              "body": "Seems to be repeating very similar text from line 1254",
+              "createdAt": "2023-07-04T08:40:44Z",
+              "updatedAt": "2023-07-04T08:40:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85aKjjD",
+          "commit": {
+            "abbreviatedOid": "e16ecc4"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-07-04T11:45:04Z",
+          "updatedAt": "2023-07-04T11:45:04Z",
+          "comments": [
+            {
+              "originalPosition": 220,
+              "body": "Correct, the previous paragraph (quoted below) should have been deleted, keeping only the paragraph in the comment.\r\n\r\n`In addition, the following applies if the server intends to reply with multiple responses, within the long exchange established by the corresponding request.`",
+              "createdAt": "2023-07-04T11:45:04Z",
+              "updatedAt": "2023-07-04T11:45:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85aKj0w",
+          "commit": {
+            "abbreviatedOid": "e16ecc4"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-07-04T11:45:49Z",
+          "updatedAt": "2023-07-04T11:45:49Z",
+          "comments": [
+            {
+              "originalPosition": 96,
+              "body": "Yes, it's definitely only about a valid response. The first option looks good to use.\r\n\r\n`there is at most a single valid response and only from one ...`",
+              "createdAt": "2023-07-04T11:45:49Z",
+              "updatedAt": "2023-07-04T11:45:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85aKlBJ",
+          "commit": {
+            "abbreviatedOid": "e16ecc4"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-07-04T11:49:16Z",
+          "updatedAt": "2023-07-04T11:49:17Z",
+          "comments": [
+            {
+              "originalPosition": 77,
+              "body": "It is not a choice.\r\n\r\n\"re-join\" has been used in previous sections to denote a current group member that does not leave the group but sends a new Join Request to the Group Manager for obtaining a new Sender ID etc. In that case, there is no leaving to refer to.\r\n\r\nIf, instead, there is a leaving (irrespective of joining the group again or not after that), that's when the endpoint does what is described in the quoted text.",
+              "createdAt": "2023-07-04T11:49:17Z",
+              "updatedAt": "2023-07-04T11:49:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85aYPCN",
+          "commit": {
+            "abbreviatedOid": "5e596e9"
+          },
+          "author": "gselander",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-07-06T11:07:49Z",
+          "updatedAt": "2023-07-06T11:07:49Z",
+          "comments": [
+            {
+              "originalPosition": 319,
+              "body": "The last sentence is perhaps correct, but gives the impression that response number can be updated if the response is not received within a long exchange. How about \r\nNEW\r\n- If the verification of the countersignature fails, the client: i) SHALL stop processing the response; and ii) SHALL NOT update the Response Number associated with the server.",
+              "createdAt": "2023-07-06T11:07:49Z",
+              "updatedAt": "2023-07-06T11:07:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85aYP7w",
+          "commit": {
+            "abbreviatedOid": "5e596e9"
+          },
+          "author": "gselander",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-07-06T11:09:28Z",
+          "updatedAt": "2023-07-06T11:09:28Z",
+          "comments": [
+            {
+              "originalPosition": 319,
+              "body": "I got the impression when reading through that there are other instances of redundant \"in case of long exchange\", I'll try to find them.",
+              "createdAt": "2023-07-06T11:09:28Z",
+              "updatedAt": "2023-07-06T11:09:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK85aZzb4",
+          "commit": {
+            "abbreviatedOid": "5e596e9"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2023-07-06T14:41:06Z",
+          "updatedAt": "2023-07-06T14:41:07Z",
+          "comments": [
+            {
+              "originalPosition": 319,
+              "body": "Addressed in https://github.com/core-wg/oscore-groupcomm/pull/107/commits/f36e4cee74663796bae6e986400f8ae205e8ba1f",
+              "createdAt": "2023-07-06T14:41:07Z",
+              "updatedAt": "2023-07-06T14:41:07Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 108,
+      "id": "PR_kwDOB2KWK852rFpJ",
+      "title": "Christian's Review of v -21",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/108",
+      "state": "MERGED",
+      "author": "marco-tiloca-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR addresses Christian's review of version -21, archived at: https://mailarchive.ietf.org/arch/msg/core/tPPSsrFMPZId_7Q7OrmbgN1DCdw/",
+      "createdAt": "2024-07-28T18:07:21Z",
+      "updatedAt": "2024-08-28T12:37:16Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "93ede0941e0be18fb45b13af3897ebd73f68433e",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "christian-review-v21",
+      "headRefOid": "d95ec712b8425e6e39601017db82ccfb1c0146ef",
+      "closedAt": "2024-08-28T12:37:16Z",
+      "mergedAt": "2024-08-28T12:37:16Z",
+      "mergedBy": "marco-tiloca-sics",
+      "mergeCommit": {
+        "oid": "e28cb5aade6b36c94d32fd685574c5837ca5d46f"
+      },
+      "comments": [
+        {
+          "author": "chrysn",
+          "authorAssociation": "MEMBER",
+          "body": "Thanks, LGTM where I may say so.\n",
+          "createdAt": "2024-07-28T18:29:18Z",
+          "updatedAt": "2024-07-28T18:29:18Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOB2KWK86E9QGt",
+          "commit": {
+            "abbreviatedOid": "d09abb2"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "Except for my comment below things look good to me, as aligned with our internal discussions and the discussion we had with Christian.\r\n",
+          "createdAt": "2024-08-09T16:47:20Z",
+          "updatedAt": "2024-08-09T16:48:30Z",
+          "comments": [
+            {
+              "originalPosition": 159,
+              "body": "It's better to have the reference to section 13.9 here use markdown references instead. It should be referring to section _{#ssec-unicast-requests}_.",
+              "createdAt": "2024-08-09T16:47:20Z",
+              "updatedAt": "2024-08-09T16:48:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK86GvXNE",
+          "commit": {
+            "abbreviatedOid": "d09abb2"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-08-26T12:30:33Z",
+          "updatedAt": "2024-08-26T12:30:34Z",
+          "comments": [
+            {
+              "originalPosition": 159,
+              "body": "Thanks, now fixed in https://github.com/core-wg/oscore-groupcomm/pull/108/commits/d95ec712b8425e6e39601017db82ccfb1c0146ef",
+              "createdAt": "2024-08-26T12:30:34Z",
+              "updatedAt": "2024-08-26T12:30:34Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 109,
+      "id": "PR_kwDOB2KWK856oeYm",
+      "title": "Editorial changes to intro",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/109",
+      "state": "MERGED",
+      "author": "emanjon",
+      "authorAssociation": "MEMBER",
+      "assignees": [],
+      "labels": [],
+      "body": "Should explain that DTLS is not an e2e solution\r\nShould explain already in intro that the pairwise keys are not group keys.\r\n(vice verse) makes no sense for bi-directional DTLS.",
+      "createdAt": "2024-09-06T08:01:14Z",
+      "updatedAt": "2024-09-17T07:34:17Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "359dae28c38bba3b4f3cfc238c072c0ea95c4e9d",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "emanjon-patch-1",
+      "headRefOid": "a72f0d2cdcef451248681f86c8664858c5cc4fbb",
+      "closedAt": "2024-09-17T07:34:12Z",
+      "mergedAt": "2024-09-17T07:34:12Z",
+      "mergedBy": "fpalombini",
+      "mergeCommit": {
+        "oid": "d811ae07f00b08369fa6cc217017a0d9d7fe13f7"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOB2KWK86Jdo5x",
+          "commit": {
+            "abbreviatedOid": "a72f0d2"
+          },
+          "author": "fpalombini",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-09-16T10:21:38Z",
+          "updatedAt": "2024-09-16T10:21:38Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOB2KWK86Jd0fb",
+          "commit": {
+            "abbreviatedOid": "a72f0d2"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-09-16T10:43:18Z",
+          "updatedAt": "2024-09-16T10:43:18Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 110,
+      "id": "PR_kwDOB2KWK857gNdb",
+      "title": "Christian's implementation comments",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/110",
+      "state": "MERGED",
+      "author": "marco-tiloca-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This PR addresses the comments from Christian Ams\u00fcss archived at https://mailarchive.ietf.org/arch/msg/core/oQT5vcbEsui9fvf7P9QH4PEsX-c/\r\n\r\nIn addition to that:\r\n\r\n* Where appropriate, it replaces \"AEAD nonce\" with \"nonce\" and \"AEAD key\" with \"key\", consistent with the fact that the Group Encryption Algorithm might not be an AEAD algorithm.\r\n\r\n* For endpoints that use non-authenticated encryption, it makes A128CBC mandatory to implement as non-authenticated Group Encryption Algorithm.\r\n\r\n* It clarifies that the HKDF Algorithm must be an HMAC-based HKDF.",
+      "createdAt": "2024-09-14T09:08:51Z",
+      "updatedAt": "2024-09-20T07:02:01Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "359dae28c38bba3b4f3cfc238c072c0ea95c4e9d",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "impl-comments-christian",
+      "headRefOid": "433f1cce9a5d4f40c28f233393e022634ef8f68e",
+      "closedAt": "2024-09-20T07:02:01Z",
+      "mergedAt": "2024-09-20T07:02:00Z",
+      "mergedBy": "marco-tiloca-sics",
+      "mergeCommit": {
+        "oid": "36463f65841f1cd8f9d36448923358f564036878"
+      },
+      "comments": [
+        {
+          "author": "gselander",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Looks good to me.",
+          "createdAt": "2024-09-18T08:43:40Z",
+          "updatedAt": "2024-09-18T08:43:40Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOB2KWK86JdqmX",
+          "commit": {
+            "abbreviatedOid": "224be5e"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-16T10:25:14Z",
+          "updatedAt": "2024-09-16T10:25:15Z",
+          "comments": [
+            {
+              "originalPosition": 117,
+              "body": "I would remove \"in fact\" and just put this as:\r\n_The constructed nonce is used as AEAD nonce by the AEAD Algorithm (see {{ssec-common-context-aead-alg}}) and by the Group Encryption Algorithm when this is an AEAD algorithm (see {{ssec-common-context-cs-enc-alg}})._",
+              "createdAt": "2024-09-16T10:25:14Z",
+              "updatedAt": "2024-09-16T10:25:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK86JdvgM",
+          "commit": {
+            "abbreviatedOid": "224be5e"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "Except for my comment above it looks good to me!",
+          "createdAt": "2024-09-16T10:32:05Z",
+          "updatedAt": "2024-09-16T10:32:05Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOB2KWK86Jdypl",
+          "commit": {
+            "abbreviatedOid": "224be5e"
+          },
+          "author": "fpalombini",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2024-09-16T10:38:55Z",
+          "updatedAt": "2024-09-16T10:45:26Z",
+          "comments": [
+            {
+              "originalPosition": 39,
+              "body": "So here we either register ChaCha20 or we skip mentioning I think.",
+              "createdAt": "2024-09-16T10:38:55Z",
+              "updatedAt": "2024-09-16T10:45:26Z"
+            },
+            {
+              "originalPosition": 41,
+              "body": "the problem with a list like this is that it's never going to be exhaustive... can we skip it? Christian only asked to add which parameter are particularly suitable...",
+              "createdAt": "2024-09-16T10:40:16Z",
+              "updatedAt": "2024-09-16T10:45:26Z"
+            },
+            {
+              "originalPosition": 112,
+              "body": "s/with the X bytes/with X bytes",
+              "createdAt": "2024-09-16T10:43:28Z",
+              "updatedAt": "2024-09-16T10:45:26Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK86JmpAL",
+          "commit": {
+            "abbreviatedOid": "224be5e"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-17T07:21:41Z",
+          "updatedAt": "2024-09-17T07:21:41Z",
+          "comments": [
+            {
+              "originalPosition": 117,
+              "body": "Fixed in https://github.com/core-wg/oscore-groupcomm/commit/486ca64666db862fd1e9bc0dc367818a6d8bcde7",
+              "createdAt": "2024-09-17T07:21:41Z",
+              "updatedAt": "2024-09-17T07:21:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK86JmpK-",
+          "commit": {
+            "abbreviatedOid": "224be5e"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-17T07:22:00Z",
+          "updatedAt": "2024-09-17T07:22:01Z",
+          "comments": [
+            {
+              "originalPosition": 112,
+              "body": "Fixed in https://github.com/core-wg/oscore-groupcomm/commit/486ca64666db862fd1e9bc0dc367818a6d8bcde7",
+              "createdAt": "2024-09-17T07:22:00Z",
+              "updatedAt": "2024-09-17T07:22:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK86Js6Q5",
+          "commit": {
+            "abbreviatedOid": "224be5e"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-17T16:28:24Z",
+          "updatedAt": "2024-09-17T16:28:25Z",
+          "comments": [
+            {
+              "originalPosition": 39,
+              "body": "Addressed at https://github.com/core-wg/oscore-groupcomm/commit/d2492130224e71a209eff6f899be346b816889de  by skipping ChaCha20.",
+              "createdAt": "2024-09-17T16:28:25Z",
+              "updatedAt": "2024-09-17T16:28:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK86Js6YR",
+          "commit": {
+            "abbreviatedOid": "224be5e"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2024-09-17T16:28:39Z",
+          "updatedAt": "2024-09-17T16:28:39Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "Addressed at https://github.com/core-wg/oscore-groupcomm/commit/d2492130224e71a209eff6f899be346b816889de",
+              "createdAt": "2024-09-17T16:28:39Z",
+              "updatedAt": "2024-09-17T16:28:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK86JzIoW",
+          "commit": {
+            "abbreviatedOid": "433f1cc"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "Looks good to me and aligned with our discussions yesterday",
+          "createdAt": "2024-09-18T07:40:39Z",
+          "updatedAt": "2024-09-18T07:40:39Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOB2KWK86KAf4o",
+          "commit": {
+            "abbreviatedOid": "433f1cc"
+          },
+          "author": "fpalombini",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-09-19T12:27:55Z",
+          "updatedAt": "2024-09-19T12:27:55Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 111,
+      "id": "PR_kwDOB2KWK857uElf",
+      "title": "Fp gm out",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/111",
+      "state": "OPEN",
+      "author": "fpalombini",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-09-17T07:52:59Z",
+      "updatedAt": "2024-09-17T07:52:59Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "d811ae07f00b08369fa6cc217017a0d9d7fe13f7",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "fp-gm-out",
+      "headRefOid": "316b947a32a21522fe6f6d900e818b57ca373863",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 112,
+      "id": "PR_kwDOB2KWK858LtWT",
+      "title": "Repositioned content about the Group Manager",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/112",
+      "state": "OPEN",
+      "author": "marco-tiloca-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-09-20T15:22:30Z",
+      "updatedAt": "2024-09-20T15:23:20Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "8580b481e260d73149d60c06eec781bc91c8a17d",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "reposition-group-manager",
+      "headRefOid": "a9e8e9c2162517322c8e415d5f69caedc4babeb0",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
