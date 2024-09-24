@@ -234,7 +234,7 @@ This document refers also to the following terminology.
 
 * Long exchange: an exchange of messages associated with a request that is a group request and/or an Observe request {{RFC7641}}.
 
-   In either case, multiple responses can follow from the same server to the request associated with the long exchange. The client terminates a long exchange when freeing up the CoAP Token value used for the associated request, for which no further responses will be accepted afterwards.
+   In either case, multiple responses can follow from the same server to the request associated with the long exchange, even if the request is not an Observe request (see Section 3.1.6 of {{I-D.ietf-core-groupcomm-bis}}). The client terminates a long exchange when freeing up the CoAP Token value used for the associated request, for which no further responses will be accepted afterwards.
 
 # Security Context # {#sec-context}
 
