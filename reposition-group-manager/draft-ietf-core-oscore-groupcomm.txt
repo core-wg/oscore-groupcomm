@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 24 March 2025                                      F. Palombini
+Expires: 28 March 2025                                      F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                       20 September 2024
+                                                       24 September 2024
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 March 2025.
+   This Internet-Draft will expire on 28 March 2025.
 
 Copyright Notice
 
@@ -146,7 +146,6 @@ Table of Contents
      12.2.  Management of Group Keying Material
        12.2.1.  Recycling of Identifiers
      12.3.  Support for Signature Checkers
-     12.4.  Responsibilities of the Group Manager
    13. Security Considerations
      13.1.  Security of the Group Mode
      13.2.  Security of the Pairwise Mode
@@ -182,31 +181,32 @@ Table of Contents
      A.2.  Security Objectives
    Appendix B.  List of Use Cases
    Appendix C.  Example of Group Identifier Format
-   Appendix D.  Reassignment of Group Identifiers
-   Appendix E.  Document Updates
-     E.1.  Version -22 to -23
-     E.2.  Version -21 to -22
-     E.3.  Version -20 to -21
-     E.4.  Version -19 to -20
-     E.5.  Version -18 to -19
-     E.6.  Version -17 to -18
-     E.7.  Version -16 to -17
-     E.8.  Version -15 to -16
-     E.9.  Version -14 to -15
-     E.10. Version -13 to -14
-     E.11. Version -12 to -13
-     E.12. Version -11 to -12
-     E.13. Version -10 to -11
-     E.14. Version -09 to -10
-     E.15. Version -08 to -09
-     E.16. Version -07 to -08
-     E.17. Version -06 to -07
-     E.18. Version -05 to -06
-     E.19. Version -04 to -05
-     E.20. Version -03 to -04
-     E.21. Version -02 to -03
-     E.22. Version -01 to -02
-     E.23. Version -00 to -01
+   Appendix D.  Responsibilities of the Group Manager
+   Appendix E.  Reassignment of Group Identifiers
+   Appendix F.  Document Updates
+     F.1.  Version -22 to -23
+     F.2.  Version -21 to -22
+     F.3.  Version -20 to -21
+     F.4.  Version -19 to -20
+     F.5.  Version -18 to -19
+     F.6.  Version -17 to -18
+     F.7.  Version -16 to -17
+     F.8.  Version -15 to -16
+     F.9.  Version -14 to -15
+     F.10. Version -13 to -14
+     F.11. Version -12 to -13
+     F.12. Version -11 to -12
+     F.13. Version -10 to -11
+     F.14. Version -09 to -10
+     F.15. Version -08 to -09
+     F.16. Version -07 to -08
+     F.17. Version -06 to -07
+     F.18. Version -05 to -06
+     F.19. Version -04 to -05
+     F.20. Version -03 to -04
+     F.21. Version -02 to -03
+     F.22. Version -01 to -02
+     F.23. Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -367,7 +367,7 @@ Table of Contents
    *  Group Manager: an entity responsible for a group, neither required
       to be an actual group member nor to take part in the group
       communication.  The operations of the Group Manager are defined in
-      Section 12 and its responsibilities are listed in Section 12.4.
+      Section 12 and its responsibilities are listed in Appendix D.
 
    *  Silent server: a member of a group that performs only group mode
       processing on incoming requests and never sends responses
@@ -2873,7 +2873,7 @@ Table of Contents
    This document is based on the existence of an entity called Group
    Manager that is responsible for the group, but it does not mandate
    how the Group Manager interacts with the group members.  The list of
-   responsibilities of the Group Manager is compiled in Section 12.4.
+   responsibilities of the Group Manager is compiled in Appendix D.
 
    The Group Manager assigns unique Group Identifiers (Gids) to the
    groups under its control.  Within each of such groups, the Group
@@ -3135,7 +3135,7 @@ Table of Contents
       even once the whole space of Gid values has been used.
 
       The Group Manager MAY support and use this approach, according to
-      what is specified in Appendix D.
+      what is specified in Appendix E.
 
 12.2.1.2.  Recycling of Sender IDs
 
@@ -3218,72 +3218,6 @@ Table of Contents
    A signature checker MUST be authorized before it can retrieve such
    information, for example with the use of
    [I-D.ietf-ace-key-groupcomm-oscore].
-
-12.4.  Responsibilities of the Group Manager
-
-   The Group Manager is responsible for performing the following tasks:
-
-   1.   Creating and managing OSCORE groups.  This includes the
-        assignment of a Gid to every newly created group, ensuring
-        uniqueness of Gids within the set of its OSCORE groups and,
-        optionally, the secure recycling of Gids.
-
-   2.   Defining policies for authorizing the joining of its OSCORE
-        groups.
-
-   3.   Handling the join process to add new endpoints as group members.
-
-   4.   Establishing the Common Context part of the Security Context,
-        and providing it to authorized group members during the join
-        process, together with the corresponding Sender Context.
-
-   5.   Updating the Key Generation Number and the Gid of its OSCORE
-        groups, upon renewing the respective Security Context.
-
-   6.   Generating and managing Sender IDs within its OSCORE groups, as
-        well as assigning and providing them to new endpoints during the
-        join process, or to current group members upon request of
-        renewal or re-joining.  This includes ensuring that:
-
-        *  Each Sender ID is unique within each of the OSCORE groups;
-
-        *  Each Sender ID is not reassigned within the same group since
-           the latest time when the current Gid value was assigned to
-           the group.  That is, the Sender ID is not reassigned even to
-           a current group member re-joining the same group, without a
-           rekeying happening first.
-
-   7.   Defining communication policies for each of its OSCORE groups,
-        and signaling them to new endpoints during the join process.
-
-   8.   Renewing the Security Context of an OSCORE group upon membership
-        change, by revoking and renewing common security parameters and
-        keying material (rekeying).
-
-   9.   Providing the management keying material that a new endpoint
-        requires to participate in the rekeying process, consistently
-        with the key management scheme used in the group joined by the
-        new endpoint.
-
-   10.  Assisting a group member that has missed a group rekeying
-        instance to understand which authentication credentials and
-        Recipient Contexts to delete, as associated with former group
-        members.
-
-   11.  Acting as key repository, in order to handle the authentication
-        credentials of the members of its OSCORE groups, and providing
-        such authentication credentials to other members of the same
-        group upon request.  The actual storage of authentication
-        credentials may be entrusted to a separate secure storage device
-        or service.
-
-   12.  Validating that the format and parameters of authentication
-        credentials of group members are consistent with the public key
-        algorithm and related parameters used in the respective OSCORE
-        group.
-
-   The Group Manager specified in [I-D.ietf-ace-key-groupcomm-oscore]
-   provides this functionality.
 
 13.  Security Considerations
 
@@ -4684,7 +4618,73 @@ Appendix C.  Example of Group Identifier Format
    a small probability of collision.  How small this probability should
    be is up to system designers.
 
-Appendix D.  Reassignment of Group Identifiers
+Appendix D.  Responsibilities of the Group Manager
+
+   The Group Manager is responsible for performing the following tasks:
+
+   1.   Creating and managing OSCORE groups.  This includes the
+        assignment of a Gid to every newly created group, ensuring
+        uniqueness of Gids within the set of its OSCORE groups and,
+        optionally, the secure recycling of Gids.
+
+   2.   Defining policies for authorizing the joining of its OSCORE
+        groups.
+
+   3.   Handling the join process to add new endpoints as group members.
+
+   4.   Establishing the Common Context part of the Security Context,
+        and providing it to authorized group members during the join
+        process, together with the corresponding Sender Context.
+
+   5.   Updating the Key Generation Number and the Gid of its OSCORE
+        groups, upon renewing the respective Security Context.
+
+   6.   Generating and managing Sender IDs within its OSCORE groups, as
+        well as assigning and providing them to new endpoints during the
+        join process, or to current group members upon request of
+        renewal or re-joining.  This includes ensuring that:
+
+        *  Each Sender ID is unique within each of the OSCORE groups;
+
+        *  Each Sender ID is not reassigned within the same group since
+           the latest time when the current Gid value was assigned to
+           the group.  That is, the Sender ID is not reassigned even to
+           a current group member re-joining the same group, without a
+           rekeying happening first.
+
+   7.   Defining communication policies for each of its OSCORE groups,
+        and signaling them to new endpoints during the join process.
+
+   8.   Renewing the Security Context of an OSCORE group upon membership
+        change, by revoking and renewing common security parameters and
+        keying material (rekeying).
+
+   9.   Providing the management keying material that a new endpoint
+        requires to participate in the rekeying process, consistently
+        with the key management scheme used in the group joined by the
+        new endpoint.
+
+   10.  Assisting a group member that has missed a group rekeying
+        instance to understand which authentication credentials and
+        Recipient Contexts to delete, as associated with former group
+        members.
+
+   11.  Acting as key repository, in order to handle the authentication
+        credentials of the members of its OSCORE groups, and providing
+        such authentication credentials to other members of the same
+        group upon request.  The actual storage of authentication
+        credentials may be entrusted to a separate secure storage device
+        or service.
+
+   12.  Validating that the format and parameters of authentication
+        credentials of group members are consistent with the public key
+        algorithm and related parameters used in the respective OSCORE
+        group.
+
+   The Group Manager specified in [I-D.ietf-ace-key-groupcomm-oscore]
+   provides this functionality.
+
+Appendix E.  Reassignment of Group Identifiers
 
    As defined in Section 12.2.1.1, the Group manager MAY support and
    perform the reassignment of Gid values previously used during a
@@ -4730,11 +4730,11 @@ Appendix D.  Reassignment of Group Identifiers
       respective requests were protected using the same Partial IV, Gid,
       and Sender ID.
 
-Appendix E.  Document Updates
+Appendix F.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-E.1.  Version -22 to -23
+F.1.  Version -22 to -23
 
    *  Examples of non-AEAD algorithms as Group Encryption Algorithm.
 
@@ -4750,7 +4750,7 @@ E.1.  Version -22 to -23
 
    *  Editorial improvements.
 
-E.2.  Version -21 to -22
+F.2.  Version -21 to -22
 
    *  Removed mentioning of the CBOR encoding of the HKDF Algorithm.
 
@@ -4780,7 +4780,7 @@ E.2.  Version -21 to -22
 
    *  Editorial improvements.
 
-E.3.  Version -20 to -21
+F.3.  Version -20 to -21
 
    *  Updated author list.
 
@@ -4791,17 +4791,17 @@ E.3.  Version -20 to -21
 
    *  Editorial: expanded name of the "CoRE Parameters" registry group.
 
-E.4.  Version -19 to -20
+F.4.  Version -19 to -20
 
    *  Change Controller for the target attribute "gosc" set to "IETF".
 
-E.5.  Version -18 to -19
+F.5.  Version -18 to -19
 
    *  Unified presentation of handling of multiple responses.
 
    *  Added Rikard Höglund as Contributor.
 
-E.6.  Version -17 to -18
+F.6.  Version -17 to -18
 
    *  Changed document title.
 
@@ -4846,13 +4846,13 @@ E.6.  Version -17 to -18
 
    *  Clarifications, fixes and editorial improvements.
 
-E.7.  Version -16 to -17
+F.7.  Version -16 to -17
 
    *  Definition and registration of the target attribute "gosc".
 
    *  Reference update and editorial fixes.
 
-E.8.  Version -15 to -16
+F.8.  Version -15 to -16
 
    *  Clients "SHOULD" use the group mode for one-to-many requests.
 
@@ -4865,11 +4865,11 @@ E.8.  Version -15 to -16
 
    *  Editorial improvements.
 
-E.9.  Version -14 to -15
+F.9.  Version -14 to -15
 
    *  Updated references and editorial fixes.
 
-E.10.  Version -13 to -14
+F.10.  Version -13 to -14
 
    *  Replaced "node" with "endpoint" where appropriate.
 
@@ -4896,7 +4896,7 @@ E.10.  Version -13 to -14
 
    *  Clarifications and editorial improvements.
 
-E.11.  Version -12 to -13
+F.11.  Version -12 to -13
 
    *  Fixes in the derivation of the Group Encryption Key.
 
@@ -4904,7 +4904,7 @@ E.11.  Version -12 to -13
 
    *  Changed UCCS to CCS.
 
-E.12.  Version -11 to -12
+F.12.  Version -11 to -12
 
    *  No mode of operation is mandatory to support.
 
@@ -4942,7 +4942,7 @@ E.12.  Version -11 to -12
 
    *  Fixes and editorial improvements.
 
-E.13.  Version -10 to -11
+F.13.  Version -10 to -11
 
    *  Loss of Recipient Contexts due to their overflow.
 
@@ -4989,7 +4989,7 @@ E.13.  Version -10 to -11
 
    *  Fixes and editorial improvements.
 
-E.14.  Version -09 to -10
+F.14.  Version -09 to -10
 
    *  Removed 'Counter Signature Key Parameters' from the Common
       Context.
@@ -5027,7 +5027,7 @@ E.14.  Version -09 to -10
 
    *  Overall clarifications and editorial revision.
 
-E.15.  Version -08 to -09
+F.15.  Version -08 to -09
 
    *  Pairwise keys are discarded after group rekeying.
 
@@ -5065,7 +5065,7 @@ E.15.  Version -08 to -09
 
    *  Clarifications and editorial improvements.
 
-E.16.  Version -07 to -08
+F.16.  Version -07 to -08
 
    *  Clarified relation between pairwise mode and group communication
       (Section 1).
@@ -5129,7 +5129,7 @@ E.16.  Version -07 to -08
 
    *  Editorial improvements.
 
-E.17.  Version -06 to -07
+F.17.  Version -06 to -07
 
    *  Updated abstract and introduction.
 
@@ -5161,7 +5161,7 @@ E.17.  Version -06 to -07
    *  New pairwise mode, using pairwise keying material for both
       requests and responses.
 
-E.18.  Version -05 to -06
+F.18.  Version -05 to -06
 
    *  Group IDs mandated to be unique under the same Group Manager.
 
@@ -5189,7 +5189,7 @@ E.18.  Version -05 to -06
 
    *  Editorial improvements.
 
-E.19.  Version -04 to -05
+F.19.  Version -04 to -05
 
    *  Added references to draft-dijk-core-groupcomm-bis.
 
@@ -5208,7 +5208,7 @@ E.19.  Version -04 to -05
    *  New "Counter Signature Key Parameters" IANA Registry
       (Section 9.2).
 
-E.20.  Version -03 to -04
+F.20.  Version -03 to -04
 
    *  Added the new "Counter Signature Parameters" in the Common Context
       (see Section 2).
@@ -5252,7 +5252,7 @@ E.20.  Version -03 to -04
    *  New IANA Registry "Counter Signature Parameters" (see
       Section 9.1).
 
-E.21.  Version -02 to -03
+F.21.  Version -02 to -03
 
    *  Revised structure and phrasing for improved readability and better
       alignment with draft-ietf-core-object-security.
@@ -5286,7 +5286,7 @@ E.21.  Version -02 to -03
    *  Revised Appendix D, now giving a short high-level description of a
       new endpoint set-up.
 
-E.22.  Version -01 to -02
+F.22.  Version -01 to -02
 
    *  Terminology has been made more aligned with RFC7252 and draft-
       ietf-core-object-security: i) "client" and "server" replace the
@@ -5321,7 +5321,7 @@ E.22.  Version -01 to -02
       synchronization of sequence numbers based on the Echo Option from
       draft-ietf-core-echo-request-tag.
 
-E.23.  Version -00 to -01
+F.23.  Version -00 to -01
 
    *  Section 1.1 has been updated with the definition of group as
       "security group".
