@@ -1547,41 +1547,6 @@ In order to verify countersignatures of messages in a group, a signature checker
 
 A signature checker MUST be authorized before it can retrieve such information, for example with the use of {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
-
-## Responsibilities of the Group Manager ## {#sec-group-manager}
-
-The Group Manager is responsible for performing the following tasks:
-
-1. Creating and managing OSCORE groups. This includes the assignment of a Gid to every newly created group, ensuring uniqueness of Gids within the set of its OSCORE groups and, optionally, the secure recycling of Gids.
-
-2. Defining policies for authorizing the joining of its OSCORE groups.
-
-3. Handling the join process to add new endpoints as group members.
-
-4. Establishing the Common Context part of the Security Context, and providing it to authorized group members during the join process, together with the corresponding Sender Context.
-
-5. Updating the Key Generation Number and the Gid of its OSCORE groups, upon renewing the respective Security Context.
-
-6. Generating and managing Sender IDs within its OSCORE groups, as well as assigning and providing them to new endpoints during the join process, or to current group members upon request of renewal or re-joining. This includes ensuring that:
-
-   - Each Sender ID is unique within each of the OSCORE groups;
-
-   - Each Sender ID is not reassigned within the same group since the latest time when the current Gid value was assigned to the group. That is, the Sender ID is not reassigned even to a current group member re-joining the same group, without a rekeying happening first.
-
-7. Defining communication policies for each of its OSCORE groups, and signaling them to new endpoints during the join process.
-
-8. Renewing the Security Context of an OSCORE group upon membership change, by revoking and renewing common security parameters and keying material (rekeying).
-
-9. Providing the management keying material that a new endpoint requires to participate in the rekeying process, consistently with the key management scheme used in the group joined by the new endpoint.
-
-10. Assisting a group member that has missed a group rekeying instance to understand which authentication credentials and Recipient Contexts to delete, as associated with former group members.
-
-11. Acting as key repository, in order to handle the authentication credentials of the members of its OSCORE groups, and providing such authentication credentials to other members of the same group upon request. The actual storage of authentication credentials may be entrusted to a separate secure storage device or service.
-
-12. Validating that the format and parameters of authentication credentials of group members are consistent with the public key algorithm and related parameters used in the respective OSCORE group.
-
-The Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}} provides this functionality.
-
 # Security Considerations  # {#sec-security-considerations}
 
 The same threat model discussed for OSCORE in {{Section D.1 of RFC8613}} holds for Group OSCORE.
@@ -1998,6 +1963,40 @@ As an example, a 3-byte Gid can be composed of: i) a 1-byte Group Prefix '0xb1' 
 Using an immutable Group Prefix for a group with a Group Manager that does not reassign Gid values (see {{sec-gid-recycling}}) limits the total number of rekeying instances. With a Group Manager that does reassign Gid values, it limits the maximum active number of rekeying instances that a CoAP observation {{RFC7641}} can persist through. In either case, the group epoch size needs to be chosen depending on the expected rate of rekeying instances.
 
 As discussed in {{ssec-gid-collision}}, if endpoints are deployed in multiple groups managed by different non-synchronized Group Managers, it is possible that Group Identifiers of different groups coincide at some point in time. In this case, a recipient has to handle coinciding Group Identifiers, and has to try using different Security Contexts to process an incoming message, until the right one is found and the message is correctly verified. Therefore, it is favorable that Group Identifiers from different Group Managers have a size that result in a small probability of collision. How small this probability should be is up to system designers.
+
+# Responsibilities of the Group Manager ## {#sec-group-manager}
+
+The Group Manager is responsible for performing the following tasks:
+
+1. Creating and managing OSCORE groups. This includes the assignment of a Gid to every newly created group, ensuring uniqueness of Gids within the set of its OSCORE groups and, optionally, the secure recycling of Gids.
+
+2. Defining policies for authorizing the joining of its OSCORE groups.
+
+3. Handling the join process to add new endpoints as group members.
+
+4. Establishing the Common Context part of the Security Context, and providing it to authorized group members during the join process, together with the corresponding Sender Context.
+
+5. Updating the Key Generation Number and the Gid of its OSCORE groups, upon renewing the respective Security Context.
+
+6. Generating and managing Sender IDs within its OSCORE groups, as well as assigning and providing them to new endpoints during the join process, or to current group members upon request of renewal or re-joining. This includes ensuring that:
+
+   - Each Sender ID is unique within each of the OSCORE groups;
+
+   - Each Sender ID is not reassigned within the same group since the latest time when the current Gid value was assigned to the group. That is, the Sender ID is not reassigned even to a current group member re-joining the same group, without a rekeying happening first.
+
+7. Defining communication policies for each of its OSCORE groups, and signaling them to new endpoints during the join process.
+
+8. Renewing the Security Context of an OSCORE group upon membership change, by revoking and renewing common security parameters and keying material (rekeying).
+
+9. Providing the management keying material that a new endpoint requires to participate in the rekeying process, consistently with the key management scheme used in the group joined by the new endpoint.
+
+10. Assisting a group member that has missed a group rekeying instance to understand which authentication credentials and Recipient Contexts to delete, as associated with former group members.
+
+11. Acting as key repository, in order to handle the authentication credentials of the members of its OSCORE groups, and providing such authentication credentials to other members of the same group upon request. The actual storage of authentication credentials may be entrusted to a separate secure storage device or service.
+
+12. Validating that the format and parameters of authentication credentials of group members are consistent with the public key algorithm and related parameters used in the respective OSCORE group.
+
+The Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}} provides this functionality.
 
 # Reassignment of Group Identifiers {#gid-reassignment}
 
