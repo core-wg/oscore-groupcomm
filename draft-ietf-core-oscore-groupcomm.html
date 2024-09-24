@@ -1643,7 +1643,7 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
           <li class="normal" id="section-1.1-6.11">
             <p id="section-1.1-6.11.1">Long exchange: an exchange of messages associated with a request that is a group request and/or an Observe request <span>[<a href="#RFC7641" class="cite xref">RFC7641</a>]</span>.<a href="#section-1.1-6.11.1" class="pilcrow">¶</a></p>
 <p id="section-1.1-6.11.2">
-In either case, multiple responses can follow from the same server to the request associated with the long exchange. The client terminates a long exchange when freeing up the CoAP Token value used for the associated request, for which no further responses will be accepted afterwards.<a href="#section-1.1-6.11.2" class="pilcrow">¶</a></p>
+In either case, multiple responses can follow from the same server to the request associated with the long exchange, even if the request is not an Observe request (see Section 3.1.6 of <span>[<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>). The client terminates a long exchange when freeing up the CoAP Token value used for the associated request, for which no further responses will be accepted afterwards.<a href="#section-1.1-6.11.2" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
