@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-09-24T01:00:00.496242+00:00",
+  "timestamp": "2024-09-26T00:59:05.262751+00:00",
   "repo": "core-wg/oscore-groupcomm",
   "labels": [
     {
@@ -3497,25 +3497,33 @@
       "id": "PR_kwDOB2KWK857uElf",
       "title": "Fp gm out",
       "url": "https://github.com/core-wg/oscore-groupcomm/pull/111",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "fpalombini",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2024-09-17T07:52:59Z",
-      "updatedAt": "2024-09-17T07:52:59Z",
+      "updatedAt": "2024-09-24T10:00:17Z",
       "baseRepository": "core-wg/oscore-groupcomm",
       "baseRefName": "master",
       "baseRefOid": "d811ae07f00b08369fa6cc217017a0d9d7fe13f7",
       "headRepository": "core-wg/oscore-groupcomm",
       "headRefName": "fp-gm-out",
       "headRefOid": "316b947a32a21522fe6f6d900e818b57ca373863",
-      "closedAt": null,
+      "closedAt": "2024-09-24T10:00:16Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing this as we went for https://github.com/core-wg/oscore-groupcomm/pull/112 instead",
+          "createdAt": "2024-09-24T10:00:16Z",
+          "updatedAt": "2024-09-24T10:00:16Z"
+        }
+      ],
       "reviews": []
     },
     {
@@ -3523,24 +3531,26 @@
       "id": "PR_kwDOB2KWK858LtWT",
       "title": "Repositioned content about the Group Manager",
       "url": "https://github.com/core-wg/oscore-groupcomm/pull/112",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "marco-tiloca-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2024-09-20T15:22:30Z",
-      "updatedAt": "2024-09-20T15:23:20Z",
+      "updatedAt": "2024-09-24T09:58:40Z",
       "baseRepository": "core-wg/oscore-groupcomm",
       "baseRefName": "master",
       "baseRefOid": "8580b481e260d73149d60c06eec781bc91c8a17d",
       "headRepository": "core-wg/oscore-groupcomm",
       "headRefName": "reposition-group-manager",
-      "headRefOid": "a9e8e9c2162517322c8e415d5f69caedc4babeb0",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "666f42745da64437fe0f4153fb300dc9c614a982",
+      "closedAt": "2024-09-24T09:58:40Z",
+      "mergedAt": "2024-09-24T09:58:40Z",
+      "mergedBy": "marco-tiloca-sics",
+      "mergeCommit": {
+        "oid": "fce1e0bd9ebf8504e38ef6be32bb5dad7df45e35"
+      },
       "comments": [],
       "reviews": []
     }
