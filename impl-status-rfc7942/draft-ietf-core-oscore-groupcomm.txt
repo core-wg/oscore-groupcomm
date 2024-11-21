@@ -4920,7 +4920,7 @@ Appendix F.  Document Updates
 
 F.1.  Version -23 to -24
 
-   *  Added section "Implementation Status", according to 7942.
+   *  Added section "Implementation Status", according to RFC 7942.
 
    *  Fixed "P-521" (instead of "P-512").
 
