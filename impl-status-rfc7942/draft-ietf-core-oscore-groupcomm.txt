@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 21 March 2025                                      F. Palombini
+Expires: 25 May 2025                                        F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                       17 September 2024
+                                                        21 November 2024
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 March 2025.
+   This Internet-Draft will expire on 25 May 2025.
 
 Copyright Notice
 
@@ -107,104 +107,111 @@ Table of Contents
        2.6.1.  Loss of Mutable Security Context
        2.6.2.  Exhaustion of Sender Sequence Number Space
        2.6.3.  Retrieving New Security Context Parameters
-   3.  The Group Manager
-     3.1.  Set-up of New Endpoints
-     3.2.  Management of Group Keying Material
-       3.2.1.  Recycling of Identifiers
-     3.3.  Support for Signature Checkers
-     3.4.  Responsibilities of the Group Manager
-   4.  The COSE Object
-     4.1.  Countersignature
-       4.1.1.  Clarifications on Using a Countersignature
-     4.2.  The 'kid' and 'kid context' parameters
-     4.3.  Nonce Computation
-     4.4.  external_aad
-   5.  OSCORE Header Compression
-     5.1.  Keystream Derivation for Countersignature Encryption
-     5.2.  Examples of Compressed COSE Objects
-       5.2.1.  Examples in Group Mode
-       5.2.2.  Examples in Pairwise Mode
-   6.  Message Binding, Sequence Numbers, Freshness, and Replay
+   3.  The COSE Object
+     3.1.  Countersignature
+       3.1.1.  Clarifications on Using a Countersignature
+     3.2.  The 'kid' and 'kid context' parameters
+     3.3.  Nonce Computation
+     3.4.  external_aad
+   4.  OSCORE Header Compression
+     4.1.  Keystream Derivation for Countersignature Encryption
+     4.2.  Examples of Compressed COSE Objects
+       4.2.1.  Examples in Group Mode
+       4.2.2.  Examples in Pairwise Mode
+   5.  Message Binding, Sequence Numbers, Freshness, and Replay
            Protection
-     6.1.  Supporting Multiple Responses in Long Exchanges
-     6.2.  Freshness
-     6.3.  Replay Protection
-       6.3.1.  Replay Protection of Responses
-   7.  Message Reception
-   8.  Message Processing in Group Mode
-     8.1.  Protecting the Request
-     8.2.  Verifying the Request
-     8.3.  Protecting the Response
-     8.4.  Verifying the Response
-     8.5.  External Signature Checkers
-   9.  Message Processing in Pairwise Mode
-     9.1.  Pre-Conditions
-     9.2.  Main Differences from OSCORE
-     9.3.  Protecting the Request
-     9.4.  Verifying the Request
-     9.5.  Protecting the Response
-     9.6.  Verifying the Response
-   10. Challenge-Response Based Freshness and Replay Window Recovery
-   11. Implementation Compliance
-   12. Web Linking
-   13. Security Considerations
-     13.1.  Security of the Group Mode
-     13.2.  Security of the Pairwise Mode
-     13.3.  Uniqueness of (key, nonce)
-     13.4.  Management of Group Keying Material
-     13.5.  Update of Security Context and Key Rotation
-       13.5.1.  Late Update on the Sender
-       13.5.2.  Late Update on the Recipient
-     13.6.  Collision of Group Identifiers
-     13.7.  Cross-group Message Injection
-       13.7.1.  Attack Description
-       13.7.2.  Attack Prevention in Group Mode
-     13.8.  Prevention of Group Cloning Attack
-     13.9.  Group OSCORE for Unicast Requests
-     13.10. End-to-end Protection
-     13.11. Master Secret
-     13.12. Replay Protection
-     13.13. Message Ordering
-     13.14. Message Freshness
-     13.15. Client Aliveness
-     13.16. Cryptographic Considerations
-     13.17. Message Segmentation
-     13.18. Privacy Considerations
-   14. IANA Considerations
-     14.1.  OSCORE Flag Bits Registry
-     14.2.  CoAP Option Numbers Registry
-     14.3.  Target Attributes Registry
-   15. References
-     15.1.  Normative References
-     15.2.  Informative References
+     5.1.  Supporting Multiple Responses in Long Exchanges
+     5.2.  Freshness
+     5.3.  Replay Protection
+       5.3.1.  Replay Protection of Responses
+   6.  Message Reception
+   7.  Message Processing in Group Mode
+     7.1.  Protecting the Request
+     7.2.  Verifying the Request
+     7.3.  Protecting the Response
+     7.4.  Verifying the Response
+     7.5.  External Signature Checkers
+   8.  Message Processing in Pairwise Mode
+     8.1.  Pre-Conditions
+     8.2.  Main Differences from OSCORE
+     8.3.  Protecting the Request
+     8.4.  Verifying the Request
+     8.5.  Protecting the Response
+     8.6.  Verifying the Response
+   9.  Challenge-Response Based Freshness and Replay Window Recovery
+   10. Implementation Compliance
+   11. Web Linking
+   12. The Group Manager
+     12.1.  Set-up of New Endpoints
+     12.2.  Management of Group Keying Material
+       12.2.1.  Recycling of Identifiers
+     12.3.  Support for Signature Checkers
+   13. Implementation Status
+     13.1.  Implementation #1
+     13.2.  Implementation #2
+     13.3.  Interoperability
+   14. Security Considerations
+     14.1.  Security of the Group Mode
+     14.2.  Security of the Pairwise Mode
+     14.3.  Uniqueness of (key, nonce)
+     14.4.  Management of Group Keying Material
+     14.5.  Update of Security Context and Key Rotation
+       14.5.1.  Late Update on the Sender
+       14.5.2.  Late Update on the Recipient
+     14.6.  Collision of Group Identifiers
+     14.7.  Cross-group Message Injection
+       14.7.1.  Attack Description
+       14.7.2.  Attack Prevention in Group Mode
+     14.8.  Prevention of Group Cloning Attack
+     14.9.  Group OSCORE for Unicast Requests
+     14.10. End-to-end Protection
+     14.11. Master Secret
+     14.12. Replay Protection
+     14.13. Message Ordering
+     14.14. Message Freshness
+     14.15. Client Aliveness
+     14.16. Cryptographic Considerations
+     14.17. Message Segmentation
+     14.18. Privacy Considerations
+   15. IANA Considerations
+     15.1.  OSCORE Flag Bits Registry
+     15.2.  CoAP Option Numbers Registry
+     15.3.  Target Attributes Registry
+   16. References
+     16.1.  Normative References
+     16.2.  Informative References
    Appendix A.  Assumptions and Security Objectives
      A.1.  Assumptions
      A.2.  Security Objectives
    Appendix B.  List of Use Cases
    Appendix C.  Example of Group Identifier Format
-   Appendix D.  Document Updates
-     D.1.  Version -21 to -22
-     D.2.  Version -20 to -21
-     D.3.  Version -19 to -20
-     D.4.  Version -18 to -19
-     D.5.  Version -17 to -18
-     D.6.  Version -16 to -17
-     D.7.  Version -15 to -16
-     D.8.  Version -14 to -15
-     D.9.  Version -13 to -14
-     D.10. Version -12 to -13
-     D.11. Version -11 to -12
-     D.12. Version -10 to -11
-     D.13. Version -09 to -10
-     D.14. Version -08 to -09
-     D.15. Version -07 to -08
-     D.16. Version -06 to -07
-     D.17. Version -05 to -06
-     D.18. Version -04 to -05
-     D.19. Version -03 to -04
-     D.20. Version -02 to -03
-     D.21. Version -01 to -02
-     D.22. Version -00 to -01
+   Appendix D.  Responsibilities of the Group Manager
+   Appendix E.  Reassignment of Group Identifiers
+   Appendix F.  Document Updates
+     F.1.  Version -23 to -24
+     F.2.  Version -22 to -23
+     F.3.  Version -21 to -22
+     F.4.  Version -20 to -21
+     F.5.  Version -19 to -20
+     F.6.  Version -18 to -19
+     F.7.  Version -17 to -18
+     F.8.  Version -16 to -17
+     F.9.  Version -15 to -16
+     F.10. Version -14 to -15
+     F.11. Version -13 to -14
+     F.12. Version -12 to -13
+     F.13. Version -11 to -12
+     F.14. Version -10 to -11
+     F.15. Version -09 to -10
+     F.16. Version -08 to -09
+     F.17. Version -07 to -08
+     F.18. Version -06 to -07
+     F.19. Version -05 to -06
+     F.20. Version -04 to -05
+     F.21. Version -03 to -04
+     F.22. Version -02 to -03
+     F.23. Version -01 to -02
+     F.24. Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -253,18 +260,18 @@ Table of Contents
    As with OSCORE, it is possible to combine Group OSCORE with
    communication security on other layers.  One example is the use of
    transport layer security, such as DTLS [RFC9147], between one client
-   and one proxy (and vice versa), or between one proxy and one server
-   (and vice versa).  This prevents observers from accessing addressing
-   information conveyed in CoAP options that would not be protected by
-   Group OSCORE, but would be protected by DTLS.  These options include
-   Uri-Host, Uri-Port, and Proxy-Uri. Note that DTLS does not define how
-   to secure messages sent over IP multicast.  Group OSCORE is also
-   intended to work with OSCORE-capable proxies
-   [I-D.ietf-core-oscore-capable-proxies] thereby enabling, for example,
-   nested OSCORE operations with OSCORE-protected communication between
-   a CoAP client and a proxy, carrying messages that are additionally
-   protected with Group OSCORE between the CoAP client and the target
-   CoAP servers.
+   and one proxy, or between one proxy and one server.  This prevents
+   observers from accessing addressing information conveyed in CoAP
+   options that would not be protected by Group OSCORE, but would be
+   protected by DTLS.  These options include Uri-Host, Uri-Port, and
+   Proxy-Uri. Note that DTLS does not define how to secure messages sent
+   over IP multicast and cannot be used for end-to-end protection over a
+   proxy.  Group OSCORE is also intended to work with OSCORE-capable
+   proxies [I-D.ietf-core-oscore-capable-proxies] thereby enabling, for
+   example, nested OSCORE operations with OSCORE-protected communication
+   between a CoAP client and a proxy, carrying messages that are
+   additionally protected with Group OSCORE between the CoAP client and
+   the target CoAP servers.
 
    Group OSCORE defines two modes of operation, that can be used
    independently or together:
@@ -274,15 +281,15 @@ Table of Contents
       signature is embedded in the protected CoAP message.  The group
       mode supports all COSE signature algorithms as well as signature
       verification by intermediaries.  This mode is defined in
-      Section 8.
+      Section 7.
 
    *  In the pairwise mode, two group members exchange OSCORE requests
       and responses (typically) over unicast, and the messages are
-      protected with symmetric keys.  These symmetric keys are derived
-      from Diffie-Hellman shared secrets, calculated with the asymmetric
-      keys of the sender and recipient, allowing for shorter integrity
-      tags and therefore lower message overhead.  This mode is defined
-      in Section 9.
+      protected with symmetric keys not known by the other group
+      members.  These symmetric keys are derived from Diffie-Hellman
+      shared secrets, calculated with the asymmetric keys of the sender
+      and recipient, allowing for shorter integrity tags and therefore
+      lower message overhead.  This mode is defined in Section 8.
 
    Both modes provide source authentication of CoAP messages.  The
    application decides what mode to use, potentially on a per-message
@@ -364,8 +371,8 @@ Table of Contents
 
    *  Group Manager: an entity responsible for a group, neither required
       to be an actual group member nor to take part in the group
-      communication.  The responsibilities of the Group Manager are
-      listed in Section 3.4.
+      communication.  The operations of the Group Manager are defined in
+      Section 12 and its responsibilities are listed in Appendix D.
 
    *  Silent server: a member of a group that performs only group mode
       processing on incoming requests and never sends responses
@@ -396,10 +403,12 @@ Table of Contents
       that is a group request and/or an Observe request [RFC7641].
 
       In either case, multiple responses can follow from the same server
-      to the request associated with the long exchange.  The client
-      terminates a long exchange when freeing up the CoAP Token value
-      used for the associated request, for which no further responses
-      will be accepted afterwards.
+      to the request associated with the long exchange, even if the
+      request is not an Observe request (see Section 3.1.6 of
+      [I-D.ietf-core-groupcomm-bis]).  The client terminates a long
+      exchange when freeing up the CoAP Token value used for the
+      associated request, for which no further responses will be
+      accepted afterwards.
 
 2.  Security Context
 
@@ -411,12 +420,13 @@ Table of Contents
    How the Security Context is established by the group members is out
    of scope for this document, but if there is more than one Security
    Context applicable to a message, then the endpoints MUST be able to
-   tell which Security Context was latest established.  How to manage
-   information about the group is described in terms of a Group Manager
-   (see Section 3).
+   tell which Security Context was latest established.  The management
+   of information about the group (i.e., identifiers, OSCORE input
+   parameters, and keying material) is described in terms of a Group
+   Manager (see Section 12).
 
-   An endpoint of the group may use the group mode (see Section 8), the
-   pairwise mode (see Section 9), or both, depending on the modes it
+   An endpoint of the group may use the group mode (see Section 7), the
+   pairwise mode (see Section 8), or both, depending on the modes it
    supports and on the parameters of the Security Context.  The Security
    Context of Group OSCORE extends the OSCORE Security Context defined
    in Section 3 of [RFC8613] as follows (see Figure 1).
@@ -455,7 +465,7 @@ Table of Contents
    *  One Sender Context, extended with the following new parameters.
 
       -  The endpoint's own private key used to sign messages protected
-         in group mode (see Section 8), or for deriving pairwise keys
+         in group mode (see Section 7), or for deriving pairwise keys
          used with the pairwise mode (see Section 2.5).
 
       -  The endpoint's own authentication credential containing its
@@ -510,13 +520,13 @@ Table of Contents
    extended compared to [RFC8613].  All algorithms (AEAD, Group
    Encryption, Signature, Pairwise Key Agreement) are immutable once the
    Common Context is established.  The Common Context may be acquired
-   from the Group Manager (see Section 3).
+   from the Group Manager (see Section 12).
 
 2.1.1.  AEAD Algorithm
 
    The AEAD Algorithm (see Section 3.1 of [RFC8613]) SHALL identify the
    COSE AEAD algorithm to use for encryption and decryption when
-   messages are protected using the pairwise mode (see Section 9).  This
+   messages are protected using the pairwise mode (see Section 8).  This
    algorithm MUST provide integrity protection.  If this parameter is
    not set, the pairwise mode is not used in the group.
 
@@ -534,7 +544,7 @@ Table of Contents
    the Gid format is application specific.  An example of specific
    formatting of the Gid is given in Appendix C.  The application needs
    to specify how to handle potential collisions between Gids (see
-   Section 13.6).
+   Section 14.6).
 
 2.1.4.  Common IV
 
@@ -569,7 +579,7 @@ Table of Contents
 
    The new parameter Group Encryption Algorithm identifies the algorithm
    to use for encryption and decryption, when messages are protected in
-   group mode (see Section 8).  This algorithm MAY provide integrity
+   group mode (see Section 7).  This algorithm MAY provide integrity
    protection.  If this parameter is not set, the group mode is not used
    in the group.
 
@@ -586,14 +596,14 @@ Table of Contents
    signature algorithm used for computing and verifying the
    countersignature on the COSE object (see Sections 3.2 and 3.3 of
    [RFC9338]), when messages are protected in group mode (see
-   Section 8).  If this parameter is not set, the group mode is not used
+   Section 7).  If this parameter is not set, the group mode is not used
    in the group.
 
 2.1.9.  Signature Encryption Key
 
    The new parameter Signature Encryption Key specifies the encryption
    key for deriving a keystream to encrypt/decrypt a countersignature,
-   when a message is protected in group mode (see Section 8).
+   when a message is protected in group mode (see Section 7).
 
    The Signature Encryption Key is derived as defined for Sender/
    Recipient Keys in Section 3.2.1 of [RFC8613], with the following
@@ -622,7 +632,7 @@ Table of Contents
    elliptic curve Diffie-Hellman algorithm used to derive a static-
    static Diffie-Hellman shared secret, from which pairwise keys are
    derived (see Section 2.5.1) to protect messages with the pairwise
-   mode (see Section 9).  If this parameter is not set, the pairwise
+   mode (see Section 8).  If this parameter is not set, the pairwise
    mode is not used in the group.
 
    If the HKDF Algorithm specified in the Common Context is "HKDF SHA-
@@ -665,11 +675,11 @@ Table of Contents
    Section 2.3).
 
    The authentication credentials in the Recipient Contexts can be
-   retrieved from the Group Manager (see Section 3) upon joining the
+   retrieved from the Group Manager (see Section 12) upon joining the
    group.  An authentication credential can alternatively be acquired
    from the Group Manager at a later time, for example the first time a
    message is received from a particular endpoint in the group (see
-   Section 8.2 and Section 8.4).
+   Section 7.2 and Section 7.4).
 
    For severely constrained devices, it may be infeasible to
    simultaneously handle the ongoing processing of a recently received
@@ -739,7 +749,7 @@ Table of Contents
 
    Authentication credentials are used to derive pairwise keys (see
    Section 2.5.1) and are included in the external additional
-   authenticated data when processing messages (see Section 4.4).  In
+   authenticated data when processing messages (see Section 3.4).  In
    both these cases, an endpoint in a group MUST treat authentication
    credentials as opaque data, i.e., by considering the same binary
    representation made available to other endpoints in the group,
@@ -795,13 +805,13 @@ Table of Contents
    Certain signature schemes, such as EdDSA and ECDSA, support a secure
    combined signature and encryption scheme.  This section specifies the
    derivation of "pairwise keys", for use in the pairwise mode defined
-   in Section 9.
+   in Section 8.
 
    Group OSCORE keys used for both signature and encryption MUST be used
    only for purposes related to Group OSCORE.  These include the
    processing of messages with Group OSCORE, as well as performing
    proof-of-possession of private keys, e.g., upon joining a group
-   through the Group Manager (see Section 3).
+   through the Group Manager (see Section 12).
 
 2.5.1.  Derivation of Pairwise Keys
 
@@ -849,7 +859,7 @@ Table of Contents
       Key Agreement Algorithm.  The endpoint uses its private key from
       the Sender Context and the other endpoint's public key included in
       Recipient Auth Cred.  Note the requirement of validation of public
-      keys in Section 13.16.
+      keys in Section 14.16.
 
       In case the other endpoint's public key has COSE Key Type "EC2"
       (e.g., for the curves P-256, P-384, and P-512), then the public
@@ -891,7 +901,7 @@ Table of Contents
    in the key agreement algorithm, without coordinate mapping.
 
    After establishing a partially or completely new Security Context
-   (see Section 2.6 and Section 3.2), the old pairwise keys MUST be
+   (see Section 2.6 and Section 12.2), the old pairwise keys MUST be
    deleted.  Since new Sender/Recipient Keys are derived from the new
    group keying material (see Section 2.2), every group member MUST use
    the new Sender/Recipient Keys when deriving new pairwise keys.
@@ -1083,11 +1093,10 @@ Table of Contents
 
    If the endpoint receives a request to process with the new Recipient
    Context and the endpoint supports the CoAP Echo Option [RFC9175],
-   then it is RECOMMENDED to follow the procedure specified in
-   Section 10 which establishes a valid Replay Window.  In particular,
-   the endpoint MUST use its Partial IV when generating the nonce and
-   MUST include the Partial IV in the response message conveying the
-   Echo Option.
+   then it is RECOMMENDED to follow the procedure specified in Section 9
+   which establishes a valid Replay Window.  In particular, the endpoint
+   MUST use its Partial IV when generating the nonce and MUST include
+   the Partial IV in the response message conveying the Echo Option.
 
    Alternatively, the endpoint MAY retrieve or wait for new Security
    Context parameters from the Group Manager and derive new Sender and
@@ -1125,11 +1134,11 @@ Table of Contents
    The Group Manager can assist an endpoint with an incomplete Sender
    Context to retrieve missing data of the Security Context and thereby
    become fully operational in the group again.  The two main options
-   for the Group Manager are described in this section: i) assignment of
-   a new Sender ID to the endpoint (see Section 2.6.3.1); and ii)
-   establishment of a new Security Context for the group (see
-   Section 2.6.3.2).  The update of the Replay Window in each of the
-   Recipient Contexts is discussed in Section 2.6.1.
+   for the Group Manager are: i) assignment of a new Sender ID to the
+   endpoint (see Section 2.6.3.1); and ii) establishment of a new
+   Security Context for the group (see Section 2.6.3.2).  The update of
+   the Replay Window in each of the Recipient Contexts is discussed in
+   Section 2.6.1.
 
    As group membership changes, or as group members get new Sender IDs
    (see Section 2.6.3.1), so do the relevant Recipient IDs that the
@@ -1155,10 +1164,10 @@ Table of Contents
 2.6.3.1.  New Sender ID for the Endpoint
 
    The Group Manager may assign a new Sender ID to an endpoint, while
-   leaving the Gid, Master Secret and Master Salt unchanged in the
-   group.  In this case, the Group Manager MUST assign a Sender ID that
-   has not been used in the group since the latest time when the current
-   Gid value was assigned to the group (see Section 3.2).
+   leaving the Gid, Master Secret, and Master Salt unchanged in the
+   group.  In this case, the Group Manager assigns a Sender ID that has
+   not been used in the group since the latest time when the current Gid
+   value was assigned to the group (see Section 12.2).
 
    Having retrieved the new Sender ID, and potentially other missing
    data of the immutable Security Context, the endpoint can derive a new
@@ -1179,12 +1188,12 @@ Table of Contents
    immutable Security Context.
 
    For the other group members, the Recipient Context corresponding to
-   the old Sender ID becomes stale (see Section 3.2).
+   the old Sender ID becomes stale (see Section 12.2).
 
 2.6.3.2.  New Security Context for the Group
 
    The Group Manager may establish a new Security Context for the group
-   (see Section 3.2).  The Group Manager does not necessarily establish
+   (see Section 12.2).  The Group Manager does not necessarily establish
    a new Security Context for the group if one member has an outdated
    Security Context (see Section 2.6.3.1), unless that was already
    planned or required for other reasons.
@@ -1215,7 +1224,7 @@ Table of Contents
 
       -  For each long exchange where it is a client and that it wants
          to keep active, it sets the Response Number of each associated
-         server as not initialized (see Section 6.1).
+         server as not initialized (see Section 5.1).
 
    From then on, it can resume processing new messages for the
    considered group.  In particular:
@@ -1226,7 +1235,7 @@ Table of Contents
    *  It SHOULD use only its latest installed Recipient Contexts to
       process incoming messages, unless application policies admit to
       temporarily retain and use the old, recent, Security Context (see
-      Section 13.5.1).
+      Section 14.5.1).
 
    The distribution of a new Gid and Master Secret may result in
    temporarily misaligned Security Contexts among group members.  In
@@ -1234,464 +1243,9 @@ Table of Contents
    process messages received right after a new Gid and Master Secret
    have been distributed.  A discussion on practical consequences and
    possible ways to address them, as well as on how to handle the old
-   Security Context, is provided in Section 13.5.
+   Security Context, is provided in Section 14.5.
 
-3.  The Group Manager
-
-   As with OSCORE, endpoints communicating with Group OSCORE need to
-   establish the relevant Security Context.  Group OSCORE endpoints need
-   to acquire OSCORE input parameters, information about the group(s)
-   and about other endpoints in the group(s).  This document is based on
-   the existence of an entity called Group Manager that is responsible
-   for the group, but it does not mandate how the Group Manager
-   interacts with the group members.  The list of responsibilities of
-   the Group Manager is compiled in Section 3.4.
-
-   The Group Manager assigns unique Group Identifiers (Gids) to the
-   groups under its control.  Within each of such groups, the Group
-   Manager assigns unique Sender IDs (and thus Recipient IDs) to the
-   respective group members.  The maximum length of Sender IDs depends
-   on the length of the nonce for the algorithms used in the group (see
-   Section 2.2).
-
-   According to a hierarchical approach, the Gid value assigned to a
-   group is associated with a dedicated space for the values of Sender
-   ID and Recipient ID of the members of that group.  When an endpoint
-   (re-)joins a group, it is provided with the current Gid to use in the
-   group.  The Group Manager also assigns an integer Key Generation
-   Number counter to each of its groups, identifying the current version
-   of the keying material used in that group.  Further details about
-   identifiers and keys are provided in Section 3.2.
-
-   The Group Manager maintains records of the authentication credentials
-   of endpoints in a group, and provides information about the group and
-   its members to other group members (see Section 3.1), and to external
-   entities with a specific role (see Section 3.3).
-
-3.1.  Set-up of New Endpoints
-
-   From the Group Manager, an endpoint acquires group data such as the
-   Gid and OSCORE input parameters including its own Sender ID, with
-   which it can derive the Sender Context.
-
-   When joining the group or later on as a group member, an endpoint can
-   also retrieve from the Group Manager the authentication credential of
-   the Group Manager as well as the authentication credential and other
-   information associated with other members of the group, with which it
-   can derive the corresponding Recipient Context.  An application can
-   configure a group member to asynchronously retrieve information about
-   Recipient Contexts, e.g., by Observing [RFC7641] a resource at the
-   Group Manager to get updates on the group membership.
-
-   Upon endpoints' joining, the Group Manager collects their
-   authentication credentials and MUST verify proof-of-possession of the
-   respective private key.  Together with the requested authentication
-   credentials of other group members, the Group Manager MUST provide
-   the joining endpoints with the Sender ID of the associated group
-   members and the current Key Generation Number in the group (see
-   Section 3.2).
-
-   An endpoint may join a group, for example, by explicitly interacting
-   with the responsible Group Manager, or by being configured with some
-   tool performing the tasks of the Group Manager.  When becoming
-   members of a group, endpoints are not required to know how many and
-   what endpoints are in the same group.
-
-   Communications that the Group Manager has with joining endpoints and
-   group members MUST be secured.  Specific details on how to secure
-   such communications are out of the scope of this document.
-
-   The Group Manager MUST verify that the joining endpoint is authorized
-   to join the group.  To this end, the Group Manager can directly
-   authorize the joining endpoint, or expect it to provide authorization
-   evidence previously obtained from a trusted entity.  Further details
-   about the authorization of joining endpoints are out of the scope of
-   this document.
-
-   In case of successful authorization check, the Group Manager provides
-   the joining endpoint with the keying material to initialize the
-   Security Context.  The actual provisioning of keying material and
-   parameters to the joining endpoint is out of the scope of this
-   document.
-
-   One realization of a Group Manager is specified in
-   [I-D.ietf-ace-key-groupcomm-oscore], where the join process is based
-   on the ACE framework for authentication and authorization in
-   constrained environments [RFC9200].
-
-3.2.  Management of Group Keying Material
-
-   In order to establish a new Security Context for a group, the Group
-   Manager MUST generate and assign to the group a new Group Identifier
-   (Gid) and a new value for the Master Secret parameter.  When doing
-   so, a new value for the Master Salt parameter MAY also be generated
-   and assigned to the group.  When establishing the new Security
-   Context, the Group Manager should preserve the current value of the
-   Sender ID of each group member.
-
-   The specific group key management scheme used to distribute new
-   keying material is out of the scope of this document.  A simple group
-   key management scheme is defined in
-   [I-D.ietf-ace-key-groupcomm-oscore].  When possible, the delivery of
-   rekeying messages should use a reliable transport, in order to reduce
-   chances of group members missing a rekeying instance.
-
-   The set of group members should not be assumed as fixed, i.e., the
-   group membership is subject to changes, possibly on a frequent basis.
-
-   The Group Manager MUST rekey the group without undue delay in case
-   one or more endpoints leave the group.  An endpoint may leave the
-   group at own initiative, or may be evicted from the group by the
-   Group Manager, e.g., in case an endpoint is compromised, or is
-   suspected to be compromised.  In either case, rekeying the group
-   excludes such endpoints from future communications in the group, and
-   thus preserves forward security.  If a network node is compromised or
-   suspected to be compromised, the Group Manager MUST evict from the
-   group all the endpoints hosted by that node that are member of the
-   group and rekey the group accordingly.
-
-   If required by the application, the Group Manager MUST rekey the
-   group also before one or more new joining endpoints are added to the
-   group, thus preserving backward security.
-
-   Separately for each group, the value of the Key Generation Number
-   increases by one each time the Group Manager distributes new keying
-   material to that group (see Section 3.2).
-
-   The establishment of the new Security Context for the group takes the
-   following steps.
-
-   1.  The Group Manager MUST increment the Key Generation Number for
-       the group by 1.  It is up to the Group Manager what actions to
-       take when a wrap-around of the Key Generation Number is detected.
-
-   2.  The Group Manager MUST build a set of stale Sender IDs including:
-
-       *  The Sender IDs that, during the current Gid, were both
-          assigned to an endpoint and subsequently relinquished (see
-          Section 2.6.3.1).
-
-       *  The current Sender IDs of the group members that the upcoming
-          group rekeying aims to exclude from future group
-          communications, if any.
-
-   3.  The Group Manager rekeys the group, by distributing:
-
-       *  The new keying material, i.e., the new Master Secret, the new
-          Gid and (optionally) the new Master Salt.
-
-       *  The new Key Generation Number from step 1.
-
-       *  The set of stale Sender IDs from step 2.
-
-       Further information may be distributed, depending on the specific
-       group key management scheme used in the group.
-
-   When receiving the new group keying material, a group member
-   considers the received stale Sender IDs and performs the following
-   actions.
-
-   *  The group member MUST remove every authentication credential
-      associated with a stale Sender ID from its list of group members'
-      authentication credentials used in the group.
-
-   *  The group member MUST delete each of its Recipient Contexts used
-      in the group whose corresponding Recipient ID is a stale Sender
-      ID.
-
-   After that, the group member installs the new keying material and
-   derives the corresponding new Security Context.
-
-   A group member might miss one or more consecutive instances of group
-   rekeying.  As a result, the group member will retain old group keying
-   material with Key Generation Number GEN_OLD.  Eventually, the group
-   member can notice the discrepancy, e.g., by repeatedly failing to
-   verify incoming messages, or by explicitly querying the Group Manager
-   for the current Key Generation Number.  Once the group member gains
-   knowledge of having missed a group rekeying, it MUST delete the old
-   keying material it stores.
-
-   Then, the group member proceeds according to the following steps.
-
-   1.  The group member retrieves from the Group Manager the current
-       group keying material, together with the current Key Generation
-       Number GEN_NEW.  The group member MUST NOT install the obtained
-       group keying material yet.
-
-   2.  The group member asks the Group Manager for the set of stale
-       Sender IDs.
-
-   3.  If no exact indication can be obtained from the Group Manager,
-       the group member MUST remove all the authentication credentials
-       from its list of group members' authentication credentials used
-       in the group and MUST delete all its Recipient Contexts used in
-       the group.
-
-       Otherwise, the group member MUST remove every authentication
-       credential associated with a stale Sender ID from its list of
-       group members' authentication credentials used in the group, and
-       MUST delete each of its Recipient Contexts used in the group
-       whose corresponding Recipient ID is a stale Sender ID.
-
-   4.  The group member installs the current group keying material, and
-       derives the corresponding new Security Context.
-
-   Alternatively, the group member can re-join the group.  In such a
-   case, the group member MUST take one of the following two actions.
-
-   *  First, the group member performs steps 2 and 3 above.  Then, the
-      group member re-joins the group.
-
-   *  The group member re-joins the group with the same roles it
-      currently has in the group, and, during the re-joining process, it
-      asks the Group Manager for the authentication credentials of all
-      the current group members.
-
-      Then, given Z, the set of authentication credentials received from
-      the Group Manager, the group member removes every authentication
-      credential which is not in Z from its list of group members'
-      authentication credentials used in the group, and deletes each of
-      its Recipient Contexts used in the group that does not include any
-      of the authentication credentials in Z.
-
-   By removing authentication credentials and deleting Recipient
-   Contexts associated with stale Sender IDs, it is ensured that a
-   recipient endpoint storing the latest group keying material does not
-   store the authentication credentials of sender endpoints that are not
-   current group members.  This in turn allows group members to rely on
-   stored authentication credentials to confidently assert the group
-   membership of sender endpoints, when receiving incoming messages
-   protected in group mode (see Section 8).
-
-   Such a strictness in managing the authentication credentials and
-   Recipient Contexts associated with other group members is required
-   for two reasons.  First, as further discussed in Section 13.1, it
-   ensures that the group mode can be used securely, even in a group
-   where the Group Encryption Algorithm does not provide integrity
-   protection (see Section 2.1.7) and external signature checkers are
-   used (see Section 8.5).  Second, it ensures that the wrong (old)
-   authentication credential associated with a group member A is never
-   used with a sender ID that used to be associated with A and has been
-   later issued to a different group member B (see Section 3.2.1.2),
-   thus preventing the need to recover from an identity mix-up.
-
-3.2.1.  Recycling of Identifiers
-
-   This section specifies how the Group Manager handles and possibly
-   reassigns Gid values and Sender ID values in a group.
-
-3.2.1.1.  Recycling of Group Identifiers
-
-   Since the Gid value changes every time a group is rekeyed, it can
-   happen that, after several rekeying instances, the whole space of Gid
-   values has been used for the group in question.  When this happens,
-   the Group Manager has no available Gid values to use that have never
-   been assigned to the group during the group's lifetime.
-
-   The occurrence of such an event and how long it would take to occur
-   depend on the format and encoding of Gid values used in the group
-   (see, e.g., Appendix C), as well as on the frequency of rekeying
-   instances yielding a change of Gid value.  Independently for each
-   group under its control, the Group Manager can take one of the two
-   following approaches.
-
-   *  The Group Manager does not reassign Gid values.  That is, once the
-      whole space of Gid values has been used for a group, the Group
-      Manager terminates the group and may re-establish a new group.
-
-   *  While the Gid value changes every time a group is rekeyed, the
-      Group Manager can reassign Gid values previously used during a
-      group's lifetime.  By doing so, the group can continue to exist
-      even once the whole space of Gid values has been used.
-
-      The Group Manager MAY support and use this approach.  In such a
-      case, the Group Manager MUST take additional actions when handling
-      Gid values and rekeying the group, as specified below.
-
-      When a node (re-)joins the group and it is provided with the
-      current Gid to use in the group, the Group Manager considers such
-      a Gid as the Birth Gid of that endpoint for that group.  For each
-      group member, the Group Manager MUST store the latest
-      corresponding Birth Gid until that member leaves the group.  In
-      case the endpoint has in fact re-joined the group, the newly
-      determined Birth Gid overwrites the one currently stored.
-
-      When establishing a new Security Context for the group, the Group
-      Manager takes the additional following step between steps 1 and 2
-      of Section 3.2.
-
-      A.  The Group Manager MUST check if the new Gid to be distributed
-      is equal to the Birth Gid of any of the current group members.  If
-      any of such "elder members" is found in the group, then:
-
-      -  The Group Manager MUST evict the elder members from the group.
-         That is, the Group Manager MUST terminate their membership and,
-         in the following steps, it MUST rekey the group in such a way
-         that the new keying material is not provided to those evicted
-         elder members.
-
-         This ensures that any response from the same server to the
-         request of a long exchange can never successfully match against
-         the request of two different long exchanges.
-
-         In fact, the excluded elder members could eventually re-join
-         the group, thus terminating any of their ongoing long exchanges
-         (see Section 6.1).
-
-         Therefore, it is ensured by construction that no client can
-         have with the same server two ongoing long exchanges, such that
-         the two respective requests were protected using the same
-         Partial IV, Gid, and Sender ID.
-
-3.2.1.2.  Recycling of Sender IDs
-
-   From the moment when a Gid is assigned to a group until the moment a
-   new Gid is assigned to that same group, the Group Manager MUST NOT
-   reassign a Sender ID within the group.  This prevents from reusing a
-   Sender ID ('kid') with the same triple (Gid, Master Secret, Master
-   Salt).  Within this restriction, the Group Manager can assign a
-   Sender ID used under an old Gid value (including under a same,
-   recycled Gid value), thus avoiding Sender ID values to irrecoverably
-   grow in size.
-
-   Even when an endpoint joining a group is recognized as a current
-   member of that group, e.g., through the ongoing secure communication
-   association, the Group Manager MUST assign a new Sender ID different
-   than the one currently used by the endpoint in the group, unless the
-   group is rekeyed first and a new Gid value is established.
-
-3.2.1.3.  Relation between Identifiers and Keying Material
-
-   Figure 2 overviews the different identifiers and keying material
-   components, considering their relation and possible reuse across
-   group rekeying.
-
- Components changed in lockstep
-     upon a group rekeying
- +----------------------------+            * Changing a kid does not
- |                            |              need changing the Group ID
- | Master               Group |<--> kid1
- | Secret <---> o <--->  ID   |            * A kid is not reassigned
- |              ^             |<--> kid2     under the ongoing usage of
- |              |             |              the current Group ID
- |              |             |<--> kid3
- |              v             |            * Upon changing the Group ID,
- |         Master Salt        | ... ...      every current kid should
- |         (optional)         |              be preserved for efficient
- |                            |              key rollover
- | The Key Generation Number  |
- | is incremented by 1        |            * After changing Group ID, an
- |                            |              unused kid can be assigned,
- +----------------------------+              even if it was used before
-                                             the Group ID change
-
-         Figure 2: Relations among keying material components.
-
-3.3.  Support for Signature Checkers
-
-   The Group Manager may serve signature checkers, e.g., intermediary
-   gateways, which verify countersignatures of messages protected in
-   group mode (see Section 8.5).  These entities do not join a group as
-   members, but can retrieve authentication credentials of group members
-   and other selected group data from the Group Manager.
-
-   In order to verify countersignatures of messages in a group, a
-   signature checker needs to retrieve the following information about
-   the group:
-
-   *  The current ID Context (Gid) used in the group.
-
-   *  The authentication credentials of the group members and of the
-      Group Manager.
-
-      If the signature checker is provided with a CWT for a given
-      entity, then the authentication credential associated with that
-      entity is the untagged CWT.
-
-      If the signature checker is provided with a chain or a bag of
-      X.509 / C509 certificates or of CWTs for a given entity, then the
-      authentication credential associated with that entity is the end-
-      entity certificate or end-entity untagged CWT.
-
-   *  The current Signature Encryption Key (see Section 2.1.9).
-
-   *  The identifiers of the algorithms used in the group (see
-      Section 2), i.e.: i) Group Encryption Algorithm and Signature
-      Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement
-      Algorithm, if such parameters are set in the Common Context (see
-      Section 2.1.1 and Section 2.1.10).
-
-   A signature checker MUST be authorized before it can retrieve such
-   information, for example with the use of
-   [I-D.ietf-ace-key-groupcomm-oscore].
-
-3.4.  Responsibilities of the Group Manager
-
-   The Group Manager is responsible for performing the following tasks:
-
-   1.   Creating and managing OSCORE groups.  This includes the
-        assignment of a Gid to every newly created group, ensuring
-        uniqueness of Gids within the set of its OSCORE groups and,
-        optionally, the secure recycling of Gids.
-
-   2.   Defining policies for authorizing the joining of its OSCORE
-        groups.
-
-   3.   Handling the join process to add new endpoints as group members.
-
-   4.   Establishing the Common Context part of the Security Context,
-        and providing it to authorized group members during the join
-        process, together with the corresponding Sender Context.
-
-   5.   Updating the Key Generation Number and the Gid of its OSCORE
-        groups, upon renewing the respective Security Context.
-
-   6.   Generating and managing Sender IDs within its OSCORE groups, as
-        well as assigning and providing them to new endpoints during the
-        join process, or to current group members upon request of
-        renewal or re-joining.  This includes ensuring that:
-
-        *  Each Sender ID is unique within each of the OSCORE groups;
-
-        *  Each Sender ID is not reassigned within the same group since
-           the latest time when the current Gid value was assigned to
-           the group.  That is, the Sender ID is not reassigned even to
-           a current group member re-joining the same group, without a
-           rekeying happening first.
-
-   7.   Defining communication policies for each of its OSCORE groups,
-        and signaling them to new endpoints during the join process.
-
-   8.   Renewing the Security Context of an OSCORE group upon membership
-        change, by revoking and renewing common security parameters and
-        keying material (rekeying).
-
-   9.   Providing the management keying material that a new endpoint
-        requires to participate in the rekeying process, consistently
-        with the key management scheme used in the group joined by the
-        new endpoint.
-
-   10.  Assisting a group member that has missed a group rekeying
-        instance to understand which authentication credentials and
-        Recipient Contexts to delete, as associated with former group
-        members.
-
-   11.  Acting as key repository, in order to handle the authentication
-        credentials of the members of its OSCORE groups, and providing
-        such authentication credentials to other members of the same
-        group upon request.  The actual storage of authentication
-        credentials may be entrusted to a separate secure storage device
-        or service.
-
-   12.  Validating that the format and parameters of authentication
-        credentials of group members are consistent with the public key
-        algorithm and related parameters used in the respective OSCORE
-        group.
-
-   The Group Manager specified in [I-D.ietf-ace-key-groupcomm-oscore]
-   provides this functionality.
-
-4.  The COSE Object
+3.  The COSE Object
 
    Building on Section 5 of [RFC8613], this section defines how to use
    COSE [RFC9052] to wrap and protect data in the original message.
@@ -1701,7 +1255,7 @@ Table of Contents
    to what is defined for OSCORE apply, for both the group mode and the
    pairwise mode of Group OSCORE.
 
-4.1.  Countersignature
+3.1.  Countersignature
 
    When protecting a message in group mode, the 'unprotected' field MUST
    additionally include the following parameter:
@@ -1715,10 +1269,10 @@ Table of Contents
 
       In particular, the Countersign_structure contains the context text
       string "CounterSignature0", the external_aad as defined in
-      Section 4.4 of this document, and the ciphertext of the COSE
+      Section 3.4 of this document, and the ciphertext of the COSE
       object as payload.
 
-4.1.1.  Clarifications on Using a Countersignature
+3.1.1.  Clarifications on Using a Countersignature
 
    The literature commonly refers to a countersignature as a signature
    computed by an entity A over a document already protected by a
@@ -1737,7 +1291,7 @@ Table of Contents
    entities A and B are actually the same one, like the sender of a
    Group OSCORE message protected in group mode.
 
-4.2.  The 'kid' and 'kid context' parameters
+3.2.  The 'kid' and 'kid context' parameters
 
    The value of the 'kid' parameter in the 'unprotected' field of
    response messages MUST be set to the Sender ID of the endpoint
@@ -1750,7 +1304,7 @@ Table of Contents
    Identifier value (Gid) of the group.  That is, unlike in [RFC8613],
    the 'kid context' parameter is always present in requests.
 
-4.3.  Nonce Computation
+3.3.  Nonce Computation
 
    The nonce is constructed like in OSCORE, with the difference that
    step 4 in Section 5.2 of [RFC8613] is replaced with:
@@ -1766,7 +1320,7 @@ Table of Contents
    (see Section 2.1.1) and by the Group Encryption Algorithm when this
    is an AEAD algorithm (see Section 2.1.7).
 
-4.4.  external_aad
+3.4.  external_aad
 
    The external_aad of the Additional Authenticated Data (AAD) is
    different compared to OSCORE [RFC8613], and is defined in this
@@ -1804,7 +1358,7 @@ Table of Contents
         gm_cred : bstr
      ]
 
-                           Figure 3: external_aad
+                           Figure 2: external_aad
 
    Compared with Section 5.4 of [RFC8613], the aad_array has the
    following differences.
@@ -1850,11 +1404,11 @@ Table of Contents
          "COSE Algorithms" Registry for this algorithm.
 
    *  The new element 'request_kid_context' contains the value of the
-      'kid context' in the COSE object of the request (see Section 4.2).
+      'kid context' in the COSE object of the request (see Section 3.2).
 
       This enables endpoints to safely keep a long exchange active
       beyond a possible change of Gid (i.e., of ID Context), following a
-      group rekeying (see Section 3.2).  In fact, it ensures that every
+      group rekeying (see Section 12.2).  In fact, it ensures that every
       response within a long exchange cryptographically matches with
       only one request (i.e., the request associated with that long
       exchange), rather than with multiple requests that were protected
@@ -1863,8 +1417,8 @@ Table of Contents
 
    *  The new element 'OSCORE_option', containing the value of the
       OSCORE Option present in the protected message, encoded as a
-      binary string.  This prevents the attack described in Section 13.7
-      when using the group mode, as further explained in Section 13.7.2.
+      binary string.  This prevents the attack described in Section 14.7
+      when using the group mode, as further explained in Section 14.7.2.
 
       Note for implementation: this construction requires the OSCORE
       Option of the message to be generated and finalized before
@@ -1885,13 +1439,13 @@ Table of Contents
       byte string, which encodes the Group Manager's authentication
       credential in its original binary representation made available to
       other endpoints in the group (see Section 2.4).  This prevents the
-      attack described in Section 13.8.
+      attack described in Section 14.8.
 
-5.  OSCORE Header Compression
+4.  OSCORE Header Compression
 
    The OSCORE header compression defined in Section 6 of [RFC8613] is
    used for compactly encoding the COSE_Encrypt0 object specified in
-   Section 4 of this document, with the following differences.
+   Section 3 of this document, with the following differences.
 
    *  When the Group OSCORE message is protected in group mode, the
       message payload SHALL encode the ciphertext of the COSE object,
@@ -1901,14 +1455,14 @@ Table of Contents
       -  The plain, original countersignature of the COSE object, namely
          SIGNATURE, is specified in the "Countersignature0 version 2"
          parameter within the 'unprotected' field of the COSE object
-         (see Section 4.1).
+         (see Section 3.1).
 
       -  The encrypted countersignature, namely ENC_SIGNATURE, is
          computed as
 
          ENC_SIGNATURE = SIGNATURE XOR KEYSTREAM
 
-         where KEYSTREAM is derived as per Section 5.1.
+         where KEYSTREAM is derived as per Section 4.1.
 
    *  When the Group OSCORE message is protected in pairwise mode, the
       message payload SHALL encode the ciphertext of the COSE object.
@@ -1916,17 +1470,17 @@ Table of Contents
    *  This document defines the usage of the sixth least significant
       bit, called "Group Flag", in the first byte of the OSCORE Option
       containing the OSCORE flag bits.  This flag bit is specified in
-      Section 14.1.
+      Section 15.1.
 
    *  The Group Flag MUST be set to 1 if the Group OSCORE message is
-      protected using the group mode (see Section 8).
+      protected using the group mode (see Section 7).
 
    *  The Group Flag MUST be set to 0 if the Group OSCORE message is
-      protected using the pairwise mode (see Section 9).  The Group Flag
+      protected using the pairwise mode (see Section 8).  The Group Flag
       MUST also be set to 0 for ordinary OSCORE messages processed
       according to [RFC8613].
 
-5.1.  Keystream Derivation for Countersignature Encryption
+4.1.  Keystream Derivation for Countersignature Encryption
 
    The following defines how an endpoint derives the keystream
    KEYSTREAM, used to encrypt/decrypt the countersignature of an
@@ -1969,7 +1523,7 @@ Table of Contents
       Note that, in case of group rekeying, a server might use a
       different Gid when protecting a response, compared to the Gid that
       it used to verify (that the client used to protect) the request,
-      see Section 8.3.
+      see Section 7.3.
 
    *  type is the CBOR simple value true (0xf5) if M is a request, or
       the CBOR simple value false (0xf4) otherwise.
@@ -1977,18 +1531,18 @@ Table of Contents
    *  L is the size of the countersignature, as per Signature Algorithm
       from the Common Context (see Section 2.1.8), in bytes.
 
-5.2.  Examples of Compressed COSE Objects
+4.2.  Examples of Compressed COSE Objects
 
    This section covers a list of OSCORE Header Compression examples of
-   Group OSCORE used in group mode (see Section 5.2.1) or in pairwise
-   mode (see Section 5.2.2).
+   Group OSCORE used in group mode (see Section 4.2.1) or in pairwise
+   mode (see Section 4.2.2).
 
    The examples assume that the COSE_Encrypt0 object is set (which means
    the CoAP message and cryptographic material is known).  Note that the
    examples do not include the full CoAP unprotected message or the full
    Security Context, but only the input necessary to the compression
    mechanism, i.e., the COSE_Encrypt0 object.  The output is the
-   compressed COSE object as defined in Section 5 and divided into two
+   compressed COSE object as defined in Section 4 and divided into two
    parts, since the object is transported in two CoAP fields: OSCORE
    Option and payload.
 
@@ -1996,9 +1550,9 @@ Table of Contents
    is 6 bytes long, and that the AEAD tag is 8 bytes long, hence
    resulting in a ciphertext which is 14 bytes long.  When using the
    group mode, the COSE_Countersignature0 byte string as described in
-   Section 4 is assumed to be 64 bytes long.
+   Section 3 is assumed to be 64 bytes long.
 
-5.2.1.  Examples in Group Mode
+4.2.1.  Examples in Group Mode
 
    Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25,
    Partial IV = 5 and kid context = 0x44616c.
@@ -2055,7 +1609,7 @@ Table of Contents
       Payload: 0x60b035059d9ef5667c5a0710823b ca1e ... b3
       (14 bytes + size of the encrypted countersignature)
 
-5.2.2.  Examples in Pairwise Mode
+4.2.2.  Examples in Pairwise Mode
 
    Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25,
    Partial IV = 5 and kid context = 0x44616c.
@@ -2100,19 +1654,19 @@ Table of Contents
 
       Payload: 0x60b035059d9ef5667c5a0710823b (14 bytes)
 
-6.  Message Binding, Sequence Numbers, Freshness, and Replay Protection
+5.  Message Binding, Sequence Numbers, Freshness, and Replay Protection
 
    Like OSCORE, Group OSCORE provides message binding of responses to
    requests, as well as uniqueness of (key, nonce) pairs (see Sections
    7.1 and 7.2 of [RFC8613], respectively).
 
-6.1.  Supporting Multiple Responses in Long Exchanges
+5.1.  Supporting Multiple Responses in Long Exchanges
 
    For each of its ongoing long exchange, a client maintains one
    Response Number for each different server.  Then, separately for each
    server, the client uses the associated Response Number to perform
    ordering and replay protection of responses received from that server
-   within that long exchange (see Section 6.3.1).
+   within that long exchange (see Section 5.3.1).
 
    That is, the Response Number has the same purpose that the
    Notification Number has in OSCORE (see Section 4.1.3.5.2 of
@@ -2123,7 +1677,7 @@ Table of Contents
    even in case the group is rekeyed, with consequent change of ID
    Context, or in case the client obtains a new Sender ID.
 
-   As defined in Section 8, this is achieved by the client and server(s)
+   As defined in Section 7, this is achieved by the client and server(s)
    storing the 'kid' and 'kid context' used in the original request,
    throughout the whole duration of the long exchange.
 
@@ -2132,11 +1686,11 @@ Table of Contents
    the group as a client, and hence frees up the CoAP Token associated
    with the corresponding request.
 
-6.2.  Freshness
+5.2.  Freshness
 
    If the application requires freshness, e.g., according to time- or
    event-based policies (see Section 2.5.1 of [RFC9175]), a server can
-   use the approach in Section 10 as a variant of the Challenge-Response
+   use the approach in Section 9 as a variant of the Challenge-Response
    procedure based on the Echo Option [RFC9175], before delivering
    request messages from a client to the application.
 
@@ -2166,7 +1720,7 @@ Table of Contents
       recipient to determine the relative order of requests or
       responses.
 
-6.3.  Replay Protection
+5.3.  Replay Protection
 
    Like in OSCORE [RFC8613], the replay protection relies on the Partial
    IV of incoming messages.  A server updates the Replay Window of its
@@ -2182,9 +1736,9 @@ Table of Contents
    Section 7.4 of [RFC8613], separately for each client and by
    leveraging the Replay Window in the corresponding Recipient Context.
    The protection from replay of responses in a long exchange is
-   performed as defined in Section 6.3.1.
+   performed as defined in Section 5.3.1.
 
-6.3.1.  Replay Protection of Responses
+5.3.1.  Replay Protection of Responses
 
    A client uses the method defined in this section in order to check
    whether a received response is a replay.
@@ -2256,7 +1810,7 @@ Table of Contents
    fact, for each of such requests, there is at most one response and
    only from one, individually targeted server in the group.
 
-7.  Message Reception
+6.  Message Reception
 
    Upon receiving a protected message, a recipient endpoint retrieves a
    Security Context as in [RFC8613].  An endpoint MUST be able to
@@ -2296,8 +1850,8 @@ Table of Contents
 
    Otherwise, if a Security Context associated with an OSCORE group is
    retrieved, the recipient endpoint processes the message with Group
-   OSCORE, using the group mode (see Section 8) if the Group Flag is set
-   to 1, or the pairwise mode (see Section 9) if the Group Flag is set
+   OSCORE, using the group mode (see Section 7) if the Group Flag is set
+   to 1, or the pairwise mode (see Section 8) if the Group Flag is set
    to 0.
 
    Note that, if the Group Flag is set to 0, and the recipient endpoint
@@ -2305,7 +1859,7 @@ Table of Contents
    but is not associated with an OSCORE group, then the message is
    processed according to [RFC8613].
 
-8.  Message Processing in Group Mode
+7.  Message Processing in Group Mode
 
    When using the group mode, messages are protected and processed as
    specified in [RFC8613], with the modifications described in this
@@ -2351,9 +1905,9 @@ Table of Contents
    and processing of invalid messages according to the same principles
    adopted in [RFC8613].  In addition, a recipient MUST stop processing
    and reject any message that is malformed and that does not follow the
-   format specified in Section 4 of this document, or that is not
+   format specified in Section 3 of this document, or that is not
    cryptographically validated in a successful way as per the processing
-   defined in Section 8.2 and Section 8.4 of this document.
+   defined in Section 7.2 and Section 7.4 of this document.
 
    In either case, it is RECOMMENDED that a server does not send back
    any error message in reply to a received request, if any of the two
@@ -2368,24 +1922,24 @@ Table of Contents
    client sending a group request, so avoiding the risk of flooding and
    possibly congesting the network.
 
-8.1.  Protecting the Request
+7.1.  Protecting the Request
 
    When using the group mode to protect a request, a client SHALL
    proceed as described in Section 8.1 of [RFC8613], with the following
    modifications.
 
    *  In step 2, the Additional Authenticated Data is modified as
-      described in Section 4 of this document.
+      described in Section 3 of this document.
 
    *  In step 4, the encryption of the COSE object is modified as
-      described in Section 4 of this document.  The encoding of the
-      compressed COSE object is modified as described in Section 5 of
+      described in Section 3 of this document.  The encoding of the
+      compressed COSE object is modified as described in Section 4 of
       this document.  In particular, the Group Flag MUST be set to 1.
       The Group Encryption Algorithm from the Common Context MUST be
       used.
 
    *  In step 5, the countersignature is computed and the format of the
-      OSCORE message is modified as described in Section 4 and Section 5
+      OSCORE message is modified as described in Section 3 and Section 4
       of this document.  In particular, the payload of the Group OSCORE
       message includes also the encrypted countersignature.
 
@@ -2403,7 +1957,7 @@ Table of Contents
 
    *  If the client intends to keep the long exchange active beyond a
       possible change of ID Context following a group rekeying (see
-      Section 3.2), then the following applies.
+      Section 12.2), then the following applies.
 
       -  The client MUST store the value of the 'kid context' parameter
          from the request, and retain it until the long exchange is
@@ -2424,17 +1978,17 @@ Table of Contents
          simpler for the client to retrieve the current group keying
          material from the Group Manager, in case the client has missed
          both the rekeying messages and the first response protected
-         with the new Security Context (see Section 8.3).
+         with the new Security Context (see Section 7.3).
 
-8.2.  Verifying the Request
+7.2.  Verifying the Request
 
    Upon receiving a protected request with the Group Flag set to 1,
-   following the procedure in Section 7, a server SHALL proceed as
+   following the procedure in Section 6, a server SHALL proceed as
    described in Section 8.2 of [RFC8613], with the following
    modifications.
 
    *  In step 2, the decoding of the compressed COSE object follows
-      Section 5 of this document.  In particular:
+      Section 4 of this document.  In particular:
 
       -  If the server discards the request due to not retrieving a
          Security Context associated with the OSCORE group, the server
@@ -2455,7 +2009,7 @@ Table of Contents
          SHALL stop processing the request.
 
    *  In step 4, the Additional Authenticated Data is modified as
-      described in Section 4 of this document.
+      described in Section 3 of this document.
 
    *  In step 6, the server also verifies the countersignature, by using
       the public key from the client's authentication credential stored
@@ -2483,7 +2037,7 @@ Table of Contents
 
          SIGNATURE = ENC_SIGNATURE XOR KEYSTREAM
 
-         where KEYSTREAM is derived as per Section 5.1.
+         where KEYSTREAM is derived as per Section 4.1.
 
       -  The server verifies the original countersignature SIGNATURE as
          described in Sections 3.2 and 3.3 of [RFC9338], by using the
@@ -2492,7 +2046,7 @@ Table of Contents
 
          In particular, the Countersign_structure contains the context
          text string "CounterSignature0", the external_aad as defined in
-         Section 4.4 of this document, and the ciphertext of the COSE
+         Section 3.4 of this document, and the ciphertext of the COSE
          object as payload.
 
       -  If the signature verification fails, the server SHALL stop
@@ -2531,12 +2085,12 @@ Table of Contents
    *  The server MUST store the value of the 'kid context' parameter
       from the request, and retain it until the last response has been
       sent, i.e., beyond a possible change of ID Context following a
-      group rekeying (see Section 3.2).  That is, upon establishing a
+      group rekeying (see Section 12.2).  That is, upon establishing a
       new Security Context with a new Gid as ID Context (see
       Section 2.6.3.2), the server MUST NOT update the stored value of a
       'kid context' parameter associated with the request.
 
-8.3.  Protecting the Response
+7.3.  Protecting the Response
 
    When using the group mode to protect a response, a server SHALL
    proceed as described in Section 8.3 of [RFC8613], with the following
@@ -2545,24 +2099,24 @@ Table of Contents
    Note that the server always protects a response with the Sender
    Context from its latest Security Context, and that establishing a new
    Security Context resets the Sender Sequence Number to 0 (see
-   Section 3.2).
+   Section 2.6.3.1 and Section 2.6.3.2).
 
    *  In step 2, the Additional Authenticated Data is modified as
-      described in Section 4 of this document.
+      described in Section 3 of this document.
 
       In addition, the following applies if the server intends to reply
       with multiple responses, within the long exchange established by
       the corresponding request.
 
       -  The server MUST use the stored value of the 'kid' parameter
-         from the request (see Section 8.2), as value for the
+         from the request (see Section 7.2), as value for the
          'request_kid' parameter in the external_aad structure (see
-         Section 4.4).
+         Section 3.4).
 
       -  The server MUST use the stored value of the 'kid context'
-         parameter from the request (see Section 8.2), as value for the
+         parameter from the request (see Section 7.2), as value for the
          'request_kid_context' parameter in the external_aad structure
-         (see Section 4.4).
+         (see Section 3.4).
 
    *  In step 3, if any of the following two conditions holds, the
       server MUST include its Sender Sequence Number as Partial IV in
@@ -2575,11 +2129,11 @@ Table of Contents
 
       -  The server is using a different Security Context for the
          response compared to what was used to verify the request (see
-         Section 3.2).
+         Section 12.2).
 
    *  In step 4, the encryption of the COSE object is modified as
-      described in Section 4 of this document.  The encoding of the
-      compressed COSE object is modified as described in Section 5 of
+      described in Section 3 of this document.  The encoding of the
+      compressed COSE object is modified as described in Section 4 of
       this document.  In particular, the Group Flag MUST be set to 1.
       The Group Encryption Algorithm from the Common Context MUST be
       used.
@@ -2588,7 +2142,7 @@ Table of Contents
 
       -  If the server is using a different ID Context (Gid) for the
          response compared to what was used to verify the request (see
-         Section 3.2) and this is the first response from the server to
+         Section 12.2) and this is the first response from the server to
          that request, then the new ID Context MUST be included in the
          'kid context' parameter of the response.
 
@@ -2614,7 +2168,7 @@ Table of Contents
          joining the group.  In such a case, the server can help the
          client to synchronize, by including the 'kid' parameter in a
          response protected in group mode, even when the request was
-         protected in pairwise mode (see Section 9.3).
+         protected in pairwise mode (see Section 8.3).
 
          That is, when responding to a request protected in pairwise
          mode, the server SHOULD include the 'kid' parameter in a
@@ -2623,15 +2177,15 @@ Table of Contents
          Sender ID.
 
    *  In step 5, the countersignature is computed and the format of the
-      OSCORE message is modified as described in Section 4 and Section 5
+      OSCORE message is modified as described in Section 3 and Section 4
       of this document.  In particular the payload of the Group OSCORE
       message includes also the encrypted countersignature (see
-      Section 5).
+      Section 4).
 
-8.4.  Verifying the Response
+7.4.  Verifying the Response
 
    Upon receiving a protected response with the Group Flag set to 1,
-   following the procedure in Section 7, a client SHALL proceed as
+   following the procedure in Section 6, a client SHALL proceed as
    described in Section 8.4 of [RFC8613], with the modifications
    described in this section.
 
@@ -2639,10 +2193,10 @@ Table of Contents
    Context different from the one used to protect the corresponding
    request, and that, upon the establishment of a new Security Context,
    the client re-initializes its Replay Windows in its Recipient
-   Contexts (see Section 3.2).
+   Contexts (see Section 12.2).
 
    *  In step 2, the decoding of the compressed COSE object is modified
-      as described in Section 5 of this document.  In particular, a
+      as described in Section 4 of this document.  In particular, a
       'kid' may not be present, if the response is a reply to a request
       protected in pairwise mode.  In such a case, the client assumes
       the response 'kid' to be the Recipient ID for the server to which
@@ -2659,27 +2213,27 @@ Table of Contents
       SHALL stop processing the response.
 
    *  In step 3, the Additional Authenticated Data is modified as
-      described in Section 4 of this document.
+      described in Section 3 of this document.
 
       In addition, the following applies if the client processes a
       response to a request within a long exchange.
 
       -  The client MUST use the stored value of the 'kid' parameter
-         from the request (see Section 8.1), as value for the
+         from the request (see Section 7.1), as value for the
          'request_kid' parameter in the external_aad structure (see
-         Section 4.4).
+         Section 3.4).
 
       -  The client MUST use the stored value of the 'kid context'
-         parameter from the request (see Section 8.1), as value for the
+         parameter from the request (see Section 7.1), as value for the
          'request_kid_context' parameter in the external_aad structure
-         (see Section 4.4).
+         (see Section 3.4).
 
       This ensures that, throughout a long exchange, the client can
       correctly verify the received responses, even in case the client
       is individually rekeyed and starts using a new Sender ID received
       from the Group Manager (see Section 2.6.3.1), as well as when it
       installs a new Security Context with a new ID Context (Gid)
-      following a group rekeying (see Section 3.2).
+      following a group rekeying (see Section 12.2).
 
    *  In step 5, the client also verifies the countersignature, by using
       the public key from the server's authentication credential stored
@@ -2698,7 +2252,7 @@ Table of Contents
 
          SIGNATURE = ENC_SIGNATURE XOR KEYSTREAM
 
-         where KEYSTREAM is derived as per Section 5.1.
+         where KEYSTREAM is derived as per Section 4.1.
 
          The client verifies the original countersignature SIGNATURE.
 
@@ -2708,7 +2262,7 @@ Table of Contents
 
       -  After a successful verification of the countersignature, the
          client performs also the following actions in case the request
-         was protected in pairwise mode (see Section 9.3).
+         was protected in pairwise mode (see Section 8.3).
 
          o  If the 'kid' parameter is present in the response, the
             client checks whether this received 'kid' is equal to the
@@ -2742,7 +2296,7 @@ Table of Contents
 
       -  The ordering and the replay protection of responses received
          from the server during the long exchange are performed as per
-         Section 6.3.1 of this document, by using the Response Number
+         Section 5.3.1 of this document, by using the Response Number
          associated with that server within that long exchange.  In case
          of unsuccessful decryption and verification of a response, the
          client SHALL NOT update the Response Number associated with the
@@ -2753,8 +2307,8 @@ Table of Contents
          server for that long exchange.  If the 'kid' field is included
          in the OSCORE Option of the response, its value specifies
          "kid1".  If the request was protected in pairwise mode (see
-         Section 9.3), the 'kid' field may not be present in the OSCORE
-         Option of the response (see Section 4.2).  In this case, the
+         Section 8.3), the 'kid' field may not be present in the OSCORE
+         Option of the response (see Section 3.2).  In this case, the
          client assumes "kid1" to be the Recipient ID for the server to
          which the request was intended for.
 
@@ -2781,7 +2335,7 @@ Table of Contents
       was protected in pairwise mode - then the client will compute a
       wrong keystream to decrypt the countersignature (i.e., by using
       "kid1" rather than "kid2" in the 'id' field of the 'info' array in
-      Section 5.1), thus subsequently failing to verify the
+      Section 4.1), thus subsequently failing to verify the
       countersignature and discarding the response.
 
       This ensures that the client remains able to correctly perform the
@@ -2796,10 +2350,21 @@ Table of Contents
       a configuration, which is specified by the application, mitigates
       attacks that aim at overloading the client's storage.
 
-8.5.  External Signature Checkers
+7.5.  External Signature Checkers
+
+   When a message is protected in group mode, it is possible for
+   designated external signature checkers, e.g., intermediary gateways,
+   to verify the countersignature of the message.
+
+   Since they do not join a group as members, external signature
+   checkers need to retrieve from the Group Manager the authentication
+   credentials of group members and other selected group data, such as
+   the current Signature Encryption Key (see Section 2.1.9).  The
+   support for signature checkers from the Group Manager is defined in
+   Section 12.3.
 
    When receiving a message protected in group mode, a signature checker
-   (see Section 3.3) proceeds as follows.
+   proceeds as follows.
 
    *  The signature checker retrieves the encrypted countersignature
       ENC_SIGNATURE from the message payload, and computes the original
@@ -2807,7 +2372,7 @@ Table of Contents
 
       SIGNATURE = ENC_SIGNATURE XOR KEYSTREAM
 
-      where KEYSTREAM is derived as per Section 5.1.
+      where KEYSTREAM is derived as per Section 4.1.
 
    *  The signature checker verifies the original countersignature
       SIGNATURE, by using the public key of the sender endpoint as
@@ -2826,7 +2391,7 @@ Table of Contents
 
    *  The response may not include a Sender ID.  This can happen when
       the response protected in group mode matches a request protected
-      in pairwise mode (see Section 9.1), with a case in point provided
+      in pairwise mode (see Section 8.1), with a case in point provided
       by [I-D.amsuess-core-cachable-oscore].  In such a case, the
       signature checker needs to use other means (e.g., source
       addressing information of the server endpoint) to identify the
@@ -2837,7 +2402,7 @@ Table of Contents
    verification of the countersignature are application specific and out
    of the scope of this document.
 
-9.  Message Processing in Pairwise Mode
+8.  Message Processing in Pairwise Mode
 
    When using the pairwise mode of Group OSCORE, messages are protected
    and processed as in [RFC8613], with the modifications described in
@@ -2864,8 +2429,8 @@ Table of Contents
    through ECDH.
 
    The pairwise mode does not support external verifiers of source
-   authentication and message integrity like the group mode does (see
-   Section 8.5).
+   authentication and message integrity like the group mode does, e.g.,
+   for external signature checkers (see Section 7.5).
 
    An endpoint implementing only a silent server does not support the
    pairwise mode.
@@ -2873,7 +2438,7 @@ Table of Contents
    Endpoints using the CoAP Echo Option [RFC9175] in a group where the
    AEAD Algorithm and Pairwise Key Agreement Algorithm are set MUST
    support the pairwise mode.  This prevents the attack described in
-   Section 13.9, which leverages requests sent over unicast to a single
+   Section 14.9, which leverages requests sent over unicast to a single
    group member and protected in group mode.
 
    The pairwise mode cannot be used to protect messages intended for
@@ -2883,11 +2448,11 @@ Table of Contents
    However, a sender can use the pairwise mode to protect a message sent
    to (but not intended for) multiple recipients, if interested in a
    response from only one of them.  For instance, this is useful to
-   support the address discovery service defined in Section 9.1, when a
+   support the address discovery service defined in Section 8.1, when a
    single 'kid' value is indicated in the payload of a request sent to
    multiple recipients, e.g., over multicast.
 
-9.1.  Pre-Conditions
+8.1.  Pre-Conditions
 
    In order to protect an outgoing message in pairwise mode, the sender
    needs to know the authentication credential and the Recipient ID for
@@ -2908,38 +2473,38 @@ Table of Contents
    the request is sent in pairwise mode.  Further details of such an
    interface are out of scope for this document.
 
-9.2.  Main Differences from OSCORE
+8.2.  Main Differences from OSCORE
 
    The pairwise mode protects messages between two members of a group,
    essentially following [RFC8613], but with the following notable
    differences.
 
    *  The 'kid' and 'kid context' parameters of the COSE object are used
-      as defined in Section 4.2 of this document.
+      as defined in Section 3.2 of this document.
 
-   *  The external_aad defined in Section 4.4 of this document is used
+   *  The external_aad defined in Section 3.4 of this document is used
       for the encryption and decryption process.
 
    *  The Pairwise Sender/Recipient Keys used as Sender/Recipient keys
       are derived as defined in Section 2.5 of this document.
 
-9.3.  Protecting the Request
+8.3.  Protecting the Request
 
    When using the pairwise mode to protect a request, a client SHALL
    proceed as described in Section 8.1 of [RFC8613], with the
-   differences summarized in Section 9.2 of this document.
+   differences summarized in Section 8.2 of this document.
 
    Furthermore, when sending a request that establishes a long exchange,
-   what is specified in Section 8.1 of this document holds, with respect
+   what is specified in Section 7.1 of this document holds, with respect
    to storing the value of the 'kid' and 'kid context' parameters, and
    to storing an invariant identifier of the group.
 
-9.4.  Verifying the Request
+8.4.  Verifying the Request
 
    Upon receiving a protected request with the Group Flag set to 0,
-   following the procedure in Section 7, a server SHALL proceed as
+   following the procedure in Section 6, a server SHALL proceed as
    described in Section 8.2 of [RFC8613], with the differences
-   summarized in Section 9.2 of this document.  The following
+   summarized in Section 8.2 of this document.  The following
    differences also apply.
 
    *  If the server discards the request due to not retrieving a
@@ -2956,7 +2521,7 @@ Table of Contents
       deleted if the Recipient Context is deleted as a result of the
       message not being successfully verified.
 
-   *  What is specified in Section 8.2 of this document holds with
+   *  What is specified in Section 7.2 of this document holds with
       respect to the following points.
 
       -  The possible, dynamic creation and configuration of a Recipient
@@ -2974,22 +2539,23 @@ Table of Contents
          with multiple responses within the long exchange established by
          the request.
 
-9.5.  Protecting the Response
+8.5.  Protecting the Response
 
    When using the pairwise mode to protect a response, a server SHALL
    proceed as described in Section 8.3 of [RFC8613], with the
-   differences summarized in Section 9.2 of this document.  The
+   differences summarized in Section 8.2 of this document.  The
    following differences also apply.
 
-   *  What is specified in Section 8.3 of this document holds with
+   *  What is specified in Section 7.3 of this document holds with
       respect to the following points.
 
       -  The protection of a response when using a different Security
-         Context than the one used to protect the corresponding request.
-         That is, the server always protects a response with the Sender
-         Context from its latest Security Context, and establishing a
-         new Security Context resets the Sender Sequence Number to 0
-         (see Section 3.2).
+         Context than the one used to verify the corresponding request
+         (see Section 12.2).  That is, the server always protects a
+         response with the Sender Context from its latest Security
+         Context, and establishing a new Security Context resets the
+         Sender Sequence Number to 0 (see Section 2.6.3.1 and
+         Section 2.6.3.2).
 
       -  The use of the stored value of the 'kid' and 'kid context'
          parameters, if the server intends to reply with multiple
@@ -3002,7 +2568,7 @@ Table of Contents
       -  The rules for the inclusion of the ID Context (Gid) in the 'kid
          context' parameter of a response, if the ID Context used for
          the response differs from the one used to verify the request
-         (see Section 3.2), also for helping the client to synchronize.
+         (see Section 12.2), also for helping the client to synchronize.
 
       -  The rules for the inclusion of the Sender ID in the 'kid'
          parameter of a response to a request that was protected in
@@ -3010,12 +2576,12 @@ Table of Contents
          the Group Manager when individually rekeyed (see
          Section 2.6.3.1), thus helping the client to synchronize.
 
-9.6.  Verifying the Response
+8.6.  Verifying the Response
 
    Upon receiving a protected response with the Group Flag set to 0,
-   following the procedure in Section 7, a client SHALL proceed as
+   following the procedure in Section 6, a client SHALL proceed as
    described in Section 8.4 of [RFC8613], with the differences
-   summarized in Section 9.2 of this document.  The following
+   summarized in Section 8.2 of this document.  The following
    differences also apply.
 
    *  The client may receive a response protected with a Security
@@ -3024,13 +2590,13 @@ Table of Contents
       the client re-initializes its Replay Windows in its Recipient
       Contexts (see Section 2.2).
 
-   *  The same as described in Section 8.4 holds with respect to
+   *  The same as described in Section 7.4 holds with respect to
       handling the 'kid' parameter of the response, when received as a
       reply to a request protected in pairwise mode.  The client can
       also in this case check whether the replying server is the
       expected one, by relying on the server's public key.  However,
       since the response is protected in pairwise mode, the public key
-      is not used for verifying a countersignature as in Section 8.4.
+      is not used for verifying a countersignature as in Section 7.4.
       Instead, the expected server's authentication credential - namely
       Recipient Auth Cred and including the server's public key - was
       taken as input to derive the Pairwise Recipient Key used to
@@ -3042,7 +2608,7 @@ Table of Contents
       deleted if the Recipient Context is deleted as a result of the
       message not being successfully verified.
 
-   *  What is specified in Section 8.4 of this document holds with
+   *  What is specified in Section 7.4 of this document holds with
       respect to the following points.
 
       -  The possible, dynamic creation and configuration of a Recipient
@@ -3059,7 +2625,7 @@ Table of Contents
          receiving the response, in case the response is not verified
          successfully.
 
-10.  Challenge-Response Based Freshness and Replay Window Recovery
+9.  Challenge-Response Based Freshness and Replay Window Recovery
 
    This section describes how a server endpoint can verify freshness of
    a request by means of a challenge-response exchange with a client,
@@ -3094,7 +2660,7 @@ Table of Contents
    the OSCORE Option of the request, respectively.  After a group
    rekeying has been completed and a new Security Context has been
    established in the group, which results also in a new Group
-   Identifier (see Section 3.2), the server MUST delete all the stored
+   Identifier (see Section 12.2), the server MUST delete all the stored
    Echo values associated with members of the group.
 
    Upon receiving a 4.01 (Unauthorized) response that includes an Echo
@@ -3104,14 +2670,14 @@ Table of Contents
 
    If in the group the AEAD Algorithm and Pairwise Key Agreement
    Algorithm are set in the Security Context, the client MUST use the
-   pairwise mode to protect the request, as per Section 9.3.  Note that,
-   as defined in Section 9, endpoints that are members of such a group
+   pairwise mode to protect the request, as per Section 8.3.  Note that,
+   as defined in Section 8, endpoints that are members of such a group
    and that use the Echo Option support the pairwise mode.  In a group
    where the AEAD Algorithm and Pairwise Key Agreement Algorithm are not
    set, only the group mode can be used.  Hence, requests including the
    Echo Option can be protected only with the Group Mode, with the
    caveat due to the risk for those requests to be redirected to a
-   different server than the intended one, as discussed in Section 13.9.
+   different server than the intended one, as discussed in Section 14.9.
 
    The client does not necessarily resend the same request, but can
    instead send a more recent one, if the application permits it.  This
@@ -3124,7 +2690,7 @@ Table of Contents
    that the unicast request echoing the Echo Option is correctly treated
    and processed, since the 'kid context' field including the Group
    Identifier of the OSCORE group is still present in the OSCORE Option
-   as part of the COSE object (see Section 4).
+   as part of the COSE object (see Section 3).
 
    Upon receiving the unicast request including the Echo Option, the
    server performs the following verifications.
@@ -3172,9 +2738,9 @@ Table of Contents
    be ready to perform the challenge-response based on the Echo Option
    if a server starts it.
 
-   Message freshness is further discussed in Section 13.14.
+   Message freshness is further discussed in Section 14.14.
 
-11.  Implementation Compliance
+10.  Implementation Compliance
 
    Like in [RFC8613], HKDF SHA-256 is the mandatory to implement HKDF.
 
@@ -3266,7 +2832,7 @@ Table of Contents
    used for signature operations and Diffie-Hellman secret calculation,
    respectively [I-D.ietf-lwig-curve-representations].
 
-12.  Web Linking
+11.  Web Linking
 
    The use of Group OSCORE or OSCORE [RFC8613] MAY be indicated by a
    target "gosc" attribute in a web link [RFC8288] to a resource, e.g.,
@@ -3290,7 +2856,7 @@ Table of Contents
    understands the "gosc" attribute, then the parser MUST ignore the
    "osc" attribute, which is overshadowed by the "gosc" attribute.
 
-   The example in Figure 4 shows a use of the "gosc" attribute: the
+   The example in Figure 3 shows a use of the "gosc" attribute: the
    client does resource discovery on a server and gets back a list of
    resources, one of which includes the "gosc" attribute indicating that
    the resource is protected with Group OSCORE or OSCORE.  The link-
@@ -3302,9 +2868,536 @@ Table of Contents
                          </sensors/temp>;gosc;osc,
                          </sensors/light>;if="sensor"
 
-       Figure 4: Example of using the "gosc" attribute in a web link.
+       Figure 3: Example of using the "gosc" attribute in a web link.
 
-13.  Security Considerations
+12.  The Group Manager
+
+   As with OSCORE, endpoints communicating with Group OSCORE need to
+   establish the relevant Security Context.  Group OSCORE endpoints need
+   to acquire OSCORE input parameters, information about the group(s)
+   and about other endpoints in the group(s).
+
+   This document is based on the existence of an entity called Group
+   Manager that is responsible for the group, but it does not mandate
+   how the Group Manager interacts with the group members.  The list of
+   responsibilities of the Group Manager is compiled in Appendix D.
+
+   The Group Manager assigns unique Group Identifiers (Gids) to the
+   groups under its control.  Within each of such groups, the Group
+   Manager assigns unique Sender IDs (and thus Recipient IDs) to the
+   respective group members.  The maximum length of Sender IDs depends
+   on the length of the nonce for the algorithms used in the group (see
+   Section 2.2).
+
+   According to a hierarchical approach, the Gid value assigned to a
+   group is associated with a dedicated space for the values of Sender
+   ID and Recipient ID of the members of that group.  When an endpoint
+   (re-)joins a group, it is provided with the current Gid to use in the
+   group.  The Group Manager also assigns an integer Key Generation
+   Number counter to each of its groups, identifying the current version
+   of the keying material used in that group.  Further details about
+   identifiers and keys are provided in Section 12.2.
+
+   The Group Manager maintains records of the authentication credentials
+   of endpoints in a group, and provides information about the group and
+   its members to other group members (see Section 12.1).  Optionally,
+   the Group Manager provides information about the group and its
+   members to external entities with a specific role, such as signature
+   checkers (see Section 12.3).
+
+12.1.  Set-up of New Endpoints
+
+   From the Group Manager, an endpoint acquires group data such as the
+   Gid and OSCORE input parameters including its own Sender ID, with
+   which it can derive the Sender Context.
+
+   When joining the group or later on as a group member, an endpoint can
+   also retrieve from the Group Manager the authentication credential of
+   the Group Manager as well as the authentication credential and other
+   information associated with other members of the group, with which it
+   can derive the corresponding Recipient Context.  An application can
+   configure a group member to asynchronously retrieve information about
+   Recipient Contexts, e.g., by Observing [RFC7641] a resource at the
+   Group Manager to get updates on the group membership.
+
+   Upon endpoints' joining, the Group Manager collects their
+   authentication credentials and MUST verify proof-of-possession of the
+   respective private key.  Together with the requested authentication
+   credentials of other group members, the Group Manager MUST provide
+   the joining endpoints with the Sender ID of the associated group
+   members and the current Key Generation Number in the group (see
+   Section 12.2).
+
+   An endpoint may join a group, for example, by explicitly interacting
+   with the responsible Group Manager, or by being configured with some
+   tool performing the tasks of the Group Manager.  When becoming
+   members of a group, endpoints are not required to know how many and
+   what endpoints are in the same group.
+
+   Communications that the Group Manager has with joining endpoints and
+   group members MUST be secured.  Specific details on how to secure
+   such communications are out of the scope of this document.
+
+   The Group Manager MUST verify that the joining endpoint is authorized
+   to join the group.  To this end, the Group Manager can directly
+   authorize the joining endpoint, or expect it to provide authorization
+   evidence previously obtained from a trusted entity.  Further details
+   about the authorization of joining endpoints are out of the scope of
+   this document.
+
+   In case of successful authorization check, the Group Manager provides
+   the joining endpoint with the keying material to initialize the
+   Security Context.  The actual provisioning of keying material and
+   parameters to the joining endpoint is out of the scope of this
+   document.
+
+   One realization of a Group Manager is specified in
+   [I-D.ietf-ace-key-groupcomm-oscore], where the join process is based
+   on the ACE framework for authentication and authorization in
+   constrained environments [RFC9200].
+
+12.2.  Management of Group Keying Material
+
+   In order to establish a new Security Context for a group, the Group
+   Manager MUST generate and assign to the group a new Group Identifier
+   (Gid) and a new value for the Master Secret parameter.  When doing
+   so, a new value for the Master Salt parameter MAY also be generated
+   and assigned to the group.  When establishing the new Security
+   Context, the Group Manager should preserve the current value of the
+   Sender ID of each group member.
+
+   The specific group key management scheme used to distribute new
+   keying material is out of the scope of this document.  A simple group
+   key management scheme is defined in
+   [I-D.ietf-ace-key-groupcomm-oscore].  When possible, the delivery of
+   rekeying messages should use a reliable transport, in order to reduce
+   chances of group members missing a rekeying instance.
+
+   The set of group members should not be assumed as fixed, i.e., the
+   group membership is subject to changes, possibly on a frequent basis.
+
+   The Group Manager MUST rekey the group without undue delay in case
+   one or more endpoints leave the group.  An endpoint may leave the
+   group at own initiative, or may be evicted from the group by the
+   Group Manager, e.g., in case the endpoint is compromised, or is
+   suspected to be compromised.  In either case, rekeying the group
+   excludes such endpoints from future communications in the group, and
+   thus preserves forward security.  If a network node is compromised or
+   suspected to be compromised, the Group Manager MUST evict from the
+   group all the endpoints hosted by that node that are member of the
+   group and rekey the group accordingly.
+
+   If required by the application, the Group Manager MUST rekey the
+   group also before one or more new joining endpoints are added to the
+   group, thus preserving backward security.
+
+   Separately for each group, the value of the Key Generation Number
+   increases by one each time the Group Manager distributes new keying
+   material to that group (see below).
+
+   The establishment of the new Security Context for the group takes the
+   following steps.
+
+   1.  The Group Manager MUST increment the Key Generation Number for
+       the group by 1.  It is up to the Group Manager what actions to
+       take when a wrap-around of the Key Generation Number is detected.
+
+   2.  The Group Manager MUST build a set of stale Sender IDs including:
+
+       *  The Sender IDs that, during the current Gid, were both
+          assigned to an endpoint and subsequently relinquished (see
+          Section 2.6.3.1).
+
+       *  The current Sender IDs of the group members that the upcoming
+          group rekeying aims to exclude from future group
+          communications, if any.
+
+   3.  The Group Manager rekeys the group, by distributing:
+
+       *  The new keying material, i.e., the new Master Secret, the new
+          Gid and (optionally) the new Master Salt.
+
+       *  The new Key Generation Number from step 1.
+
+       *  The set of stale Sender IDs from step 2.
+
+       Further information may be distributed, depending on the specific
+       group key management scheme used in the group.
+
+   When receiving the new group keying material, a group member
+   considers the received stale Sender IDs and performs the following
+   actions.
+
+   *  The group member MUST remove every authentication credential
+      associated with a stale Sender ID from its list of group members'
+      authentication credentials used in the group.
+
+   *  The group member MUST delete each of its Recipient Contexts used
+      in the group whose corresponding Recipient ID is a stale Sender
+      ID.
+
+   After that, the group member installs the new keying material and
+   derives the corresponding new Security Context.
+
+   A group member might miss one or more consecutive instances of group
+   rekeying.  As a result, the group member will retain old group keying
+   material with Key Generation Number GEN_OLD.  Eventually, the group
+   member can notice the discrepancy, e.g., by repeatedly failing to
+   verify incoming messages, or by explicitly querying the Group Manager
+   for the current Key Generation Number.  Once the group member gains
+   knowledge of having missed a group rekeying, it MUST delete the old
+   keying material it stores.
+
+   Then, the group member proceeds according to the following steps.
+
+   1.  The group member retrieves from the Group Manager the current
+       group keying material, together with the current Key Generation
+       Number GEN_NEW.  The group member MUST NOT install the obtained
+       group keying material yet.
+
+   2.  The group member asks the Group Manager for the set of stale
+       Sender IDs.
+
+   3.  If no exact indication can be obtained from the Group Manager,
+       the group member MUST remove all the authentication credentials
+       from its list of group members' authentication credentials used
+       in the group and MUST delete all its Recipient Contexts used in
+       the group.
+
+       Otherwise, the group member MUST remove every authentication
+       credential associated with a stale Sender ID from its list of
+       group members' authentication credentials used in the group, and
+       MUST delete each of its Recipient Contexts used in the group
+       whose corresponding Recipient ID is a stale Sender ID.
+
+   4.  The group member installs the current group keying material, and
+       derives the corresponding new Security Context.
+
+   Alternatively, the group member can re-join the group.  In such a
+   case, the group member MUST take one of the following two actions.
+
+   *  First, the group member performs steps 2 and 3 above.  Then, the
+      group member re-joins the group.
+
+   *  The group member re-joins the group with the same roles it
+      currently has in the group, and, during the re-joining process, it
+      asks the Group Manager for the authentication credentials of all
+      the current group members.
+
+      Then, given Z the set of authentication credentials received from
+      the Group Manager, the group member removes every authentication
+      credential which is not in Z from its list of group members'
+      authentication credentials used in the group, and deletes each of
+      its Recipient Contexts used in the group that does not include any
+      of the authentication credentials in Z.
+
+   By removing authentication credentials and deleting Recipient
+   Contexts associated with stale Sender IDs, it is ensured that a
+   recipient endpoint storing the latest group keying material does not
+   store the authentication credentials of sender endpoints that are not
+   current group members.  This in turn allows group members to rely on
+   stored authentication credentials to confidently assert the group
+   membership of sender endpoints, when receiving incoming messages
+   protected in group mode (see Section 7).
+
+   Such a strictness in managing the authentication credentials and
+   Recipient Contexts associated with other group members is required
+   for two reasons.  First, as further discussed in Section 14.1, it
+   ensures that the group mode can be used securely, even in a group
+   where the Group Encryption Algorithm does not provide integrity
+   protection (see Section 2.1.7) and external signature checkers are
+   used (see Section 7.5).  Second, it ensures that the wrong (old)
+   authentication credential associated with a group member A is never
+   used with a Sender ID that used to be associated with A and has been
+   later issued to a different group member B (see Section 12.2.1.2),
+   thus preventing the need to recover from an identity mix-up.
+
+12.2.1.  Recycling of Identifiers
+
+   This section specifies how the Group Manager handles and possibly
+   reassigns Gid values and Sender ID values in a group.
+
+12.2.1.1.  Recycling of Group Identifiers
+
+   Since the Gid value changes every time a group is rekeyed, it can
+   happen that, after several rekeying instances, the whole space of Gid
+   values has been used for the group in question.  When this happens,
+   the Group Manager has no available Gid values to use that have never
+   been assigned to the group during the group's lifetime.
+
+   The occurrence of such an event and how long it would take to occur
+   depend on the format and encoding of Gid values used in the group
+   (see, e.g., Appendix C), as well as on the frequency of rekeying
+   instances yielding a change of Gid value.  Independently for each
+   group under its control, the Group Manager can take one of the two
+   following approaches.
+
+   *  The Group Manager does not reassign Gid values.  That is, once the
+      whole space of Gid values has been used for a group, the Group
+      Manager terminates the group and may re-establish a new group.
+
+   *  While the Gid value changes every time a group is rekeyed, the
+      Group Manager can reassign Gid values previously used during a
+      group's lifetime.  By doing so, the group can continue to exist
+      even once the whole space of Gid values has been used.
+
+      The Group Manager MAY support and use this approach, according to
+      what is specified in Appendix E.
+
+12.2.1.2.  Recycling of Sender IDs
+
+   From the moment when a Gid is assigned to a group until the moment a
+   new Gid is assigned to that same group, the Group Manager MUST NOT
+   reassign a Sender ID within the group.  This prevents from reusing a
+   Sender ID ('kid') with the same triple (Gid, Master Secret, Master
+   Salt).  Within this restriction, the Group Manager can assign a
+   Sender ID used under an old Gid value (including under a same,
+   recycled Gid value), thus avoiding Sender ID values to irrecoverably
+   grow in size.
+
+   Even when an endpoint joining a group is recognized as a current
+   member of that group, e.g., through the ongoing secure communication
+   association, the Group Manager MUST assign a new Sender ID different
+   than the one currently used by the endpoint in the group, unless the
+   group is rekeyed first and a new Gid value is established.
+
+12.2.1.3.  Relation between Identifiers and Keying Material
+
+   Figure 4 overviews the different identifiers and keying material
+   components, considering their relation and possible reuse across
+   group rekeying.
+
+ Components changed in lockstep
+     upon a group rekeying
+ +----------------------------+            * Changing a kid does not
+ |                            |              need changing the Group ID
+ | Master               Group |<--> kid1
+ | Secret <---> o <--->  ID   |            * A kid is not reassigned
+ |              ^             |<--> kid2     under the ongoing usage of
+ |              |             |              the current Group ID
+ |              |             |<--> kid3
+ |              v             |            * Upon changing the Group ID,
+ |         Master Salt        | ... ...      every current kid should
+ |         (optional)         |              be preserved for efficient
+ |                            |              key rollover
+ | The Key Generation Number  |
+ | is incremented by 1        |            * After changing Group ID, an
+ |                            |              unused kid can be assigned,
+ +----------------------------+              even if it was used before
+                                             the Group ID change
+
+         Figure 4: Relations among keying material components.
+
+12.3.  Support for Signature Checkers
+
+   The Group Manager may serve signature checkers, e.g., intermediary
+   gateways, which verify countersignatures of messages protected in
+   group mode (see Section 7.5).  These entities do not join a group as
+   members, but can retrieve authentication credentials of group members
+   and other selected group data from the Group Manager.
+
+   In order to verify countersignatures of messages in a group, a
+   signature checker needs to retrieve the following information about
+   the group:
+
+   *  The current ID Context (Gid) used in the group.
+
+   *  The authentication credentials of the group members and of the
+      Group Manager.
+
+      If the signature checker is provided with a CWT for a given
+      entity, then the authentication credential associated with that
+      entity is the untagged CWT.
+
+      If the signature checker is provided with a chain or a bag of
+      X.509 / C509 certificates or of CWTs for a given entity, then the
+      authentication credential associated with that entity is the end-
+      entity certificate or end-entity untagged CWT.
+
+   *  The current Signature Encryption Key (see Section 2.1.9).
+
+   *  The identifiers of the algorithms used in the group (see
+      Section 2), i.e.: i) Group Encryption Algorithm and Signature
+      Algorithm; and ii) AEAD Algorithm and Pairwise Key Agreement
+      Algorithm, if such parameters are set in the Common Context (see
+      Section 2.1.1 and Section 2.1.10).
+
+   A signature checker MUST be authorized before it can retrieve such
+   information, for example with the use of
+   [I-D.ietf-ace-key-groupcomm-oscore].
+
+13.  Implementation Status
+
+   This section is to be removed before publishing as an RFC.
+
+   Note to RFC Editor: when deleting this section, please also delete
+   RFC 7942 from the references of this document.
+
+   This section records the status of known implementations of the
+   protocol defined by this specification at the time of posting of this
+   Internet-Draft, and is based on a proposal described in [RFC7942].
+   The description of implementations in this section is intended to
+   assist the IETF in its decision processes in progressing drafts to
+   RFCs.  Please note that the listing of any individual implementation
+   here does not imply endorsement by the IETF.  Furthermore, no effort
+   has been spent to verify the information presented here that was
+   supplied by IETF contributors.  This is not intended as, and must not
+   be construed to be, a catalog of available implementations or their
+   features.  Readers are advised to note that other implementations may
+   exist.
+
+   According to [RFC7942], "this will allow reviewers and working groups
+   to assign due consideration to documents that have the benefit of
+   running code, which may serve as evidence of valuable experimentation
+   and feedback that have made the implemented protocols more mature.
+   It is up to the individual working groups to use this information as
+   they see fit".
+
+13.1.  Implementation #1
+
+   *  Responsible organization: RISE Research Institutes of Sweden AB
+
+   *  Implementation's name: Group OSCORE for Eclipse Californium
+
+   *  Available at: https://github.com/rikard-sics/californium/tree/
+      group_oscore
+
+   *  Description: Implementation in Java, building on Eclipse
+      Californium, see:
+
+      -  https://github.com/eclipse-californium/californium
+
+      -  http://eclipse.dev/californium/
+
+   *  Implementation's level of maturity: prototype
+
+   *  The implementation supports:
+
+      -  The group mode and the pairwise mode.
+
+      -  Mapping of public keys for the curve Ed25519 into Montgomery
+         coordinates to use with X25519.
+
+      -  The following COSE encryption algorithms: AES-CCM-16-64-128,
+         AES-CCM-16-128-128, AES-CCM-16-64-256, AES-CCM-16-128-256,
+         AES_CCM-64-64-128, AES-CCM-64-128-128, AES-CCM-64-64-256, AES-
+         CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305,
+         A128CBC, A192CBC, A256CBC.
+
+      -  The following HKDF algorithms: HKDF SHA-256 (identified as the
+         COSE Algorithm "HMAC 256/256") and HKDF SHA-512 (identified as
+         the COSE Algorithm "HMAC 512/512").
+
+      -  The following COSE signature algorithms: ECDSA with curves
+         P-256, P-384, and P-521, as well as EdDSA with curve Ed25519.
+
+      -  The following COSE key agreement algorithms: ECDH-SS + HKDF-256
+         and ECDH-SS + HKDF-512, both of which using either keys of COSE
+         Key Type "EC2" with the curve P-256, P-384, and P-521, or keys
+         of COSE Key Type "OKP" key with X25519.
+
+      -  The following authentication credential format: CWT Claims Sets
+         (CCSs).
+
+   *  Version compatibility: From version -23 onwards.
+
+   *  Licensing: according to the same dual license of Eclipse
+      Californium, i.e., according to the "Eclipse Distribution License
+      1.0" and the "Eclipse Public License 2.0".  See:
+
+      -  https://github.com/eclipse-californium/californium/blob/main/
+         LICENSE
+
+      -  https://www.eclipse.org/org/documents/edl-v10.php
+
+      -  https://www.eclipse.org/legal/epl-2.0/
+
+   *  Contact information: Rikard Höglund - rikard.hoglund@ri.se
+
+   *  Information last updated on: 2024-11-21
+
+13.2.  Implementation #2
+
+   *  Implementation's name: TBD
+
+   *  Available at: TBD
+
+   *  Description: TBD
+
+   *  Implementation's level of maturity: TBD
+
+      (e.g., research, prototype, alpha, beta, production, widely used)
+
+   *  The implementation supports: TBD
+
+      (which parts of the protocol specification are implemented)
+
+   *  Version compatibility: From version -23 onwards.
+
+      (what version/versions of the Internet-Draft are known to be
+      implemented)
+
+   *  Licensing: TBD
+
+      (the terms under which the implementation can be used.  For
+      example: proprietary, royalty licensing, freely distributable with
+      acknowledgement (BSD style), freely distributable with requirement
+      to redistribute source (General Public License (GPL) style), and
+      other (specify))
+
+   *  Implementation experience: TBD
+
+      (any useful information the implementers want to share with the
+      community)
+
+   *  Contact information: Christian Amsüss - christian@amsuess.com
+
+      (ideally a person's name and email address, but possibly just a
+      URL or mailing list)
+
+   *  Information last updated on: 2024-11-XX
+
+13.3.  Interoperability
+
+   The two implementations mentioned in Section 13.1 and Section 13.2
+   have successfully completed interoperability tests.
+
+   That occurred multiple times when covering earlier versions of the
+   protocol, as well as specifically for version -23 of the Internet
+   Draft, during the IETF 121 meeting in Dublin (Ireland), in November
+   2024.
+
+   The scenarios considered during the interoperability tests are as
+   follows:
+
+   *  (A) Authentication credential format: CWT Claims Sets (CCSs).
+
+   *  (B) Message protection:
+
+      -  (B1) Both requests and responses protected in group mode.
+
+      -  (B2) Requests protected in group mode and responses protected
+         in pairwise mode.
+
+      -  (B3) Both requests and responses protected in pairwise mode.
+
+   *  (C) Signature algorithm: EdDSA with curve Ed25519.
+
+   *  (D) HKDF algorithms: HKDF SHA-256.
+
+   *  (E) Key agreement algorithms: ECDH-SS + HKDF-256, following a
+      mapping of public keys for the curve Ed25519 into Montgomery
+      coordinates to use with X25519.
+
+   *  (F) The following pairs of (Group Encryption Algorithm, AEAD
+      Algorithm):
+
+      -  (AES-CCM-16-64-128, AES-CCM-16-64-128), for the cases B1, B2,
+         and B3 above.
+
+      -  (ChaCha20/Poly1305, ChaCha20/Poly1305), for the case B2 above.
+
+14.  Security Considerations
 
    The same threat model discussed for OSCORE in Appendix D.1 of
    [RFC8613] holds for Group OSCORE.
@@ -3312,8 +3405,8 @@ Table of Contents
    For Group OSCORE, the Sender Context and Recipient Context
    additionally contain asymmetric keys, which are used to provide
    source authentication: in group mode, by means of countersignatures
-   (see Section 13.1); in pairwise mode, by using Diffie-Hellman (see
-   Section 13.2).  The key pair can, for example, be generated by the
+   (see Section 14.1); in pairwise mode, by using Diffie-Hellman (see
+   Section 14.2).  The key pair can, for example, be generated by the
    endpoint or provisioned during manufacturing.
 
    Note that, even if an endpoint is authorized to be a group member and
@@ -3333,18 +3426,18 @@ Table of Contents
 
    The same considerations on uniqueness of (key, nonce) pairs for
    OSCORE discussed in Appendix D.4 of [RFC8613] hold for Group OSCORE.
-   This is further discussed in Section 13.3 of this document.
+   This is further discussed in Section 14.3 of this document.
 
    The same considerations on unprotected message fields for OSCORE
    discussed in Appendix D.5 of [RFC8613] hold for Group OSCORE, with
    the following differences.  First, the 'kid context' of request
    messages is part of the Additional Authenticated Data, thus safely
    enabling to keep long exchanges active beyond a possible change of ID
-   Context (Gid), following a group rekeying (see Section 4.4).  Second,
+   Context (Gid), following a group rekeying (see Section 3.4).  Second,
    the countersignature included in a Group OSCORE message protected in
    group mode is computed also over the value of the OSCORE Option,
    which is also part of the Additional Authenticated Data used in the
-   signing process.  This is further discussed in Section 13.7 of this
+   signing process.  This is further discussed in Section 14.7 of this
    document.
 
    As discussed in Section 6.2.3 of [I-D.ietf-core-groupcomm-bis], Group
@@ -3356,9 +3449,9 @@ Table of Contents
    covered in the security considerations of OSCORE (see Section 12 of
    [RFC8613]), and discusses how they hold when Group OSCORE is used.
 
-13.1.  Security of the Group Mode
+14.1.  Security of the Group Mode
 
-   The group mode defined in Section 8 relies on commonly shared group
+   The group mode defined in Section 7 relies on commonly shared group
    keying material to protect communication within a group.  Using the
    group mode has the implications discussed below.  The following
    refers to group members as the endpoints in the group storing the
@@ -3368,7 +3461,7 @@ Table of Contents
       through a countersignature, which is computed by the sender using
       its own private key and then appended to the message payload.
       Also, the countersignature is encrypted by using a keystream
-      derived from the group keying material (see Section 5).  This
+      derived from the group keying material (see Section 4).  This
       ensures group privacy, i.e., an attacker cannot track an endpoint
       over two groups by linking messages between the two groups, unless
       being also a member of those groups.
@@ -3394,11 +3487,11 @@ Table of Contents
 
       On the other hand, proof of group membership is always ensured by
       construction through the strict management of the group keying
-      material (see Section 3.2).  That is, the group is rekeyed in case
-      of members' leaving, and the current group members are informed of
-      former group members.  Thus, a current group member storing the
-      latest group keying material does not store the authentication
-      credential of any former group member.
+      material (see Section 12.2).  That is, the group is rekeyed in
+      case of members' leaving, and the current group members are
+      informed of former group members.  Thus, a current group member
+      storing the latest group keying material does not store the
+      authentication credential of any former group member.
 
       This allows a recipient endpoint to rely on the stored
       authentication credentials and public keys included therein, in
@@ -3412,7 +3505,7 @@ Table of Contents
       A case in point is a group where the Group Encryption Algorithm
       does not provide integrity protection; a group member leaves the
       group; and, after the group rekeying, associates with the group as
-      external signature checker (see Section 8.5).  When doing so, it
+      external signature checker (see Section 7.5).  When doing so, it
       obtains from the Group Manager the new Signature Encryption Key,
       from which it can derive keystreams for encrypting and decrypting
       the countersignatures of messages protected in group mode.
@@ -3452,12 +3545,12 @@ Table of Contents
    results in a minimal communication overhead, by limiting the message
    payload to the ciphertext without integrity tag together with the
    encrypted countersignature.  Second, it is possible to deploy semi-
-   trusted entities such as signature checkers (see Section 3.3), which
+   trusted entities such as signature checkers (see Section 12.3), which
    can break property 5, but cannot break properties 1, 2, 3, and 4.
 
-13.2.  Security of the Pairwise Mode
+14.2.  Security of the Pairwise Mode
 
-   The pairwise mode defined in Section 9 protects messages by using
+   The pairwise mode defined in Section 8 protects messages by using
    pairwise symmetric keys, derived from the static-static Diffie-
    Hellman shared secret computed from the asymmetric keys of the sender
    and recipient endpoint (see Section 2.5).
@@ -3481,7 +3574,7 @@ Table of Contents
    trade-off between the maximum amount of time a same shared secret is
    stored and the frequency of its re-computing.
 
-13.3.  Uniqueness of (key, nonce)
+14.3.  Uniqueness of (key, nonce)
 
    The proof for uniqueness of (key, nonce) pairs in Appendix D.4 of
    [RFC8613] is also valid in group communication scenarios.  That is,
@@ -3491,7 +3584,7 @@ Table of Contents
       Manager.  In fact, from the moment when a Gid is assigned to a
       group until the moment when a new Gid is assigned to that same
       group, the Group Manager does not reassign a Sender ID within the
-      group (see Section 3.2).
+      group (see Section 12.2.1.2).
 
    *  The case A in Appendix D.4 of [RFC8613] concerns all requests as
       well as all responses including a Partial IV (e.g., Observe
@@ -3509,7 +3602,7 @@ Table of Contents
    unique.  Thus, each message is processed with a different (key,
    nonce) pair.
 
-13.4.  Management of Group Keying Material
+14.4.  Management of Group Keying Material
 
    The protocol described in this document should take into account the
    risk of compromise of group members.  In particular, this document
@@ -3525,7 +3618,7 @@ Table of Contents
    and leave at any time, in order to limit the impact on performance
    due to the Security Context and keying material update.
 
-13.5.  Update of Security Context and Key Rotation
+14.5.  Update of Security Context and Key Rotation
 
    A group member can receive a message shortly after the group has been
    rekeyed, and new security parameters and keying material have been
@@ -3540,7 +3633,7 @@ Table of Contents
    In particular, a server may first get a request protected with the
    old Security Context, then install the new Security Context, and only
    after that produce a response to send back to the client.  In such a
-   case, as specified in Section 8.3, the server MUST protect the
+   case, as specified in Section 7.3, the server MUST protect the
    potential response using the new Security Context.  Specifically, the
    server MUST include its Sender Sequence Number as Partial IV in the
    response and use it to build the nonce to protect the response.  This
@@ -3552,14 +3645,13 @@ Table of Contents
    material before the message processing.
 
    In case block-wise transfer [RFC7959] is used, the same
-   considerations from Section 10.3 of [I-D.ietf-ace-key-groupcomm]
-   hold.
+   considerations from Section 10.3 of [RFC9594] hold.
 
    Furthermore, as described below, a group rekeying may temporarily
    result in misaligned Security Contexts between the sender and
    recipient of a same message.
 
-13.5.1.  Late Update on the Sender
+14.5.1.  Late Update on the Sender
 
    In this case, the sender protects a message using the old Security
    Context, i.e., before having installed the new Security Context.
@@ -3592,7 +3684,7 @@ Table of Contents
    Security Context.  Therefore, a conservative application policy
    should not admit the retention of old Security Contexts.
 
-13.5.2.  Late Update on the Recipient
+14.5.2.  Late Update on the Recipient
 
    In this case, the sender protects a message using the new Security
    Context, but the recipient receives that message before having
@@ -3608,7 +3700,7 @@ Table of Contents
    policy, for instance after a given number of unsuccessfully decrypted
    incoming messages.
 
-13.6.  Collision of Group Identifiers
+14.6.  Collision of Group Identifiers
 
    In case endpoints are deployed in multiple groups managed by
    different non-synchronized Group Managers, it is possible for Group
@@ -3626,7 +3718,7 @@ Table of Contents
    address to share their respective list of assigned Group Identifiers
    currently in use.
 
-13.7.  Cross-group Message Injection
+14.7.  Cross-group Message Injection
 
    A same endpoint is allowed to and would likely use the same pair
    (private key, authentication credential) in multiple OSCORE groups,
@@ -3635,19 +3727,19 @@ Table of Contents
    When a sender endpoint sends a message protected in pairwise mode to
    a recipient endpoint in an OSCORE group, a malicious group member may
    attempt to inject the message to a different OSCORE group also
-   including the same endpoints (see Section 13.7.1).
+   including the same endpoints (see Section 14.7.1).
 
    This practically relies on altering the content of the OSCORE Option,
    and having the same MAC in the ciphertext still correctly validating,
    which has a success probability depending on the size of the MAC.
 
-   As discussed in Section 13.7.2, the attack is practically infeasible
+   As discussed in Section 14.7.2, the attack is practically infeasible
    if the message is protected in group mode, thanks to the
    countersignature also bound to the OSCORE Option through the
    Additional Authenticated Data used in the signing process (see
-   Section 4.4).
+   Section 3.4).
 
-13.7.1.  Attack Description
+14.7.1.  Attack Description
 
    Let us consider:
 
@@ -3690,12 +3782,12 @@ Table of Contents
    secret.  Therefore, Z is not able to check offline if a performed
    forgery is actually valid, before sending the forged message to G2.
 
-13.7.2.  Attack Prevention in Group Mode
+14.7.2.  Attack Prevention in Group Mode
 
    When a Group OSCORE message is protected in group mode, the
    countersignature is computed also over the value of the OSCORE
    Option, which is part of the Additional Authenticated Data used in
-   the signing process (see Section 4.4).
+   the signing process (see Section 3.4).
 
    That is, other than over the ciphertext, the countersignature is
    computed over: the ID Context (Gid) and the Partial IV, which are
@@ -3711,14 +3803,14 @@ Table of Contents
    quartet (Master Secret, Master Salt, ID Context, Sender ID).
 
    This makes it practically infeasible to perform the attack described
-   in Section 13.7.1, since it would require the adversary to
+   in Section 14.7.1, since it would require the adversary to
    additionally forge a valid countersignature that replaces the
    original one in the forged message M2.
 
    If, hypothetically, the countersignature did not cover the OSCORE
    Option:
 
-   *  The attack described in Section 13.7.1 would still be possible
+   *  The attack described in Section 14.7.1 would still be possible
       against response messages protected in group mode, since the same
       unchanged countersignature from message M1 would be also valid in
       message M2.
@@ -3741,13 +3833,13 @@ Table of Contents
       member of G1 would also be able to forge a valid signed response
       message M2 to be injected in the same group G1.
 
-13.8.  Prevention of Group Cloning Attack
+14.8.  Prevention of Group Cloning Attack
 
    Both when using the group mode and the pairwise mode, the message
    protection covers also the Group Manager's authentication credential.
    This is included in the Additional Authenticated Data used in the
    signing process and/or in the integrity-protected encryption process
-   (see Section 4.4).
+   (see Section 3.4).
 
    By doing so, an endpoint X member of a group G1 cannot perform the
    following attack.
@@ -3769,17 +3861,17 @@ Table of Contents
    the authentication credential of X as Group Manager of G2 when
    attempting to.
 
-13.9.  Group OSCORE for Unicast Requests
+14.9.  Group OSCORE for Unicast Requests
 
    If a request is intended to be sent over unicast as addressed to a
    single group member, it is NOT RECOMMENDED for the client to protect
-   the request by using the group mode as defined in Section 8.1.
+   the request by using the group mode as defined in Section 7.1.
 
    This does not include the case where the client sends a request over
    unicast to a proxy, to be forwarded to multiple intended recipients
    over multicast [I-D.ietf-core-groupcomm-bis].  In this case, the
    client typically protects the request with the group mode, even
-   though it is sent to the proxy over unicast (see Section 8).
+   though it is sent to the proxy over unicast (see Section 7).
 
    If the client uses the group mode with its own Sender Key to protect
    a unicast request to a group member, an on-path adversary can, right
@@ -3809,7 +3901,7 @@ Table of Contents
    possible cyber-physical environment, with the risk of destructive
    consequences and possible implications for safety.
 
-   A client can instead use the pairwise mode as defined in Section 9.3,
+   A client can instead use the pairwise mode as defined in Section 8.3,
    in order to protect a request sent to a single group member by using
    pairwise keying material (see Section 2.5).  This prevents the attack
    discussed above by construction, as only the intended server is able
@@ -3832,13 +3924,13 @@ Table of Contents
    the Section "Block-Wise Transfer" of [I-D.ietf-core-groupcomm-bis],
    in order to ensure that it is aligned with that.
 
-   Additional considerations are discussed in Section 10, with respect
-   to requests including a CoAP Echo Option [RFC9175] that have to be
-   sent over unicast, as a challenge-response method for servers to
-   achieve freshness or to initialize as valid a previously invalid
-   Replay Window.
+   Additional considerations are discussed in Section 9, with respect to
+   requests including a CoAP Echo Option [RFC9175] that have to be sent
+   over unicast, as a challenge-response method for servers to achieve
+   freshness or to initialize as valid a previously invalid Replay
+   Window.
 
-13.10.  End-to-end Protection
+14.10.  End-to-end Protection
 
    The same considerations from Section 12.1 of [RFC8613] hold for Group
    OSCORE.
@@ -3848,7 +3940,7 @@ Table of Contents
    possible to combine (D)TLS and Group OSCORE for protecting message
    exchanges where messages are sent over multicast.
 
-13.11.  Master Secret
+14.11.  Master Secret
 
    Group OSCORE derives the Security Context using the same construction
    used by OSCORE, and by using the Group Identifier of a group as the
@@ -3865,7 +3957,7 @@ Table of Contents
    generating and distributing a new Master Secret.  Randomness
    requirements for security are described in [RFC4086].
 
-13.12.  Replay Protection
+14.12.  Replay Protection
 
    As in OSCORE [RFC8613], also Group OSCORE relies on Sender Sequence
    Numbers included in the COSE message field 'Partial IV' and used to
@@ -3877,7 +3969,7 @@ Table of Contents
    gets exhausted.  As discussed in Section 2.6.3, this results either
    in the endpoint being individually rekeyed and getting a new Sender
    ID, or in the establishment of a new Security Context in the group.
-   Therefore, uniqueness of (key, nonce) pairs (see Section 13.3) is
+   Therefore, uniqueness of (key, nonce) pairs (see Section 14.3) is
    preserved also when a new Security Context is established.
 
    Since one-to-many communication such as multicast usually involves
@@ -3888,10 +3980,10 @@ Table of Contents
 
    A server's Replay Window may be initialized as invalid (see
    Section 2.6.1).  The server can either retrieve a new Group OSCORE
-   Security Context, or make a Replay Window valid (see Section 10)
+   Security Context, or make a Replay Window valid (see Section 9)
    before resuming to accept incoming messages from other group members.
 
-13.13.  Message Ordering
+14.13.  Message Ordering
 
    Assuming that the other endpoint is honest, Group OSCORE provides
    relative ordering of received messages.  For a given Group OSCORE
@@ -3905,13 +3997,13 @@ Table of Contents
    Section 7.4.1 of [RFC8613]).  A received response is not older than
    the corresponding request.
 
-13.14.  Message Freshness
+14.14.  Message Freshness
 
    As in OSCORE, Group OSCORE provides only the guarantee that the
    request is not older than the Group OSCORE Security Context used to
-   protect it.  Other aspects of freshness are discussed in Section 6.2.
+   protect it.  Other aspects of freshness are discussed in Section 5.2.
 
-   The challenge-response approach described in Section 10 provides an
+   The challenge-response approach described in Section 9 provides an
    assurance of freshness of the request without depending on the
    honesty of the client.  However, it can result in an impact on
    performance which is undesirable or unbearable, especially in large
@@ -3925,7 +4017,7 @@ Table of Contents
    their Replay Windows valid.
 
    Since requests including the Echo Option are sent over unicast, a
-   server can be victim of the attack discussed in Section 13.9, in case
+   server can be victim of the attack discussed in Section 14.9, in case
    such requests are protected in group mode.  Instead, protecting those
    requests with the pairwise mode prevents the attack above.  In fact,
    only the very server involved in the challenge-response exchange is
@@ -3941,11 +4033,11 @@ Table of Contents
    the Echo Option only if it is waiting for that exact integrity-
    protected Echo Option value, and is thus the intended recipient.
 
-13.15.  Client Aliveness
+14.15.  Client Aliveness
 
    Like in OSCORE (see Section 12.5 of [RFC8613]), a server may verify
    the aliveness of the client by using the CoAP Echo Option [RFC9175]
-   as described in Section 10.
+   as described in Section 9.
 
    In the interest of avoiding otherwise unnecessary uses of such an
    approach, the server can exploit the fact that the received request
@@ -3953,7 +4045,7 @@ Table of Contents
    effectively allows the server to verify the client aliveness relative
    to the installation of the latest group keying material.
 
-13.16.  Cryptographic Considerations
+14.16.  Cryptographic Considerations
 
    The same considerations from Section 12.6 of [RFC8613] about the
    maximum Sender Sequence Number hold for Group OSCORE.
@@ -3976,10 +4068,10 @@ Table of Contents
 
    The group mode uses the "encrypt-then-sign" construction, i.e., the
    countersignature is computed over the COSE_Encrypt0 object (see
-   Section 4.1).  This is motivated by enabling signature checkers (see
-   Section 3.3), which do not join a group as members but are allowed to
-   verify countersignatures of messages protected in group mode without
-   being able to decrypt them (see Section 8.5).
+   Section 3.1).  This is motivated by enabling signature checkers (see
+   Section 12.3), which do not join a group as members but are allowed
+   to verify countersignatures of messages protected in group mode
+   without being able to decrypt them (see Section 7.5).
 
    If the Group Encryption Algorithm used in group mode provides
    integrity protection, countersignatures of COSE_Encrypt0 with short
@@ -4039,12 +4131,12 @@ Table of Contents
    [Thormarker].  Hence, they MUST NOT be used with the public keys used
    to derive pairwise keys as specified in this document.
 
-13.17.  Message Segmentation
+14.17.  Message Segmentation
 
    The same considerations from Section 12.7 of [RFC8613] hold for Group
    OSCORE.
 
-13.18.  Privacy Considerations
+14.18.  Privacy Considerations
 
    Group OSCORE ensures end-to-end integrity protection and encryption
    of the message payload and of all the options that are not used for
@@ -4055,7 +4147,7 @@ Table of Contents
 
    *  When protecting a message in group mode, the countersignature is
       encrypted by using a keystream derived from the group keying
-      material (see Section 5 and Section 5.1).  This ensures group
+      material (see Section 4 and Section 4.1).  This ensures group
       privacy.  That is, an attacker cannot track an endpoint over two
       groups by linking messages between the two groups, unless being
       also a member of those groups.
@@ -4085,13 +4177,12 @@ Table of Contents
    context' parameter, it becomes possible to understand that the
    responder endpoints are in the same group of the requester endpoint.
 
-   Furthermore, using the approach described in Section 10 to make
-   Replay Windows valid may reveal when a server device goes through a
-   reboot.  This can be mitigated by the server device storing the
-   precise state of the Replay Window of each known client on a clean
-   shutdown.
+   Furthermore, using the approach described in Section 9 to make Replay
+   Windows valid may reveal when a server device goes through a reboot.
+   This can be mitigated by the server device storing the precise state
+   of the Replay Window of each known client on a clean shutdown.
 
-   Finally, the approach described in Section 13.6 to prevent collisions
+   Finally, the approach described in Section 14.6 to prevent collisions
    of Group Identifiers from different Group Managers may reveal
    information about events in the respective OSCORE groups.  In
    particular, a Group Identifier changes when the corresponding group
@@ -4103,14 +4194,14 @@ Table of Contents
    exact Group Manager has currently assigned which Group Identifiers in
    its OSCORE groups.
 
-14.  IANA Considerations
+15.  IANA Considerations
 
    Note to RFC Editor: Please replace "[RFC-XXXX]" with the RFC number
    of this document and delete this paragraph.
 
    This document has the following actions for IANA.
 
-14.1.  OSCORE Flag Bits Registry
+15.1.  OSCORE Flag Bits Registry
 
    IANA is asked to add the following entry to the "OSCORE Flag Bits"
    registry within the "Constrained RESTful Environments (CoRE)
@@ -4128,13 +4219,13 @@ Table of Contents
 
           Table 1: Registrations in the OSCORE Flag Bits Registry
 
-14.2.  CoAP Option Numbers Registry
+15.2.  CoAP Option Numbers Registry
 
    IANA is asked to add this document as a reference for the OSCORE
    Option in the "CoAP Option Numbers" registry within the "Constrained
    RESTful Environments (CoRE) Parameters" registry group.
 
-14.3.  Target Attributes Registry
+15.3.  Target Attributes Registry
 
    IANA is asked to add the following entry to the "Target Attributes"
    registry within the "Constrained RESTful Environments (CoRE)
@@ -4146,9 +4237,9 @@ Table of Contents
    Change Controller: IETF
    Reference: [RFC-XXXX]
 
-15.  References
+16.  References
 
-15.1.  Normative References
+16.1.  Normative References
 
    [COSE.Algorithms]
               IANA, "COSE Algorithms",
@@ -4159,8 +4250,9 @@ Table of Contents
               Dijk, E., Wang, C., and M. Tiloca, "Group Communication
               for the Constrained Application Protocol (CoAP)", Work in
               Progress, Internet-Draft, draft-ietf-core-groupcomm-bis-
-              11, 24 April 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-core-groupcomm-bis-11>.
+              12, 21 October 2024,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-core-
+              groupcomm-bis-12>.
 
    [NIST-800-56A]
               Barker, E., Chen, L., Roginsky, A., Vassilev, A., and R.
@@ -4198,6 +4290,11 @@ Table of Contents
    [RFC7748]  Langley, A., Hamburg, M., and S. Turner, "Elliptic Curves
               for Security", RFC 7748, DOI 10.17487/RFC7748, January
               2016, <https://www.rfc-editor.org/rfc/rfc7748>.
+
+   [RFC7942]  Sheffer, Y. and A. Farrel, "Improving Awareness of Running
+              Code: The Implementation Status Section", BCP 205,
+              RFC 7942, DOI 10.17487/RFC7942, July 2016,
+              <https://www.rfc-editor.org/rfc/rfc7942>.
 
    [RFC8032]  Josefsson, S. and I. Liusvaara, "Edwards-Curve Digital
               Signature Algorithm (EdDSA)", RFC 8032,
@@ -4253,7 +4350,7 @@ Table of Contents
               DOI 10.17487/RFC9459, September 2023,
               <https://www.rfc-editor.org/rfc/rfc9459>.
 
-15.2.  Informative References
+16.2.  Informative References
 
    [Degabriele]
               Degabriele, J. P., Lehmann, A., Paterson, K. G., Smart, N.
@@ -4268,13 +4365,6 @@ Table of Contents
               <https://datatracker.ietf.org/doc/html/draft-amsuess-core-
               cachable-oscore-09>.
 
-   [I-D.ietf-ace-key-groupcomm]
-              Palombini, F. and M. Tiloca, "Key Provisioning for Group
-              Communication using ACE", Work in Progress, Internet-
-              Draft, draft-ietf-ace-key-groupcomm-19, 30 April 2024,
-              <https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-
-              groupcomm-19>.
-
    [I-D.ietf-ace-key-groupcomm-oscore]
               Tiloca, M., Park, J., and F. Palombini, "Key Management
               for OSCORE Groups in ACE", Work in Progress, Internet-
@@ -4285,24 +4375,24 @@ Table of Contents
    [I-D.ietf-core-groupcomm-proxy]
               Tiloca, M. and E. Dijk, "Proxy Operations for CoAP Group
               Communication", Work in Progress, Internet-Draft, draft-
-              ietf-core-groupcomm-proxy-02, 8 July 2024,
+              ietf-core-groupcomm-proxy-03, 21 October 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-core-
-              groupcomm-proxy-02>.
+              groupcomm-proxy-03>.
 
    [I-D.ietf-core-observe-multicast-notifications]
               Tiloca, M., Höglund, R., Amsüss, C., and F. Palombini,
               "Observe Notifications as CoAP Multicast Responses", Work
               in Progress, Internet-Draft, draft-ietf-core-observe-
-              multicast-notifications-09, 8 July 2024,
+              multicast-notifications-10, 21 October 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-core-
-              observe-multicast-notifications-09>.
+              observe-multicast-notifications-10>.
 
    [I-D.ietf-core-oscore-capable-proxies]
               Tiloca, M. and R. Höglund, "OSCORE-capable Proxies", Work
               in Progress, Internet-Draft, draft-ietf-core-oscore-
-              capable-proxies-02, 8 July 2024,
+              capable-proxies-03, 21 October 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-core-
-              oscore-capable-proxies-02>.
+              oscore-capable-proxies-03>.
 
    [I-D.ietf-cose-cbor-encoded-cert]
               Mattsson, J. P., Selander, G., Raza, S., Höglund, J., and
@@ -4316,9 +4406,9 @@ Table of Contents
               Mattsson, J. P., Palombini, F., and M. Vučinić,
               "Comparison of CoAP Security Protocols", Work in Progress,
               Internet-Draft, draft-ietf-iotops-security-protocol-
-              comparison-06, 20 March 2024,
+              comparison-07, 5 November 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-iotops-
-              security-protocol-comparison-06>.
+              security-protocol-comparison-07>.
 
    [I-D.ietf-lwig-curve-representations]
               Struik, R., "Alternative Elliptic Curve Representations",
@@ -4330,9 +4420,9 @@ Table of Contents
    [I-D.irtf-cfrg-det-sigs-with-noise]
               Mattsson, J. P., Thormarker, E., and S. Ruohomaa, "Hedged
               ECDSA and EdDSA Signatures", Work in Progress, Internet-
-              Draft, draft-irtf-cfrg-det-sigs-with-noise-03, 16 March
+              Draft, draft-irtf-cfrg-det-sigs-with-noise-04, 6 November
               2024, <https://datatracker.ietf.org/doc/html/draft-irtf-
-              cfrg-det-sigs-with-noise-03>.
+              cfrg-det-sigs-with-noise-04>.
 
    [RFC4944]  Montenegro, G., Kushalnagar, N., Hui, J., and D. Culler,
               "Transmission of IPv6 Packets over IEEE 802.15.4
@@ -4393,6 +4483,12 @@ Table of Contents
               Constrained Environments Using the OAuth 2.0 Framework
               (ACE-OAuth)", RFC 9200, DOI 10.17487/RFC9200, August 2022,
               <https://www.rfc-editor.org/rfc/rfc9200>.
+
+   [RFC9594]  Palombini, F. and M. Tiloca, "Key Provisioning for Group
+              Communication Using Authentication and Authorization for
+              Constrained Environments (ACE)", RFC 9594,
+              DOI 10.17487/RFC9594, September 2024,
+              <https://www.rfc-editor.org/rfc/rfc9594>.
 
    [Thormarker]
               Thormarker, E., "On using the same key pair for Ed25519
@@ -4679,7 +4775,7 @@ Appendix C.  Example of Group Identifier Format
    The Group Epoch is set to 0 upon the group's initialization, and is
    incremented by 1 each time new keying material, together with a new
    Gid, is distributed to the group in order to establish a new Security
-   Context (see Section 3.2).
+   Context (see Section 12.2).
 
    As an example, a 3-byte Gid can be composed of: i) a 1-byte Group
    Prefix '0xb1' interpreted as a raw byte string; and ii) a 2-byte
@@ -4688,14 +4784,14 @@ Appendix C.  Example of Group Identifier Format
    in the group, its Gid will assume value '0xb1f05c'.
 
    Using an immutable Group Prefix for a group with a Group Manager that
-   cannot reassign Gid values (see Section 3.2) limits the total number
-   of rekeying instances.  With a Group Manager that does reassign Gid
-   values, it limits the maximum active number of rekeying instances
-   that a CoAP observation [RFC7641] can persist through.  In either
-   case, the group epoch size needs to be chosen depending on the
+   does not reassign Gid values (see Section 12.2.1.1) limits the total
+   number of rekeying instances.  With a Group Manager that does
+   reassign Gid values, it limits the maximum active number of rekeying
+   instances that a CoAP observation [RFC7641] can persist through.  In
+   either case, the group epoch size needs to be chosen depending on the
    expected rate of rekeying instances.
 
-   As discussed in Section 13.6, if endpoints are deployed in multiple
+   As discussed in Section 14.6, if endpoints are deployed in multiple
    groups managed by different non-synchronized Group Managers, it is
    possible that Group Identifiers of different groups coincide at some
    point in time.  In this case, a recipient has to handle coinciding
@@ -4706,11 +4802,143 @@ Appendix C.  Example of Group Identifier Format
    a small probability of collision.  How small this probability should
    be is up to system designers.
 
-Appendix D.  Document Updates
+Appendix D.  Responsibilities of the Group Manager
+
+   The Group Manager is responsible for performing the following tasks:
+
+   1.   Creating and managing OSCORE groups.  This includes the
+        assignment of a Gid to every newly created group, ensuring
+        uniqueness of Gids within the set of its OSCORE groups and,
+        optionally, the secure recycling of Gids.
+
+   2.   Defining policies for authorizing the joining of its OSCORE
+        groups.
+
+   3.   Handling the join process to add new endpoints as group members.
+
+   4.   Establishing the Common Context part of the Security Context,
+        and providing it to authorized group members during the join
+        process, together with the corresponding Sender Context.
+
+   5.   Updating the Key Generation Number and the Gid of its OSCORE
+        groups, upon renewing the respective Security Context.
+
+   6.   Generating and managing Sender IDs within its OSCORE groups, as
+        well as assigning and providing them to new endpoints during the
+        join process, or to current group members upon request of
+        renewal or re-joining.  This includes ensuring that:
+
+        *  Each Sender ID is unique within each of the OSCORE groups;
+
+        *  Each Sender ID is not reassigned within the same group since
+           the latest time when the current Gid value was assigned to
+           the group.  That is, the Sender ID is not reassigned even to
+           a current group member re-joining the same group, without a
+           rekeying happening first.
+
+   7.   Defining communication policies for each of its OSCORE groups,
+        and signaling them to new endpoints during the join process.
+
+   8.   Renewing the Security Context of an OSCORE group upon membership
+        change, by revoking and renewing common security parameters and
+        keying material (rekeying).
+
+   9.   Providing the management keying material that a new endpoint
+        requires to participate in the rekeying process, consistently
+        with the key management scheme used in the group joined by the
+        new endpoint.
+
+   10.  Assisting a group member that has missed a group rekeying
+        instance to understand which authentication credentials and
+        Recipient Contexts to delete, as associated with former group
+        members.
+
+   11.  Acting as key repository, in order to handle the authentication
+        credentials of the members of its OSCORE groups, and providing
+        such authentication credentials to other members of the same
+        group upon request.  The actual storage of authentication
+        credentials may be entrusted to a separate secure storage device
+        or service.
+
+   12.  Validating that the format and parameters of authentication
+        credentials of group members are consistent with the public key
+        algorithm and related parameters used in the respective OSCORE
+        group.
+
+   The Group Manager specified in [I-D.ietf-ace-key-groupcomm-oscore]
+   provides this functionality.
+
+Appendix E.  Reassignment of Group Identifiers
+
+   As defined in Section 12.2.1.1, the Group manager MAY support and
+   perform the reassignment of Gid values previously used during a
+   group's lifetime.  This enables the group to continue to exist even
+   once the whole space of Gid values has been used.
+
+   If the Group Manager uses this approach, the Group Manager MUST take
+   additional actions when handling Gid values and rekeying the group,
+   as specified below.
+
+   When a node (re-)joins the group and it is provided with the current
+   Gid to use in the group, the Group Manager considers such a Gid as
+   the Birth Gid of that endpoint for that group.  For each group
+   member, the Group Manager MUST store the latest corresponding Birth
+   Gid until that member leaves the group.  In case the endpoint has in
+   fact re-joined the group, the newly determined Birth Gid overwrites
+   the one currently stored.
+
+   When establishing a new Security Context for the group, the Group
+   Manager takes the additional following step between steps 1 and 2 of
+   Section 12.2.
+
+   A.  The Group Manager MUST check if the new Gid to be distributed is
+   equal to the Birth Gid of any of the current group members.  If any
+   of such "elder members" is found in the group, then:
+
+   *  The Group Manager MUST evict the elder members from the group.
+      That is, the Group Manager MUST terminate their membership and, in
+      the following steps, it MUST rekey the group in such a way that
+      the new keying material is not provided to those evicted elder
+      members.
+
+      This ensures that any response from the same server to the request
+      of a long exchange can never successfully match against the
+      request of two different long exchanges.
+
+      In fact, the excluded elder members could eventually re-join the
+      group, thus terminating any of their ongoing long exchanges (see
+      Section 5.1).
+
+      Therefore, it is ensured by construction that no client can have
+      with the same server two ongoing long exchanges, such that the two
+      respective requests were protected using the same Partial IV, Gid,
+      and Sender ID.
+
+Appendix F.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-D.1.  Version -21 to -22
+F.1.  Version -23 to -24
+
+   *  Added section "Implementation Status", according to 7942.
+
+F.2.  Version -22 to -23
+
+   *  Examples of non-AEAD algorithms as Group Encryption Algorithm.
+
+   *  Implementation compliance on non-AEAD algorithms.
+
+   *  Clarified that the HKDF Algorithm must be an HMAC-based HKDF.
+
+   *  Easier description of using Common IV to compute the nonce.
+
+   *  Consistent use of "nonce", "key", and "AEAD key".
+
+   *  Repositioned content about the Group Manager.
+
+   *  Editorial improvements.
+
+F.3.  Version -21 to -22
 
    *  Removed mentioning of the CBOR encoding of the HKDF Algorithm.
 
@@ -4740,7 +4968,7 @@ D.1.  Version -21 to -22
 
    *  Editorial improvements.
 
-D.2.  Version -20 to -21
+F.4.  Version -20 to -21
 
    *  Updated author list.
 
@@ -4751,17 +4979,17 @@ D.2.  Version -20 to -21
 
    *  Editorial: expanded name of the "CoRE Parameters" registry group.
 
-D.3.  Version -19 to -20
+F.5.  Version -19 to -20
 
    *  Change Controller for the target attribute "gosc" set to "IETF".
 
-D.4.  Version -18 to -19
+F.6.  Version -18 to -19
 
    *  Unified presentation of handling of multiple responses.
 
    *  Added Rikard Höglund as Contributor.
 
-D.5.  Version -17 to -18
+F.7.  Version -17 to -18
 
    *  Changed document title.
 
@@ -4806,13 +5034,13 @@ D.5.  Version -17 to -18
 
    *  Clarifications, fixes and editorial improvements.
 
-D.6.  Version -16 to -17
+F.8.  Version -16 to -17
 
    *  Definition and registration of the target attribute "gosc".
 
    *  Reference update and editorial fixes.
 
-D.7.  Version -15 to -16
+F.9.  Version -15 to -16
 
    *  Clients "SHOULD" use the group mode for one-to-many requests.
 
@@ -4825,11 +5053,11 @@ D.7.  Version -15 to -16
 
    *  Editorial improvements.
 
-D.8.  Version -14 to -15
+F.10.  Version -14 to -15
 
    *  Updated references and editorial fixes.
 
-D.9.  Version -13 to -14
+F.11.  Version -13 to -14
 
    *  Replaced "node" with "endpoint" where appropriate.
 
@@ -4856,7 +5084,7 @@ D.9.  Version -13 to -14
 
    *  Clarifications and editorial improvements.
 
-D.10.  Version -12 to -13
+F.12.  Version -12 to -13
 
    *  Fixes in the derivation of the Group Encryption Key.
 
@@ -4864,7 +5092,7 @@ D.10.  Version -12 to -13
 
    *  Changed UCCS to CCS.
 
-D.11.  Version -11 to -12
+F.13.  Version -11 to -12
 
    *  No mode of operation is mandatory to support.
 
@@ -4902,7 +5130,7 @@ D.11.  Version -11 to -12
 
    *  Fixes and editorial improvements.
 
-D.12.  Version -10 to -11
+F.14.  Version -10 to -11
 
    *  Loss of Recipient Contexts due to their overflow.
 
@@ -4949,7 +5177,7 @@ D.12.  Version -10 to -11
 
    *  Fixes and editorial improvements.
 
-D.13.  Version -09 to -10
+F.15.  Version -09 to -10
 
    *  Removed 'Counter Signature Key Parameters' from the Common
       Context.
@@ -4987,7 +5215,7 @@ D.13.  Version -09 to -10
 
    *  Overall clarifications and editorial revision.
 
-D.14.  Version -08 to -09
+F.16.  Version -08 to -09
 
    *  Pairwise keys are discarded after group rekeying.
 
@@ -5025,7 +5253,7 @@ D.14.  Version -08 to -09
 
    *  Clarifications and editorial improvements.
 
-D.15.  Version -07 to -08
+F.17.  Version -07 to -08
 
    *  Clarified relation between pairwise mode and group communication
       (Section 1).
@@ -5089,7 +5317,7 @@ D.15.  Version -07 to -08
 
    *  Editorial improvements.
 
-D.16.  Version -06 to -07
+F.18.  Version -06 to -07
 
    *  Updated abstract and introduction.
 
@@ -5121,7 +5349,7 @@ D.16.  Version -06 to -07
    *  New pairwise mode, using pairwise keying material for both
       requests and responses.
 
-D.17.  Version -05 to -06
+F.19.  Version -05 to -06
 
    *  Group IDs mandated to be unique under the same Group Manager.
 
@@ -5149,7 +5377,7 @@ D.17.  Version -05 to -06
 
    *  Editorial improvements.
 
-D.18.  Version -04 to -05
+F.20.  Version -04 to -05
 
    *  Added references to draft-dijk-core-groupcomm-bis.
 
@@ -5168,7 +5396,7 @@ D.18.  Version -04 to -05
    *  New "Counter Signature Key Parameters" IANA Registry
       (Section 9.2).
 
-D.19.  Version -03 to -04
+F.21.  Version -03 to -04
 
    *  Added the new "Counter Signature Parameters" in the Common Context
       (see Section 2).
@@ -5212,7 +5440,7 @@ D.19.  Version -03 to -04
    *  New IANA Registry "Counter Signature Parameters" (see
       Section 9.1).
 
-D.20.  Version -02 to -03
+F.22.  Version -02 to -03
 
    *  Revised structure and phrasing for improved readability and better
       alignment with draft-ietf-core-object-security.
@@ -5246,7 +5474,7 @@ D.20.  Version -02 to -03
    *  Revised Appendix D, now giving a short high-level description of a
       new endpoint set-up.
 
-D.21.  Version -01 to -02
+F.23.  Version -01 to -02
 
    *  Terminology has been made more aligned with RFC7252 and draft-
       ietf-core-object-security: i) "client" and "server" replace the
@@ -5281,7 +5509,7 @@ D.21.  Version -01 to -02
       synchronization of sequence numbers based on the Echo Option from
       draft-ietf-core-echo-request-tag.
 
-D.22.  Version -00 to -01
+F.24.  Version -00 to -01
 
    *  Section 1.1 has been updated with the definition of group as
       "security group".
