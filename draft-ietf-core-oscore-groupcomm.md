@@ -78,6 +78,7 @@ normative:
   RFC7252:
   RFC7641:
   RFC7748:
+  RFC7942:
   RFC8032:
   RFC8288:
   RFC8610:
@@ -1547,6 +1548,114 @@ In order to verify countersignatures of messages in a group, a signature checker
 
 A signature checker MUST be authorized before it can retrieve such information, for example with the use of {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
+# Implementation Status # {#sec-implementation-status}
+{:removeinrfc}
+
+Note to RFC Editor: when deleting this section, please also delete RFC 7942 from the references of this document.
+
+This section records the status of known implementations of the protocol defined by this specification at the time of posting of this Internet-Draft, and is based on a proposal described in {{RFC7942}}. The description of implementations in this section is intended to assist the IETF in its decision processes in progressing drafts to RFCs. Please note that the listing of any individual implementation here does not imply endorsement by the IETF. Furthermore, no effort has been spent to verify the information presented here that was supplied by IETF contributors. This is not intended as, and must not be construed to be, a catalog of available implementations or their features. Readers are advised to note that other implementations may exist.
+
+According to {{RFC7942}}, "this will allow reviewers and working groups to assign due consideration to documents that have the benefit of running code, which may serve as evidence of valuable experimentation and feedback that have made the implemented protocols more mature. It is up to the individual working groups to use this information as they see fit".
+
+## Implementation \#1 # {#sec-implementation-1}
+
+* Responsible organization: RISE Research Institutes of Sweden AB
+
+* Implementation's name: Group OSCORE for Eclipse Californium
+
+* Available at: https://github.com/rikard-sics/californium/tree/group_oscore
+
+* Description: Implementation in Java, building on Eclipse Californium, see:
+
+  * https://github.com/eclipse-californium/californium
+
+  * http://eclipse.dev/californium/
+
+* Implementation's level of maturity: prototype
+
+* The implementation supports:
+
+  * The group mode and the pairwise mode.
+  * Mapping of public keys for the curve Ed25519 into Montgomery coordinates to use with X25519.
+  * The following COSE encryption algorithms: AES-CCM-16-64-128, AES-CCM-16-128-128, AES-CCM-16-64-256, AES-CCM-16-128-256, AES_CCM-64-64-128, AES-CCM-64-128-128, AES-CCM-64-64-256, AES-CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305, A128CBC, A192CBC, A256CBC.
+  * The following HKDF algorithms: HKDF SHA-256 (identified as the COSE Algorithm "HMAC 256/256") and HKDF SHA-512 (identified as the COSE Algorithm "HMAC 512/512").
+  * The following COSE signature algorithms: ECDSA with curves P-256, P-384, and P-521, as well as EdDSA with curve Ed25519.
+  * The following COSE key agreement algorithms: ECDH-SS + HKDF-256 and ECDH-SS + HKDF-512, both of which using either keys of COSE Key Type "EC2" with the curve P-256, P-384, and P-521, or keys of COSE Key Type "OKP" key with X25519.
+  * The following authentication credential format: CWT Claims Sets (CCSs).
+
+* Version compatibility: From version -23 onwards.
+
+* Licensing: according to the same dual license of Eclipse Californium, i.e., according to the "Eclipse Distribution License 1.0" and the "Eclipse Public License 2.0". See:
+
+  * https://github.com/eclipse-californium/californium/blob/main/LICENSE
+  * https://www.eclipse.org/org/documents/edl-v10.php
+  * https://www.eclipse.org/legal/epl-2.0/
+
+* Contact information: Rikard Höglund - rikard.hoglund@ri.se
+
+* Information last updated on: 2024-11-21
+
+## Implementation \#2 # {#sec-implementation-2}
+
+* Implementation's name: TBD
+
+* Available at: TBD
+
+* Description: TBD
+
+* Implementation's level of maturity: TBD
+
+  (e.g., research, prototype, alpha, beta, production, widely used)
+
+* The implementation supports: TBD
+
+  (which parts of the protocol specification are implemented)
+
+* Version compatibility: From version -23 onwards.
+
+  (what version/versions of the Internet-Draft are known to be implemented)
+
+* Licensing: TBD
+
+  (the terms under which the implementation can be used. For example: proprietary, royalty licensing, freely distributable with acknowledgement (BSD style), freely distributable with requirement to redistribute source (General Public License (GPL) style), and other (specify))
+
+* Implementation experience: TBD
+
+  (any useful information the implementers want to share with the community)
+
+* Contact information: Christian Amsüss - christian@amsuess.com
+
+  (ideally a person's name and email address, but possibly just a URL or mailing list)
+
+* Information last updated on: 2024-11-XX
+
+## Interoperability # {#sec-implementation-interop}
+
+The two implementations mentioned in {{sec-implementation-1}} and {{sec-implementation-2}} have successfully completed interoperability tests.
+
+That occurred multiple times when covering earlier versions of the protocol, as well as specifically for version -23 of the Internet Draft, during the IETF 121 meeting in Dublin (Ireland), in November 2024.
+
+The scenarios considered during the interoperability tests are as follows:
+
+* (A) Authentication credential format: CWT Claims Sets (CCSs).
+
+* (B) Message protection:
+
+  * (B1) Both requests and responses protected in group mode.
+  * (B2) Requests protected in group mode and responses protected in pairwise mode.
+  * (B3) Both requests and responses protected in pairwise mode.
+
+* (C) Signature algorithm: EdDSA with curve Ed25519.
+
+* (D) HKDF algorithms: HKDF SHA-256.
+
+* (E) Key agreement algorithms: ECDH-SS + HKDF-256, following a mapping of public keys for the curve Ed25519 into Montgomery coordinates to use with X25519.
+
+* (F) The following pairs of (Group Encryption Algorithm, AEAD Algorithm):
+
+  * (AES-CCM-16-64-128, AES-CCM-16-64-128), for the cases B1, B2, and B3 above.
+  * (ChaCha20/Poly1305, ChaCha20/Poly1305), for the case B2 above.
+
 # Security Considerations  # {#sec-security-considerations}
 
 The same threat model discussed for OSCORE in {{Section D.1 of RFC8613}} holds for Group OSCORE.
@@ -2020,6 +2129,10 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
+
+## Version -23 to -24 ## {#sec-23-24}
+
+* Added section "Implementation Status", according to 7942.
 
 ## Version -22 to -23 ## {#sec-22-23}
 
