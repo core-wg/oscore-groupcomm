@@ -862,7 +862,7 @@ Table of Contents
       keys in Section 14.16.
 
       In case the other endpoint's public key has COSE Key Type "EC2"
-      (e.g., for the curves P-256, P-384, and P-512), then the public
+      (e.g., for the curves P-256, P-384, and P-521), then the public
       key is used as is.  In case the other endpoint's public key has
       COSE Key Type "OKP", the procedure is described in Section 5 of
       [RFC7748].  In particular, if the public key is for X25519 or
@@ -4921,6 +4921,8 @@ Appendix F.  Document Updates
 F.1.  Version -23 to -24
 
    *  Added section "Implementation Status", according to 7942.
+
+   *  Fixed "P-521" (instead of "P-512").
 
 F.2.  Version -22 to -23
 

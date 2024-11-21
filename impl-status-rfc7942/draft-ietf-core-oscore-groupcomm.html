@@ -2009,7 +2009,7 @@ IKM-Recipient = Recipient Auth Cred | Sender Auth Cred | Shared Secret
             <li class="normal" id="section-2.5.1-4.8">
               <p id="section-2.5.1-4.8.1">The Shared Secret is computed as a cofactor Diffie-Hellman shared secret, see Section 5.7.1.2 of <span>[<a href="#NIST-800-56A" class="cite xref">NIST-800-56A</a>]</span>, using the Pairwise Key Agreement Algorithm. The endpoint uses its private key from the Sender Context and the other endpoint's public key included in Recipient Auth Cred. Note the requirement of validation of public keys in <a href="#ssec-crypto-considerations" class="auto internal xref">Section 14.16</a>.<a href="#section-2.5.1-4.8.1" class="pilcrow">¶</a></p>
 <p id="section-2.5.1-4.8.2">
-In case the other endpoint's public key has COSE Key Type "EC2" (e.g., for the curves P-256, P-384, and P-512), then the public key is used as is. In case the other endpoint's public key has COSE Key Type "OKP", the procedure is described in <span><a href="https://rfc-editor.org/rfc/rfc7748#section-5" class="relref">Section 5</a> of [<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>. In particular, if the public key is for X25519 or X448, it is used as is. Otherwise, if the public key is for the curve Ed25519 or Ed448, it is first mapped to Montgomery coordinates (see <a href="#montgomery" class="auto internal xref">Section 2.5.2</a>).<a href="#section-2.5.1-4.8.2" class="pilcrow">¶</a></p>
+In case the other endpoint's public key has COSE Key Type "EC2" (e.g., for the curves P-256, P-384, and P-521), then the public key is used as is. In case the other endpoint's public key has COSE Key Type "OKP", the procedure is described in <span><a href="https://rfc-editor.org/rfc/rfc7748#section-5" class="relref">Section 5</a> of [<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>. In particular, if the public key is for X25519 or X448, it is used as is. Otherwise, if the public key is for the curve Ed25519 or Ed448, it is first mapped to Montgomery coordinates (see <a href="#montgomery" class="auto internal xref">Section 2.5.2</a>).<a href="#section-2.5.1-4.8.2" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.5.1-4.9">
               <p id="section-2.5.1-4.9.1">IKM-Sender is the Input Keying Material (IKM) used in the HKDF for the derivation of the Pairwise Sender Key. IKM-Sender is the byte string concatenation of Sender Auth Cred, Recipient Auth Cred, and the Shared Secret. The authentication credentials Sender Auth Cred and Recipient Auth Cred are binary encoded as defined in <a href="#sec-pub-key-format" class="auto internal xref">Section 2.4</a>.<a href="#section-2.5.1-4.9.1" class="pilcrow">¶</a></p>
@@ -4520,6 +4520,9 @@ Therefore, it is ensured by construction that no client can have with the same s
 <ul class="normal">
 <li class="normal" id="appendix-F.1-1.1">
             <p id="appendix-F.1-1.1.1">Added section "Implementation Status", according to 7942.<a href="#appendix-F.1-1.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-F.1-1.2">
+            <p id="appendix-F.1-1.2.1">Fixed "P-521" (instead of "P-512").<a href="#appendix-F.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
