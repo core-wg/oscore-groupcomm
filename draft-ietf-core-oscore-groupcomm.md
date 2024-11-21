@@ -2132,7 +2132,7 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 
 ## Version -23 to -24 ## {#sec-23-24}
 
-* Added section "Implementation Status", according to 7942.
+* Added section "Implementation Status", according to RFC 7942.
 
 * Fixed "P-521" (instead of "P-512").
 
