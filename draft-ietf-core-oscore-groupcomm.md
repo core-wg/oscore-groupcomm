@@ -463,7 +463,7 @@ where:
 
 * The Shared Secret is computed as a cofactor Diffie-Hellman shared secret, see Section 5.7.1.2 of {{NIST-800-56A}}, using the Pairwise Key Agreement Algorithm. The endpoint uses its private key from the Sender Context and the other endpoint's public key included in Recipient Auth Cred. Note the requirement of validation of public keys in {{ssec-crypto-considerations}}.
 
-   In case the other endpoint's public key has COSE Key Type "EC2" (e.g., for the curves P-256, P-384, and P-512), then the public key is used as is. In case the other endpoint's public key has COSE Key Type "OKP", the procedure is described in {{Section 5 of RFC7748}}. In particular, if the public key is for X25519 or X448, it is used as is. Otherwise, if the public key is for the curve Ed25519 or Ed448, it is first mapped to Montgomery coordinates (see {{montgomery}}).
+   In case the other endpoint's public key has COSE Key Type "EC2" (e.g., for the curves P-256, P-384, and P-521), then the public key is used as is. In case the other endpoint's public key has COSE Key Type "OKP", the procedure is described in {{Section 5 of RFC7748}}. In particular, if the public key is for X25519 or X448, it is used as is. Otherwise, if the public key is for the curve Ed25519 or Ed448, it is first mapped to Montgomery coordinates (see {{montgomery}}).
 
 * IKM-Sender is the Input Keying Material (IKM) used in the HKDF for the derivation of the Pairwise Sender Key. IKM-Sender is the byte string concatenation of Sender Auth Cred, Recipient Auth Cred, and the Shared Secret. The authentication credentials Sender Auth Cred and Recipient Auth Cred are binary encoded as defined in {{sec-pub-key-format}}.
 
@@ -2133,6 +2133,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 ## Version -23 to -24 ## {#sec-23-24}
 
 * Added section "Implementation Status", according to 7942.
+
+* Fixed "P-521" (instead of "P-512").
 
 ## Version -22 to -23 ## {#sec-22-23}
 
