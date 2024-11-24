@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-11-21T01:02:41.779966+00:00",
+  "timestamp": "2024-11-24T01:07:28.329967+00:00",
   "repo": "core-wg/oscore-groupcomm",
   "labels": [
     {
@@ -3553,6 +3553,46 @@
       },
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 113,
+      "id": "PR_kwDOB2KWK86Cu65-",
+      "title": "Section \"Implementation Status\", per RFC 7942",
+      "url": "https://github.com/core-wg/oscore-groupcomm/pull/113",
+      "state": "OPEN",
+      "author": "marco-tiloca-sics",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "As suggested by @cabo  , this PR adds an \"Implementation Status\" section, according to [RFC 7942](https://www.rfc-editor.org/rfc/rfc7942).\r\n\r\nIt also fixes a typo: s/P-512/P-521\r\n\r\n@chrysn , could you please check the new section and add the information about your implementation?",
+      "createdAt": "2024-11-21T22:00:01Z",
+      "updatedAt": "2024-11-22T14:41:53Z",
+      "baseRepository": "core-wg/oscore-groupcomm",
+      "baseRefName": "master",
+      "baseRefOid": "4d52b32a63b3935ae4ef9e6f29da72a2925168ae",
+      "headRepository": "core-wg/oscore-groupcomm",
+      "headRefName": "impl-status-rfc7942",
+      "headRefOid": "36fab0b0c2588ead8b7d496956fb90d339c270e9",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOB2KWK86STpnf",
+          "commit": {
+            "abbreviatedOid": "36fab0b"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "Looks good to me (considering the current material).\r\n\r\nI will have another look when Christian adds his content.",
+          "createdAt": "2024-11-22T14:41:53Z",
+          "updatedAt": "2024-11-22T14:41:53Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
