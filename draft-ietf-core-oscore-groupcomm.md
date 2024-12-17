@@ -1597,37 +1597,33 @@ According to {{RFC7942}}, "this will allow reviewers and working groups to assig
 
 ## Implementation \#2 # {#sec-implementation-2}
 
-* Implementation's name: TBD
+* Implementation's name: aiocoap
 
-* Available at: TBD
+* Available at: https://codeberg.org/aiocoap/aiocoap
 
-* Description: TBD
+* Description: A Python CoAP library with support for multiple transports and security mechanisms. The library provides also utility programs.
 
-* Implementation's level of maturity: TBD
+* Implementation's level of maturity: Stable support for OSCORE; Group OSCORE is WIP.
 
-  (e.g., research, prototype, alpha, beta, production, widely used)
+* The implementation supports:
 
-* The implementation supports: TBD
+  * The group mode and the pairwise mode.
+  * Mapping of public keys for the curve Ed25519 into Montgomery coordinates to use with X25519.
+  * The following COSE encryption algorithms: 1-3, 10-13, 24, 30-33
+  * The following HKDF algorithms: HKDF SHA-256, -384, -512.
+  * The following COSE signature algorithms: EdDSA on Ed25519, ECDSA w/ SHA-256 on P-256
+  * The following COSE key agreement algorithms: ECDH on P-256 and curve25519.
+  * The following authentication credential format: currently n/a (user provides pairs of credentials and keys)
 
-  (which parts of the protocol specification are implemented)
+* Version compatibility: -23
 
-* Version compatibility: From version -23 onwards.
+* Licensing: MIT
 
-  (what version/versions of the Internet-Draft are known to be implemented)
-
-* Licensing: TBD
-
-  (the terms under which the implementation can be used. For example: proprietary, royalty licensing, freely distributable with acknowledgement (BSD style), freely distributable with requirement to redistribute source (General Public License (GPL) style), and other (specify))
-
-* Implementation experience: TBD
-
-  (any useful information the implementers want to share with the community)
+* Implementation experience: Mostly smooth; the differentiation between the regular and the group AEAD algorithm was tedious and error prone (because Group OSCORE largely relies on OSCORE extension points that were anticipated, but that was not).
 
 * Contact information: Christian Amsüss - christian@amsuess.com
 
-  (ideally a person's name and email address, but possibly just a URL or mailing list)
-
-* Information last updated on: 2024-11-XX
+* Information last updated on: 2024-12-17
 
 ## Interoperability # {#sec-implementation-interop}
 
