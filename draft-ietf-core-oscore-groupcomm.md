@@ -1651,7 +1651,7 @@ The scenarios considered during the interoperability tests are as follows:
 
   * (AES-CCM-16-64-128, AES-CCM-16-64-128), for the cases B1, B2, and B3 above.
   * (ChaCha20/Poly1305, ChaCha20/Poly1305), for the case B2 above.
-  
+
   Interoperability was not yet achieved in scenarios in which different AEAD algorithms were used for pairwise and group encryption algorithm.
 
 # Security Considerations  # {#sec-security-considerations}
