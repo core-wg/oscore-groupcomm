@@ -3402,6 +3402,10 @@ Table of Contents
 
       -  (ChaCha20/Poly1305, ChaCha20/Poly1305), for the case B2 above.
 
+      Interoperability was not yet achieved in scenarios in which
+      different AEAD algorithms were used for pairwise and group
+      encryption algorithm.
+
 14.  Security Considerations
 
    The same threat model discussed for OSCORE in Appendix D.1 of
