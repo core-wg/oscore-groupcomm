@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 25 May 2025                                        F. Palombini
+Expires: 20 June 2025                                       F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                        21 November 2024
+                                                        17 December 2024
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 May 2025.
+   This Internet-Draft will expire on 20 June 2025.
 
 Copyright Notice
 
@@ -3318,44 +3318,49 @@ Table of Contents
 
 13.2.  Implementation #2
 
-   *  Implementation's name: TBD
+   *  Implementation's name: aiocoap
 
-   *  Available at: TBD
+   *  Available at: https://codeberg.org/aiocoap/aiocoap
 
-   *  Description: TBD
+   *  Description: A Python CoAP library with support for multiple
+      transports and security mechanisms.  The library provides also
+      utility programs.
 
-   *  Implementation's level of maturity: TBD
+   *  Implementation's level of maturity: Stable support for OSCORE;
+      Group OSCORE is WIP.
 
-      (e.g., research, prototype, alpha, beta, production, widely used)
+   *  The implementation supports:
 
-   *  The implementation supports: TBD
+      -  The group mode and the pairwise mode.
 
-      (which parts of the protocol specification are implemented)
+      -  Mapping of public keys for the curve Ed25519 into Montgomery
+         coordinates to use with X25519.
 
-   *  Version compatibility: From version -23 onwards.
+      -  The following COSE encryption algorithms: 1-3, 10-13, 24, 30-33
 
-      (what version/versions of the Internet-Draft are known to be
-      implemented)
+      -  The following HKDF algorithms: HKDF SHA-256, -384, -512.
 
-   *  Licensing: TBD
+      -  The following COSE signature algorithms: EdDSA on Ed25519,
+         ECDSA w/ SHA-256 on P-256
 
-      (the terms under which the implementation can be used.  For
-      example: proprietary, royalty licensing, freely distributable with
-      acknowledgement (BSD style), freely distributable with requirement
-      to redistribute source (General Public License (GPL) style), and
-      other (specify))
+      -  The following COSE key agreement algorithms: ECDH on P-256 and
+         curve25519.
 
-   *  Implementation experience: TBD
+      -  The following authentication credential format: currently n/a
+         (user provides pairs of credentials and keys)
 
-      (any useful information the implementers want to share with the
-      community)
+   *  Version compatibility: -23
+
+   *  Licensing: MIT
+
+   *  Implementation experience: Mostly smooth; the differentiation
+      between the regular and the group AEAD algorithm was tedious and
+      error prone (because Group OSCORE largely relies on OSCORE
+      extension points that were anticipated, but that was not).
 
    *  Contact information: Christian Amsüss - christian@amsuess.com
 
-      (ideally a person's name and email address, but possibly just a
-      URL or mailing list)
-
-   *  Information last updated on: 2024-11-XX
+   *  Information last updated on: 2024-12-17
 
 13.3.  Interoperability
 
