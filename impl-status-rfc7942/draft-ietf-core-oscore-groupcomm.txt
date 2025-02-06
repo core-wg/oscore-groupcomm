@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 20 June 2025                                       F. Palombini
+Expires: 10 August 2025                                     F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                        17 December 2024
+                                                         6 February 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -63,11 +63,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 June 2025.
+   This Internet-Draft will expire on 10 August 2025.
 
 Copyright Notice
 
-   Copyright (c) 2024 IETF Trust and the persons identified as the
+   Copyright (c) 2025 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -3314,7 +3314,7 @@ Table of Contents
 
    *  Contact information: Rikard Höglund - rikard.hoglund@ri.se
 
-   *  Information last updated on: 2024-11-21
+   *  Information last updated on: 2025-02-06
 
 13.2.  Implementation #2
 
@@ -3336,7 +3336,8 @@ Table of Contents
       -  Mapping of public keys for the curve Ed25519 into Montgomery
          coordinates to use with X25519.
 
-      -  The following COSE encryption algorithms: 1-3, 10-13, 24, 30-33
+      -  The following COSE encryption algorithms: 1-3, 10-13, 24,
+         30-33, -65531
 
       -  The following HKDF algorithms: HKDF SHA-256, -384, -512.
 
@@ -3360,7 +3361,7 @@ Table of Contents
 
    *  Contact information: Christian Amsüss - christian@amsuess.com
 
-   *  Information last updated on: 2024-12-17
+   *  Information last updated on: 2025-02-06
 
 13.3.  Interoperability
 
@@ -3369,8 +3370,8 @@ Table of Contents
 
    That occurred multiple times when covering earlier versions of the
    protocol, as well as specifically for version -23 of the Internet
-   Draft, during the IETF 121 meeting in Dublin (Ireland), in November
-   2024.
+   Draft, during the IETF 121 meeting in Dublin (Ireland) in November
+   2024 and later on in February 2025.
 
    The scenarios considered during the interoperability tests are as
    follows:
@@ -3384,7 +3385,10 @@ Table of Contents
       -  (B2) Requests protected in group mode and responses protected
          in pairwise mode.
 
-      -  (B3) Both requests and responses protected in pairwise mode.
+      -  (B3) Requests protected in pairwise mode and responses
+         protected in group mode.
+
+      -  (B4) Both requests and responses protected in pairwise mode.
 
    *  (C) Signature algorithm: EdDSA with curve Ed25519.
 
@@ -3395,16 +3399,17 @@ Table of Contents
       coordinates to use with X25519.
 
    *  (F) The following pairs of (Group Encryption Algorithm, AEAD
-      Algorithm):
+      Algorithm), for all the cases B1, B2, B3, and B4 above:
 
-      -  (AES-CCM-16-64-128, AES-CCM-16-64-128), for the cases B1, B2,
-         and B3 above.
+      -  (AES-CCM-16-64-128, AES-CCM-16-64-128).
 
-      -  (ChaCha20/Poly1305, ChaCha20/Poly1305), for the case B2 above.
+      -  (ChaCha20/Poly1305, ChaCha20/Poly1305).
 
-      Interoperability was not yet achieved in scenarios in which
-      different AEAD algorithms were used for pairwise and group
-      encryption algorithm.
+      -  (AES-CCM-16-64-128, ChaCha20/Poly1305).
+
+      -  (ChaCha20/Poly1305, AES-CCM-16-64-128).
+
+      -  (A128CBC, AES-CCM-16-64-128).
 
 14.  Security Considerations
 
@@ -4370,9 +4375,9 @@ Table of Contents
    [I-D.amsuess-core-cachable-oscore]
               Amsüss, C. and M. Tiloca, "Cacheable OSCORE", Work in
               Progress, Internet-Draft, draft-amsuess-core-cachable-
-              oscore-09, 8 July 2024,
+              oscore-10, 8 January 2025,
               <https://datatracker.ietf.org/doc/html/draft-amsuess-core-
-              cachable-oscore-09>.
+              cachable-oscore-10>.
 
    [I-D.ietf-ace-key-groupcomm-oscore]
               Tiloca, M., Park, J., and F. Palombini, "Key Management
@@ -4407,17 +4412,17 @@ Table of Contents
               Mattsson, J. P., Selander, G., Raza, S., Höglund, J., and
               M. Furuhed, "CBOR Encoded X.509 Certificates (C509
               Certificates)", Work in Progress, Internet-Draft, draft-
-              ietf-cose-cbor-encoded-cert-11, 8 July 2024,
+              ietf-cose-cbor-encoded-cert-12, 8 January 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-cose-
-              cbor-encoded-cert-11>.
+              cbor-encoded-cert-12>.
 
    [I-D.ietf-iotops-security-protocol-comparison]
               Mattsson, J. P., Palombini, F., and M. Vučinić,
               "Comparison of CoAP Security Protocols", Work in Progress,
               Internet-Draft, draft-ietf-iotops-security-protocol-
-              comparison-07, 5 November 2024,
+              comparison-08, 21 January 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-iotops-
-              security-protocol-comparison-07>.
+              security-protocol-comparison-08>.
 
    [I-D.ietf-lwig-curve-representations]
               Struik, R., "Alternative Elliptic Curve Representations",
