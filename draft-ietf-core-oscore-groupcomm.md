@@ -1593,7 +1593,7 @@ According to {{RFC7942}}, "this will allow reviewers and working groups to assig
 
 * Contact information: Rikard Höglund - rikard.hoglund@ri.se
 
-* Information last updated on: 2024-11-21
+* Information last updated on: 2025-02-06
 
 ## Implementation \#2 # {#sec-implementation-2}
 
@@ -1609,7 +1609,7 @@ According to {{RFC7942}}, "this will allow reviewers and working groups to assig
 
   * The group mode and the pairwise mode.
   * Mapping of public keys for the curve Ed25519 into Montgomery coordinates to use with X25519.
-  * The following COSE encryption algorithms: 1-3, 10-13, 24, 30-33
+  * The following COSE encryption algorithms: 1-3, 10-13, 24, 30-33, -65531
   * The following HKDF algorithms: HKDF SHA-256, -384, -512.
   * The following COSE signature algorithms: EdDSA on Ed25519, ECDSA w/ SHA-256 on P-256
   * The following COSE key agreement algorithms: ECDH on P-256 and curve25519.
@@ -1623,13 +1623,13 @@ According to {{RFC7942}}, "this will allow reviewers and working groups to assig
 
 * Contact information: Christian Amsüss - christian@amsuess.com
 
-* Information last updated on: 2024-12-17
+* Information last updated on: 2025-02-06
 
 ## Interoperability # {#sec-implementation-interop}
 
 The two implementations mentioned in {{sec-implementation-1}} and {{sec-implementation-2}} have successfully completed interoperability tests.
 
-That occurred multiple times when covering earlier versions of the protocol, as well as specifically for version -23 of the Internet Draft, during the IETF 121 meeting in Dublin (Ireland), in November 2024.
+That occurred multiple times when covering earlier versions of the protocol, as well as specifically for version -23 of the Internet Draft, during the IETF 121 meeting in Dublin (Ireland) in November 2024 and later on in February 2025.
 
 The scenarios considered during the interoperability tests are as follows:
 
@@ -1639,7 +1639,8 @@ The scenarios considered during the interoperability tests are as follows:
 
   * (B1) Both requests and responses protected in group mode.
   * (B2) Requests protected in group mode and responses protected in pairwise mode.
-  * (B3) Both requests and responses protected in pairwise mode.
+  * (B3) Requests protected in pairwise mode and responses protected in group mode.
+  * (B4) Both requests and responses protected in pairwise mode.
 
 * (C) Signature algorithm: EdDSA with curve Ed25519.
 
@@ -1647,12 +1648,13 @@ The scenarios considered during the interoperability tests are as follows:
 
 * (E) Key agreement algorithms: ECDH-SS + HKDF-256, following a mapping of public keys for the curve Ed25519 into Montgomery coordinates to use with X25519.
 
-* (F) The following pairs of (Group Encryption Algorithm, AEAD Algorithm):
+* (F) The following pairs of (Group Encryption Algorithm, AEAD Algorithm), for all the cases B1, B2, B3, and B4 above:
 
-  * (AES-CCM-16-64-128, AES-CCM-16-64-128), for the cases B1, B2, and B3 above.
-  * (ChaCha20/Poly1305, ChaCha20/Poly1305), for the case B2 above.
-
-  Interoperability was not yet achieved in scenarios in which different AEAD algorithms were used for pairwise and group encryption algorithm.
+  * (AES-CCM-16-64-128, AES-CCM-16-64-128).
+  * (ChaCha20/Poly1305, ChaCha20/Poly1305).
+  * (AES-CCM-16-64-128, ChaCha20/Poly1305).
+  * (ChaCha20/Poly1305, AES-CCM-16-64-128).
+  * (A128CBC, AES-CCM-16-64-128).
 
 # Security Considerations  # {#sec-security-considerations}
 
