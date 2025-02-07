@@ -1616,7 +1616,7 @@ Note to RFC Editor: when deleting this section, please also delete RFC 7942 from
 
 * Licensing: MIT
 
-* Implementation experience: Mostly smooth; the differentiation between the regular and the group AEAD algorithm was tedious and error prone (because Group OSCORE largely relies on OSCORE extension points that were anticipated, but that was not).
+* Implementation experience: Mostly smooth; the differentiation between the regular and the group AEAD algorithm, and more generally finding the right parameters to input into the (abstracted) KDF part, was tedious and error prone (because Group OSCORE largely relies on OSCORE extension points that were anticipated, but that was not).
 
 * Contact information: Christian Amsüss - christian@amsuess.com
 
