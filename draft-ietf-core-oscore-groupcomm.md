@@ -1600,7 +1600,7 @@ Note to RFC Editor: when deleting this section, please also delete RFC 7942 from
 
 * Description: A Python CoAP library with support for multiple transports and security mechanisms. The library provides also utility programs.
 
-* Implementation's level of maturity: Stable support for OSCORE; Group OSCORE is WIP.
+* Implementation's level of maturity: Stable support for OSCORE; Group OSCORE is minimal.
 
 * The implementation supports:
 
