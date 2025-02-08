@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 28 March 2025                                      F. Palombini
+Expires: 12 August 2025                                     F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                       24 September 2024
+                                                         8 February 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -63,11 +63,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 March 2025.
+   This Internet-Draft will expire on 12 August 2025.
 
 Copyright Notice
 
-   Copyright (c) 2024 IETF Trust and the persons identified as the
+   Copyright (c) 2025 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -146,36 +146,40 @@ Table of Contents
      12.2.  Management of Group Keying Material
        12.2.1.  Recycling of Identifiers
      12.3.  Support for Signature Checkers
-   13. Security Considerations
-     13.1.  Security of the Group Mode
-     13.2.  Security of the Pairwise Mode
-     13.3.  Uniqueness of (key, nonce)
-     13.4.  Management of Group Keying Material
-     13.5.  Update of Security Context and Key Rotation
-       13.5.1.  Late Update on the Sender
-       13.5.2.  Late Update on the Recipient
-     13.6.  Collision of Group Identifiers
-     13.7.  Cross-group Message Injection
-       13.7.1.  Attack Description
-       13.7.2.  Attack Prevention in Group Mode
-     13.8.  Prevention of Group Cloning Attack
-     13.9.  Group OSCORE for Unicast Requests
-     13.10. End-to-end Protection
-     13.11. Master Secret
-     13.12. Replay Protection
-     13.13. Message Ordering
-     13.14. Message Freshness
-     13.15. Client Aliveness
-     13.16. Cryptographic Considerations
-     13.17. Message Segmentation
-     13.18. Privacy Considerations
-   14. IANA Considerations
-     14.1.  OSCORE Flag Bits Registry
-     14.2.  CoAP Option Numbers Registry
-     14.3.  Target Attributes Registry
-   15. References
-     15.1.  Normative References
-     15.2.  Informative References
+   13. Implementation Status
+     13.1.  Implementation #1
+     13.2.  Implementation #2
+     13.3.  Interoperability
+   14. Security Considerations
+     14.1.  Security of the Group Mode
+     14.2.  Security of the Pairwise Mode
+     14.3.  Uniqueness of (key, nonce)
+     14.4.  Management of Group Keying Material
+     14.5.  Update of Security Context and Key Rotation
+       14.5.1.  Late Update on the Sender
+       14.5.2.  Late Update on the Recipient
+     14.6.  Collision of Group Identifiers
+     14.7.  Cross-group Message Injection
+       14.7.1.  Attack Description
+       14.7.2.  Attack Prevention in Group Mode
+     14.8.  Prevention of Group Cloning Attack
+     14.9.  Group OSCORE for Unicast Requests
+     14.10. End-to-end Protection
+     14.11. Master Secret
+     14.12. Replay Protection
+     14.13. Message Ordering
+     14.14. Message Freshness
+     14.15. Client Aliveness
+     14.16. Cryptographic Considerations
+     14.17. Message Segmentation
+     14.18. Privacy Considerations
+   15. IANA Considerations
+     15.1.  OSCORE Flag Bits Registry
+     15.2.  CoAP Option Numbers Registry
+     15.3.  Target Attributes Registry
+   16. References
+     16.1.  Normative References
+     16.2.  Informative References
    Appendix A.  Assumptions and Security Objectives
      A.1.  Assumptions
      A.2.  Security Objectives
@@ -184,29 +188,30 @@ Table of Contents
    Appendix D.  Responsibilities of the Group Manager
    Appendix E.  Reassignment of Group Identifiers
    Appendix F.  Document Updates
-     F.1.  Version -22 to -23
-     F.2.  Version -21 to -22
-     F.3.  Version -20 to -21
-     F.4.  Version -19 to -20
-     F.5.  Version -18 to -19
-     F.6.  Version -17 to -18
-     F.7.  Version -16 to -17
-     F.8.  Version -15 to -16
-     F.9.  Version -14 to -15
-     F.10. Version -13 to -14
-     F.11. Version -12 to -13
-     F.12. Version -11 to -12
-     F.13. Version -10 to -11
-     F.14. Version -09 to -10
-     F.15. Version -08 to -09
-     F.16. Version -07 to -08
-     F.17. Version -06 to -07
-     F.18. Version -05 to -06
-     F.19. Version -04 to -05
-     F.20. Version -03 to -04
-     F.21. Version -02 to -03
-     F.22. Version -01 to -02
-     F.23. Version -00 to -01
+     F.1.  Version -23 to -24
+     F.2.  Version -22 to -23
+     F.3.  Version -21 to -22
+     F.4.  Version -20 to -21
+     F.5.  Version -19 to -20
+     F.6.  Version -18 to -19
+     F.7.  Version -17 to -18
+     F.8.  Version -16 to -17
+     F.9.  Version -15 to -16
+     F.10. Version -14 to -15
+     F.11. Version -13 to -14
+     F.12. Version -12 to -13
+     F.13. Version -11 to -12
+     F.14. Version -10 to -11
+     F.15. Version -09 to -10
+     F.16. Version -08 to -09
+     F.17. Version -07 to -08
+     F.18. Version -06 to -07
+     F.19. Version -05 to -06
+     F.20. Version -04 to -05
+     F.21. Version -03 to -04
+     F.22. Version -02 to -03
+     F.23. Version -01 to -02
+     F.24. Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -539,7 +544,7 @@ Table of Contents
    the Gid format is application specific.  An example of specific
    formatting of the Gid is given in Appendix C.  The application needs
    to specify how to handle potential collisions between Gids (see
-   Section 13.6).
+   Section 14.6).
 
 2.1.4.  Common IV
 
@@ -854,10 +859,10 @@ Table of Contents
       Key Agreement Algorithm.  The endpoint uses its private key from
       the Sender Context and the other endpoint's public key included in
       Recipient Auth Cred.  Note the requirement of validation of public
-      keys in Section 13.16.
+      keys in Section 14.16.
 
       In case the other endpoint's public key has COSE Key Type "EC2"
-      (e.g., for the curves P-256, P-384, and P-512), then the public
+      (e.g., for the curves P-256, P-384, and P-521), then the public
       key is used as is.  In case the other endpoint's public key has
       COSE Key Type "OKP", the procedure is described in Section 5 of
       [RFC7748].  In particular, if the public key is for X25519 or
@@ -1230,7 +1235,7 @@ Table of Contents
    *  It SHOULD use only its latest installed Recipient Contexts to
       process incoming messages, unless application policies admit to
       temporarily retain and use the old, recent, Security Context (see
-      Section 13.5.1).
+      Section 14.5.1).
 
    The distribution of a new Gid and Master Secret may result in
    temporarily misaligned Security Contexts among group members.  In
@@ -1238,7 +1243,7 @@ Table of Contents
    process messages received right after a new Gid and Master Secret
    have been distributed.  A discussion on practical consequences and
    possible ways to address them, as well as on how to handle the old
-   Security Context, is provided in Section 13.5.
+   Security Context, is provided in Section 14.5.
 
 3.  The COSE Object
 
@@ -1412,8 +1417,8 @@ Table of Contents
 
    *  The new element 'OSCORE_option', containing the value of the
       OSCORE Option present in the protected message, encoded as a
-      binary string.  This prevents the attack described in Section 13.7
-      when using the group mode, as further explained in Section 13.7.2.
+      binary string.  This prevents the attack described in Section 14.7
+      when using the group mode, as further explained in Section 14.7.2.
 
       Note for implementation: this construction requires the OSCORE
       Option of the message to be generated and finalized before
@@ -1434,7 +1439,7 @@ Table of Contents
       byte string, which encodes the Group Manager's authentication
       credential in its original binary representation made available to
       other endpoints in the group (see Section 2.4).  This prevents the
-      attack described in Section 13.8.
+      attack described in Section 14.8.
 
 4.  OSCORE Header Compression
 
@@ -1465,7 +1470,7 @@ Table of Contents
    *  This document defines the usage of the sixth least significant
       bit, called "Group Flag", in the first byte of the OSCORE Option
       containing the OSCORE flag bits.  This flag bit is specified in
-      Section 14.1.
+      Section 15.1.
 
    *  The Group Flag MUST be set to 1 if the Group OSCORE message is
       protected using the group mode (see Section 7).
@@ -2433,7 +2438,7 @@ Table of Contents
    Endpoints using the CoAP Echo Option [RFC9175] in a group where the
    AEAD Algorithm and Pairwise Key Agreement Algorithm are set MUST
    support the pairwise mode.  This prevents the attack described in
-   Section 13.9, which leverages requests sent over unicast to a single
+   Section 14.9, which leverages requests sent over unicast to a single
    group member and protected in group mode.
 
    The pairwise mode cannot be used to protect messages intended for
@@ -2672,7 +2677,7 @@ Table of Contents
    set, only the group mode can be used.  Hence, requests including the
    Echo Option can be protected only with the Group Mode, with the
    caveat due to the risk for those requests to be redirected to a
-   different server than the intended one, as discussed in Section 13.9.
+   different server than the intended one, as discussed in Section 14.9.
 
    The client does not necessarily resend the same request, but can
    instead send a more recent one, if the application permits it.  This
@@ -2733,7 +2738,7 @@ Table of Contents
    be ready to perform the challenge-response based on the Echo Option
    if a server starts it.
 
-   Message freshness is further discussed in Section 13.14.
+   Message freshness is further discussed in Section 14.14.
 
 10.  Implementation Compliance
 
@@ -3097,7 +3102,7 @@ Table of Contents
 
    Such a strictness in managing the authentication credentials and
    Recipient Contexts associated with other group members is required
-   for two reasons.  First, as further discussed in Section 13.1, it
+   for two reasons.  First, as further discussed in Section 14.1, it
    ensures that the group mode can be used securely, even in a group
    where the Group Encryption Algorithm does not provide integrity
    protection (see Section 2.1.7) and external signature checkers are
@@ -3221,7 +3226,196 @@ Table of Contents
    information, for example with the use of
    [I-D.ietf-ace-key-groupcomm-oscore].
 
-13.  Security Considerations
+13.  Implementation Status
+
+   This section is to be removed before publishing as an RFC.
+
+   Note to RFC Editor: when deleting this section, please also delete
+   RFC 7942 from the references of this document.
+
+   (Boilerplate as per Section 2.1 of [RFC7942]:)
+
+   This section records the status of known implementations of the
+   protocol defined by this specification at the time of posting of this
+   Internet-Draft, and is based on a proposal described in [RFC7942].
+   The description of implementations in this section is intended to
+   assist the IETF in its decision processes in progressing drafts to
+   RFCs.  Please note that the listing of any individual implementation
+   here does not imply endorsement by the IETF.  Furthermore, no effort
+   has been spent to verify the information presented here that was
+   supplied by IETF contributors.  This is not intended as, and must not
+   be construed to be, a catalog of available implementations or their
+   features.  Readers are advised to note that other implementations may
+   exist.
+
+   According to [RFC7942], "this will allow reviewers and working groups
+   to assign due consideration to documents that have the benefit of
+   running code, which may serve as evidence of valuable experimentation
+   and feedback that have made the implemented protocols more mature.
+   It is up to the individual working groups to use this information as
+   they see fit".
+
+13.1.  Implementation #1
+
+   *  Responsible organization: RISE Research Institutes of Sweden AB
+
+   *  Implementation's name: Group OSCORE for Eclipse Californium
+
+   *  Available at: https://github.com/rikard-sics/californium/tree/
+      group_oscore
+
+   *  Description: Implementation in Java, building on Eclipse
+      Californium, see:
+
+      -  https://github.com/eclipse-californium/californium
+
+      -  http://eclipse.dev/californium/
+
+   *  Implementation's level of maturity: prototype
+
+   *  The implementation supports:
+
+      -  The group mode and the pairwise mode.
+
+      -  Mapping of public keys for the curve Ed25519 into Montgomery
+         coordinates to use with X25519.
+
+      -  The following COSE encryption algorithms: AES-CCM-16-64-128,
+         AES-CCM-16-128-128, AES-CCM-16-64-256, AES-CCM-16-128-256,
+         AES_CCM-64-64-128, AES-CCM-64-128-128, AES-CCM-64-64-256, AES-
+         CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305,
+         A128CBC, A192CBC, A256CBC.
+
+      -  The following HKDF algorithms: HKDF SHA-256 (identified as the
+         COSE Algorithm "HMAC 256/256") and HKDF SHA-512 (identified as
+         the COSE Algorithm "HMAC 512/512").
+
+      -  The following COSE signature algorithms: ECDSA with curves
+         P-256, P-384, and P-521, as well as EdDSA with curve Ed25519.
+
+      -  The following COSE key agreement algorithms: ECDH-SS + HKDF-256
+         and ECDH-SS + HKDF-512, both of which using either keys of COSE
+         Key Type "EC2" with the curve P-256, P-384, and P-521, or keys
+         of COSE Key Type "OKP" key with X25519.
+
+      -  The following authentication credential format: CWT Claims Sets
+         (CCSs).
+
+   *  Version compatibility: From version -23 onwards.
+
+   *  Licensing: according to the same dual license of Eclipse
+      Californium, i.e., according to the "Eclipse Distribution License
+      1.0" and the "Eclipse Public License 2.0".  See:
+
+      -  https://github.com/eclipse-californium/californium/blob/main/
+         LICENSE
+
+      -  https://www.eclipse.org/org/documents/edl-v10.php
+
+      -  https://www.eclipse.org/legal/epl-2.0/
+
+   *  Contact information: Rikard Höglund - rikard.hoglund@ri.se
+
+   *  Information last updated on: 2025-02-06
+
+13.2.  Implementation #2
+
+   *  Implementation's name: aiocoap
+
+   *  Available at: https://codeberg.org/aiocoap/aiocoap
+
+   *  Description: A Python CoAP library with support for multiple
+      transports and security mechanisms.  The library provides also
+      utility programs.
+
+   *  Implementation's level of maturity: Stable support for OSCORE;
+      Group OSCORE is minimal.
+
+   *  The implementation supports:
+
+      -  The group mode and the pairwise mode.
+
+      -  Mapping of public keys for the curve Ed25519 into Montgomery
+         coordinates to use with X25519.
+
+      -  The following COSE encryption algorithms: 1-3, 10-13, 24,
+         30-33, -65531
+
+      -  The following HKDF algorithms: HKDF SHA-256, -384, -512.
+
+      -  The following COSE signature algorithms: EdDSA on Ed25519,
+         ECDSA w/ SHA-256 on P-256
+
+      -  The following COSE key agreement algorithms: ECDH on P-256 and
+         curve25519.
+
+      -  The following authentication credential format: currently n/a
+         (user provides pairs of credentials and keys)
+
+   *  Version compatibility: -23
+
+   *  Licensing: MIT
+
+   *  Implementation experience: Mostly smooth; the differentiation
+      between the regular and the group AEAD algorithm, and more
+      generally finding the right parameters to input into the
+      (abstracted) KDF part, was tedious and error prone (because Group
+      OSCORE largely relies on OSCORE extension points that were
+      anticipated, but that was not).
+
+   *  Contact information: Christian Amsüss - christian@amsuess.com
+
+   *  Information last updated on: 2025-02-06
+
+13.3.  Interoperability
+
+   The two implementations mentioned in Section 13.1 and Section 13.2
+   have successfully completed interoperability tests.
+
+   That occurred multiple times when covering earlier versions of the
+   protocol, as well as specifically for version -23 of the Internet
+   Draft, during the IETF 121 meeting in Dublin (Ireland) in November
+   2024 and later on in February 2025.
+
+   The scenarios considered during the interoperability tests are as
+   follows:
+
+   *  (A) Authentication credential format: CWT Claims Sets (CCSs).
+
+   *  (B) Message protection:
+
+      -  (B1) Both requests and responses protected in group mode.
+
+      -  (B2) Requests protected in group mode and responses protected
+         in pairwise mode.
+
+      -  (B3) Requests protected in pairwise mode and responses
+         protected in group mode.
+
+      -  (B4) Both requests and responses protected in pairwise mode.
+
+   *  (C) Signature algorithm: EdDSA with curve Ed25519.
+
+   *  (D) HKDF algorithms: HKDF SHA-256.
+
+   *  (E) Key agreement algorithms: ECDH-SS + HKDF-256, following a
+      mapping of public keys for the curve Ed25519 into Montgomery
+      coordinates to use with X25519.
+
+   *  (F) The following pairs of (Group Encryption Algorithm, AEAD
+      Algorithm), for all the cases B1, B2, B3, and B4 above:
+
+      -  (AES-CCM-16-64-128, AES-CCM-16-64-128).
+
+      -  (ChaCha20/Poly1305, ChaCha20/Poly1305).
+
+      -  (AES-CCM-16-64-128, ChaCha20/Poly1305).
+
+      -  (ChaCha20/Poly1305, AES-CCM-16-64-128).
+
+      -  (A128CBC, AES-CCM-16-64-128).
+
+14.  Security Considerations
 
    The same threat model discussed for OSCORE in Appendix D.1 of
    [RFC8613] holds for Group OSCORE.
@@ -3229,8 +3423,8 @@ Table of Contents
    For Group OSCORE, the Sender Context and Recipient Context
    additionally contain asymmetric keys, which are used to provide
    source authentication: in group mode, by means of countersignatures
-   (see Section 13.1); in pairwise mode, by using Diffie-Hellman (see
-   Section 13.2).  The key pair can, for example, be generated by the
+   (see Section 14.1); in pairwise mode, by using Diffie-Hellman (see
+   Section 14.2).  The key pair can, for example, be generated by the
    endpoint or provisioned during manufacturing.
 
    Note that, even if an endpoint is authorized to be a group member and
@@ -3250,7 +3444,7 @@ Table of Contents
 
    The same considerations on uniqueness of (key, nonce) pairs for
    OSCORE discussed in Appendix D.4 of [RFC8613] hold for Group OSCORE.
-   This is further discussed in Section 13.3 of this document.
+   This is further discussed in Section 14.3 of this document.
 
    The same considerations on unprotected message fields for OSCORE
    discussed in Appendix D.5 of [RFC8613] hold for Group OSCORE, with
@@ -3261,7 +3455,7 @@ Table of Contents
    the countersignature included in a Group OSCORE message protected in
    group mode is computed also over the value of the OSCORE Option,
    which is also part of the Additional Authenticated Data used in the
-   signing process.  This is further discussed in Section 13.7 of this
+   signing process.  This is further discussed in Section 14.7 of this
    document.
 
    As discussed in Section 6.2.3 of [I-D.ietf-core-groupcomm-bis], Group
@@ -3273,7 +3467,7 @@ Table of Contents
    covered in the security considerations of OSCORE (see Section 12 of
    [RFC8613]), and discusses how they hold when Group OSCORE is used.
 
-13.1.  Security of the Group Mode
+14.1.  Security of the Group Mode
 
    The group mode defined in Section 7 relies on commonly shared group
    keying material to protect communication within a group.  Using the
@@ -3372,7 +3566,7 @@ Table of Contents
    trusted entities such as signature checkers (see Section 12.3), which
    can break property 5, but cannot break properties 1, 2, 3, and 4.
 
-13.2.  Security of the Pairwise Mode
+14.2.  Security of the Pairwise Mode
 
    The pairwise mode defined in Section 8 protects messages by using
    pairwise symmetric keys, derived from the static-static Diffie-
@@ -3398,7 +3592,7 @@ Table of Contents
    trade-off between the maximum amount of time a same shared secret is
    stored and the frequency of its re-computing.
 
-13.3.  Uniqueness of (key, nonce)
+14.3.  Uniqueness of (key, nonce)
 
    The proof for uniqueness of (key, nonce) pairs in Appendix D.4 of
    [RFC8613] is also valid in group communication scenarios.  That is,
@@ -3426,7 +3620,7 @@ Table of Contents
    unique.  Thus, each message is processed with a different (key,
    nonce) pair.
 
-13.4.  Management of Group Keying Material
+14.4.  Management of Group Keying Material
 
    The protocol described in this document should take into account the
    risk of compromise of group members.  In particular, this document
@@ -3442,7 +3636,7 @@ Table of Contents
    and leave at any time, in order to limit the impact on performance
    due to the Security Context and keying material update.
 
-13.5.  Update of Security Context and Key Rotation
+14.5.  Update of Security Context and Key Rotation
 
    A group member can receive a message shortly after the group has been
    rekeyed, and new security parameters and keying material have been
@@ -3475,7 +3669,7 @@ Table of Contents
    result in misaligned Security Contexts between the sender and
    recipient of a same message.
 
-13.5.1.  Late Update on the Sender
+14.5.1.  Late Update on the Sender
 
    In this case, the sender protects a message using the old Security
    Context, i.e., before having installed the new Security Context.
@@ -3508,7 +3702,7 @@ Table of Contents
    Security Context.  Therefore, a conservative application policy
    should not admit the retention of old Security Contexts.
 
-13.5.2.  Late Update on the Recipient
+14.5.2.  Late Update on the Recipient
 
    In this case, the sender protects a message using the new Security
    Context, but the recipient receives that message before having
@@ -3524,7 +3718,7 @@ Table of Contents
    policy, for instance after a given number of unsuccessfully decrypted
    incoming messages.
 
-13.6.  Collision of Group Identifiers
+14.6.  Collision of Group Identifiers
 
    In case endpoints are deployed in multiple groups managed by
    different non-synchronized Group Managers, it is possible for Group
@@ -3542,7 +3736,7 @@ Table of Contents
    address to share their respective list of assigned Group Identifiers
    currently in use.
 
-13.7.  Cross-group Message Injection
+14.7.  Cross-group Message Injection
 
    A same endpoint is allowed to and would likely use the same pair
    (private key, authentication credential) in multiple OSCORE groups,
@@ -3551,19 +3745,19 @@ Table of Contents
    When a sender endpoint sends a message protected in pairwise mode to
    a recipient endpoint in an OSCORE group, a malicious group member may
    attempt to inject the message to a different OSCORE group also
-   including the same endpoints (see Section 13.7.1).
+   including the same endpoints (see Section 14.7.1).
 
    This practically relies on altering the content of the OSCORE Option,
    and having the same MAC in the ciphertext still correctly validating,
    which has a success probability depending on the size of the MAC.
 
-   As discussed in Section 13.7.2, the attack is practically infeasible
+   As discussed in Section 14.7.2, the attack is practically infeasible
    if the message is protected in group mode, thanks to the
    countersignature also bound to the OSCORE Option through the
    Additional Authenticated Data used in the signing process (see
    Section 3.4).
 
-13.7.1.  Attack Description
+14.7.1.  Attack Description
 
    Let us consider:
 
@@ -3606,7 +3800,7 @@ Table of Contents
    secret.  Therefore, Z is not able to check offline if a performed
    forgery is actually valid, before sending the forged message to G2.
 
-13.7.2.  Attack Prevention in Group Mode
+14.7.2.  Attack Prevention in Group Mode
 
    When a Group OSCORE message is protected in group mode, the
    countersignature is computed also over the value of the OSCORE
@@ -3627,14 +3821,14 @@ Table of Contents
    quartet (Master Secret, Master Salt, ID Context, Sender ID).
 
    This makes it practically infeasible to perform the attack described
-   in Section 13.7.1, since it would require the adversary to
+   in Section 14.7.1, since it would require the adversary to
    additionally forge a valid countersignature that replaces the
    original one in the forged message M2.
 
    If, hypothetically, the countersignature did not cover the OSCORE
    Option:
 
-   *  The attack described in Section 13.7.1 would still be possible
+   *  The attack described in Section 14.7.1 would still be possible
       against response messages protected in group mode, since the same
       unchanged countersignature from message M1 would be also valid in
       message M2.
@@ -3657,7 +3851,7 @@ Table of Contents
       member of G1 would also be able to forge a valid signed response
       message M2 to be injected in the same group G1.
 
-13.8.  Prevention of Group Cloning Attack
+14.8.  Prevention of Group Cloning Attack
 
    Both when using the group mode and the pairwise mode, the message
    protection covers also the Group Manager's authentication credential.
@@ -3685,7 +3879,7 @@ Table of Contents
    the authentication credential of X as Group Manager of G2 when
    attempting to.
 
-13.9.  Group OSCORE for Unicast Requests
+14.9.  Group OSCORE for Unicast Requests
 
    If a request is intended to be sent over unicast as addressed to a
    single group member, it is NOT RECOMMENDED for the client to protect
@@ -3754,7 +3948,7 @@ Table of Contents
    freshness or to initialize as valid a previously invalid Replay
    Window.
 
-13.10.  End-to-end Protection
+14.10.  End-to-end Protection
 
    The same considerations from Section 12.1 of [RFC8613] hold for Group
    OSCORE.
@@ -3764,7 +3958,7 @@ Table of Contents
    possible to combine (D)TLS and Group OSCORE for protecting message
    exchanges where messages are sent over multicast.
 
-13.11.  Master Secret
+14.11.  Master Secret
 
    Group OSCORE derives the Security Context using the same construction
    used by OSCORE, and by using the Group Identifier of a group as the
@@ -3781,7 +3975,7 @@ Table of Contents
    generating and distributing a new Master Secret.  Randomness
    requirements for security are described in [RFC4086].
 
-13.12.  Replay Protection
+14.12.  Replay Protection
 
    As in OSCORE [RFC8613], also Group OSCORE relies on Sender Sequence
    Numbers included in the COSE message field 'Partial IV' and used to
@@ -3793,7 +3987,7 @@ Table of Contents
    gets exhausted.  As discussed in Section 2.6.3, this results either
    in the endpoint being individually rekeyed and getting a new Sender
    ID, or in the establishment of a new Security Context in the group.
-   Therefore, uniqueness of (key, nonce) pairs (see Section 13.3) is
+   Therefore, uniqueness of (key, nonce) pairs (see Section 14.3) is
    preserved also when a new Security Context is established.
 
    Since one-to-many communication such as multicast usually involves
@@ -3807,7 +4001,7 @@ Table of Contents
    Security Context, or make a Replay Window valid (see Section 9)
    before resuming to accept incoming messages from other group members.
 
-13.13.  Message Ordering
+14.13.  Message Ordering
 
    Assuming that the other endpoint is honest, Group OSCORE provides
    relative ordering of received messages.  For a given Group OSCORE
@@ -3821,7 +4015,7 @@ Table of Contents
    Section 7.4.1 of [RFC8613]).  A received response is not older than
    the corresponding request.
 
-13.14.  Message Freshness
+14.14.  Message Freshness
 
    As in OSCORE, Group OSCORE provides only the guarantee that the
    request is not older than the Group OSCORE Security Context used to
@@ -3841,7 +4035,7 @@ Table of Contents
    their Replay Windows valid.
 
    Since requests including the Echo Option are sent over unicast, a
-   server can be victim of the attack discussed in Section 13.9, in case
+   server can be victim of the attack discussed in Section 14.9, in case
    such requests are protected in group mode.  Instead, protecting those
    requests with the pairwise mode prevents the attack above.  In fact,
    only the very server involved in the challenge-response exchange is
@@ -3857,7 +4051,7 @@ Table of Contents
    the Echo Option only if it is waiting for that exact integrity-
    protected Echo Option value, and is thus the intended recipient.
 
-13.15.  Client Aliveness
+14.15.  Client Aliveness
 
    Like in OSCORE (see Section 12.5 of [RFC8613]), a server may verify
    the aliveness of the client by using the CoAP Echo Option [RFC9175]
@@ -3869,7 +4063,7 @@ Table of Contents
    effectively allows the server to verify the client aliveness relative
    to the installation of the latest group keying material.
 
-13.16.  Cryptographic Considerations
+14.16.  Cryptographic Considerations
 
    The same considerations from Section 12.6 of [RFC8613] about the
    maximum Sender Sequence Number hold for Group OSCORE.
@@ -3955,12 +4149,12 @@ Table of Contents
    [Thormarker].  Hence, they MUST NOT be used with the public keys used
    to derive pairwise keys as specified in this document.
 
-13.17.  Message Segmentation
+14.17.  Message Segmentation
 
    The same considerations from Section 12.7 of [RFC8613] hold for Group
    OSCORE.
 
-13.18.  Privacy Considerations
+14.18.  Privacy Considerations
 
    Group OSCORE ensures end-to-end integrity protection and encryption
    of the message payload and of all the options that are not used for
@@ -4006,7 +4200,7 @@ Table of Contents
    This can be mitigated by the server device storing the precise state
    of the Replay Window of each known client on a clean shutdown.
 
-   Finally, the approach described in Section 13.6 to prevent collisions
+   Finally, the approach described in Section 14.6 to prevent collisions
    of Group Identifiers from different Group Managers may reveal
    information about events in the respective OSCORE groups.  In
    particular, a Group Identifier changes when the corresponding group
@@ -4018,14 +4212,14 @@ Table of Contents
    exact Group Manager has currently assigned which Group Identifiers in
    its OSCORE groups.
 
-14.  IANA Considerations
+15.  IANA Considerations
 
    Note to RFC Editor: Please replace "[RFC-XXXX]" with the RFC number
    of this document and delete this paragraph.
 
    This document has the following actions for IANA.
 
-14.1.  OSCORE Flag Bits Registry
+15.1.  OSCORE Flag Bits Registry
 
    IANA is asked to add the following entry to the "OSCORE Flag Bits"
    registry within the "Constrained RESTful Environments (CoRE)
@@ -4043,13 +4237,13 @@ Table of Contents
 
           Table 1: Registrations in the OSCORE Flag Bits Registry
 
-14.2.  CoAP Option Numbers Registry
+15.2.  CoAP Option Numbers Registry
 
    IANA is asked to add this document as a reference for the OSCORE
    Option in the "CoAP Option Numbers" registry within the "Constrained
    RESTful Environments (CoRE) Parameters" registry group.
 
-14.3.  Target Attributes Registry
+15.3.  Target Attributes Registry
 
    IANA is asked to add the following entry to the "Target Attributes"
    registry within the "Constrained RESTful Environments (CoRE)
@@ -4061,9 +4255,9 @@ Table of Contents
    Change Controller: IETF
    Reference: [RFC-XXXX]
 
-15.  References
+16.  References
 
-15.1.  Normative References
+16.1.  Normative References
 
    [COSE.Algorithms]
               IANA, "COSE Algorithms",
@@ -4074,8 +4268,9 @@ Table of Contents
               Dijk, E., Wang, C., and M. Tiloca, "Group Communication
               for the Constrained Application Protocol (CoAP)", Work in
               Progress, Internet-Draft, draft-ietf-core-groupcomm-bis-
-              11, 24 April 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-core-groupcomm-bis-11>.
+              12, 21 October 2024,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-core-
+              groupcomm-bis-12>.
 
    [NIST-800-56A]
               Barker, E., Chen, L., Roginsky, A., Vassilev, A., and R.
@@ -4168,7 +4363,7 @@ Table of Contents
               DOI 10.17487/RFC9459, September 2023,
               <https://www.rfc-editor.org/rfc/rfc9459>.
 
-15.2.  Informative References
+16.2.  Informative References
 
    [Degabriele]
               Degabriele, J. P., Lehmann, A., Paterson, K. G., Smart, N.
@@ -4179,9 +4374,9 @@ Table of Contents
    [I-D.amsuess-core-cachable-oscore]
               Amsüss, C. and M. Tiloca, "Cacheable OSCORE", Work in
               Progress, Internet-Draft, draft-amsuess-core-cachable-
-              oscore-09, 8 July 2024,
+              oscore-10, 8 January 2025,
               <https://datatracker.ietf.org/doc/html/draft-amsuess-core-
-              cachable-oscore-09>.
+              cachable-oscore-10>.
 
    [I-D.ietf-ace-key-groupcomm-oscore]
               Tiloca, M., Park, J., and F. Palombini, "Key Management
@@ -4193,40 +4388,40 @@ Table of Contents
    [I-D.ietf-core-groupcomm-proxy]
               Tiloca, M. and E. Dijk, "Proxy Operations for CoAP Group
               Communication", Work in Progress, Internet-Draft, draft-
-              ietf-core-groupcomm-proxy-02, 8 July 2024,
+              ietf-core-groupcomm-proxy-03, 21 October 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-core-
-              groupcomm-proxy-02>.
+              groupcomm-proxy-03>.
 
    [I-D.ietf-core-observe-multicast-notifications]
               Tiloca, M., Höglund, R., Amsüss, C., and F. Palombini,
               "Observe Notifications as CoAP Multicast Responses", Work
               in Progress, Internet-Draft, draft-ietf-core-observe-
-              multicast-notifications-09, 8 July 2024,
+              multicast-notifications-10, 21 October 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-core-
-              observe-multicast-notifications-09>.
+              observe-multicast-notifications-10>.
 
    [I-D.ietf-core-oscore-capable-proxies]
               Tiloca, M. and R. Höglund, "OSCORE-capable Proxies", Work
               in Progress, Internet-Draft, draft-ietf-core-oscore-
-              capable-proxies-02, 8 July 2024,
+              capable-proxies-03, 21 October 2024,
               <https://datatracker.ietf.org/doc/html/draft-ietf-core-
-              oscore-capable-proxies-02>.
+              oscore-capable-proxies-03>.
 
    [I-D.ietf-cose-cbor-encoded-cert]
               Mattsson, J. P., Selander, G., Raza, S., Höglund, J., and
               M. Furuhed, "CBOR Encoded X.509 Certificates (C509
               Certificates)", Work in Progress, Internet-Draft, draft-
-              ietf-cose-cbor-encoded-cert-11, 8 July 2024,
+              ietf-cose-cbor-encoded-cert-12, 8 January 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-cose-
-              cbor-encoded-cert-11>.
+              cbor-encoded-cert-12>.
 
    [I-D.ietf-iotops-security-protocol-comparison]
               Mattsson, J. P., Palombini, F., and M. Vučinić,
               "Comparison of CoAP Security Protocols", Work in Progress,
               Internet-Draft, draft-ietf-iotops-security-protocol-
-              comparison-06, 20 March 2024,
+              comparison-08, 21 January 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-iotops-
-              security-protocol-comparison-06>.
+              security-protocol-comparison-08>.
 
    [I-D.ietf-lwig-curve-representations]
               Struik, R., "Alternative Elliptic Curve Representations",
@@ -4238,9 +4433,9 @@ Table of Contents
    [I-D.irtf-cfrg-det-sigs-with-noise]
               Mattsson, J. P., Thormarker, E., and S. Ruohomaa, "Hedged
               ECDSA and EdDSA Signatures", Work in Progress, Internet-
-              Draft, draft-irtf-cfrg-det-sigs-with-noise-03, 16 March
+              Draft, draft-irtf-cfrg-det-sigs-with-noise-04, 6 November
               2024, <https://datatracker.ietf.org/doc/html/draft-irtf-
-              cfrg-det-sigs-with-noise-03>.
+              cfrg-det-sigs-with-noise-04>.
 
    [RFC4944]  Montenegro, G., Kushalnagar, N., Hui, J., and D. Culler,
               "Transmission of IPv6 Packets over IEEE 802.15.4
@@ -4275,6 +4470,11 @@ Table of Contents
               Constrained-Node Networks", RFC 7228,
               DOI 10.17487/RFC7228, May 2014,
               <https://www.rfc-editor.org/rfc/rfc7228>.
+
+   [RFC7942]  Sheffer, Y. and A. Farrel, "Improving Awareness of Running
+              Code: The Implementation Status Section", BCP 205,
+              RFC 7942, DOI 10.17487/RFC7942, July 2016,
+              <https://www.rfc-editor.org/rfc/rfc7942>.
 
    [RFC7959]  Bormann, C. and Z. Shelby, Ed., "Block-Wise Transfers in
               the Constrained Application Protocol (CoAP)", RFC 7959,
@@ -4609,7 +4809,7 @@ Appendix C.  Example of Group Identifier Format
    either case, the group epoch size needs to be chosen depending on the
    expected rate of rekeying instances.
 
-   As discussed in Section 13.6, if endpoints are deployed in multiple
+   As discussed in Section 14.6, if endpoints are deployed in multiple
    groups managed by different non-synchronized Group Managers, it is
    possible that Group Identifiers of different groups coincide at some
    point in time.  In this case, a recipient has to handle coinciding
@@ -4736,7 +4936,13 @@ Appendix F.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-F.1.  Version -22 to -23
+F.1.  Version -23 to -24
+
+   *  Added section "Implementation Status", according to RFC 7942.
+
+   *  Fixed "P-521" (instead of "P-512").
+
+F.2.  Version -22 to -23
 
    *  Examples of non-AEAD algorithms as Group Encryption Algorithm.
 
@@ -4752,7 +4958,7 @@ F.1.  Version -22 to -23
 
    *  Editorial improvements.
 
-F.2.  Version -21 to -22
+F.3.  Version -21 to -22
 
    *  Removed mentioning of the CBOR encoding of the HKDF Algorithm.
 
@@ -4782,7 +4988,7 @@ F.2.  Version -21 to -22
 
    *  Editorial improvements.
 
-F.3.  Version -20 to -21
+F.4.  Version -20 to -21
 
    *  Updated author list.
 
@@ -4793,17 +4999,17 @@ F.3.  Version -20 to -21
 
    *  Editorial: expanded name of the "CoRE Parameters" registry group.
 
-F.4.  Version -19 to -20
+F.5.  Version -19 to -20
 
    *  Change Controller for the target attribute "gosc" set to "IETF".
 
-F.5.  Version -18 to -19
+F.6.  Version -18 to -19
 
    *  Unified presentation of handling of multiple responses.
 
    *  Added Rikard Höglund as Contributor.
 
-F.6.  Version -17 to -18
+F.7.  Version -17 to -18
 
    *  Changed document title.
 
@@ -4848,13 +5054,13 @@ F.6.  Version -17 to -18
 
    *  Clarifications, fixes and editorial improvements.
 
-F.7.  Version -16 to -17
+F.8.  Version -16 to -17
 
    *  Definition and registration of the target attribute "gosc".
 
    *  Reference update and editorial fixes.
 
-F.8.  Version -15 to -16
+F.9.  Version -15 to -16
 
    *  Clients "SHOULD" use the group mode for one-to-many requests.
 
@@ -4867,11 +5073,11 @@ F.8.  Version -15 to -16
 
    *  Editorial improvements.
 
-F.9.  Version -14 to -15
+F.10.  Version -14 to -15
 
    *  Updated references and editorial fixes.
 
-F.10.  Version -13 to -14
+F.11.  Version -13 to -14
 
    *  Replaced "node" with "endpoint" where appropriate.
 
@@ -4898,7 +5104,7 @@ F.10.  Version -13 to -14
 
    *  Clarifications and editorial improvements.
 
-F.11.  Version -12 to -13
+F.12.  Version -12 to -13
 
    *  Fixes in the derivation of the Group Encryption Key.
 
@@ -4906,7 +5112,7 @@ F.11.  Version -12 to -13
 
    *  Changed UCCS to CCS.
 
-F.12.  Version -11 to -12
+F.13.  Version -11 to -12
 
    *  No mode of operation is mandatory to support.
 
@@ -4944,7 +5150,7 @@ F.12.  Version -11 to -12
 
    *  Fixes and editorial improvements.
 
-F.13.  Version -10 to -11
+F.14.  Version -10 to -11
 
    *  Loss of Recipient Contexts due to their overflow.
 
@@ -4991,7 +5197,7 @@ F.13.  Version -10 to -11
 
    *  Fixes and editorial improvements.
 
-F.14.  Version -09 to -10
+F.15.  Version -09 to -10
 
    *  Removed 'Counter Signature Key Parameters' from the Common
       Context.
@@ -5029,7 +5235,7 @@ F.14.  Version -09 to -10
 
    *  Overall clarifications and editorial revision.
 
-F.15.  Version -08 to -09
+F.16.  Version -08 to -09
 
    *  Pairwise keys are discarded after group rekeying.
 
@@ -5067,7 +5273,7 @@ F.15.  Version -08 to -09
 
    *  Clarifications and editorial improvements.
 
-F.16.  Version -07 to -08
+F.17.  Version -07 to -08
 
    *  Clarified relation between pairwise mode and group communication
       (Section 1).
@@ -5131,7 +5337,7 @@ F.16.  Version -07 to -08
 
    *  Editorial improvements.
 
-F.17.  Version -06 to -07
+F.18.  Version -06 to -07
 
    *  Updated abstract and introduction.
 
@@ -5163,7 +5369,7 @@ F.17.  Version -06 to -07
    *  New pairwise mode, using pairwise keying material for both
       requests and responses.
 
-F.18.  Version -05 to -06
+F.19.  Version -05 to -06
 
    *  Group IDs mandated to be unique under the same Group Manager.
 
@@ -5191,7 +5397,7 @@ F.18.  Version -05 to -06
 
    *  Editorial improvements.
 
-F.19.  Version -04 to -05
+F.20.  Version -04 to -05
 
    *  Added references to draft-dijk-core-groupcomm-bis.
 
@@ -5210,7 +5416,7 @@ F.19.  Version -04 to -05
    *  New "Counter Signature Key Parameters" IANA Registry
       (Section 9.2).
 
-F.20.  Version -03 to -04
+F.21.  Version -03 to -04
 
    *  Added the new "Counter Signature Parameters" in the Common Context
       (see Section 2).
@@ -5254,7 +5460,7 @@ F.20.  Version -03 to -04
    *  New IANA Registry "Counter Signature Parameters" (see
       Section 9.1).
 
-F.21.  Version -02 to -03
+F.22.  Version -02 to -03
 
    *  Revised structure and phrasing for improved readability and better
       alignment with draft-ietf-core-object-security.
@@ -5288,7 +5494,7 @@ F.21.  Version -02 to -03
    *  Revised Appendix D, now giving a short high-level description of a
       new endpoint set-up.
 
-F.22.  Version -01 to -02
+F.23.  Version -01 to -02
 
    *  Terminology has been made more aligned with RFC7252 and draft-
       ietf-core-object-security: i) "client" and "server" replace the
@@ -5323,7 +5529,7 @@ F.22.  Version -01 to -02
       synchronization of sequence numbers based on the Echo Option from
       draft-ietf-core-echo-request-tag.
 
-F.23.  Version -00 to -01
+F.24.  Version -00 to -01
 
    *  Section 1.1 has been updated with the definition of group as
       "security group".
