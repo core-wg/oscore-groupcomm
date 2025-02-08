@@ -462,7 +462,7 @@ where:
 
 * The Shared Secret is computed as a cofactor Diffie-Hellman shared secret, see Section 5.7.1.2 of {{NIST-800-56A}}, using the Pairwise Key Agreement Algorithm. The endpoint uses its private key from the Sender Context and the other endpoint's public key included in Recipient Auth Cred. Note the requirement of validation of public keys in {{ssec-crypto-considerations}}.
 
-   In case the other endpoint's public key has COSE Key Type "EC2" (e.g., for the curves P-256, P-384, and P-512), then the public key is used as is. In case the other endpoint's public key has COSE Key Type "OKP", the procedure is described in {{Section 5 of RFC7748}}. In particular, if the public key is for X25519 or X448, it is used as is. Otherwise, if the public key is for the curve Ed25519 or Ed448, it is first mapped to Montgomery coordinates (see {{montgomery}}).
+   In case the other endpoint's public key has COSE Key Type "EC2" (e.g., for the curves P-256, P-384, and P-521), then the public key is used as is. In case the other endpoint's public key has COSE Key Type "OKP", the procedure is described in {{Section 5 of RFC7748}}. In particular, if the public key is for X25519 or X448, it is used as is. Otherwise, if the public key is for the curve Ed25519 or Ed448, it is first mapped to Montgomery coordinates (see {{montgomery}}).
 
 * IKM-Sender is the Input Keying Material (IKM) used in the HKDF for the derivation of the Pairwise Sender Key. IKM-Sender is the byte string concatenation of Sender Auth Cred, Recipient Auth Cred, and the Shared Secret. The authentication credentials Sender Auth Cred and Recipient Auth Cred are binary encoded as defined in {{sec-pub-key-format}}.
 
@@ -1547,6 +1547,112 @@ In order to verify countersignatures of messages in a group, a signature checker
 
 A signature checker MUST be authorized before it can retrieve such information, for example with the use of {{I-D.ietf-ace-key-groupcomm-oscore}}.
 
+# Implementation Status # {#sec-implementation-status}
+{:removeinrfc}
+
+Note to RFC Editor: when deleting this section, please also delete RFC 7942 from the references of this document.
+
+{::boilerplate rfc7942info}
+
+## Implementation \#1 # {#sec-implementation-1}
+
+* Responsible organization: RISE Research Institutes of Sweden AB
+
+* Implementation's name: Group OSCORE for Eclipse Californium
+
+* Available at: https://github.com/rikard-sics/californium/tree/group_oscore
+
+* Description: Implementation in Java, building on Eclipse Californium, see:
+
+  * https://github.com/eclipse-californium/californium
+
+  * http://eclipse.dev/californium/
+
+* Implementation's level of maturity: prototype
+
+* The implementation supports:
+
+  * The group mode and the pairwise mode.
+  * Mapping of public keys for the curve Ed25519 into Montgomery coordinates to use with X25519.
+  * The following COSE encryption algorithms: AES-CCM-16-64-128, AES-CCM-16-128-128, AES-CCM-16-64-256, AES-CCM-16-128-256, AES_CCM-64-64-128, AES-CCM-64-128-128, AES-CCM-64-64-256, AES-CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305, A128CBC, A192CBC, A256CBC.
+  * The following HKDF algorithms: HKDF SHA-256 (identified as the COSE Algorithm "HMAC 256/256") and HKDF SHA-512 (identified as the COSE Algorithm "HMAC 512/512").
+  * The following COSE signature algorithms: ECDSA with curves P-256, P-384, and P-521, as well as EdDSA with curve Ed25519.
+  * The following COSE key agreement algorithms: ECDH-SS + HKDF-256 and ECDH-SS + HKDF-512, both of which using either keys of COSE Key Type "EC2" with the curve P-256, P-384, and P-521, or keys of COSE Key Type "OKP" key with X25519.
+  * The following authentication credential format: CWT Claims Sets (CCSs).
+
+* Version compatibility: From version -23 onwards.
+
+* Licensing: according to the same dual license of Eclipse Californium, i.e., according to the "Eclipse Distribution License 1.0" and the "Eclipse Public License 2.0". See:
+
+  * https://github.com/eclipse-californium/californium/blob/main/LICENSE
+  * https://www.eclipse.org/org/documents/edl-v10.php
+  * https://www.eclipse.org/legal/epl-2.0/
+
+* Contact information: Rikard Höglund - rikard.hoglund@ri.se
+
+* Information last updated on: 2025-02-06
+
+## Implementation \#2 # {#sec-implementation-2}
+
+* Implementation's name: aiocoap
+
+* Available at: https://codeberg.org/aiocoap/aiocoap
+
+* Description: A Python CoAP library with support for multiple transports and security mechanisms. The library provides also utility programs.
+
+* Implementation's level of maturity: Stable support for OSCORE; Group OSCORE is minimal.
+
+* The implementation supports:
+
+  * The group mode and the pairwise mode.
+  * Mapping of public keys for the curve Ed25519 into Montgomery coordinates to use with X25519.
+  * The following COSE encryption algorithms: 1-3, 10-13, 24, 30-33, -65531
+  * The following HKDF algorithms: HKDF SHA-256, -384, -512.
+  * The following COSE signature algorithms: EdDSA on Ed25519, ECDSA w/ SHA-256 on P-256
+  * The following COSE key agreement algorithms: ECDH on P-256 and curve25519.
+  * The following authentication credential format: currently n/a (user provides pairs of credentials and keys)
+
+* Version compatibility: -23
+
+* Licensing: MIT
+
+* Implementation experience: Mostly smooth; the differentiation between the regular and the group AEAD algorithm, and more generally finding the right parameters to input into the (abstracted) KDF part, was tedious and error prone (because Group OSCORE largely relies on OSCORE extension points that were anticipated, but that was not).
+
+* Contact information: Christian Amsüss - christian@amsuess.com
+
+* Information last updated on: 2025-02-06
+
+## Interoperability # {#sec-implementation-interop}
+
+The two implementations mentioned in {{sec-implementation-1}} and {{sec-implementation-2}} have successfully completed interoperability tests.
+
+That occurred multiple times when covering earlier versions of the protocol, as well as specifically for version -23 of the Internet Draft, during the IETF 121 meeting in Dublin (Ireland) in November 2024 and later on in February 2025.
+
+The scenarios considered during the interoperability tests are as follows:
+
+* (A) Authentication credential format: CWT Claims Sets (CCSs).
+
+* (B) Message protection:
+
+  * (B1) Both requests and responses protected in group mode.
+  * (B2) Requests protected in group mode and responses protected in pairwise mode.
+  * (B3) Requests protected in pairwise mode and responses protected in group mode.
+  * (B4) Both requests and responses protected in pairwise mode.
+
+* (C) Signature algorithm: EdDSA with curve Ed25519.
+
+* (D) HKDF algorithms: HKDF SHA-256.
+
+* (E) Key agreement algorithms: ECDH-SS + HKDF-256, following a mapping of public keys for the curve Ed25519 into Montgomery coordinates to use with X25519.
+
+* (F) The following pairs of (Group Encryption Algorithm, AEAD Algorithm), for all the cases B1, B2, B3, and B4 above:
+
+  * (AES-CCM-16-64-128, AES-CCM-16-64-128).
+  * (ChaCha20/Poly1305, ChaCha20/Poly1305).
+  * (AES-CCM-16-64-128, ChaCha20/Poly1305).
+  * (ChaCha20/Poly1305, AES-CCM-16-64-128).
+  * (A128CBC, AES-CCM-16-64-128).
+
 # Security Considerations  # {#sec-security-considerations}
 
 The same threat model discussed for OSCORE in {{Section D.1 of RFC8613}} holds for Group OSCORE.
@@ -2020,6 +2126,12 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
+
+## Version -23 to -24 ## {#sec-23-24}
+
+* Added section "Implementation Status", according to RFC 7942.
+
+* Fixed "P-521" (instead of "P-512").
 
 ## Version -22 to -23 ## {#sec-22-23}
 
