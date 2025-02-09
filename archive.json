@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-02-06T01:00:18.072025+00:00",
+  "timestamp": "2025-02-09T01:03:23.121190+00:00",
   "repo": "core-wg/oscore-groupcomm",
   "labels": [
     {
@@ -3559,25 +3559,42 @@
       "id": "PR_kwDOB2KWK86Cu65-",
       "title": "Section \"Implementation Status\", per RFC 7942",
       "url": "https://github.com/core-wg/oscore-groupcomm/pull/113",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "marco-tiloca-sics",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "As suggested by @cabo  , this PR adds an \"Implementation Status\" section, according to [RFC 7942](https://www.rfc-editor.org/rfc/rfc7942).\r\n\r\nIt also fixes a typo: s/P-512/P-521\r\n\r\n@chrysn , could you please check the new section and add the information about your implementation?",
       "createdAt": "2024-11-21T22:00:01Z",
-      "updatedAt": "2024-12-17T12:15:50Z",
+      "updatedAt": "2025-02-08T09:35:14Z",
       "baseRepository": "core-wg/oscore-groupcomm",
       "baseRefName": "master",
       "baseRefOid": "4d52b32a63b3935ae4ef9e6f29da72a2925168ae",
       "headRepository": "core-wg/oscore-groupcomm",
       "headRefName": "impl-status-rfc7942",
-      "headRefOid": "5973588622883d019ad079dda4f6ec43067d0aef",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "headRefOid": "96e4f0daa8838a467b3b5ce62b748edf6e3478db",
+      "closedAt": "2025-02-08T09:35:14Z",
+      "mergedAt": "2025-02-08T09:35:14Z",
+      "mergedBy": "marco-tiloca-sics",
+      "mergeCommit": {
+        "oid": "e698f25e06839f15f1c565b5aa8c721539e6c739"
+      },
+      "comments": [
+        {
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@rikard-sics @chrysn , https://github.com/core-wg/oscore-groupcomm/pull/113/commits/f735c04f2b7d4a30395459547d7f26d11c22c8dc  takes into account the outcome from the latest interop tests. Please have a look to the updated PR.",
+          "createdAt": "2025-02-06T12:50:57Z",
+          "updatedAt": "2025-02-06T12:50:57Z"
+        },
+        {
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Looks about right; just two minor suggestions inline.\r\n\r\nThanks! Both are now committed.",
+          "createdAt": "2025-02-07T16:06:15Z",
+          "updatedAt": "2025-02-07T16:06:15Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOB2KWK86STpnf",
@@ -3629,6 +3646,85 @@
               "body": "```suggestion\r\n  * (ChaCha20/Poly1305, ChaCha20/Poly1305), for the case B2 above.\r\n  \r\n  Interoperability was not yet achieved in scenarios in which different AEAD algorithms were used for pairwise and group encryption algorithm.\r\n```",
               "createdAt": "2024-12-17T11:18:46Z",
               "updatedAt": "2024-12-17T11:18:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK86a6PtK",
+          "commit": {
+            "abbreviatedOid": "f735c04"
+          },
+          "author": "rikard-sics",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "Looks good to me!",
+          "createdAt": "2025-02-06T15:05:51Z",
+          "updatedAt": "2025-02-06T15:05:51Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOB2KWK86a7okk",
+          "commit": {
+            "abbreviatedOid": "f735c04"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-06T16:50:30Z",
+          "updatedAt": "2025-02-06T16:50:30Z",
+          "comments": [
+            {
+              "originalPosition": 26,
+              "body": "{::boilerplate rfc7942}\r\n\r\nor\r\n\r\n{::boilerplate rfc7942info}\r\n\r\nJFYI....",
+              "createdAt": "2025-02-06T16:50:30Z",
+              "updatedAt": "2025-02-06T16:50:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK86a751D",
+          "commit": {
+            "abbreviatedOid": "f735c04"
+          },
+          "author": "marco-tiloca-sics",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-02-06T17:17:36Z",
+          "updatedAt": "2025-02-06T17:17:36Z",
+          "comments": [
+            {
+              "originalPosition": 26,
+              "body": "Thanks! Now in https://github.com/core-wg/oscore-groupcomm/pull/113/commits/86f84fa9f3650ea3b6f9b9baec87e61173b3346e",
+              "createdAt": "2025-02-06T17:17:36Z",
+              "updatedAt": "2025-02-06T17:17:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOB2KWK86bGQVI",
+          "commit": {
+            "abbreviatedOid": "86f84fa"
+          },
+          "author": "chrysn",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "Looks about right; just two minor suggestions inline.",
+          "createdAt": "2025-02-07T15:49:17Z",
+          "updatedAt": "2025-02-07T15:51:59Z",
+          "comments": [
+            {
+              "originalPosition": 66,
+              "body": "```suggestion\r\n* Implementation's level of maturity: Stable support for OSCORE; Group OSCORE is minimal.\r\n```",
+              "createdAt": "2025-02-07T15:49:17Z",
+              "updatedAt": "2025-02-07T15:51:59Z"
+            },
+            {
+              "originalPosition": 82,
+              "body": "```suggestion\r\n* Implementation experience: Mostly smooth; the differentiation between the regular and the group AEAD algorithm, and more generally finding the right parameters to input into the (abstracted) KDF part, was tedious and error prone (because Group OSCORE largely relies on OSCORE extension points that were anticipated, but that was not).\r\n```",
+              "createdAt": "2025-02-07T15:50:28Z",
+              "updatedAt": "2025-02-07T15:51:59Z"
             }
           ]
         }
