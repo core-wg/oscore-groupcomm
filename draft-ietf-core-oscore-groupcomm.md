@@ -645,7 +645,7 @@ A. and then XOR with X bytes from the Common IV's start, where X is the length i
 
 For example, if X = 7 and the Common IV is 0x00112233445566778899aabbcc (13 bytes), then the bytes to XOR are 0x00112233445566 (7 bytes).
 
-The constructed nonce is used as AEAD nonce by the AEAD Algorithm (see {{ssec-common-context-aead-alg}}) and by the Group Encryption Algorithm when this is an AEAD algorithm (see {{ssec-common-context-cs-enc-alg}}).
+The constructed nonce is used both by the AEAD Algorithm (see {{ssec-common-context-aead-alg}}) and by the Group Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}), independent of whether they are AEAD or plain encryption algorithms. Algorithms that do not use a nonce are not supported, as per {{ssec-common-context-cs-enc-alg}}.
 
 ## external_aad # {#sec-cose-object-ext-aad}
 
@@ -2128,6 +2128,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 * Made RFC 5869 a normative reference.
 
 * Removed request to add a note in the "CoAP Option Numbers" registry.
+
+* More precise phrasing on using the encryption nonce.
 
 ## Version -23 to -24 ## {#sec-23-24}
 
