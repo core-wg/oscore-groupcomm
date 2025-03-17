@@ -13,12 +13,12 @@
 <meta content="
        This document defines the security protocol Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of CoAP messages exchanged between members of a group, e.g., sent over IP multicast. In particular, the described protocol defines how OSCORE is used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with any other member of the group for pairwise OSCORE communication. Group OSCORE can be used between endpoints communicating with CoAP or CoAP-mappable HTTP. 
     " name="description">
-<meta content="xml2rfc 3.26.0" name="generator">
+<meta content="xml2rfc 3.28.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-core-oscore-groupcomm-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.26.0
-    Python 3.12.8
+  xml2rfc 3.28.0
+    Python 3.12.9
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
@@ -439,7 +439,7 @@ dl {
     margin-bottom: 0;
   }
 }
-dl > dt {
+dl:not(.dlNewline) > dt {
   float: left;
   margin-right: 2ch;
   min-width: 8ch;
@@ -1048,11 +1048,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Group OSCORE</td>
-<td class="right">February 2025</td>
+<td class="right">March 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Tiloca, et al.</td>
-<td class="center">Expires 12 August 2025</td>
+<td class="center">Expires 18 September 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1065,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-core-oscore-groupcomm-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-02-08" class="published">8 February 2025</time>
+<time datetime="2025-03-17" class="published">17 March 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-08-12">12 August 2025</time></dd>
+<dd class="expires"><time datetime="2025-09-18">18 September 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1135,7 +1135,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 12 August 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 18 September 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1527,76 +1527,79 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.22.1"><a href="#appendix-F" class="auto internal xref">Appendix F</a>.  <a href="#name-document-updates" class="internal xref">Document Updates</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.1">
-                <p id="section-toc.1-1.22.2.1.1"><a href="#appendix-F.1" class="auto internal xref">F.1</a>.  <a href="#name-version-23-to-24" class="internal xref">Version -23 to -24</a></p>
+                <p id="section-toc.1-1.22.2.1.1"><a href="#appendix-F.1" class="auto internal xref">F.1</a>.  <a href="#name-version-24-to-25" class="internal xref">Version -24 to -25</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.2">
-                <p id="section-toc.1-1.22.2.2.1"><a href="#appendix-F.2" class="auto internal xref">F.2</a>.  <a href="#name-version-22-to-23" class="internal xref">Version -22 to -23</a></p>
+                <p id="section-toc.1-1.22.2.2.1"><a href="#appendix-F.2" class="auto internal xref">F.2</a>.  <a href="#name-version-23-to-24" class="internal xref">Version -23 to -24</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.3">
-                <p id="section-toc.1-1.22.2.3.1"><a href="#appendix-F.3" class="auto internal xref">F.3</a>.  <a href="#name-version-21-to-22" class="internal xref">Version -21 to -22</a></p>
+                <p id="section-toc.1-1.22.2.3.1"><a href="#appendix-F.3" class="auto internal xref">F.3</a>.  <a href="#name-version-22-to-23" class="internal xref">Version -22 to -23</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.4">
-                <p id="section-toc.1-1.22.2.4.1"><a href="#appendix-F.4" class="auto internal xref">F.4</a>.  <a href="#name-version-20-to-21" class="internal xref">Version -20 to -21</a></p>
+                <p id="section-toc.1-1.22.2.4.1"><a href="#appendix-F.4" class="auto internal xref">F.4</a>.  <a href="#name-version-21-to-22" class="internal xref">Version -21 to -22</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.5">
-                <p id="section-toc.1-1.22.2.5.1"><a href="#appendix-F.5" class="auto internal xref">F.5</a>.  <a href="#name-version-19-to-20" class="internal xref">Version -19 to -20</a></p>
+                <p id="section-toc.1-1.22.2.5.1"><a href="#appendix-F.5" class="auto internal xref">F.5</a>.  <a href="#name-version-20-to-21" class="internal xref">Version -20 to -21</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.6">
-                <p id="section-toc.1-1.22.2.6.1"><a href="#appendix-F.6" class="auto internal xref">F.6</a>.  <a href="#name-version-18-to-19" class="internal xref">Version -18 to -19</a></p>
+                <p id="section-toc.1-1.22.2.6.1"><a href="#appendix-F.6" class="auto internal xref">F.6</a>.  <a href="#name-version-19-to-20" class="internal xref">Version -19 to -20</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.7">
-                <p id="section-toc.1-1.22.2.7.1"><a href="#appendix-F.7" class="auto internal xref">F.7</a>.  <a href="#name-version-17-to-18" class="internal xref">Version -17 to -18</a></p>
+                <p id="section-toc.1-1.22.2.7.1"><a href="#appendix-F.7" class="auto internal xref">F.7</a>.  <a href="#name-version-18-to-19" class="internal xref">Version -18 to -19</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.8">
-                <p id="section-toc.1-1.22.2.8.1"><a href="#appendix-F.8" class="auto internal xref">F.8</a>.  <a href="#name-version-16-to-17" class="internal xref">Version -16 to -17</a></p>
+                <p id="section-toc.1-1.22.2.8.1"><a href="#appendix-F.8" class="auto internal xref">F.8</a>.  <a href="#name-version-17-to-18" class="internal xref">Version -17 to -18</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.9">
-                <p id="section-toc.1-1.22.2.9.1"><a href="#appendix-F.9" class="auto internal xref">F.9</a>.  <a href="#name-version-15-to-16" class="internal xref">Version -15 to -16</a></p>
+                <p id="section-toc.1-1.22.2.9.1"><a href="#appendix-F.9" class="auto internal xref">F.9</a>.  <a href="#name-version-16-to-17" class="internal xref">Version -16 to -17</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.10">
-                <p id="section-toc.1-1.22.2.10.1"><a href="#appendix-F.10" class="auto internal xref">F.10</a>. <a href="#name-version-14-to-15" class="internal xref">Version -14 to -15</a></p>
+                <p id="section-toc.1-1.22.2.10.1"><a href="#appendix-F.10" class="auto internal xref">F.10</a>. <a href="#name-version-15-to-16" class="internal xref">Version -15 to -16</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.11">
-                <p id="section-toc.1-1.22.2.11.1"><a href="#appendix-F.11" class="auto internal xref">F.11</a>. <a href="#name-version-13-to-14" class="internal xref">Version -13 to -14</a></p>
+                <p id="section-toc.1-1.22.2.11.1"><a href="#appendix-F.11" class="auto internal xref">F.11</a>. <a href="#name-version-14-to-15" class="internal xref">Version -14 to -15</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.12">
-                <p id="section-toc.1-1.22.2.12.1"><a href="#appendix-F.12" class="auto internal xref">F.12</a>. <a href="#name-version-12-to-13" class="internal xref">Version -12 to -13</a></p>
+                <p id="section-toc.1-1.22.2.12.1"><a href="#appendix-F.12" class="auto internal xref">F.12</a>. <a href="#name-version-13-to-14" class="internal xref">Version -13 to -14</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.13">
-                <p id="section-toc.1-1.22.2.13.1"><a href="#appendix-F.13" class="auto internal xref">F.13</a>. <a href="#name-version-11-to-12" class="internal xref">Version -11 to -12</a></p>
+                <p id="section-toc.1-1.22.2.13.1"><a href="#appendix-F.13" class="auto internal xref">F.13</a>. <a href="#name-version-12-to-13" class="internal xref">Version -12 to -13</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.14">
-                <p id="section-toc.1-1.22.2.14.1"><a href="#appendix-F.14" class="auto internal xref">F.14</a>. <a href="#name-version-10-to-11" class="internal xref">Version -10 to -11</a></p>
+                <p id="section-toc.1-1.22.2.14.1"><a href="#appendix-F.14" class="auto internal xref">F.14</a>. <a href="#name-version-11-to-12" class="internal xref">Version -11 to -12</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.15">
-                <p id="section-toc.1-1.22.2.15.1"><a href="#appendix-F.15" class="auto internal xref">F.15</a>. <a href="#name-version-09-to-10" class="internal xref">Version -09 to -10</a></p>
+                <p id="section-toc.1-1.22.2.15.1"><a href="#appendix-F.15" class="auto internal xref">F.15</a>. <a href="#name-version-10-to-11" class="internal xref">Version -10 to -11</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.16">
-                <p id="section-toc.1-1.22.2.16.1"><a href="#appendix-F.16" class="auto internal xref">F.16</a>. <a href="#name-version-08-to-09" class="internal xref">Version -08 to -09</a></p>
+                <p id="section-toc.1-1.22.2.16.1"><a href="#appendix-F.16" class="auto internal xref">F.16</a>. <a href="#name-version-09-to-10" class="internal xref">Version -09 to -10</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.17">
-                <p id="section-toc.1-1.22.2.17.1"><a href="#appendix-F.17" class="auto internal xref">F.17</a>. <a href="#name-version-07-to-08" class="internal xref">Version -07 to -08</a></p>
+                <p id="section-toc.1-1.22.2.17.1"><a href="#appendix-F.17" class="auto internal xref">F.17</a>. <a href="#name-version-08-to-09" class="internal xref">Version -08 to -09</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.18">
-                <p id="section-toc.1-1.22.2.18.1"><a href="#appendix-F.18" class="auto internal xref">F.18</a>. <a href="#name-version-06-to-07" class="internal xref">Version -06 to -07</a></p>
+                <p id="section-toc.1-1.22.2.18.1"><a href="#appendix-F.18" class="auto internal xref">F.18</a>. <a href="#name-version-07-to-08" class="internal xref">Version -07 to -08</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.19">
-                <p id="section-toc.1-1.22.2.19.1"><a href="#appendix-F.19" class="auto internal xref">F.19</a>. <a href="#name-version-05-to-06" class="internal xref">Version -05 to -06</a></p>
+                <p id="section-toc.1-1.22.2.19.1"><a href="#appendix-F.19" class="auto internal xref">F.19</a>. <a href="#name-version-06-to-07" class="internal xref">Version -06 to -07</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.20">
-                <p id="section-toc.1-1.22.2.20.1"><a href="#appendix-F.20" class="auto internal xref">F.20</a>. <a href="#name-version-04-to-05" class="internal xref">Version -04 to -05</a></p>
+                <p id="section-toc.1-1.22.2.20.1"><a href="#appendix-F.20" class="auto internal xref">F.20</a>. <a href="#name-version-05-to-06" class="internal xref">Version -05 to -06</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.21">
-                <p id="section-toc.1-1.22.2.21.1"><a href="#appendix-F.21" class="auto internal xref">F.21</a>. <a href="#name-version-03-to-04" class="internal xref">Version -03 to -04</a></p>
+                <p id="section-toc.1-1.22.2.21.1"><a href="#appendix-F.21" class="auto internal xref">F.21</a>. <a href="#name-version-04-to-05" class="internal xref">Version -04 to -05</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.22">
-                <p id="section-toc.1-1.22.2.22.1"><a href="#appendix-F.22" class="auto internal xref">F.22</a>. <a href="#name-version-02-to-03" class="internal xref">Version -02 to -03</a></p>
+                <p id="section-toc.1-1.22.2.22.1"><a href="#appendix-F.22" class="auto internal xref">F.22</a>. <a href="#name-version-03-to-04" class="internal xref">Version -03 to -04</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.23">
-                <p id="section-toc.1-1.22.2.23.1"><a href="#appendix-F.23" class="auto internal xref">F.23</a>. <a href="#name-version-01-to-02" class="internal xref">Version -01 to -02</a></p>
+                <p id="section-toc.1-1.22.2.23.1"><a href="#appendix-F.23" class="auto internal xref">F.23</a>. <a href="#name-version-02-to-03" class="internal xref">Version -02 to -03</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.24">
-                <p id="section-toc.1-1.22.2.24.1"><a href="#appendix-F.24" class="auto internal xref">F.24</a>. <a href="#name-version-00-to-01" class="internal xref">Version -00 to -01</a></p>
+                <p id="section-toc.1-1.22.2.24.1"><a href="#appendix-F.24" class="auto internal xref">F.24</a>. <a href="#name-version-01-to-02" class="internal xref">Version -01 to -02</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.22.2.25">
+                <p id="section-toc.1-1.22.2.25.1"><a href="#appendix-F.25" class="auto internal xref">F.25</a>. <a href="#name-version-00-to-01" class="internal xref">Version -00 to -01</a></p>
 </li>
             </ul>
 </li>
@@ -1654,7 +1657,7 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
             <p id="section-1.1-6.2.1">Authentication credential: information associated with an entity, including that entity's public key and parameters associated with the public key. Examples of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) <span>[<a href="#RFC8392" class="cite xref">RFC8392</a>]</span>, X.509 certificates <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> and C509 certificates <span>[<a href="#I-D.ietf-cose-cbor-encoded-cert" class="cite xref">I-D.ietf-cose-cbor-encoded-cert</a>]</span>. Further details about authentication credentials are provided in <a href="#sec-pub-key-format" class="auto internal xref">Section 2.4</a>.<a href="#section-1.1-6.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.1-6.3">
-            <p id="section-1.1-6.3.1">Group: a set of endpoints that share group keying material and security parameters (Common Context, see <a href="#sec-context" class="auto internal xref">Section 2</a>). That is, unless otherwise specified, the term group used in this document refers to a "security group" (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-12#section-2.1" class="relref">Section 2.1</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>), not to be confused with "CoAP group" or "application group".<a href="#section-1.1-6.3.1" class="pilcrow">¶</a></p>
+            <p id="section-1.1-6.3.1">Group: a set of endpoints that share group keying material and security parameters (Common Context, see <a href="#sec-context" class="auto internal xref">Section 2</a>). That is, unless otherwise specified, the term group used in this document refers to a "security group" (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-13#section-2.1" class="relref">Section 2.1</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>), not to be confused with "CoAP group" or "application group".<a href="#section-1.1-6.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.1-6.4">
             <p id="section-1.1-6.4.1">Group Manager: an entity responsible for a group, neither required to be an actual group member nor to take part in the group communication. The operations of the Group Manager are defined in <a href="#group-manager" class="auto internal xref">Section 12</a> and its responsibilities are listed in <a href="#sec-group-manager" class="auto internal xref">Appendix D</a>.<a href="#section-1.1-6.4.1" class="pilcrow">¶</a></p>
@@ -2794,7 +2797,7 @@ In particular, the Countersign_structure contains the context text string "Count
             <p id="section-7.2-2.4.1">Additionally, if the used Recipient Context was created upon receiving this request and the message is not verified successfully, the server <span class="bcp14">MAY</span> delete that Recipient Context. Such a configuration, which is specified by the application, mitigates attacks that aim at overloading the server's storage.<a href="#section-7.2-2.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-7.2-3">A server <span class="bcp14">SHOULD NOT</span> process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. For an example where this is not fulfilled, see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-10#section-9.2.1" class="relref">Section 9.2.1</a> of [<a href="#I-D.ietf-core-observe-multicast-notifications" class="cite xref">I-D.ietf-core-observe-multicast-notifications</a>]</span>.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
+<p id="section-7.2-3">A server <span class="bcp14">SHOULD NOT</span> process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. For an example where this is not fulfilled, see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-11#section-9.2.1" class="relref">Section 9.2.1</a> of [<a href="#I-D.ietf-core-observe-multicast-notifications" class="cite xref">I-D.ietf-core-observe-multicast-notifications</a>]</span>.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
 <p id="section-7.2-4">In addition, the following applies if the request establishes a long exchange and the server intends to reply with multiple responses.<a href="#section-7.2-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-7.2-5.1">
@@ -3727,7 +3730,7 @@ to use this information as they see fit".<a href="#section-13-5" class="pilcrow"
 <p id="section-14-5">The same considerations on protected message fields for OSCORE discussed in <span><a href="https://rfc-editor.org/rfc/rfc8613#appendix-D.3" class="relref">Appendix D.3</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> hold for Group OSCORE.<a href="#section-14-5" class="pilcrow">¶</a></p>
 <p id="section-14-6">The same considerations on uniqueness of (key, nonce) pairs for OSCORE discussed in <span><a href="https://rfc-editor.org/rfc/rfc8613#appendix-D.4" class="relref">Appendix D.4</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> hold for Group OSCORE. This is further discussed in <a href="#ssec-key-nonce-uniqueness" class="auto internal xref">Section 14.3</a> of this document.<a href="#section-14-6" class="pilcrow">¶</a></p>
 <p id="section-14-7">The same considerations on unprotected message fields for OSCORE discussed in <span><a href="https://rfc-editor.org/rfc/rfc8613#appendix-D.5" class="relref">Appendix D.5</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> hold for Group OSCORE, with the following differences. First, the 'kid context' of request messages is part of the Additional Authenticated Data, thus safely enabling to keep long exchanges active beyond a possible change of ID Context (Gid), following a group rekeying (see <a href="#sec-cose-object-ext-aad" class="auto internal xref">Section 3.4</a>). Second, the countersignature included in a Group OSCORE message protected in group mode is computed also over the value of the OSCORE Option, which is also part of the Additional Authenticated Data used in the signing process. This is further discussed in <a href="#ssec-cross-group-injection" class="auto internal xref">Section 14.7</a> of this document.<a href="#section-14-7" class="pilcrow">¶</a></p>
-<p id="section-14-8">As discussed in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-12#section-6.2.3" class="relref">Section 6.2.3</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>, Group OSCORE addresses security attacks against CoAP listed in Sections 11.2-11.6 of <span>[<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>, especially when run over IP multicast.<a href="#section-14-8" class="pilcrow">¶</a></p>
+<p id="section-14-8">As discussed in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-13#section-6.2.3" class="relref">Section 6.2.3</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>, Group OSCORE addresses security attacks against CoAP listed in Sections 11.2-11.6 of <span>[<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>, especially when run over IP multicast.<a href="#section-14-8" class="pilcrow">¶</a></p>
 <p id="section-14-9">The rest of this section first discusses security aspects to be taken into account when using Group OSCORE. Then it goes through aspects covered in the security considerations of OSCORE (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-12" class="relref">Section 12</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>), and discusses how they hold when Group OSCORE is used.<a href="#section-14-9" class="pilcrow">¶</a></p>
 <div id="ssec-group-mode-security">
 <section id="section-14.1">
@@ -3957,8 +3960,8 @@ Note that, by changing the Partial IV as discussed above, any member of G1 would
 <p id="section-14.9-3">If the client uses the group mode with its own Sender Key to protect a unicast request to a group member, an on-path adversary can, right then or later on, redirect that request to one/many different group member(s) over unicast, or to the whole OSCORE group over multicast. By doing so, the adversary can induce the target group member(s) to perform actions intended for one group member only. Note that the adversary can be external, i.e., they do not need to also be a member of the OSCORE group.<a href="#section-14.9-3" class="pilcrow">¶</a></p>
 <p id="section-14.9-4">This is due to the fact that the client is not able to indicate the single intended recipient in a way which is secure and possible to process for Group OSCORE on the server side. In particular, Group OSCORE does not protect network addressing information such as the IP address of the intended recipient server. It follows that the server(s) receiving the redirected request cannot assert whether that was the original intention of the client, and would thus simply assume so.<a href="#section-14.9-4" class="pilcrow">¶</a></p>
 <p id="section-14.9-5">The impact of such an attack depends especially on the REST method of the request, i.e., the Inner CoAP Code of the OSCORE request message. In particular, safe methods such as GET and FETCH would trigger (several) unintended responses from the targeted server(s), while not resulting in destructive behavior. On the other hand, non safe methods such as PUT, POST, and PATCH/iPATCH would result in the target server(s) taking active actions on their resources and possible cyber-physical environment, with the risk of destructive consequences and possible implications for safety.<a href="#section-14.9-5" class="pilcrow">¶</a></p>
-<p id="section-14.9-6">A client can instead use the pairwise mode as defined in <a href="#sec-pairwise-protection-req" class="auto internal xref">Section 8.3</a>, in order to protect a request sent to a single group member by using pairwise keying material (see <a href="#sec-derivation-pairwise" class="auto internal xref">Section 2.5</a>). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, a client supporting the pairwise mode <span class="bcp14">SHOULD</span> use it to protect requests sent to a single group member over unicast. For an example where this is not fulfilled, see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-10#section-9.2.1" class="relref">Section 9.2.1</a> of [<a href="#I-D.ietf-core-observe-multicast-notifications" class="cite xref">I-D.ietf-core-observe-multicast-notifications</a>]</span>.<a href="#section-14.9-6" class="pilcrow">¶</a></p>
-<p id="section-14.9-7">The use of block-wise transfers <span>[<a href="#RFC7959" class="cite xref">RFC7959</a>]</span> with group communication for CoAP is as discussed in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-12#section-3.8" class="relref">Section 3.8</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>. Note that, after a first block-wise request which targets all servers in the group and includes the CoAP Block2 Option, following block-wise exchanges rely on unicast requests that should therefore be protected using the pairwise mode.<a href="#section-14.9-7" class="pilcrow">¶</a></p>
+<p id="section-14.9-6">A client can instead use the pairwise mode as defined in <a href="#sec-pairwise-protection-req" class="auto internal xref">Section 8.3</a>, in order to protect a request sent to a single group member by using pairwise keying material (see <a href="#sec-derivation-pairwise" class="auto internal xref">Section 2.5</a>). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, a client supporting the pairwise mode <span class="bcp14">SHOULD</span> use it to protect requests sent to a single group member over unicast. For an example where this is not fulfilled, see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-11#section-9.2.1" class="relref">Section 9.2.1</a> of [<a href="#I-D.ietf-core-observe-multicast-notifications" class="cite xref">I-D.ietf-core-observe-multicast-notifications</a>]</span>.<a href="#section-14.9-6" class="pilcrow">¶</a></p>
+<p id="section-14.9-7">The use of block-wise transfers <span>[<a href="#RFC7959" class="cite xref">RFC7959</a>]</span> with group communication for CoAP is as discussed in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-13#section-3.8" class="relref">Section 3.8</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>. Note that, after a first block-wise request which targets all servers in the group and includes the CoAP Block2 Option, following block-wise exchanges rely on unicast requests that should therefore be protected using the pairwise mode.<a href="#section-14.9-7" class="pilcrow">¶</a></p>
 <p id="section-14.9-8">Editor's note: The paragraph above will have to be re-checked against the Section "Block-Wise Transfer" of <span>[<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>, in order to ensure that it is aligned with that.<a href="#section-14.9-8" class="pilcrow">¶</a></p>
 <p id="section-14.9-9">Additional considerations are discussed in <a href="#sec-synch-challenge-response" class="auto internal xref">Section 9</a>, with respect to requests including a CoAP Echo Option <span>[<a href="#RFC9175" class="cite xref">RFC9175</a>]</span> that have to be sent over unicast, as a challenge-response method for servers to achieve freshness or to initialize as valid a previously invalid Replay Window.<a href="#section-14.9-9" class="pilcrow">¶</a></p>
 </section>
@@ -4160,7 +4163,7 @@ Reference: [RFC-XXXX]
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-groupcomm-bis">[I-D.ietf-core-groupcomm-bis]</dt>
         <dd>
-<span class="refAuthor">Dijk, E.</span>, <span class="refAuthor">Wang, C.</span>, and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Group Communication for the Constrained Application Protocol (CoAP)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-groupcomm-bis-12</span>, <time datetime="2024-10-21" class="refDate">21 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-12">https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-12</a>&gt;</span>. </dd>
+<span class="refAuthor">Dijk, E.</span> and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Group Communication for the Constrained Application Protocol (CoAP)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-groupcomm-bis-13</span>, <time datetime="2025-02-24" class="refDate">24 February 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-13">https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-13</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="NIST-800-56A">[NIST-800-56A]</dt>
         <dd>
@@ -4173,6 +4176,10 @@ Reference: [RFC-XXXX]
 <dt id="RFC4086">[RFC4086]</dt>
         <dd>
 <span class="refAuthor">Eastlake 3rd, D.</span>, <span class="refAuthor">Schiller, J.</span>, and <span class="refAuthor">S. Crocker</span>, <span class="refTitle">"Randomness Requirements for Security"</span>, <span class="seriesInfo">BCP 106</span>, <span class="seriesInfo">RFC 4086</span>, <span class="seriesInfo">DOI 10.17487/RFC4086</span>, <time datetime="2005-06" class="refDate">June 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4086">https://www.rfc-editor.org/rfc/rfc4086</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5869">[RFC5869]</dt>
+        <dd>
+<span class="refAuthor">Krawczyk, H.</span> and <span class="refAuthor">P. Eronen</span>, <span class="refTitle">"HMAC-based Extract-and-Expand Key Derivation Function (HKDF)"</span>, <span class="seriesInfo">RFC 5869</span>, <span class="seriesInfo">DOI 10.17487/RFC5869</span>, <time datetime="2010-05" class="refDate">May 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5869">https://www.rfc-editor.org/rfc/rfc5869</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC6979">[RFC6979]</dt>
         <dd>
@@ -4257,19 +4264,19 @@ Reference: [RFC-XXXX]
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-groupcomm-proxy">[I-D.ietf-core-groupcomm-proxy]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">E. Dijk</span>, <span class="refTitle">"Proxy Operations for CoAP Group Communication"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-groupcomm-proxy-03</span>, <time datetime="2024-10-21" class="refDate">21 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-proxy-03">https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-proxy-03</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">E. Dijk</span>, <span class="refTitle">"Proxy Operations for CoAP Group Communication"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-groupcomm-proxy-04</span>, <time datetime="2025-03-03" class="refDate">3 March 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-proxy-04">https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-proxy-04</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-observe-multicast-notifications">[I-D.ietf-core-observe-multicast-notifications]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span>, <span class="refAuthor">Höglund, R.</span>, <span class="refAuthor">Amsüss, C.</span>, and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Observe Notifications as CoAP Multicast Responses"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-observe-multicast-notifications-10</span>, <time datetime="2024-10-21" class="refDate">21 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-10">https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-10</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span>, <span class="refAuthor">Höglund, R.</span>, <span class="refAuthor">Amsüss, C.</span>, and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Observe Notifications as CoAP Multicast Responses"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-observe-multicast-notifications-11</span>, <time datetime="2025-03-03" class="refDate">3 March 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-11">https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-11</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-oscore-capable-proxies">[I-D.ietf-core-oscore-capable-proxies]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"OSCORE-capable Proxies"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-oscore-capable-proxies-03</span>, <time datetime="2024-10-21" class="refDate">21 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-capable-proxies-03">https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-capable-proxies-03</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"OSCORE-capable Proxies"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-oscore-capable-proxies-04</span>, <time datetime="2025-03-03" class="refDate">3 March 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-capable-proxies-04">https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-capable-proxies-04</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-cose-cbor-encoded-cert">[I-D.ietf-cose-cbor-encoded-cert]</dt>
         <dd>
-<span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Raza, S.</span>, <span class="refAuthor">Höglund, J.</span>, and <span class="refAuthor">M. Furuhed</span>, <span class="refTitle">"CBOR Encoded X.509 Certificates (C509 Certificates)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cose-cbor-encoded-cert-12</span>, <time datetime="2025-01-08" class="refDate">8 January 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-12">https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-12</a>&gt;</span>. </dd>
+<span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Selander, G.</span>, <span class="refAuthor">Raza, S.</span>, <span class="refAuthor">Höglund, J.</span>, and <span class="refAuthor">M. Furuhed</span>, <span class="refTitle">"CBOR Encoded X.509 Certificates (C509 Certificates)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cose-cbor-encoded-cert-13</span>, <time datetime="2025-03-03" class="refDate">3 March 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-13">https://datatracker.ietf.org/doc/html/draft-ietf-cose-cbor-encoded-cert-13</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-iotops-security-protocol-comparison">[I-D.ietf-iotops-security-protocol-comparison]</dt>
         <dd>
@@ -4281,7 +4288,7 @@ Reference: [RFC-XXXX]
 <dd class="break"></dd>
 <dt id="I-D.irtf-cfrg-det-sigs-with-noise">[I-D.irtf-cfrg-det-sigs-with-noise]</dt>
         <dd>
-<span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Thormarker, E.</span>, and <span class="refAuthor">S. Ruohomaa</span>, <span class="refTitle">"Hedged ECDSA and EdDSA Signatures"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-irtf-cfrg-det-sigs-with-noise-04</span>, <time datetime="2024-11-06" class="refDate">6 November 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-det-sigs-with-noise-04">https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-det-sigs-with-noise-04</a>&gt;</span>. </dd>
+<span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Thormarker, E.</span>, and <span class="refAuthor">S. Ruohomaa</span>, <span class="refTitle">"Hedged ECDSA and EdDSA Signatures"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-irtf-cfrg-det-sigs-with-noise-05</span>, <time datetime="2025-03-03" class="refDate">3 March 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-det-sigs-with-noise-05">https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-det-sigs-with-noise-05</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC4944">[RFC4944]</dt>
         <dd>
@@ -4294,10 +4301,6 @@ Reference: [RFC-XXXX]
 <dt id="RFC5280">[RFC5280]</dt>
         <dd>
 <span class="refAuthor">Cooper, D.</span>, <span class="refAuthor">Santesson, S.</span>, <span class="refAuthor">Farrell, S.</span>, <span class="refAuthor">Boeyen, S.</span>, <span class="refAuthor">Housley, R.</span>, and <span class="refAuthor">W. Polk</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile"</span>, <span class="seriesInfo">RFC 5280</span>, <span class="seriesInfo">DOI 10.17487/RFC5280</span>, <time datetime="2008-05" class="refDate">May 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5280">https://www.rfc-editor.org/rfc/rfc5280</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC5869">[RFC5869]</dt>
-        <dd>
-<span class="refAuthor">Krawczyk, H.</span> and <span class="refAuthor">P. Eronen</span>, <span class="refTitle">"HMAC-based Extract-and-Expand Key Derivation Function (HKDF)"</span>, <span class="seriesInfo">RFC 5869</span>, <span class="seriesInfo">DOI 10.17487/RFC5869</span>, <time datetime="2010-05" class="refDate">May 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5869">https://www.rfc-editor.org/rfc/rfc5869</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC6282">[RFC6282]</dt>
         <dd>
@@ -4556,907 +4559,919 @@ Therefore, it is ensured by construction that no client can have with the same s
 <a href="#appendix-F" class="section-number selfRef">Appendix F. </a><a href="#name-document-updates" class="section-name selfRef">Document Updates</a>
       </h2>
 <p id="appendix-F-1">This section is to be removed before publishing as an RFC.<a href="#appendix-F-1" class="pilcrow">¶</a></p>
-<div id="sec-23-24">
+<div id="sec-24-25">
 <section id="appendix-F.1">
-        <h3 id="name-version-23-to-24">
-<a href="#appendix-F.1" class="section-number selfRef">F.1. </a><a href="#name-version-23-to-24" class="section-name selfRef">Version -23 to -24</a>
+        <h3 id="name-version-24-to-25">
+<a href="#appendix-F.1" class="section-number selfRef">F.1. </a><a href="#name-version-24-to-25" class="section-name selfRef">Version -24 to -25</a>
         </h3>
 <ul class="normal">
 <li class="normal" id="appendix-F.1-1.1">
-            <p id="appendix-F.1-1.1.1">Added section "Implementation Status", according to RFC 7942.<a href="#appendix-F.1-1.1.1" class="pilcrow">¶</a></p>
+            <p id="appendix-F.1-1.1.1">Made RFC 5869 a normative reference.<a href="#appendix-F.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.1-1.2">
-            <p id="appendix-F.1-1.2.1">Fixed "P-521" (instead of "P-512").<a href="#appendix-F.1-1.2.1" class="pilcrow">¶</a></p>
+        </ul>
+</section>
+</div>
+<div id="sec-23-24">
+<section id="appendix-F.2">
+        <h3 id="name-version-23-to-24">
+<a href="#appendix-F.2" class="section-number selfRef">F.2. </a><a href="#name-version-23-to-24" class="section-name selfRef">Version -23 to -24</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="appendix-F.2-1.1">
+            <p id="appendix-F.2-1.1.1">Added section "Implementation Status", according to RFC 7942.<a href="#appendix-F.2-1.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-F.2-1.2">
+            <p id="appendix-F.2-1.2.1">Fixed "P-521" (instead of "P-512").<a href="#appendix-F.2-1.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-22-23">
-<section id="appendix-F.2">
+<section id="appendix-F.3">
         <h3 id="name-version-22-to-23">
-<a href="#appendix-F.2" class="section-number selfRef">F.2. </a><a href="#name-version-22-to-23" class="section-name selfRef">Version -22 to -23</a>
+<a href="#appendix-F.3" class="section-number selfRef">F.3. </a><a href="#name-version-22-to-23" class="section-name selfRef">Version -22 to -23</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.2-1.1">
-            <p id="appendix-F.2-1.1.1">Examples of non-AEAD algorithms as Group Encryption Algorithm.<a href="#appendix-F.2-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.3-1.1">
+            <p id="appendix-F.3-1.1.1">Examples of non-AEAD algorithms as Group Encryption Algorithm.<a href="#appendix-F.3-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.2-1.2">
-            <p id="appendix-F.2-1.2.1">Implementation compliance on non-AEAD algorithms.<a href="#appendix-F.2-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.3-1.2">
+            <p id="appendix-F.3-1.2.1">Implementation compliance on non-AEAD algorithms.<a href="#appendix-F.3-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.2-1.3">
-            <p id="appendix-F.2-1.3.1">Clarified that the HKDF Algorithm must be an HMAC-based HKDF.<a href="#appendix-F.2-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.3-1.3">
+            <p id="appendix-F.3-1.3.1">Clarified that the HKDF Algorithm must be an HMAC-based HKDF.<a href="#appendix-F.3-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.2-1.4">
-            <p id="appendix-F.2-1.4.1">Easier description of using Common IV to compute the nonce.<a href="#appendix-F.2-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.3-1.4">
+            <p id="appendix-F.3-1.4.1">Easier description of using Common IV to compute the nonce.<a href="#appendix-F.3-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.2-1.5">
-            <p id="appendix-F.2-1.5.1">Consistent use of "nonce", "key", and "AEAD key".<a href="#appendix-F.2-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.3-1.5">
+            <p id="appendix-F.3-1.5.1">Consistent use of "nonce", "key", and "AEAD key".<a href="#appendix-F.3-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.2-1.6">
-            <p id="appendix-F.2-1.6.1">Repositioned content about the Group Manager.<a href="#appendix-F.2-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.3-1.6">
+            <p id="appendix-F.3-1.6.1">Repositioned content about the Group Manager.<a href="#appendix-F.3-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.2-1.7">
-            <p id="appendix-F.2-1.7.1">Editorial improvements.<a href="#appendix-F.2-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.3-1.7">
+            <p id="appendix-F.3-1.7.1">Editorial improvements.<a href="#appendix-F.3-1.7.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-21-22">
-<section id="appendix-F.3">
+<section id="appendix-F.4">
         <h3 id="name-version-21-to-22">
-<a href="#appendix-F.3" class="section-number selfRef">F.3. </a><a href="#name-version-21-to-22" class="section-name selfRef">Version -21 to -22</a>
+<a href="#appendix-F.4" class="section-number selfRef">F.4. </a><a href="#name-version-21-to-22" class="section-name selfRef">Version -21 to -22</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.3-1.1">
-            <p id="appendix-F.3-1.1.1">Removed mentioning of the CBOR encoding of the HKDF Algorithm.<a href="#appendix-F.3-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.4-1.1">
+            <p id="appendix-F.4-1.1.1">Removed mentioning of the CBOR encoding of the HKDF Algorithm.<a href="#appendix-F.4-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.3-1.2">
-            <p id="appendix-F.3-1.2.1">Rephrased consequences on loss of Recipient Contexts.<a href="#appendix-F.3-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.4-1.2">
+            <p id="appendix-F.4-1.2.1">Rephrased consequences on loss of Recipient Contexts.<a href="#appendix-F.4-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.3-1.3">
-            <p id="appendix-F.3-1.3.1">Removed requirement on 0 as initial value of the Key Generation Number.<a href="#appendix-F.3-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.4-1.3">
+            <p id="appendix-F.4-1.3.1">Removed requirement on 0 as initial value of the Key Generation Number.<a href="#appendix-F.4-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.3-1.4">
-            <p id="appendix-F.3-1.4.1">Improved handling of responses from a server that changes Sender ID.<a href="#appendix-F.3-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.4-1.4">
+            <p id="appendix-F.4-1.4.1">Improved handling of responses from a server that changes Sender ID.<a href="#appendix-F.4-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.3-1.5">
-            <p id="appendix-F.3-1.5.1">Relax constrictions of Block-wise with group communication.<a href="#appendix-F.3-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.4-1.5">
+            <p id="appendix-F.4-1.5.1">Relax constrictions of Block-wise with group communication.<a href="#appendix-F.4-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.3-1.6">
-            <p id="appendix-F.3-1.6.1">Removed the concept of synchronization with the Client's Sender Sequence Number.<a href="#appendix-F.3-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.4-1.6">
+            <p id="appendix-F.4-1.6.1">Removed the concept of synchronization with the Client's Sender Sequence Number.<a href="#appendix-F.4-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.3-1.7">
-            <p id="appendix-F.3-1.7.1">Improved content on Challenge-Response based freshness and Replay Window recovery.<a href="#appendix-F.3-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.4-1.7">
+            <p id="appendix-F.4-1.7.1">Improved content on Challenge-Response based freshness and Replay Window recovery.<a href="#appendix-F.4-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.3-1.8">
-            <p id="appendix-F.3-1.8.1">Use the acronym CCSs for CWT Claims Sets.<a href="#appendix-F.3-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.4-1.8">
+            <p id="appendix-F.4-1.8.1">Use the acronym CCSs for CWT Claims Sets.<a href="#appendix-F.4-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.3-1.9">
-            <p id="appendix-F.3-1.9.1">Mentioned wrap-around of the Key Generation Number.<a href="#appendix-F.3-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.4-1.9">
+            <p id="appendix-F.4-1.9.1">Mentioned wrap-around of the Key Generation Number.<a href="#appendix-F.4-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.3-1.10">
-            <p id="appendix-F.3-1.10.1">Added IANA consideration on the "CoAP Option Numbers" registry.<a href="#appendix-F.3-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.4-1.10">
+            <p id="appendix-F.4-1.10.1">Added IANA consideration on the "CoAP Option Numbers" registry.<a href="#appendix-F.4-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.3-1.11">
-            <p id="appendix-F.3-1.11.1">Updated references.<a href="#appendix-F.3-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.4-1.11">
+            <p id="appendix-F.4-1.11.1">Updated references.<a href="#appendix-F.4-1.11.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.3-1.12">
-            <p id="appendix-F.3-1.12.1">Editorial improvements.<a href="#appendix-F.3-1.12.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.4-1.12">
+            <p id="appendix-F.4-1.12.1">Editorial improvements.<a href="#appendix-F.4-1.12.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-20-21">
-<section id="appendix-F.4">
+<section id="appendix-F.5">
         <h3 id="name-version-20-to-21">
-<a href="#appendix-F.4" class="section-number selfRef">F.4. </a><a href="#name-version-20-to-21" class="section-name selfRef">Version -20 to -21</a>
+<a href="#appendix-F.5" class="section-number selfRef">F.5. </a><a href="#name-version-20-to-21" class="section-name selfRef">Version -20 to -21</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.4-1.1">
-            <p id="appendix-F.4-1.1.1">Updated author list.<a href="#appendix-F.4-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.5-1.1">
+            <p id="appendix-F.5-1.1.1">Updated author list.<a href="#appendix-F.5-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.4-1.2">
-            <p id="appendix-F.4-1.2.1">Terminology: improved definition of "group request".<a href="#appendix-F.4-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.5-1.2">
+            <p id="appendix-F.5-1.2.1">Terminology: improved definition of "group request".<a href="#appendix-F.5-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.4-1.3">
-            <p id="appendix-F.4-1.3.1">Editorial: removed quotation marks when using the CBOR simple values true, false, and null.<a href="#appendix-F.4-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.5-1.3">
+            <p id="appendix-F.5-1.3.1">Editorial: removed quotation marks when using the CBOR simple values true, false, and null.<a href="#appendix-F.5-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.4-1.4">
-            <p id="appendix-F.4-1.4.1">Editorial: expanded name of the "CoRE Parameters" registry group.<a href="#appendix-F.4-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.5-1.4">
+            <p id="appendix-F.5-1.4.1">Editorial: expanded name of the "CoRE Parameters" registry group.<a href="#appendix-F.5-1.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-19-20">
-<section id="appendix-F.5">
+<section id="appendix-F.6">
         <h3 id="name-version-19-to-20">
-<a href="#appendix-F.5" class="section-number selfRef">F.5. </a><a href="#name-version-19-to-20" class="section-name selfRef">Version -19 to -20</a>
+<a href="#appendix-F.6" class="section-number selfRef">F.6. </a><a href="#name-version-19-to-20" class="section-name selfRef">Version -19 to -20</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.5-1.1">
-            <p id="appendix-F.5-1.1.1">Change Controller for the target attribute "gosc" set to "IETF".<a href="#appendix-F.5-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.6-1.1">
+            <p id="appendix-F.6-1.1.1">Change Controller for the target attribute "gosc" set to "IETF".<a href="#appendix-F.6-1.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-18-19">
-<section id="appendix-F.6">
+<section id="appendix-F.7">
         <h3 id="name-version-18-to-19">
-<a href="#appendix-F.6" class="section-number selfRef">F.6. </a><a href="#name-version-18-to-19" class="section-name selfRef">Version -18 to -19</a>
+<a href="#appendix-F.7" class="section-number selfRef">F.7. </a><a href="#name-version-18-to-19" class="section-name selfRef">Version -18 to -19</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.6-1.1">
-            <p id="appendix-F.6-1.1.1">Unified presentation of handling of multiple responses.<a href="#appendix-F.6-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.7-1.1">
+            <p id="appendix-F.7-1.1.1">Unified presentation of handling of multiple responses.<a href="#appendix-F.7-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.6-1.2">
-            <p id="appendix-F.6-1.2.1">Added Rikard Höglund as Contributor.<a href="#appendix-F.6-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.7-1.2">
+            <p id="appendix-F.7-1.2.1">Added Rikard Höglund as Contributor.<a href="#appendix-F.7-1.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-17-18">
-<section id="appendix-F.7">
+<section id="appendix-F.8">
         <h3 id="name-version-17-to-18">
-<a href="#appendix-F.7" class="section-number selfRef">F.7. </a><a href="#name-version-17-to-18" class="section-name selfRef">Version -17 to -18</a>
+<a href="#appendix-F.8" class="section-number selfRef">F.8. </a><a href="#name-version-17-to-18" class="section-name selfRef">Version -17 to -18</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.7-1.1">
-            <p id="appendix-F.7-1.1.1">Changed document title.<a href="#appendix-F.7-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.8-1.1">
+            <p id="appendix-F.8-1.1.1">Changed document title.<a href="#appendix-F.8-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.2">
-            <p id="appendix-F.7-1.2.1">Possible use with CoAP-mappable HTTP.<a href="#appendix-F.7-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.2">
+            <p id="appendix-F.8-1.2.1">Possible use with CoAP-mappable HTTP.<a href="#appendix-F.8-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.3">
-            <p id="appendix-F.7-1.3.1">Added Common Context parameter "Authentication Credential Format".<a href="#appendix-F.7-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.3">
+            <p id="appendix-F.8-1.3.1">Added Common Context parameter "Authentication Credential Format".<a href="#appendix-F.8-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.4">
-            <p id="appendix-F.7-1.4.1">Renamed "Group Encryption Key" to "Signature Encryption Key". Consistent fixes in its derivation.<a href="#appendix-F.7-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.4">
+            <p id="appendix-F.8-1.4.1">Renamed "Group Encryption Key" to "Signature Encryption Key". Consistent fixes in its derivation.<a href="#appendix-F.8-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.5">
-            <p id="appendix-F.7-1.5.1">Renamed "Signature Encryption Algorithm" to "Group Encryption Algorithm".<a href="#appendix-F.7-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.5">
+            <p id="appendix-F.8-1.5.1">Renamed "Signature Encryption Algorithm" to "Group Encryption Algorithm".<a href="#appendix-F.8-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.6">
-            <p id="appendix-F.7-1.6.1">Ensured a single Common IV, also when the two encryption algorithms have different nonce sizes.<a href="#appendix-F.7-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.6">
+            <p id="appendix-F.8-1.6.1">Ensured a single Common IV, also when the two encryption algorithms have different nonce sizes.<a href="#appendix-F.8-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.7">
-            <p id="appendix-F.7-1.7.1">Guidelines on the Pairwise Key Agreement Algorithm and derivation of the Diffie-Hellman secret.<a href="#appendix-F.7-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.7">
+            <p id="appendix-F.8-1.7.1">Guidelines on the Pairwise Key Agreement Algorithm and derivation of the Diffie-Hellman secret.<a href="#appendix-F.8-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.8">
-            <p id="appendix-F.7-1.8.1">The possible use of a mode follows from the set parameters.<a href="#appendix-F.7-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.8">
+            <p id="appendix-F.8-1.8.1">The possible use of a mode follows from the set parameters.<a href="#appendix-F.8-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.9">
-            <p id="appendix-F.7-1.9.1">The Group Manager is always present; 'gm_cred' in the external_aad cannot be null anymore.<a href="#appendix-F.7-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.9">
+            <p id="appendix-F.8-1.9.1">The Group Manager is always present; 'gm_cred' in the external_aad cannot be null anymore.<a href="#appendix-F.8-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.10">
-            <p id="appendix-F.7-1.10.1">The authentication credential of the Group Manager can have a different format than that of the group members'.<a href="#appendix-F.7-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.10">
+            <p id="appendix-F.8-1.10.1">The authentication credential of the Group Manager can have a different format than that of the group members'.<a href="#appendix-F.8-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.11">
-            <p id="appendix-F.7-1.11.1">Set-up of new endpoints moved to document body.<a href="#appendix-F.7-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.11">
+            <p id="appendix-F.8-1.11.1">Set-up of new endpoints moved to document body.<a href="#appendix-F.8-1.11.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.12">
-            <p id="appendix-F.7-1.12.1">The encrypted countersignature is a result of the header compression, not of COSE.<a href="#appendix-F.7-1.12.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.12">
+            <p id="appendix-F.8-1.12.1">The encrypted countersignature is a result of the header compression, not of COSE.<a href="#appendix-F.8-1.12.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.13">
-            <p id="appendix-F.7-1.13.1">Revised examples of compressed and non-compressed COSE object.<a href="#appendix-F.7-1.13.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.13">
+            <p id="appendix-F.8-1.13.1">Revised examples of compressed and non-compressed COSE object.<a href="#appendix-F.8-1.13.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.14">
-            <p id="appendix-F.7-1.14.1">Removed excessive requirements on group rekeying scheduling.<a href="#appendix-F.7-1.14.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.14">
+            <p id="appendix-F.8-1.14.1">Removed excessive requirements on group rekeying scheduling.<a href="#appendix-F.8-1.14.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.15">
-            <p id="appendix-F.7-1.15.1">More considerations on the strictness of group key management.<a href="#appendix-F.7-1.15.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.15">
+            <p id="appendix-F.8-1.15.1">More considerations on the strictness of group key management.<a href="#appendix-F.8-1.15.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.16">
-            <p id="appendix-F.7-1.16.1">Clearer alternatives on retaining an old Security Context.<a href="#appendix-F.7-1.16.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.16">
+            <p id="appendix-F.8-1.16.1">Clearer alternatives on retaining an old Security Context.<a href="#appendix-F.8-1.16.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.17">
-            <p id="appendix-F.7-1.17.1">Revised used of terminology on freshness.<a href="#appendix-F.7-1.17.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.17">
+            <p id="appendix-F.8-1.17.1">Revised used of terminology on freshness.<a href="#appendix-F.8-1.17.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.7-1.18">
-            <p id="appendix-F.7-1.18.1">Clarifications, fixes and editorial improvements.<a href="#appendix-F.7-1.18.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.8-1.18">
+            <p id="appendix-F.8-1.18.1">Clarifications, fixes and editorial improvements.<a href="#appendix-F.8-1.18.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-16-17">
-<section id="appendix-F.8">
+<section id="appendix-F.9">
         <h3 id="name-version-16-to-17">
-<a href="#appendix-F.8" class="section-number selfRef">F.8. </a><a href="#name-version-16-to-17" class="section-name selfRef">Version -16 to -17</a>
+<a href="#appendix-F.9" class="section-number selfRef">F.9. </a><a href="#name-version-16-to-17" class="section-name selfRef">Version -16 to -17</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.8-1.1">
-            <p id="appendix-F.8-1.1.1">Definition and registration of the target attribute "gosc".<a href="#appendix-F.8-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.9-1.1">
+            <p id="appendix-F.9-1.1.1">Definition and registration of the target attribute "gosc".<a href="#appendix-F.9-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.8-1.2">
-            <p id="appendix-F.8-1.2.1">Reference update and editorial fixes.<a href="#appendix-F.8-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.9-1.2">
+            <p id="appendix-F.9-1.2.1">Reference update and editorial fixes.<a href="#appendix-F.9-1.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-15-16">
-<section id="appendix-F.9">
+<section id="appendix-F.10">
         <h3 id="name-version-15-to-16">
-<a href="#appendix-F.9" class="section-number selfRef">F.9. </a><a href="#name-version-15-to-16" class="section-name selfRef">Version -15 to -16</a>
+<a href="#appendix-F.10" class="section-number selfRef">F.10. </a><a href="#name-version-15-to-16" class="section-name selfRef">Version -15 to -16</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.9-1.1">
-            <p id="appendix-F.9-1.1.1">Clients "<span class="bcp14">SHOULD</span>" use the group mode for one-to-many requests.<a href="#appendix-F.9-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.10-1.1">
+            <p id="appendix-F.10-1.1.1">Clients "<span class="bcp14">SHOULD</span>" use the group mode for one-to-many requests.<a href="#appendix-F.10-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.9-1.2">
-            <p id="appendix-F.9-1.2.1">Handling of multiple non-notification responses.<a href="#appendix-F.9-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.10-1.2">
+            <p id="appendix-F.10-1.2.1">Handling of multiple non-notification responses.<a href="#appendix-F.10-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.9-1.3">
-            <p id="appendix-F.9-1.3.1">Revised presentation of security properties.<a href="#appendix-F.9-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.10-1.3">
+            <p id="appendix-F.10-1.3.1">Revised presentation of security properties.<a href="#appendix-F.10-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.9-1.4">
-            <p id="appendix-F.9-1.4.1">Improved listing of operations defined for the group mode that are inherited by the pairwise mode.<a href="#appendix-F.9-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.10-1.4">
+            <p id="appendix-F.10-1.4.1">Improved listing of operations defined for the group mode that are inherited by the pairwise mode.<a href="#appendix-F.10-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.9-1.5">
-            <p id="appendix-F.9-1.5.1">Editorial improvements.<a href="#appendix-F.9-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.10-1.5">
+            <p id="appendix-F.10-1.5.1">Editorial improvements.<a href="#appendix-F.10-1.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-14-15">
-<section id="appendix-F.10">
+<section id="appendix-F.11">
         <h3 id="name-version-14-to-15">
-<a href="#appendix-F.10" class="section-number selfRef">F.10. </a><a href="#name-version-14-to-15" class="section-name selfRef">Version -14 to -15</a>
+<a href="#appendix-F.11" class="section-number selfRef">F.11. </a><a href="#name-version-14-to-15" class="section-name selfRef">Version -14 to -15</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.10-1.1">
-            <p id="appendix-F.10-1.1.1">Updated references and editorial fixes.<a href="#appendix-F.10-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.11-1.1">
+            <p id="appendix-F.11-1.1.1">Updated references and editorial fixes.<a href="#appendix-F.11-1.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-13-14">
-<section id="appendix-F.11">
+<section id="appendix-F.12">
         <h3 id="name-version-13-to-14">
-<a href="#appendix-F.11" class="section-number selfRef">F.11. </a><a href="#name-version-13-to-14" class="section-name selfRef">Version -13 to -14</a>
+<a href="#appendix-F.12" class="section-number selfRef">F.12. </a><a href="#name-version-13-to-14" class="section-name selfRef">Version -13 to -14</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.11-1.1">
-            <p id="appendix-F.11-1.1.1">Replaced "node" with "endpoint" where appropriate.<a href="#appendix-F.11-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.12-1.1">
+            <p id="appendix-F.12-1.1.1">Replaced "node" with "endpoint" where appropriate.<a href="#appendix-F.12-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.11-1.2">
-            <p id="appendix-F.11-1.2.1">Replaced "owning" with "storing" (of keying material).<a href="#appendix-F.11-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.12-1.2">
+            <p id="appendix-F.12-1.2.1">Replaced "owning" with "storing" (of keying material).<a href="#appendix-F.12-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.11-1.3">
-            <p id="appendix-F.11-1.3.1">Distinction between "authentication credential" and "public key".<a href="#appendix-F.11-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.12-1.3">
+            <p id="appendix-F.12-1.3.1">Distinction between "authentication credential" and "public key".<a href="#appendix-F.12-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.11-1.4">
-            <p id="appendix-F.11-1.4.1">Considerations on storing whole authentication credentials.<a href="#appendix-F.11-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.12-1.4">
+            <p id="appendix-F.12-1.4.1">Considerations on storing whole authentication credentials.<a href="#appendix-F.12-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.11-1.5">
-            <p id="appendix-F.11-1.5.1">Considerations on Denial of Service.<a href="#appendix-F.11-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.12-1.5">
+            <p id="appendix-F.12-1.5.1">Considerations on Denial of Service.<a href="#appendix-F.12-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.11-1.6">
-            <p id="appendix-F.11-1.6.1">Recycling of Group IDs by tracking the "Birth Gid" of each group
-member is now optional to support and use for the Group Manager.<a href="#appendix-F.11-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.12-1.6">
+            <p id="appendix-F.12-1.6.1">Recycling of Group IDs by tracking the "Birth Gid" of each group
+member is now optional to support and use for the Group Manager.<a href="#appendix-F.12-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.11-1.7">
-            <p id="appendix-F.11-1.7.1">Fine-grained suppression of error responses.<a href="#appendix-F.11-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.12-1.7">
+            <p id="appendix-F.12-1.7.1">Fine-grained suppression of error responses.<a href="#appendix-F.12-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.11-1.8">
-            <p id="appendix-F.11-1.8.1">Changed section title "Mandatory-to-Implement Compliance Requirements" to "Implementation Compliance".<a href="#appendix-F.11-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.12-1.8">
+            <p id="appendix-F.12-1.8.1">Changed section title "Mandatory-to-Implement Compliance Requirements" to "Implementation Compliance".<a href="#appendix-F.12-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.11-1.9">
-            <p id="appendix-F.11-1.9.1">"Challenge-Response Synchronization" moved to the document body.<a href="#appendix-F.11-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.12-1.9">
+            <p id="appendix-F.12-1.9.1">"Challenge-Response Synchronization" moved to the document body.<a href="#appendix-F.12-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.11-1.10">
-            <p id="appendix-F.11-1.10.1">RFC 7641 and draft-ietf-core-echo-request-tag as normative references.<a href="#appendix-F.11-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.12-1.10">
+            <p id="appendix-F.12-1.10.1">RFC 7641 and draft-ietf-core-echo-request-tag as normative references.<a href="#appendix-F.12-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.11-1.11">
-            <p id="appendix-F.11-1.11.1">Clarifications and editorial improvements.<a href="#appendix-F.11-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.12-1.11">
+            <p id="appendix-F.12-1.11.1">Clarifications and editorial improvements.<a href="#appendix-F.12-1.11.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-12-13">
-<section id="appendix-F.12">
+<section id="appendix-F.13">
         <h3 id="name-version-12-to-13">
-<a href="#appendix-F.12" class="section-number selfRef">F.12. </a><a href="#name-version-12-to-13" class="section-name selfRef">Version -12 to -13</a>
+<a href="#appendix-F.13" class="section-number selfRef">F.13. </a><a href="#name-version-12-to-13" class="section-name selfRef">Version -12 to -13</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.12-1.1">
-            <p id="appendix-F.12-1.1.1">Fixes in the derivation of the Group Encryption Key.<a href="#appendix-F.12-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.13-1.1">
+            <p id="appendix-F.13-1.1.1">Fixes in the derivation of the Group Encryption Key.<a href="#appendix-F.13-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.12-1.2">
-            <p id="appendix-F.12-1.2.1">Added Mandatory-to-Implement compliance requirements.<a href="#appendix-F.12-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.13-1.2">
+            <p id="appendix-F.13-1.2.1">Added Mandatory-to-Implement compliance requirements.<a href="#appendix-F.13-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.12-1.3">
-            <p id="appendix-F.12-1.3.1">Changed UCCS to CCS.<a href="#appendix-F.12-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.13-1.3">
+            <p id="appendix-F.13-1.3.1">Changed UCCS to CCS.<a href="#appendix-F.13-1.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-11-12">
-<section id="appendix-F.13">
+<section id="appendix-F.14">
         <h3 id="name-version-11-to-12">
-<a href="#appendix-F.13" class="section-number selfRef">F.13. </a><a href="#name-version-11-to-12" class="section-name selfRef">Version -11 to -12</a>
+<a href="#appendix-F.14" class="section-number selfRef">F.14. </a><a href="#name-version-11-to-12" class="section-name selfRef">Version -11 to -12</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.13-1.1">
-            <p id="appendix-F.13-1.1.1">No mode of operation is mandatory to support.<a href="#appendix-F.13-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.14-1.1">
+            <p id="appendix-F.14-1.1.1">No mode of operation is mandatory to support.<a href="#appendix-F.14-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.13-1.2">
-            <p id="appendix-F.13-1.2.1">Revised parameters of the Security Context, COSE object and external_aad.<a href="#appendix-F.13-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.14-1.2">
+            <p id="appendix-F.14-1.2.1">Revised parameters of the Security Context, COSE object and external_aad.<a href="#appendix-F.14-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.13-1.3">
-            <p id="appendix-F.13-1.3.1">Revised management of keying material for the Group Manager.<a href="#appendix-F.13-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.14-1.3">
+            <p id="appendix-F.14-1.3.1">Revised management of keying material for the Group Manager.<a href="#appendix-F.14-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.13-1.4">
-            <p id="appendix-F.13-1.4.1">Informing of former members when rekeying the group.<a href="#appendix-F.13-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.14-1.4">
+            <p id="appendix-F.14-1.4.1">Informing of former members when rekeying the group.<a href="#appendix-F.14-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.13-1.5">
-            <p id="appendix-F.13-1.5.1">Admit encryption-only algorithms in group mode.<a href="#appendix-F.13-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.14-1.5">
+            <p id="appendix-F.14-1.5.1">Admit encryption-only algorithms in group mode.<a href="#appendix-F.14-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.13-1.6">
-            <p id="appendix-F.13-1.6.1">Encrypted countersignature through a keystream.<a href="#appendix-F.13-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.14-1.6">
+            <p id="appendix-F.14-1.6.1">Encrypted countersignature through a keystream.<a href="#appendix-F.14-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.13-1.7">
-            <p id="appendix-F.13-1.7.1">Added public key of the Group Manager as key material and protected data.<a href="#appendix-F.13-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.14-1.7">
+            <p id="appendix-F.14-1.7.1">Added public key of the Group Manager as key material and protected data.<a href="#appendix-F.14-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.13-1.8">
-            <p id="appendix-F.13-1.8.1">Clarifications about message processing, especially notifications.<a href="#appendix-F.13-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.14-1.8">
+            <p id="appendix-F.14-1.8.1">Clarifications about message processing, especially notifications.<a href="#appendix-F.14-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.13-1.9">
-            <p id="appendix-F.13-1.9.1">Guidance for message processing of external signature checkers.<a href="#appendix-F.13-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.14-1.9">
+            <p id="appendix-F.14-1.9.1">Guidance for message processing of external signature checkers.<a href="#appendix-F.14-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.13-1.10">
-            <p id="appendix-F.13-1.10.1">Updated derivation of pairwise keys, with more security considerations.<a href="#appendix-F.13-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.14-1.10">
+            <p id="appendix-F.14-1.10.1">Updated derivation of pairwise keys, with more security considerations.<a href="#appendix-F.14-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.13-1.11">
-            <p id="appendix-F.13-1.11.1">Termination of ongoing observations as client, upon leaving or before re-joining the group.<a href="#appendix-F.13-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.14-1.11">
+            <p id="appendix-F.14-1.11.1">Termination of ongoing observations as client, upon leaving or before re-joining the group.<a href="#appendix-F.14-1.11.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.13-1.12">
-            <p id="appendix-F.13-1.12.1">Recycling Group IDs by tracking the "Birth Gid" of each group member.<a href="#appendix-F.13-1.12.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.14-1.12">
+            <p id="appendix-F.14-1.12.1">Recycling Group IDs by tracking the "Birth Gid" of each group member.<a href="#appendix-F.14-1.12.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.13-1.13">
-            <p id="appendix-F.13-1.13.1">Expanded security and privacy considerations about the group mode.<a href="#appendix-F.13-1.13.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.14-1.13">
+            <p id="appendix-F.14-1.13.1">Expanded security and privacy considerations about the group mode.<a href="#appendix-F.14-1.13.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.13-1.14">
-            <p id="appendix-F.13-1.14.1">Removed appendices on skipping signature verification and on COSE capabilities.<a href="#appendix-F.13-1.14.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.14-1.14">
+            <p id="appendix-F.14-1.14.1">Removed appendices on skipping signature verification and on COSE capabilities.<a href="#appendix-F.14-1.14.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.13-1.15">
-            <p id="appendix-F.13-1.15.1">Fixes and editorial improvements.<a href="#appendix-F.13-1.15.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.14-1.15">
+            <p id="appendix-F.14-1.15.1">Fixes and editorial improvements.<a href="#appendix-F.14-1.15.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-10-11">
-<section id="appendix-F.14">
+<section id="appendix-F.15">
         <h3 id="name-version-10-to-11">
-<a href="#appendix-F.14" class="section-number selfRef">F.14. </a><a href="#name-version-10-to-11" class="section-name selfRef">Version -10 to -11</a>
+<a href="#appendix-F.15" class="section-number selfRef">F.15. </a><a href="#name-version-10-to-11" class="section-name selfRef">Version -10 to -11</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.14-1.1">
-            <p id="appendix-F.14-1.1.1">Loss of Recipient Contexts due to their overflow.<a href="#appendix-F.14-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.15-1.1">
+            <p id="appendix-F.15-1.1.1">Loss of Recipient Contexts due to their overflow.<a href="#appendix-F.15-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.2">
-            <p id="appendix-F.14-1.2.1">Added diagram on keying material components and their relation.<a href="#appendix-F.14-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.2">
+            <p id="appendix-F.15-1.2.1">Added diagram on keying material components and their relation.<a href="#appendix-F.15-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.3">
-            <p id="appendix-F.14-1.3.1">Distinction between anti-replay and freshness.<a href="#appendix-F.14-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.3">
+            <p id="appendix-F.15-1.3.1">Distinction between anti-replay and freshness.<a href="#appendix-F.15-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.4">
-            <p id="appendix-F.14-1.4.1">Preservation of Sender IDs over rekeying.<a href="#appendix-F.14-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.4">
+            <p id="appendix-F.15-1.4.1">Preservation of Sender IDs over rekeying.<a href="#appendix-F.15-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.5">
-            <p id="appendix-F.14-1.5.1">Clearer cause-effect about reset of SSN.<a href="#appendix-F.14-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.5">
+            <p id="appendix-F.15-1.5.1">Clearer cause-effect about reset of SSN.<a href="#appendix-F.15-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.6">
-            <p id="appendix-F.14-1.6.1">The GM provides public keys of group members with associated Sender IDs.<a href="#appendix-F.14-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.6">
+            <p id="appendix-F.15-1.6.1">The GM provides public keys of group members with associated Sender IDs.<a href="#appendix-F.15-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.7">
-            <p id="appendix-F.14-1.7.1">Removed 'par_countersign_key' from the external_aad.<a href="#appendix-F.14-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.7">
+            <p id="appendix-F.15-1.7.1">Removed 'par_countersign_key' from the external_aad.<a href="#appendix-F.15-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.8">
-            <p id="appendix-F.14-1.8.1">One single format for the external_aad, both for encryption and signing.<a href="#appendix-F.14-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.8">
+            <p id="appendix-F.15-1.8.1">One single format for the external_aad, both for encryption and signing.<a href="#appendix-F.15-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.9">
-            <p id="appendix-F.14-1.9.1">Presence of 'kid' in responses to requests protected in pairwise mode.<a href="#appendix-F.14-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.9">
+            <p id="appendix-F.15-1.9.1">Presence of 'kid' in responses to requests protected in pairwise mode.<a href="#appendix-F.15-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.10">
-            <p id="appendix-F.14-1.10.1">Inclusion of 'kid_context' in notifications following a group rekeying.<a href="#appendix-F.14-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.10">
+            <p id="appendix-F.15-1.10.1">Inclusion of 'kid_context' in notifications following a group rekeying.<a href="#appendix-F.15-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.11">
-            <p id="appendix-F.14-1.11.1">Pairwise mode presented with OSCORE as baseline.<a href="#appendix-F.14-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.11">
+            <p id="appendix-F.15-1.11.1">Pairwise mode presented with OSCORE as baseline.<a href="#appendix-F.15-1.11.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.12">
-            <p id="appendix-F.14-1.12.1">Revised examples with signature values.<a href="#appendix-F.14-1.12.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.12">
+            <p id="appendix-F.15-1.12.1">Revised examples with signature values.<a href="#appendix-F.15-1.12.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.13">
-            <p id="appendix-F.14-1.13.1">Decoupled growth of clients' Sender Sequence Numbers and loss of synchronization for server.<a href="#appendix-F.14-1.13.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.13">
+            <p id="appendix-F.15-1.13.1">Decoupled growth of clients' Sender Sequence Numbers and loss of synchronization for server.<a href="#appendix-F.15-1.13.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.14">
-            <p id="appendix-F.14-1.14.1">Sender IDs not recycled in the group under the same Gid.<a href="#appendix-F.14-1.14.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.14">
+            <p id="appendix-F.15-1.14.1">Sender IDs not recycled in the group under the same Gid.<a href="#appendix-F.15-1.14.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.15">
-            <p id="appendix-F.14-1.15.1">Processing and description of the Group Flag bit in the OSCORE Option.<a href="#appendix-F.14-1.15.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.15">
+            <p id="appendix-F.15-1.15.1">Processing and description of the Group Flag bit in the OSCORE Option.<a href="#appendix-F.15-1.15.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.16">
-            <p id="appendix-F.14-1.16.1">Usage of the pairwise mode for multicast requests.<a href="#appendix-F.14-1.16.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.16">
+            <p id="appendix-F.15-1.16.1">Usage of the pairwise mode for multicast requests.<a href="#appendix-F.15-1.16.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.17">
-            <p id="appendix-F.14-1.17.1">Clarifications on synchronization using the Echo Option.<a href="#appendix-F.14-1.17.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.17">
+            <p id="appendix-F.15-1.17.1">Clarifications on synchronization using the Echo Option.<a href="#appendix-F.15-1.17.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.18">
-            <p id="appendix-F.14-1.18.1">General format of context parameters and external_aad elements, supporting future registered COSE algorithms (new Appendix).<a href="#appendix-F.14-1.18.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.18">
+            <p id="appendix-F.15-1.18.1">General format of context parameters and external_aad elements, supporting future registered COSE algorithms (new Appendix).<a href="#appendix-F.15-1.18.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.14-1.19">
-            <p id="appendix-F.14-1.19.1">Fixes and editorial improvements.<a href="#appendix-F.14-1.19.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.15-1.19">
+            <p id="appendix-F.15-1.19.1">Fixes and editorial improvements.<a href="#appendix-F.15-1.19.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-09-10">
-<section id="appendix-F.15">
+<section id="appendix-F.16">
         <h3 id="name-version-09-to-10">
-<a href="#appendix-F.15" class="section-number selfRef">F.15. </a><a href="#name-version-09-to-10" class="section-name selfRef">Version -09 to -10</a>
+<a href="#appendix-F.16" class="section-number selfRef">F.16. </a><a href="#name-version-09-to-10" class="section-name selfRef">Version -09 to -10</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.15-1.1">
-            <p id="appendix-F.15-1.1.1">Removed 'Counter Signature Key Parameters' from the Common Context.<a href="#appendix-F.15-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.16-1.1">
+            <p id="appendix-F.16-1.1.1">Removed 'Counter Signature Key Parameters' from the Common Context.<a href="#appendix-F.16-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.15-1.2">
-            <p id="appendix-F.15-1.2.1">New parameters in the Common Context covering the DH secret derivation.<a href="#appendix-F.15-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.16-1.2">
+            <p id="appendix-F.16-1.2.1">New parameters in the Common Context covering the DH secret derivation.<a href="#appendix-F.16-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.15-1.3">
-            <p id="appendix-F.15-1.3.1">New countersignature header parameter from draft-ietf-cose-countersign.<a href="#appendix-F.15-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.16-1.3">
+            <p id="appendix-F.16-1.3.1">New countersignature header parameter from draft-ietf-cose-countersign.<a href="#appendix-F.16-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.15-1.4">
-            <p id="appendix-F.15-1.4.1">Stronger policies non non-recycling of Sender IDs and Gid.<a href="#appendix-F.15-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.16-1.4">
+            <p id="appendix-F.16-1.4.1">Stronger policies non non-recycling of Sender IDs and Gid.<a href="#appendix-F.16-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.15-1.5">
-            <p id="appendix-F.15-1.5.1">The Sender Sequence Number is reset when establishing a new Security Context.<a href="#appendix-F.15-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.16-1.5">
+            <p id="appendix-F.16-1.5.1">The Sender Sequence Number is reset when establishing a new Security Context.<a href="#appendix-F.16-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.15-1.6">
-            <p id="appendix-F.15-1.6.1">Added 'request_kid_context' in the aad_array.<a href="#appendix-F.15-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.16-1.6">
+            <p id="appendix-F.16-1.6.1">Added 'request_kid_context' in the aad_array.<a href="#appendix-F.16-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.15-1.7">
-            <p id="appendix-F.15-1.7.1">The server can respond with 5.03 if the client's public key is not available.<a href="#appendix-F.15-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.16-1.7">
+            <p id="appendix-F.16-1.7.1">The server can respond with 5.03 if the client's public key is not available.<a href="#appendix-F.16-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.15-1.8">
-            <p id="appendix-F.15-1.8.1">The observer client stores an invariant identifier of the group.<a href="#appendix-F.15-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.16-1.8">
+            <p id="appendix-F.16-1.8.1">The observer client stores an invariant identifier of the group.<a href="#appendix-F.16-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.15-1.9">
-            <p id="appendix-F.15-1.9.1">Relaxed storing of original 'kid' for observer clients.<a href="#appendix-F.15-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.16-1.9">
+            <p id="appendix-F.16-1.9.1">Relaxed storing of original 'kid' for observer clients.<a href="#appendix-F.16-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.15-1.10">
-            <p id="appendix-F.15-1.10.1">Both client and server store the 'kid_context' of the original observation request.<a href="#appendix-F.15-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.16-1.10">
+            <p id="appendix-F.16-1.10.1">Both client and server store the 'kid_context' of the original observation request.<a href="#appendix-F.16-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.15-1.11">
-            <p id="appendix-F.15-1.11.1">The server uses a fresh PIV if protecting the response with a Security Context different from the one used to protect the request.<a href="#appendix-F.15-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.16-1.11">
+            <p id="appendix-F.16-1.11.1">The server uses a fresh PIV if protecting the response with a Security Context different from the one used to protect the request.<a href="#appendix-F.16-1.11.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.15-1.12">
-            <p id="appendix-F.15-1.12.1">Clarifications on MTI algorithms and curves.<a href="#appendix-F.15-1.12.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.16-1.12">
+            <p id="appendix-F.16-1.12.1">Clarifications on MTI algorithms and curves.<a href="#appendix-F.16-1.12.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.15-1.13">
-            <p id="appendix-F.15-1.13.1">Removed optimized requests.<a href="#appendix-F.15-1.13.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.16-1.13">
+            <p id="appendix-F.16-1.13.1">Removed optimized requests.<a href="#appendix-F.16-1.13.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.15-1.14">
-            <p id="appendix-F.15-1.14.1">Overall clarifications and editorial revision.<a href="#appendix-F.15-1.14.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.16-1.14">
+            <p id="appendix-F.16-1.14.1">Overall clarifications and editorial revision.<a href="#appendix-F.16-1.14.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-08-09">
-<section id="appendix-F.16">
+<section id="appendix-F.17">
         <h3 id="name-version-08-to-09">
-<a href="#appendix-F.16" class="section-number selfRef">F.16. </a><a href="#name-version-08-to-09" class="section-name selfRef">Version -08 to -09</a>
+<a href="#appendix-F.17" class="section-number selfRef">F.17. </a><a href="#name-version-08-to-09" class="section-name selfRef">Version -08 to -09</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.16-1.1">
-            <p id="appendix-F.16-1.1.1">Pairwise keys are discarded after group rekeying.<a href="#appendix-F.16-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.17-1.1">
+            <p id="appendix-F.17-1.1.1">Pairwise keys are discarded after group rekeying.<a href="#appendix-F.17-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.16-1.2">
-            <p id="appendix-F.16-1.2.1">Signature mode renamed to group mode.<a href="#appendix-F.16-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.17-1.2">
+            <p id="appendix-F.17-1.2.1">Signature mode renamed to group mode.<a href="#appendix-F.17-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.16-1.3">
-            <p id="appendix-F.16-1.3.1">The parameters for countersignatures use the updated COSE registries. Newly defined IANA registries have been removed.<a href="#appendix-F.16-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.17-1.3">
+            <p id="appendix-F.17-1.3.1">The parameters for countersignatures use the updated COSE registries. Newly defined IANA registries have been removed.<a href="#appendix-F.17-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.16-1.4">
-            <p id="appendix-F.16-1.4.1">Pairwise Flag bit renamed as Group Flag bit, set to 1 in group mode and set to 0 in pairwise mode.<a href="#appendix-F.16-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.17-1.4">
+            <p id="appendix-F.17-1.4.1">Pairwise Flag bit renamed as Group Flag bit, set to 1 in group mode and set to 0 in pairwise mode.<a href="#appendix-F.17-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.16-1.5">
-            <p id="appendix-F.16-1.5.1">Dedicated section on updating the Security Context.<a href="#appendix-F.16-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.17-1.5">
+            <p id="appendix-F.17-1.5.1">Dedicated section on updating the Security Context.<a href="#appendix-F.17-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.16-1.6">
-            <p id="appendix-F.16-1.6.1">By default, sender sequence numbers and replay windows are not reset upon group rekeying.<a href="#appendix-F.16-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.17-1.6">
+            <p id="appendix-F.17-1.6.1">By default, sender sequence numbers and replay windows are not reset upon group rekeying.<a href="#appendix-F.17-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.16-1.7">
-            <p id="appendix-F.16-1.7.1">An endpoint implementing only a silent server does not support the pairwise mode.<a href="#appendix-F.16-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.17-1.7">
+            <p id="appendix-F.17-1.7.1">An endpoint implementing only a silent server does not support the pairwise mode.<a href="#appendix-F.17-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.16-1.8">
-            <p id="appendix-F.16-1.8.1">Separate section on general message reception.<a href="#appendix-F.16-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.17-1.8">
+            <p id="appendix-F.17-1.8.1">Separate section on general message reception.<a href="#appendix-F.17-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.16-1.9">
-            <p id="appendix-F.16-1.9.1">Pairwise mode moved to the document body.<a href="#appendix-F.16-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.17-1.9">
+            <p id="appendix-F.17-1.9.1">Pairwise mode moved to the document body.<a href="#appendix-F.17-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.16-1.10">
-            <p id="appendix-F.16-1.10.1">Considerations on using the pairwise mode in non-multicast settings.<a href="#appendix-F.16-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.17-1.10">
+            <p id="appendix-F.17-1.10.1">Considerations on using the pairwise mode in non-multicast settings.<a href="#appendix-F.17-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.16-1.11">
-            <p id="appendix-F.16-1.11.1">Optimized requests are moved as an appendix.<a href="#appendix-F.16-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.17-1.11">
+            <p id="appendix-F.17-1.11.1">Optimized requests are moved as an appendix.<a href="#appendix-F.17-1.11.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.16-1.12">
-            <p id="appendix-F.16-1.12.1">Normative support for the signature and pairwise mode.<a href="#appendix-F.16-1.12.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.17-1.12">
+            <p id="appendix-F.17-1.12.1">Normative support for the signature and pairwise mode.<a href="#appendix-F.17-1.12.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.16-1.13">
-            <p id="appendix-F.16-1.13.1">Revised methods for synchronization with clients' sender sequence number.<a href="#appendix-F.16-1.13.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.17-1.13">
+            <p id="appendix-F.17-1.13.1">Revised methods for synchronization with clients' sender sequence number.<a href="#appendix-F.17-1.13.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.16-1.14">
-            <p id="appendix-F.16-1.14.1">Appendix with example values of parameters for countersignatures.<a href="#appendix-F.16-1.14.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.17-1.14">
+            <p id="appendix-F.17-1.14.1">Appendix with example values of parameters for countersignatures.<a href="#appendix-F.17-1.14.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.16-1.15">
-            <p id="appendix-F.16-1.15.1">Clarifications and editorial improvements.<a href="#appendix-F.16-1.15.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.17-1.15">
+            <p id="appendix-F.17-1.15.1">Clarifications and editorial improvements.<a href="#appendix-F.17-1.15.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-07-08">
-<section id="appendix-F.17">
+<section id="appendix-F.18">
         <h3 id="name-version-07-to-08">
-<a href="#appendix-F.17" class="section-number selfRef">F.17. </a><a href="#name-version-07-to-08" class="section-name selfRef">Version -07 to -08</a>
+<a href="#appendix-F.18" class="section-number selfRef">F.18. </a><a href="#name-version-07-to-08" class="section-name selfRef">Version -07 to -08</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.17-1.1">
-            <p id="appendix-F.17-1.1.1">Clarified relation between pairwise mode and group communication (Section 1).<a href="#appendix-F.17-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.18-1.1">
+            <p id="appendix-F.18-1.1.1">Clarified relation between pairwise mode and group communication (Section 1).<a href="#appendix-F.18-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.2">
-            <p id="appendix-F.17-1.2.1">Improved definition of "silent server" (Section 1.1).<a href="#appendix-F.17-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.2">
+            <p id="appendix-F.18-1.2.1">Improved definition of "silent server" (Section 1.1).<a href="#appendix-F.18-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.3">
-            <p id="appendix-F.17-1.3.1">Clarified when a Recipient Context is needed (Section 2).<a href="#appendix-F.17-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.3">
+            <p id="appendix-F.18-1.3.1">Clarified when a Recipient Context is needed (Section 2).<a href="#appendix-F.18-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.4">
-            <p id="appendix-F.17-1.4.1">Signature checkers as entities supported by the Group Manager (Section 2.3).<a href="#appendix-F.17-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.4">
+            <p id="appendix-F.18-1.4.1">Signature checkers as entities supported by the Group Manager (Section 2.3).<a href="#appendix-F.18-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.5">
-            <p id="appendix-F.17-1.5.1">Clarified that the Group Manager is under exclusive control of Gid and Sender ID values in a group, with Sender ID values under each Gid value (Section 2.3).<a href="#appendix-F.17-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.5">
+            <p id="appendix-F.18-1.5.1">Clarified that the Group Manager is under exclusive control of Gid and Sender ID values in a group, with Sender ID values under each Gid value (Section 2.3).<a href="#appendix-F.18-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.6">
-            <p id="appendix-F.17-1.6.1">Mitigation policies in case of recycled 'kid' values (Section 2.4).<a href="#appendix-F.17-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.6">
+            <p id="appendix-F.18-1.6.1">Mitigation policies in case of recycled 'kid' values (Section 2.4).<a href="#appendix-F.18-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.7">
-            <p id="appendix-F.17-1.7.1">More generic exhaustion (not necessarily wrap-around) of sender sequence numbers (Sections 2.5 and 10.11).<a href="#appendix-F.17-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.7">
+            <p id="appendix-F.18-1.7.1">More generic exhaustion (not necessarily wrap-around) of sender sequence numbers (Sections 2.5 and 10.11).<a href="#appendix-F.18-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.8">
-            <p id="appendix-F.17-1.8.1">Pairwise key considerations, as to group rekeying and Sender Sequence Numbers (Section 3).<a href="#appendix-F.17-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.8">
+            <p id="appendix-F.18-1.8.1">Pairwise key considerations, as to group rekeying and Sender Sequence Numbers (Section 3).<a href="#appendix-F.18-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.9">
-            <p id="appendix-F.17-1.9.1">Added reference to static-static Diffie-Hellman shared secret (Section 3).<a href="#appendix-F.17-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.9">
+            <p id="appendix-F.18-1.9.1">Added reference to static-static Diffie-Hellman shared secret (Section 3).<a href="#appendix-F.18-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.10">
-            <p id="appendix-F.17-1.10.1">Note for implementation about the external_aad for signing (Sectino 4.3.2).<a href="#appendix-F.17-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.10">
+            <p id="appendix-F.18-1.10.1">Note for implementation about the external_aad for signing (Sectino 4.3.2).<a href="#appendix-F.18-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.11">
-            <p id="appendix-F.17-1.11.1">Retransmission by the application for group requests over multicast as Non-confirmable (Section 7).<a href="#appendix-F.17-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.11">
+            <p id="appendix-F.18-1.11.1">Retransmission by the application for group requests over multicast as Non-confirmable (Section 7).<a href="#appendix-F.18-1.11.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.12">
-            <p id="appendix-F.17-1.12.1">A server <span class="bcp14">MUST</span> use its own Partial IV in a response, if protecting it with a different context than the one used for the request (Section 7.3).<a href="#appendix-F.17-1.12.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.12">
+            <p id="appendix-F.18-1.12.1">A server <span class="bcp14">MUST</span> use its own Partial IV in a response, if protecting it with a different context than the one used for the request (Section 7.3).<a href="#appendix-F.18-1.12.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.13">
-            <p id="appendix-F.17-1.13.1">Security considerations: encryption of pairwise mode as alternative to group-level security (Section 10.1).<a href="#appendix-F.17-1.13.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.13">
+            <p id="appendix-F.18-1.13.1">Security considerations: encryption of pairwise mode as alternative to group-level security (Section 10.1).<a href="#appendix-F.18-1.13.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.14">
-            <p id="appendix-F.17-1.14.1">Security considerations: added approach to reduce the chance of global collisions of Gid values from different Group Managers (Section 10.5).<a href="#appendix-F.17-1.14.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.14">
+            <p id="appendix-F.18-1.14.1">Security considerations: added approach to reduce the chance of global collisions of Gid values from different Group Managers (Section 10.5).<a href="#appendix-F.18-1.14.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.15">
-            <p id="appendix-F.17-1.15.1">Security considerations: added implications for block-wise transfers when using the signature mode for requests over unicast (Section 10.7).<a href="#appendix-F.17-1.15.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.15">
+            <p id="appendix-F.18-1.15.1">Security considerations: added implications for block-wise transfers when using the signature mode for requests over unicast (Section 10.7).<a href="#appendix-F.18-1.15.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.16">
-            <p id="appendix-F.17-1.16.1">Security considerations: (multiple) supported signature algorithms (Section 10.13).<a href="#appendix-F.17-1.16.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.16">
+            <p id="appendix-F.18-1.16.1">Security considerations: (multiple) supported signature algorithms (Section 10.13).<a href="#appendix-F.18-1.16.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.17">
-            <p id="appendix-F.17-1.17.1">Security considerations: added privacy considerations on the approach for reducing global collisions of Gid values (Section 10.15).<a href="#appendix-F.17-1.17.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.17">
+            <p id="appendix-F.18-1.17.1">Security considerations: added privacy considerations on the approach for reducing global collisions of Gid values (Section 10.15).<a href="#appendix-F.18-1.17.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.18">
-            <p id="appendix-F.17-1.18.1">Updates to the methods for synchronizing with clients' sequence number (Appendix E).<a href="#appendix-F.17-1.18.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.18">
+            <p id="appendix-F.18-1.18.1">Updates to the methods for synchronizing with clients' sequence number (Appendix E).<a href="#appendix-F.18-1.18.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.19">
-            <p id="appendix-F.17-1.19.1">Simplified text on discovery services supporting the pairwise mode (Appendix G.1).<a href="#appendix-F.17-1.19.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.19">
+            <p id="appendix-F.18-1.19.1">Simplified text on discovery services supporting the pairwise mode (Appendix G.1).<a href="#appendix-F.18-1.19.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.17-1.20">
-            <p id="appendix-F.17-1.20.1">Editorial improvements.<a href="#appendix-F.17-1.20.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.18-1.20">
+            <p id="appendix-F.18-1.20.1">Editorial improvements.<a href="#appendix-F.18-1.20.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-06-07">
-<section id="appendix-F.18">
+<section id="appendix-F.19">
         <h3 id="name-version-06-to-07">
-<a href="#appendix-F.18" class="section-number selfRef">F.18. </a><a href="#name-version-06-to-07" class="section-name selfRef">Version -06 to -07</a>
+<a href="#appendix-F.19" class="section-number selfRef">F.19. </a><a href="#name-version-06-to-07" class="section-name selfRef">Version -06 to -07</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.18-1.1">
-            <p id="appendix-F.18-1.1.1">Updated abstract and introduction.<a href="#appendix-F.18-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.19-1.1">
+            <p id="appendix-F.19-1.1.1">Updated abstract and introduction.<a href="#appendix-F.19-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.18-1.2">
-            <p id="appendix-F.18-1.2.1">Clarifications of what pertains a group rekeying.<a href="#appendix-F.18-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.19-1.2">
+            <p id="appendix-F.19-1.2.1">Clarifications of what pertains a group rekeying.<a href="#appendix-F.19-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.18-1.3">
-            <p id="appendix-F.18-1.3.1">Derivation of pairwise keying material.<a href="#appendix-F.18-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.19-1.3">
+            <p id="appendix-F.19-1.3.1">Derivation of pairwise keying material.<a href="#appendix-F.19-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.18-1.4">
-            <p id="appendix-F.18-1.4.1">Content re-organization for COSE Object and OSCORE header compression.<a href="#appendix-F.18-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.19-1.4">
+            <p id="appendix-F.19-1.4.1">Content re-organization for COSE Object and OSCORE header compression.<a href="#appendix-F.19-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.18-1.5">
-            <p id="appendix-F.18-1.5.1">Defined the Pairwise Flag bit for the OSCORE Option.<a href="#appendix-F.18-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.19-1.5">
+            <p id="appendix-F.19-1.5.1">Defined the Pairwise Flag bit for the OSCORE Option.<a href="#appendix-F.19-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.18-1.6">
-            <p id="appendix-F.18-1.6.1">Supporting CoAP Observe for group requests and responses.<a href="#appendix-F.18-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.19-1.6">
+            <p id="appendix-F.19-1.6.1">Supporting CoAP Observe for group requests and responses.<a href="#appendix-F.19-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.18-1.7">
-            <p id="appendix-F.18-1.7.1">Considerations on message protection across switching to new keying material.<a href="#appendix-F.18-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.19-1.7">
+            <p id="appendix-F.19-1.7.1">Considerations on message protection across switching to new keying material.<a href="#appendix-F.19-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.18-1.8">
-            <p id="appendix-F.18-1.8.1">New optimized mode based on pairwise keying material.<a href="#appendix-F.18-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.19-1.8">
+            <p id="appendix-F.19-1.8.1">New optimized mode based on pairwise keying material.<a href="#appendix-F.19-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.18-1.9">
-            <p id="appendix-F.18-1.9.1">More considerations on replay protection and Security Contexts upon key renewal.<a href="#appendix-F.18-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.19-1.9">
+            <p id="appendix-F.19-1.9.1">More considerations on replay protection and Security Contexts upon key renewal.<a href="#appendix-F.19-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.18-1.10">
-            <p id="appendix-F.18-1.10.1">Security considerations on Group OSCORE for unicast requests, also as affecting the usage of the Echo Option.<a href="#appendix-F.18-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.19-1.10">
+            <p id="appendix-F.19-1.10.1">Security considerations on Group OSCORE for unicast requests, also as affecting the usage of the Echo Option.<a href="#appendix-F.19-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.18-1.11">
-            <p id="appendix-F.18-1.11.1">Clarification on different types of groups considered (application/security/CoAP).<a href="#appendix-F.18-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.19-1.11">
+            <p id="appendix-F.19-1.11.1">Clarification on different types of groups considered (application/security/CoAP).<a href="#appendix-F.19-1.11.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.18-1.12">
-            <p id="appendix-F.18-1.12.1">New pairwise mode, using pairwise keying material for both requests and responses.<a href="#appendix-F.18-1.12.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.19-1.12">
+            <p id="appendix-F.19-1.12.1">New pairwise mode, using pairwise keying material for both requests and responses.<a href="#appendix-F.19-1.12.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-05-06">
-<section id="appendix-F.19">
+<section id="appendix-F.20">
         <h3 id="name-version-05-to-06">
-<a href="#appendix-F.19" class="section-number selfRef">F.19. </a><a href="#name-version-05-to-06" class="section-name selfRef">Version -05 to -06</a>
+<a href="#appendix-F.20" class="section-number selfRef">F.20. </a><a href="#name-version-05-to-06" class="section-name selfRef">Version -05 to -06</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.19-1.1">
-            <p id="appendix-F.19-1.1.1">Group IDs mandated to be unique under the same Group Manager.<a href="#appendix-F.19-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.20-1.1">
+            <p id="appendix-F.20-1.1.1">Group IDs mandated to be unique under the same Group Manager.<a href="#appendix-F.20-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.19-1.2">
-            <p id="appendix-F.19-1.2.1">Clarifications on parameter update upon group rekeying.<a href="#appendix-F.19-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.20-1.2">
+            <p id="appendix-F.20-1.2.1">Clarifications on parameter update upon group rekeying.<a href="#appendix-F.20-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.19-1.3">
-            <p id="appendix-F.19-1.3.1">Updated external_aad structures.<a href="#appendix-F.19-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.20-1.3">
+            <p id="appendix-F.20-1.3.1">Updated external_aad structures.<a href="#appendix-F.20-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.19-1.4">
-            <p id="appendix-F.19-1.4.1">Dynamic derivation of Recipient Contexts made optional and application specific.<a href="#appendix-F.19-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.20-1.4">
+            <p id="appendix-F.20-1.4.1">Dynamic derivation of Recipient Contexts made optional and application specific.<a href="#appendix-F.20-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.19-1.5">
-            <p id="appendix-F.19-1.5.1">Optional 4.00 response for failed signature verification on the server.<a href="#appendix-F.19-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.20-1.5">
+            <p id="appendix-F.20-1.5.1">Optional 4.00 response for failed signature verification on the server.<a href="#appendix-F.20-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.19-1.6">
-            <p id="appendix-F.19-1.6.1">Removed client handling of duplicated responses to multicast requests.<a href="#appendix-F.19-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.20-1.6">
+            <p id="appendix-F.20-1.6.1">Removed client handling of duplicated responses to multicast requests.<a href="#appendix-F.20-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.19-1.7">
-            <p id="appendix-F.19-1.7.1">Additional considerations on public key retrieval and group rekeying.<a href="#appendix-F.19-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.20-1.7">
+            <p id="appendix-F.20-1.7.1">Additional considerations on public key retrieval and group rekeying.<a href="#appendix-F.20-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.19-1.8">
-            <p id="appendix-F.19-1.8.1">Added Group Manager responsibility on validating public keys.<a href="#appendix-F.19-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.20-1.8">
+            <p id="appendix-F.20-1.8.1">Added Group Manager responsibility on validating public keys.<a href="#appendix-F.20-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.19-1.9">
-            <p id="appendix-F.19-1.9.1">Updates IANA registries.<a href="#appendix-F.19-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.20-1.9">
+            <p id="appendix-F.20-1.9.1">Updates IANA registries.<a href="#appendix-F.20-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.19-1.10">
-            <p id="appendix-F.19-1.10.1">Reference to RFC 8613.<a href="#appendix-F.19-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.20-1.10">
+            <p id="appendix-F.20-1.10.1">Reference to RFC 8613.<a href="#appendix-F.20-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.19-1.11">
-            <p id="appendix-F.19-1.11.1">Editorial improvements.<a href="#appendix-F.19-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.20-1.11">
+            <p id="appendix-F.20-1.11.1">Editorial improvements.<a href="#appendix-F.20-1.11.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-04-05">
-<section id="appendix-F.20">
+<section id="appendix-F.21">
         <h3 id="name-version-04-to-05">
-<a href="#appendix-F.20" class="section-number selfRef">F.20. </a><a href="#name-version-04-to-05" class="section-name selfRef">Version -04 to -05</a>
+<a href="#appendix-F.21" class="section-number selfRef">F.21. </a><a href="#name-version-04-to-05" class="section-name selfRef">Version -04 to -05</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.20-1.1">
-            <p id="appendix-F.20-1.1.1">Added references to draft-dijk-core-groupcomm-bis.<a href="#appendix-F.20-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.21-1.1">
+            <p id="appendix-F.21-1.1.1">Added references to draft-dijk-core-groupcomm-bis.<a href="#appendix-F.21-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.20-1.2">
-            <p id="appendix-F.20-1.2.1">New parameter Counter Signature Key Parameters (Section 2).<a href="#appendix-F.20-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.21-1.2">
+            <p id="appendix-F.21-1.2.1">New parameter Counter Signature Key Parameters (Section 2).<a href="#appendix-F.21-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.20-1.3">
-            <p id="appendix-F.20-1.3.1">Clarification about Recipient Contexts (Section 2).<a href="#appendix-F.20-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.21-1.3">
+            <p id="appendix-F.21-1.3.1">Clarification about Recipient Contexts (Section 2).<a href="#appendix-F.21-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.20-1.4">
-            <p id="appendix-F.20-1.4.1">Two different external_aad for encrypting and signing (Section 3.1).<a href="#appendix-F.20-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.21-1.4">
+            <p id="appendix-F.21-1.4.1">Two different external_aad for encrypting and signing (Section 3.1).<a href="#appendix-F.21-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.20-1.5">
-            <p id="appendix-F.20-1.5.1">Updated response verification to handle Observe notifications (Section 6.4).<a href="#appendix-F.20-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.21-1.5">
+            <p id="appendix-F.21-1.5.1">Updated response verification to handle Observe notifications (Section 6.4).<a href="#appendix-F.21-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.20-1.6">
-            <p id="appendix-F.20-1.6.1">Extended Security Considerations (Section 8).<a href="#appendix-F.20-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.21-1.6">
+            <p id="appendix-F.21-1.6.1">Extended Security Considerations (Section 8).<a href="#appendix-F.21-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.20-1.7">
-            <p id="appendix-F.20-1.7.1">New "Counter Signature Key Parameters" IANA Registry (Section 9.2).<a href="#appendix-F.20-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.21-1.7">
+            <p id="appendix-F.21-1.7.1">New "Counter Signature Key Parameters" IANA Registry (Section 9.2).<a href="#appendix-F.21-1.7.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-03-04">
-<section id="appendix-F.21">
+<section id="appendix-F.22">
         <h3 id="name-version-03-to-04">
-<a href="#appendix-F.21" class="section-number selfRef">F.21. </a><a href="#name-version-03-to-04" class="section-name selfRef">Version -03 to -04</a>
+<a href="#appendix-F.22" class="section-number selfRef">F.22. </a><a href="#name-version-03-to-04" class="section-name selfRef">Version -03 to -04</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.21-1.1">
-            <p id="appendix-F.21-1.1.1">Added the new "Counter Signature Parameters" in the Common Context (see Section 2).<a href="#appendix-F.21-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.22-1.1">
+            <p id="appendix-F.22-1.1.1">Added the new "Counter Signature Parameters" in the Common Context (see Section 2).<a href="#appendix-F.22-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.21-1.2">
-            <p id="appendix-F.21-1.2.1">Added recommendation on using "deterministic ECDSA" if ECDSA is used as countersignature algorithm (see Section 2).<a href="#appendix-F.21-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.22-1.2">
+            <p id="appendix-F.22-1.2.1">Added recommendation on using "deterministic ECDSA" if ECDSA is used as countersignature algorithm (see Section 2).<a href="#appendix-F.22-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.21-1.3">
-            <p id="appendix-F.21-1.3.1">Clarified possible asynchronous retrieval of keying material from the Group Manager, in order to process incoming messages (see Section 2).<a href="#appendix-F.21-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.22-1.3">
+            <p id="appendix-F.22-1.3.1">Clarified possible asynchronous retrieval of keying material from the Group Manager, in order to process incoming messages (see Section 2).<a href="#appendix-F.22-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.21-1.4">
-            <p id="appendix-F.21-1.4.1">Structured Section 3 into subsections.<a href="#appendix-F.21-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.22-1.4">
+            <p id="appendix-F.22-1.4.1">Structured Section 3 into subsections.<a href="#appendix-F.22-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.21-1.5">
-            <p id="appendix-F.21-1.5.1">Added the new 'par_countersign' to the aad_array of the external_aad (see Section 3.1).<a href="#appendix-F.21-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.22-1.5">
+            <p id="appendix-F.22-1.5.1">Added the new 'par_countersign' to the aad_array of the external_aad (see Section 3.1).<a href="#appendix-F.22-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.21-1.6">
-            <p id="appendix-F.21-1.6.1">Clarified non reliability of 'kid' as identity identifier for a group member (see Section 2.1).<a href="#appendix-F.21-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.22-1.6">
+            <p id="appendix-F.22-1.6.1">Clarified non reliability of 'kid' as identity identifier for a group member (see Section 2.1).<a href="#appendix-F.22-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.21-1.7">
-            <p id="appendix-F.21-1.7.1">Described possible provisioning of new Sender ID in case of Partial IV wrap-around (see Section 2.2).<a href="#appendix-F.21-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.22-1.7">
+            <p id="appendix-F.22-1.7.1">Described possible provisioning of new Sender ID in case of Partial IV wrap-around (see Section 2.2).<a href="#appendix-F.22-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.21-1.8">
-            <p id="appendix-F.21-1.8.1">The former signature bit in the Flag Byte of the OSCORE Option value is reverted to reserved (see Section 4.1).<a href="#appendix-F.21-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.22-1.8">
+            <p id="appendix-F.22-1.8.1">The former signature bit in the Flag Byte of the OSCORE Option value is reverted to reserved (see Section 4.1).<a href="#appendix-F.22-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.21-1.9">
-            <p id="appendix-F.21-1.9.1">Updated examples of compressed COSE object, now with the sixth less significant bit in the Flag Byte of the OSCORE Option value set to 0 (see Section 4.3).<a href="#appendix-F.21-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.22-1.9">
+            <p id="appendix-F.22-1.9.1">Updated examples of compressed COSE object, now with the sixth less significant bit in the Flag Byte of the OSCORE Option value set to 0 (see Section 4.3).<a href="#appendix-F.22-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.21-1.10">
-            <p id="appendix-F.21-1.10.1">Relaxed statements on sending error messages (see Section 6).<a href="#appendix-F.21-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.22-1.10">
+            <p id="appendix-F.22-1.10.1">Relaxed statements on sending error messages (see Section 6).<a href="#appendix-F.22-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.21-1.11">
-            <p id="appendix-F.21-1.11.1">Added explicit step on computing the countersignature for outgoing messages (see Sections 6.1 and 6.3).<a href="#appendix-F.21-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.22-1.11">
+            <p id="appendix-F.22-1.11.1">Added explicit step on computing the countersignature for outgoing messages (see Sections 6.1 and 6.3).<a href="#appendix-F.22-1.11.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.21-1.12">
-            <p id="appendix-F.21-1.12.1">Handling of just created Recipient Contexts in case of unsuccessful message verification (see Sections 6.2 and 6.4).<a href="#appendix-F.21-1.12.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.22-1.12">
+            <p id="appendix-F.22-1.12.1">Handling of just created Recipient Contexts in case of unsuccessful message verification (see Sections 6.2 and 6.4).<a href="#appendix-F.22-1.12.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.21-1.13">
-            <p id="appendix-F.21-1.13.1">Handling of replied/repeated responses on the client (see Section 6.4).<a href="#appendix-F.21-1.13.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.22-1.13">
+            <p id="appendix-F.22-1.13.1">Handling of replied/repeated responses on the client (see Section 6.4).<a href="#appendix-F.22-1.13.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.21-1.14">
-            <p id="appendix-F.21-1.14.1">New IANA Registry "Counter Signature Parameters" (see Section 9.1).<a href="#appendix-F.21-1.14.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.22-1.14">
+            <p id="appendix-F.22-1.14.1">New IANA Registry "Counter Signature Parameters" (see Section 9.1).<a href="#appendix-F.22-1.14.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-02-03">
-<section id="appendix-F.22">
+<section id="appendix-F.23">
         <h3 id="name-version-02-to-03">
-<a href="#appendix-F.22" class="section-number selfRef">F.22. </a><a href="#name-version-02-to-03" class="section-name selfRef">Version -02 to -03</a>
+<a href="#appendix-F.23" class="section-number selfRef">F.23. </a><a href="#name-version-02-to-03" class="section-name selfRef">Version -02 to -03</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.22-1.1">
-            <p id="appendix-F.22-1.1.1">Revised structure and phrasing for improved readability and better alignment with draft-ietf-core-object-security.<a href="#appendix-F.22-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.23-1.1">
+            <p id="appendix-F.23-1.1.1">Revised structure and phrasing for improved readability and better alignment with draft-ietf-core-object-security.<a href="#appendix-F.23-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.22-1.2">
-            <p id="appendix-F.22-1.2.1">Added discussion on wrap-Around of Partial IVs (see Section 2.2).<a href="#appendix-F.22-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.23-1.2">
+            <p id="appendix-F.23-1.2.1">Added discussion on wrap-Around of Partial IVs (see Section 2.2).<a href="#appendix-F.23-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.22-1.3">
-            <p id="appendix-F.22-1.3.1">Separate sections for the COSE Object (Section 3) and the OSCORE Header Compression (Section 4).<a href="#appendix-F.22-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.23-1.3">
+            <p id="appendix-F.23-1.3.1">Separate sections for the COSE Object (Section 3) and the OSCORE Header Compression (Section 4).<a href="#appendix-F.23-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.22-1.4">
-            <p id="appendix-F.22-1.4.1">The countersignature is now appended to the encrypted payload of the OSCORE message, rather than included in the OSCORE Option (see Section 4).<a href="#appendix-F.22-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.23-1.4">
+            <p id="appendix-F.23-1.4.1">The countersignature is now appended to the encrypted payload of the OSCORE message, rather than included in the OSCORE Option (see Section 4).<a href="#appendix-F.23-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.22-1.5">
-            <p id="appendix-F.22-1.5.1">Extended scope of Section 5, now titled " Message Binding, Sequence Numbers, Freshness and Replay Protection".<a href="#appendix-F.22-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.23-1.5">
+            <p id="appendix-F.23-1.5.1">Extended scope of Section 5, now titled " Message Binding, Sequence Numbers, Freshness and Replay Protection".<a href="#appendix-F.23-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.22-1.6">
-            <p id="appendix-F.22-1.6.1">Clarifications about Non-confirmable messages in Section 5.1 "Synchronization of Sender Sequence Numbers".<a href="#appendix-F.22-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.23-1.6">
+            <p id="appendix-F.23-1.6.1">Clarifications about Non-confirmable messages in Section 5.1 "Synchronization of Sender Sequence Numbers".<a href="#appendix-F.23-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.22-1.7">
-            <p id="appendix-F.22-1.7.1">Clarifications about error handling in Section 6 "Message Processing".<a href="#appendix-F.22-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.23-1.7">
+            <p id="appendix-F.23-1.7.1">Clarifications about error handling in Section 6 "Message Processing".<a href="#appendix-F.23-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.22-1.8">
-            <p id="appendix-F.22-1.8.1">Compacted list of responsibilities of the Group Manager in Section 7.<a href="#appendix-F.22-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.23-1.8">
+            <p id="appendix-F.23-1.8.1">Compacted list of responsibilities of the Group Manager in Section 7.<a href="#appendix-F.23-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.22-1.9">
-            <p id="appendix-F.22-1.9.1">Revised and extended security considerations in Section 8.<a href="#appendix-F.22-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.23-1.9">
+            <p id="appendix-F.23-1.9.1">Revised and extended security considerations in Section 8.<a href="#appendix-F.23-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.22-1.10">
-            <p id="appendix-F.22-1.10.1">Added IANA considerations for the OSCORE Flag Bits Registry in Section 9.<a href="#appendix-F.22-1.10.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.23-1.10">
+            <p id="appendix-F.23-1.10.1">Added IANA considerations for the OSCORE Flag Bits Registry in Section 9.<a href="#appendix-F.23-1.10.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.22-1.11">
-            <p id="appendix-F.22-1.11.1">Revised Appendix D, now giving a short high-level description of a new endpoint set-up.<a href="#appendix-F.22-1.11.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.23-1.11">
+            <p id="appendix-F.23-1.11.1">Revised Appendix D, now giving a short high-level description of a new endpoint set-up.<a href="#appendix-F.23-1.11.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-01-02">
-<section id="appendix-F.23">
+<section id="appendix-F.24">
         <h3 id="name-version-01-to-02">
-<a href="#appendix-F.23" class="section-number selfRef">F.23. </a><a href="#name-version-01-to-02" class="section-name selfRef">Version -01 to -02</a>
+<a href="#appendix-F.24" class="section-number selfRef">F.24. </a><a href="#name-version-01-to-02" class="section-name selfRef">Version -01 to -02</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.23-1.1">
-            <p id="appendix-F.23-1.1.1">Terminology has been made more aligned with RFC7252 and draft-ietf-core-object-security: i) "client" and "server" replace the old "multicaster" and "listener", respectively; ii) "silent server" replaces the old "pure listener".<a href="#appendix-F.23-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.24-1.1">
+            <p id="appendix-F.24-1.1.1">Terminology has been made more aligned with RFC7252 and draft-ietf-core-object-security: i) "client" and "server" replace the old "multicaster" and "listener", respectively; ii) "silent server" replaces the old "pure listener".<a href="#appendix-F.24-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.23-1.2">
-            <p id="appendix-F.23-1.2.1">Section 2 has been updated to have the Group Identifier stored in the 'ID Context' parameter defined in draft-ietf-core-object-security.<a href="#appendix-F.23-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.24-1.2">
+            <p id="appendix-F.24-1.2.1">Section 2 has been updated to have the Group Identifier stored in the 'ID Context' parameter defined in draft-ietf-core-object-security.<a href="#appendix-F.24-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.23-1.3">
-            <p id="appendix-F.23-1.3.1">Section 3 has been updated with the new format of the Additional Authenticated Data.<a href="#appendix-F.23-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.24-1.3">
+            <p id="appendix-F.24-1.3.1">Section 3 has been updated with the new format of the Additional Authenticated Data.<a href="#appendix-F.24-1.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.23-1.4">
-            <p id="appendix-F.23-1.4.1">Major rewriting of Section 4 to better highlight the differences with the message processing in draft-ietf-core-object-security.<a href="#appendix-F.23-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.24-1.4">
+            <p id="appendix-F.24-1.4.1">Major rewriting of Section 4 to better highlight the differences with the message processing in draft-ietf-core-object-security.<a href="#appendix-F.24-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.23-1.5">
-            <p id="appendix-F.23-1.5.1">Added Sections 7.2 and 7.3 discussing security considerations about uniqueness of (key, nonce) and collision of group identifiers, respectively.<a href="#appendix-F.23-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.24-1.5">
+            <p id="appendix-F.24-1.5.1">Added Sections 7.2 and 7.3 discussing security considerations about uniqueness of (key, nonce) and collision of group identifiers, respectively.<a href="#appendix-F.24-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.23-1.6">
-            <p id="appendix-F.23-1.6.1">Minor updates to Appendix A.1 about assumptions on multicast communication topology and group size.<a href="#appendix-F.23-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.24-1.6">
+            <p id="appendix-F.24-1.6.1">Minor updates to Appendix A.1 about assumptions on multicast communication topology and group size.<a href="#appendix-F.24-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.23-1.7">
-            <p id="appendix-F.23-1.7.1">Updated Appendix C on format of group identifiers, with practical implications of possible collisions of group identifiers.<a href="#appendix-F.23-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.24-1.7">
+            <p id="appendix-F.24-1.7.1">Updated Appendix C on format of group identifiers, with practical implications of possible collisions of group identifiers.<a href="#appendix-F.24-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.23-1.8">
-            <p id="appendix-F.23-1.8.1">Updated Appendix D.2, adding a pointer to draft-palombini-ace-key-groupcomm about retrieval of nodes' public keys through the Group Manager.<a href="#appendix-F.23-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.24-1.8">
+            <p id="appendix-F.24-1.8.1">Updated Appendix D.2, adding a pointer to draft-palombini-ace-key-groupcomm about retrieval of nodes' public keys through the Group Manager.<a href="#appendix-F.24-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.23-1.9">
-            <p id="appendix-F.23-1.9.1">Minor updates to Appendix E.3 about Challenge-Response synchronization of sequence numbers based on the Echo Option from draft-ietf-core-echo-request-tag.<a href="#appendix-F.23-1.9.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.24-1.9">
+            <p id="appendix-F.24-1.9.1">Minor updates to Appendix E.3 about Challenge-Response synchronization of sequence numbers based on the Echo Option from draft-ietf-core-echo-request-tag.<a href="#appendix-F.24-1.9.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="sec-00-01">
-<section id="appendix-F.24">
+<section id="appendix-F.25">
         <h3 id="name-version-00-to-01">
-<a href="#appendix-F.24" class="section-number selfRef">F.24. </a><a href="#name-version-00-to-01" class="section-name selfRef">Version -00 to -01</a>
+<a href="#appendix-F.25" class="section-number selfRef">F.25. </a><a href="#name-version-00-to-01" class="section-name selfRef">Version -00 to -01</a>
         </h3>
 <ul class="normal">
-<li class="normal" id="appendix-F.24-1.1">
-            <p id="appendix-F.24-1.1.1">Section 1.1 has been updated with the definition of group as "security group".<a href="#appendix-F.24-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.25-1.1">
+            <p id="appendix-F.25-1.1.1">Section 1.1 has been updated with the definition of group as "security group".<a href="#appendix-F.25-1.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.24-1.2">
-            <p id="appendix-F.24-1.2.1">Section 2 has been updated with:<a href="#appendix-F.24-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.25-1.2">
+            <p id="appendix-F.25-1.2.1">Section 2 has been updated with:<a href="#appendix-F.25-1.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-F.24-1.2.2.1">
-                <p id="appendix-F.24-1.2.2.1.1">Clarifications on establishment/derivation of Security Contexts.<a href="#appendix-F.24-1.2.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.25-1.2.2.1">
+                <p id="appendix-F.25-1.2.2.1.1">Clarifications on establishment/derivation of Security Contexts.<a href="#appendix-F.25-1.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="appendix-F.24-1.2.2.2">
-                <p id="appendix-F.24-1.2.2.2.1">A table summarizing the the additional context elements compared to OSCORE.<a href="#appendix-F.24-1.2.2.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="appendix-F.25-1.2.2.2">
+                <p id="appendix-F.25-1.2.2.2.1">A table summarizing the the additional context elements compared to OSCORE.<a href="#appendix-F.25-1.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="normal" id="appendix-F.24-1.3">
-            <p id="appendix-F.24-1.3.1">Section 3 has been updated with:<a href="#appendix-F.24-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.25-1.3">
+            <p id="appendix-F.25-1.3.1">Section 3 has been updated with:<a href="#appendix-F.25-1.3.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-F.24-1.3.2.1">
-                <p id="appendix-F.24-1.3.2.1.1">Examples of request and response messages.<a href="#appendix-F.24-1.3.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-F.25-1.3.2.1">
+                <p id="appendix-F.25-1.3.2.1.1">Examples of request and response messages.<a href="#appendix-F.25-1.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="appendix-F.24-1.3.2.2">
-                <p id="appendix-F.24-1.3.2.2.1">Use of CounterSignature0 rather than CounterSignature.<a href="#appendix-F.24-1.3.2.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="appendix-F.25-1.3.2.2">
+                <p id="appendix-F.25-1.3.2.2.1">Use of CounterSignature0 rather than CounterSignature.<a href="#appendix-F.25-1.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="appendix-F.24-1.3.2.3">
-                <p id="appendix-F.24-1.3.2.3.1">Additional Authenticated Data including also the signature algorithm, while not including the Group Identifier any longer.<a href="#appendix-F.24-1.3.2.3.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="appendix-F.25-1.3.2.3">
+                <p id="appendix-F.25-1.3.2.3.1">Additional Authenticated Data including also the signature algorithm, while not including the Group Identifier any longer.<a href="#appendix-F.25-1.3.2.3.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="normal" id="appendix-F.24-1.4">
-            <p id="appendix-F.24-1.4.1">Added Section 6, listing the responsibilities of the Group Manager.<a href="#appendix-F.24-1.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.25-1.4">
+            <p id="appendix-F.25-1.4.1">Added Section 6, listing the responsibilities of the Group Manager.<a href="#appendix-F.25-1.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.24-1.5">
-            <p id="appendix-F.24-1.5.1">Added Appendix A (former section), including assumptions and security objectives.<a href="#appendix-F.24-1.5.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.25-1.5">
+            <p id="appendix-F.25-1.5.1">Added Appendix A (former section), including assumptions and security objectives.<a href="#appendix-F.25-1.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.24-1.6">
-            <p id="appendix-F.24-1.6.1">Appendix B has been updated with more details on the use cases.<a href="#appendix-F.24-1.6.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.25-1.6">
+            <p id="appendix-F.25-1.6.1">Appendix B has been updated with more details on the use cases.<a href="#appendix-F.25-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.24-1.7">
-            <p id="appendix-F.24-1.7.1">Added Appendix C, providing an example of Group Identifier format.<a href="#appendix-F.24-1.7.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.25-1.7">
+            <p id="appendix-F.25-1.7.1">Added Appendix C, providing an example of Group Identifier format.<a href="#appendix-F.25-1.7.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="appendix-F.24-1.8">
-            <p id="appendix-F.24-1.8.1">Appendix D has been updated to be aligned with draft-palombini-ace-key-groupcomm.<a href="#appendix-F.24-1.8.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="appendix-F.25-1.8">
+            <p id="appendix-F.25-1.8.1">Appendix D has been updated to be aligned with draft-palombini-ace-key-groupcomm.<a href="#appendix-F.25-1.8.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
