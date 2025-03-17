@@ -74,6 +74,7 @@ normative:
 
   I-D.ietf-core-groupcomm-bis:
   RFC4086:
+  RFC5869:
   RFC6979:
   RFC7252:
   RFC7641:
@@ -128,7 +129,6 @@ informative:
   RFC4944:
   RFC4949:
   RFC5280:
-  RFC5869:
   RFC6282:
   RFC6690:
   RFC7228:
@@ -2126,6 +2126,10 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
+
+## Version -24 to -25 ## {#sec-24-25}
+
+* Made RFC 5869 a normative reference.
 
 ## Version -23 to -24 ## {#sec-23-24}
 
