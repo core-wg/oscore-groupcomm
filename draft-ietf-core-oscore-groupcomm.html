@@ -2258,7 +2258,7 @@ In particular, the Countersign_structure contains the context text string "Count
 <p id="section-3.3-1">The nonce is constructed like in OSCORE, with the difference that step 4 in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-5.2" class="relref">Section 5.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> is replaced with:<a href="#section-3.3-1" class="pilcrow">¶</a></p>
 <p id="section-3.3-2">A. and then XOR with X bytes from the Common IV's start, where X is the length in bytes of the nonce.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
 <p id="section-3.3-3">For example, if X = 7 and the Common IV is 0x00112233445566778899aabbcc (13 bytes), then the bytes to XOR are 0x00112233445566 (7 bytes).<a href="#section-3.3-3" class="pilcrow">¶</a></p>
-<p id="section-3.3-4">The constructed nonce is used as AEAD nonce by the AEAD Algorithm (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a>) and by the Group Encryption Algorithm when this is an AEAD algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-3.3-4" class="pilcrow">¶</a></p>
+<p id="section-3.3-4">The constructed nonce is used both by the AEAD Algorithm (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a>) and by the Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>), independent of whether they are AEAD or plain encryption algorithms. Algorithms that do not use a nonce are not supported, as per <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-cose-object-ext-aad">
@@ -4559,6 +4559,9 @@ Therefore, it is ensured by construction that no client can have with the same s
 </li>
           <li class="normal" id="appendix-F.1-1.2">
             <p id="appendix-F.1-1.2.1">Removed request to add a note in the "CoAP Option Numbers" registry.<a href="#appendix-F.1-1.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-F.1-1.3">
+            <p id="appendix-F.1-1.3.1">More precise phrasing on using the encryption nonce.<a href="#appendix-F.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
