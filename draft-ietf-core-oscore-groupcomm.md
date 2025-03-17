@@ -1974,10 +1974,6 @@ IANA is asked to add the following entry to the "OSCORE Flag Bits" registry with
 | 2            | Group Flag | For using a Group OSCORE Security Context, set to 1 if the message is protected with the group mode | {{&SELF}} |
 {: #table-iana-oscore-flag-bits title="Registrations in the OSCORE Flag Bits Registry" align="center"}
 
-## CoAP Option Numbers Registry {#iana-cons-oscore-option-numbers}
-
-IANA is asked to add this document as a reference for the OSCORE Option in the "CoAP Option Numbers" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
-
 ## Target Attributes Registry ## {#iana-target-attributes}
 
 IANA is asked to add the following entry to the "Target Attributes" registry within the "Constrained RESTful Environments (CoRE) Parameters" registry group.
@@ -2130,6 +2126,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 ## Version -24 to -25 ## {#sec-24-25}
 
 * Made RFC 5869 a normative reference.
+
+* Removed request to add a note in the "CoAP Option Numbers" registry.
 
 ## Version -23 to -24 ## {#sec-23-24}
 
