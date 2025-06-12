@@ -414,7 +414,7 @@ For example, an X.509 certificate is provided as its direct binary serialization
 
 If authentication credentials are CWTs or CCSs, then the untagged CWT or CCS associated with an entity is stored in the Security Context and used as authentication credential for that entity.
 
-If authentication credentials are X.509 / C509 certificates or CWTs, and the authentication credential associated with an entity is provided within a chain or a bag, then only the end-entity certificate or end-entity untagged CWT is stored in the Security Context and used as authentication credential for that entity.
+If authentication credentials are X.509 / C509 certificates, CWTs, or CCSs and the authentication credential associated with an entity is provided within a chain or a bag, then only the end-entity certificate or end-entity untagged CWT / CCS is stored in the Security Context and used as authentication credential for that entity.
 
 Storing whole authentication credentials rather than only a subset of those may result in a non-negligible storage overhead. On the other hand, it also ensures that authentication credentials are correctly used in a simple, flexible and non-error-prone way, also taking into account future credential formats as entirely new or extending existing ones. In particular, it is ensured that:
 
@@ -1539,7 +1539,7 @@ In order to verify countersignatures of messages in a group, a signature checker
 
   If the signature checker is provided with a CWT or a CCS for a given entity, then the authentication credential associated with that entity is the untagged CWT or CCS.
 
-  If the signature checker is provided with a chain or a bag of X.509 / C509 certificates or of CWTs for a given entity, then the authentication credential associated with that entity is the end-entity certificate or end-entity untagged CWT.
+  If the signature checker is provided with a chain or a bag of X.509 / C509 certificates, or of CWTs, or of CCSs for a given entity, then the authentication credential associated with that entity is the end-entity certificate or end-entity untagged CWT / CCS.
 
 * The current Signature Encryption Key (see {{ssec-common-context-group-enc-key}}).
 
