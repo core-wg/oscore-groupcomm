@@ -764,9 +764,9 @@ Table of Contents
    authentication credentials, each is provided as the binary
    serialization of a CBOR map.
 
-   If authentication credentials are CWTs, then the untagged CWT
-   associated with an entity is stored in the Security Context and used
-   as authentication credential for that entity.
+   If authentication credentials are CWTs or CCSs, then the untagged CWT
+   or CCS associated with an entity is stored in the Security Context
+   and used as authentication credential for that entity.
 
    If authentication credentials are X.509 / C509 certificates or CWTs,
    and the authentication credential associated with an entity is
@@ -3208,9 +3208,9 @@ Table of Contents
    *  The authentication credentials of the group members and of the
       Group Manager.
 
-      If the signature checker is provided with a CWT for a given
-      entity, then the authentication credential associated with that
-      entity is the untagged CWT.
+      If the signature checker is provided with a CWT or a CCS for a
+      given entity, then the authentication credential associated with
+      that entity is the untagged CWT or CCS.
 
       If the signature checker is provided with a chain or a bag of
       X.509 / C509 certificates or of CWTs for a given entity, then the
@@ -4935,6 +4935,8 @@ Appendix F.  Document Updates
    This section is to be removed before publishing as an RFC.
 
 F.1.  Version -25 to -26
+
+   *  Not only CWTs but also CCSs can be tagged.
 
    *  Editorial fixes and improvements.
 
