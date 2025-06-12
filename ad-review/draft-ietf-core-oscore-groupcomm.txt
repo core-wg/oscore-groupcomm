@@ -476,7 +476,7 @@ Table of Contents
          Pairwise Sender Keys associated with the other endpoints (see
          Section 2.5).
 
-      If the endpoint is configured exclusively as silent server (see
+      If the endpoint is configured exclusively as a silent server (see
       Section 1.1), then the Sender Context is omitted.
 
    *  One Recipient Context for each other endpoint from which messages
@@ -806,8 +806,8 @@ Table of Contents
 
    Certain signature schemes, such as EdDSA and ECDSA, support a secure
    combined signature and encryption scheme.  This section specifies the
-   derivation of "pairwise keys", for use in the pairwise mode defined
-   in Section 8.
+   derivation of "pairwise keys" for use in the pairwise mode defined in
+   Section 8.
 
    Group OSCORE keys used for both signature and encryption MUST be used
    only for purposes related to Group OSCORE.  These include the
@@ -1014,9 +1014,9 @@ Table of Contents
 
 2.6.1.  Loss of Mutable Security Context
 
-   An endpoint may lose its mutable Security Context, e.g., due to a
-   reboot occurred in an unprepared way (see Section 2.6.1.1) or due to
-   a deleted Recipient Context (see Section 2.6.1.2).
+   An endpoint may lose its mutable Security Context, e.g., if a reboot
+   occurred in an unprepared way (see Section 2.6.1.1) or due to a
+   deleted Recipient Context (see Section 2.6.1.2).
 
    If it is not feasible or practically possible to store and maintain
    up-to-date the mutable part in non-volatile memory (e.g., due to
@@ -1028,8 +1028,8 @@ Table of Contents
 2.6.1.1.  Total Loss
 
    In case a loss of the Sender Context and/or of the Recipient Contexts
-   is detected (e.g., following a reboot occurred in an unprepared way),
-   the endpoint MUST NOT protect further messages using this Security
+   is detected (e.g., if a reboot occurred in an unprepared way), the
+   endpoint MUST NOT protect further messages using this Security
    Context, to avoid reusing a nonce with the same key.
 
    Before resuming its operations in the group, the endpoint MUST
@@ -1045,17 +1045,17 @@ Table of Contents
    Context to protect outgoing messages.  Newly derived Recipient
    Contexts will have a Replay Window which is initialized as valid.
 
-   If an endpoint is not configured as silent server and is not able to
-   establish an updated Sender Context, e.g., because of lack of
+   If an endpoint is not configured as a silent server and is not able
+   to establish an updated Sender Context, e.g., because of lack of
    connectivity with the Group Manager, then the endpoint MUST NOT
    protect further messages using the current Security Context and MUST
-   NOT accept incoming messages from other group members, as currently
-   unable to detect possible replays.
+   NOT accept incoming messages from other group members, as it is
+   currently unable to detect possible replays.
 
-   If an endpoint is configured as silent server and is not able to
+   If an endpoint is configured as a silent server and is not able to
    establish an updated Security Context, e.g., because of lack of
    connectivity with the Group Manager, then the endpoint MUST NOT
-   accept incoming messages from other group members, as currently
+   accept incoming messages from other group members, as it is currently
    unable to detect possible replays.
 
    An adversary may leverage the above to perform a Denial of Service
@@ -1080,10 +1080,10 @@ Table of Contents
    because the maximum number of Recipient Contexts has been reached
    (see Section 2.2), or due to some other reason.
 
-   When a Recipient Context is deleted, this does not only result in
-   losing information about previously received messages from the
-   corresponding other endpoint.  It also results in the inability to be
-   aware of the Security Contexts from which information has been lost.
+   When a Recipient Context is deleted, this not only results in losing
+   information about previously received messages from the corresponding
+   other endpoint.  It also results in the inability to be aware of the
+   Security Contexts from which information has been lost.
 
    Therefore, if the Recipient Context is derived again from the same
    Security Context, there is a risk that a replayed message is not
@@ -1093,12 +1093,13 @@ Table of Contents
    associated with a Recipient Context that has an invalid Replay Window
    MUST NOT be delivered to the application.
 
-   If the endpoint receives a request to process with the new Recipient
-   Context and the endpoint supports the CoAP Echo Option [RFC9175],
-   then it is RECOMMENDED to follow the procedure specified in Section 9
-   which establishes a valid Replay Window.  In particular, the endpoint
-   MUST use its Partial IV when generating the nonce and MUST include
-   the Partial IV in the response message conveying the Echo Option.
+   If the endpoint receives a request to be processed with the new
+   Recipient Context and the endpoint supports the CoAP Echo Option
+   [RFC9175], then it is RECOMMENDED to follow the procedure specified
+   in Section 9 which establishes a valid Replay Window.  In particular,
+   the endpoint MUST use its Partial IV when generating the nonce and
+   MUST include the Partial IV in the response message conveying the
+   Echo Option.
 
    Alternatively, the endpoint MAY retrieve or wait for new Security
    Context parameters from the Group Manager and derive new Sender and
@@ -1254,7 +1255,7 @@ Table of Contents
    Like OSCORE, Group OSCORE uses the untagged COSE_Encrypt0 structure
    with an Authenticated Encryption with Associated Data (AEAD)
    algorithm.  Unless otherwise specified, the following modifications
-   to what is defined for OSCORE apply, for both the group mode and the
+   to what is defined for OSCORE apply for both the group mode and the
    pairwise mode of Group OSCORE.
 
 3.1.  Countersignature
@@ -1327,7 +1328,7 @@ Table of Contents
 3.4.  external_aad
 
    The external_aad of the Additional Authenticated Data (AAD) is
-   different compared to OSCORE [RFC8613], and is defined in this
+   different compared to OSCORE [RFC8613] and is defined in this
    section.
 
    The same external_aad structure is used in group mode and pairwise
@@ -1524,7 +1525,7 @@ Table of Contents
 
    *  id_context is the ID Context (Gid) used when protecting M.
 
-      Note that, in case of group rekeying, a server might use a
+      Note that, in the case of group rekeying, a server might use a
       different Gid when protecting a response, compared to the Gid that
       it used to verify (that the client used to protect) the request,
       see Section 7.3.
@@ -1666,7 +1667,7 @@ Table of Contents
 
 5.1.  Supporting Multiple Responses in Long Exchanges
 
-   For each of its ongoing long exchange, a client maintains one
+   For each of its ongoing long exchanges, a client maintains one
    Response Number for each different server.  Then, separately for each
    server, the client uses the associated Response Number to perform
    ordering and replay protection of responses received from that server
@@ -1677,9 +1678,9 @@ Table of Contents
    [RFC8613]), but a client uses it for handling any response from the
    associated server within a long exchange.
 
-   Group OSCORE allows to preserve a long exchange active indefinitely,
-   even in case the group is rekeyed, with consequent change of ID
-   Context, or in case the client obtains a new Sender ID.
+   Group OSCORE allows a long exchange to remain active indefinitely,
+   even if the group is rekeyed (thus changing the ID Context) or the
+   client obtains a new Sender ID.
 
    As defined in Section 7, this is achieved by the client and server(s)
    storing the 'kid' and 'kid context' used in the original request,
@@ -1687,15 +1688,15 @@ Table of Contents
 
    Upon leaving the group or before re-joining the group, a group member
    MUST terminate all the ongoing long exchanges that it has started in
-   the group as a client, and hence frees up the CoAP Token associated
-   with the corresponding request.
+   the group as a client.  This frees up the CoAP Token associated with
+   the corresponding request.
 
 5.2.  Freshness
 
    If the application requires freshness, e.g., according to time- or
    event-based policies (see Section 2.5.1 of [RFC9175]), a server can
    use the approach in Section 9 as a variant of the Challenge-Response
-   procedure based on the Echo Option [RFC9175], before delivering
+   procedure based on the Echo Option [RFC9175] before delivering
    request messages from a client to the application.
 
    Like in OSCORE [RFC8613], assuming an honest server, the message
@@ -1812,7 +1813,7 @@ Table of Contents
    The method defined in this section is not relevant for responses to
    requests that are neither group requests nor Observe requests.  In
    fact, for each of such requests, there is at most one response and
-   only from one, individually targeted server in the group.
+   only from one individually targeted server in the group.
 
 6.  Message Reception
 
@@ -1835,13 +1836,13 @@ Table of Contents
 
    *  The Group Flag is set to 0 and the retrieved Security Context is
       associated with an OSCORE group, but the endpoint does not support
-      the pairwise mode or any of the following algorithms is not set in
+      the pairwise mode or any of the following parameters is not set in
       the Security Context: the AEAD Algorithm and the Pairwise Key
       Agreement Algorithm.
 
    *  The Group Flag is set to 1 and the retrieved Security Context is
       associated with an OSCORE group, but the endpoint does not support
-      the group mode or any of the following algorithms is not set in
+      the group mode or any of the following parameters is not set in
       the Security Context: the Group Encryption Algorithm and the
       Signature Algorithm.
 
@@ -1858,7 +1859,7 @@ Table of Contents
    to 1, or the pairwise mode (see Section 8) if the Group Flag is set
    to 0.
 
-   Note that, if the Group Flag is set to 0, and the recipient endpoint
+   Note that if the Group Flag is set to 0 and the recipient endpoint
    retrieves a Security Context which is valid to process the message
    but is not associated with an OSCORE group, then the message is
    processed according to [RFC8613].
@@ -1871,8 +1872,8 @@ Table of Contents
    Appendix A.2.
 
    The possible use of the group mode is indicated by the Group Manager
-   as part of the group data provided to candidate group members when
-   joining the group, according to which the parameters Group Encryption
+   as part of the group data provided to new group members when joining
+   the group, according to which the parameters Group Encryption
    Algorithm and Signature Algorithm in the Security Context are set
    (see Section 2).
 
@@ -1886,8 +1887,8 @@ Table of Contents
    this is not fulfilled, see [I-D.amsuess-core-cachable-oscore].  This
    applies to both requests directly addressed to multiple recipients,
    e.g., sent by the client over multicast, as well as requests sent by
-   the client over unicast to a proxy, that forwards them to the
-   intended recipients over multicast [I-D.ietf-core-groupcomm-bis].
+   the client over unicast to a proxy that forwards them to the intended
+   recipients over multicast [I-D.ietf-core-groupcomm-bis].
 
    As per [RFC7252][I-D.ietf-core-groupcomm-bis], group requests sent
    over multicast MUST be Non-confirmable, and thus are not
@@ -1914,7 +1915,7 @@ Table of Contents
    defined in Section 7.2 and Section 7.4 of this document.
 
    In either case, it is RECOMMENDED that a server does not send back
-   any error message in reply to a received request, if any of the two
+   any error message in reply to a received request if either of the
    following conditions holds:
 
    *  The server is not able to identify the received request as a group
@@ -1928,8 +1929,8 @@ Table of Contents
 
 7.1.  Protecting the Request
 
-   When using the group mode to protect a request, a client SHALL
-   proceed as described in Section 8.1 of [RFC8613], with the following
+   When using the group mode to protect a request, a client proceeds as
+   described in Section 8.1 of [RFC8613] with the following
    modifications.
 
    *  In step 2, the Additional Authenticated Data is modified as
@@ -1971,25 +1972,23 @@ Table of Contents
          with the long exchange and the corresponding request.
 
       -  The client MUST store an invariant identifier of the group,
-         which is immutable even in case the Security Context of the
-         group is re-established.  For example, this invariant
-         identifier can be the "group name" in
-         [I-D.ietf-ace-key-groupcomm-oscore], where it is used for
-         joining the group and retrieving the current group keying
-         material from the Group Manager.
+         which is immutable even if the Security Context of the group is
+         re-established.  For example, this invariant identifier can be
+         the "group name" in [I-D.ietf-ace-key-groupcomm-oscore], where
+         it is used for joining the group and retrieving the current
+         group keying material from the Group Manager.
 
-         After a group rekeying, such an invariant information makes it
-         simpler for the client to retrieve the current group keying
-         material from the Group Manager, in case the client has missed
-         both the rekeying messages and the first response protected
-         with the new Security Context (see Section 7.3).
+         After a group rekeying, this information makes it simpler for
+         the client to retrieve the current group keying material from
+         the Group Manager, in case the client has missed both the
+         rekeying messages and the first response protected with the new
+         Security Context (see Section 7.3).
 
 7.2.  Verifying the Request
 
    Upon receiving a protected request with the Group Flag set to 1,
-   following the procedure in Section 6, a server SHALL proceed as
-   described in Section 8.2 of [RFC8613], with the following
-   modifications.
+   following the procedure in Section 6, a server proceeds as described
+   in Section 8.2 of [RFC8613] with the following modifications.
 
    *  In step 2, the decoding of the compressed COSE object follows
       Section 4 of this document.  In particular:
@@ -2015,7 +2014,7 @@ Table of Contents
    *  In step 4, the Additional Authenticated Data is modified as
       described in Section 3 of this document.
 
-   *  In step 6, the server also verifies the countersignature, by using
+   *  In step 6, the server also verifies the countersignature by using
       the public key from the client's authentication credential stored
       in the associated Recipient Context.  In particular:
 
@@ -2024,9 +2023,8 @@ Table of Contents
          with a 5.03 (Service Unavailable) response.  The response MAY
          include a Max-Age Option, indicating to the client the number
          of seconds after which to retry.  If the Max-Age Option is not
-         present, a retry time of 60 seconds will be assumed by the
-         client, as default value defined in Section 5.10.5 of
-         [RFC7252].
+         present, Section 5.10.5 of [RFC7252] specifies a default retry
+         time of 60 seconds.
 
       -  The server MUST perform signature verification before
          decrypting the COSE object, as defined below.  Implementations
@@ -2044,7 +2042,7 @@ Table of Contents
          where KEYSTREAM is derived as per Section 4.1.
 
       -  The server verifies the original countersignature SIGNATURE as
-         described in Sections 3.2 and 3.3 of [RFC9338], by using the
+         described in Sections 3.2 and 3.3 of [RFC9338] by using the
          client's public key and according to the Signature Algorithm in
          the Security Context.
 
@@ -2067,8 +2065,8 @@ Table of Contents
 
    *  Additionally, if the used Recipient Context was created upon
       receiving this request and the message is not verified
-      successfully, the server MAY delete that Recipient Context.  Such
-      a configuration, which is specified by the application, mitigates
+      successfully, the server MAY delete that Recipient Context.  When
+      this behavior is specified by the application, it mitigates
       attacks that aim at overloading the server's storage.
 
    A server SHOULD NOT process a request if the received Recipient ID
@@ -2082,9 +2080,9 @@ Table of Contents
    *  The server MUST store the value of the 'kid' parameter from the
       request, and retain it until the last response has been sent.  The
       server MUST NOT update the stored value of the 'kid' parameter
-      associated with the request, even in case the client is
-      individually rekeyed and starts using a new Sender ID received
-      from the Group Manager (see Section 2.6.3.1).
+      associated with the request, even if the client is individually
+      rekeyed and starts using a new Sender ID received from the Group
+      Manager (see Section 2.6.3.1).
 
    *  The server MUST store the value of the 'kid context' parameter
       from the request, and retain it until the last response has been
@@ -2096,8 +2094,8 @@ Table of Contents
 
 7.3.  Protecting the Response
 
-   When using the group mode to protect a response, a server SHALL
-   proceed as described in Section 8.3 of [RFC8613], with the following
+   When using the group mode to protect a response, a server proceeds as
+   described in Section 8.3 of [RFC8613] with the following
    modifications.
 
    Note that the server always protects a response with the Sender
@@ -2109,7 +2107,7 @@ Table of Contents
       described in Section 3 of this document.
 
       In addition, the following applies if the server intends to reply
-      with multiple responses, within the long exchange established by
+      with multiple responses within the long exchange established by
       the corresponding request.
 
       -  The server MUST use the stored value of the 'kid' parameter
@@ -2122,11 +2120,11 @@ Table of Contents
          'request_kid_context' parameter in the external_aad structure
          (see Section 3.4).
 
-   *  In step 3, if any of the following two conditions holds, the
-      server MUST include its Sender Sequence Number as Partial IV in
-      the response and use it to build the nonce to protect the
-      response.  This prevents the server from reusing the nonce from
-      the request together with the same encryption key.
+   *  In step 3, if either of the following conditions holds, the server
+      MUST include its Sender Sequence Number as Partial IV in the
+      response and use it to build the nonce to protect the response.
+      This prevents the server from reusing the nonce from the request
+      together with the same encryption key.
 
       -  The response is not the first response that the server sends to
          the request.
@@ -2167,11 +2165,11 @@ Table of Contents
          until the Max-Age has expired for the last response sent before
          the installation of the new Security Context.
 
-      -  The server can obtain a new Sender ID from the Group Manager,
+      -  The server can obtain a new Sender ID from the Group Manager
          when individually rekeyed (see Section 2.6.3.1) or when re-
          joining the group.  In such a case, the server can help the
-         client to synchronize, by including the 'kid' parameter in a
-         response protected in group mode, even when the request was
+         client to synchronize by including the 'kid' parameter in a
+         response protected in group mode even when the request was
          protected in pairwise mode (see Section 8.3).
 
          That is, when responding to a request protected in pairwise
@@ -2189,9 +2187,9 @@ Table of Contents
 7.4.  Verifying the Response
 
    Upon receiving a protected response with the Group Flag set to 1,
-   following the procedure in Section 6, a client SHALL proceed as
-   described in Section 8.4 of [RFC8613], with the modifications
-   described in this section.
+   following the procedure in Section 6, a client proceeds as described
+   in Section 8.4 of [RFC8613] with the modifications described in this
+   section.
 
    Note that a client may receive a response protected with a Security
    Context different from the one used to protect the corresponding
@@ -2201,7 +2199,7 @@ Table of Contents
 
    *  In step 2, the decoding of the compressed COSE object is modified
       as described in Section 4 of this document.  In particular, a
-      'kid' may not be present, if the response is a reply to a request
+      'kid' may not be present if the response is a reply to a request
       protected in pairwise mode.  In such a case, the client assumes
       the response 'kid' to be the Recipient ID for the server to which
       the request protected in pairwise mode was intended for.
@@ -2233,22 +2231,22 @@ Table of Contents
          (see Section 3.4).
 
       This ensures that, throughout a long exchange, the client can
-      correctly verify the received responses, even in case the client
-      is individually rekeyed and starts using a new Sender ID received
+      correctly verify the received responses, even if the client is
+      individually rekeyed and starts using a new Sender ID received
       from the Group Manager (see Section 2.6.3.1), as well as when it
       installs a new Security Context with a new ID Context (Gid)
       following a group rekeying (see Section 12.2).
 
-   *  In step 5, the client also verifies the countersignature, by using
+   *  In step 5, the client also verifies the countersignature by using
       the public key from the server's authentication credential stored
       in the associated Recipient Context.  In particular:
 
-      -  The client MUST perform signature verification as defined
-         below, before decrypting the COSE object.  Implementations that
-         cannot perform the two steps in this order MUST ensure that no
-         access to the plaintext is possible before a successful
-         signature verification and MUST prevent any possible leak of
-         time-related information that can yield side-channel attacks.
+      -  The client MUST perform signature verification as defined below
+         before decrypting the COSE object.  Implementations that cannot
+         perform the two steps in this order MUST ensure that no access
+         to the plaintext is possible before a successful signature
+         verification and MUST prevent any possible leak of time-related
+         information that can yield side-channel attacks.
 
       -  The client retrieves the encrypted countersignature
          ENC_SIGNATURE from the message payload, and computes the
@@ -2271,11 +2269,11 @@ Table of Contents
          o  If the 'kid' parameter is present in the response, the
             client checks whether this received 'kid' is equal to the
             expected 'kid', i.e., the known Recipient ID for the server
-            to which the request was intended for.
+            for which the request was intended.
 
          o  If the 'kid' parameter is not present in the response, the
             client checks whether the server that has sent the response
-            is the same one to which the request was intended for.  This
+            is the same one for which the request was intended.  This
             can be done by checking that the public key used to verify
             the countersignature of the response is equal to the public
             key included in the authentication credential Recipient Auth
@@ -2313,8 +2311,8 @@ Table of Contents
          "kid1".  If the request was protected in pairwise mode (see
          Section 8.3), the 'kid' field may not be present in the OSCORE
          Option of the response (see Section 3.2).  In this case, the
-         client assumes "kid1" to be the Recipient ID for the server to
-         which the request was intended for.
+         client assumes "kid1" to be the Recipient ID for the server for
+         which the request was intended.
 
       -  When receiving another valid response to the same request from
          the same server - which can be identified and recognized
@@ -2344,14 +2342,14 @@ Table of Contents
 
       This ensures that the client remains able to correctly perform the
       ordering and replay protection of responses within a long
-      exchange, even in case the server legitimately starts using a new
+      exchange, even if the server legitimately starts using a new
       Sender ID, as received from the Group Manager when individually
       rekeyed (see Section 2.6.3.1) or when re-joining the group.
 
    *  In step 8, if the used Recipient Context was created upon
       receiving this response and the message is not verified
-      successfully, the client MAY delete that Recipient Context.  Such
-      a configuration, which is specified by the application, mitigates
+      successfully, the client MAY delete that Recipient Context.  When
+      this behavior is specified by the application, it mitigates
       attacks that aim at overloading the client's storage.
 
 7.5.  External Signature Checkers
@@ -2414,10 +2412,10 @@ Table of Contents
    discussed in Appendix A.2.
 
    The possible use of the pairwise mode is indicated by the Group
-   Manager as part of the group data provided to candidate group members
-   when joining the group, according to which the parameters AEAD
-   Algorithm and Pairwise Key Agreement Algorithm in the Security
-   Context are set (see Section 2).
+   Manager as part of the group data provided to new group members when
+   joining the group, according to which the parameters AEAD Algorithm
+   and Pairwise Key Agreement Algorithm in the Security Context are set
+   (see Section 2).
 
    The pairwise mode takes advantage of an existing Security Context to
    establish keying material shared exclusively with any other member.
