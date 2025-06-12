@@ -412,7 +412,7 @@ Authentication credentials are used to derive pairwise keys (see {{key-derivatio
 
 For example, an X.509 certificate is provided as its direct binary serialization. If C509 certificates or CWTs are used as authentication credentials, each is provided as the binary serialization of a (possibly tagged) CBOR array. If CCSs are used as authentication credentials, each is provided as the binary serialization of a CBOR map.
 
-If authentication credentials are CWTs, then the untagged CWT associated with an entity is stored in the Security Context and used as authentication credential for that entity.
+If authentication credentials are CWTs or CCSs, then the untagged CWT or CCS associated with an entity is stored in the Security Context and used as authentication credential for that entity.
 
 If authentication credentials are X.509 / C509 certificates or CWTs, and the authentication credential associated with an entity is provided within a chain or a bag, then only the end-entity certificate or end-entity untagged CWT is stored in the Security Context and used as authentication credential for that entity.
 
@@ -1537,7 +1537,7 @@ In order to verify countersignatures of messages in a group, a signature checker
 
 * The authentication credentials of the group members and of the Group Manager.
 
-  If the signature checker is provided with a CWT for a given entity, then the authentication credential associated with that entity is the untagged CWT.
+  If the signature checker is provided with a CWT or a CCS for a given entity, then the authentication credential associated with that entity is the untagged CWT or CCS.
 
   If the signature checker is provided with a chain or a bag of X.509 / C509 certificates or of CWTs for a given entity, then the authentication credential associated with that entity is the end-entity certificate or end-entity untagged CWT.
 
@@ -2124,6 +2124,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 {:removeinrfc}
 
 ## Version -25 to -26 ## {#sec-25-26}
+
+* Not only CWTs but also CCSs can be tagged.
 
 * Editorial fixes and improvements.
 
