@@ -187,31 +187,32 @@ Table of Contents
    Appendix D.  Responsibilities of the Group Manager
    Appendix E.  Reassignment of Group Identifiers
    Appendix F.  Document Updates
-     F.1.  Version -24 to -25
-     F.2.  Version -23 to -24
-     F.3.  Version -22 to -23
-     F.4.  Version -21 to -22
-     F.5.  Version -20 to -21
-     F.6.  Version -19 to -20
-     F.7.  Version -18 to -19
-     F.8.  Version -17 to -18
-     F.9.  Version -16 to -17
-     F.10. Version -15 to -16
-     F.11. Version -14 to -15
-     F.12. Version -13 to -14
-     F.13. Version -12 to -13
-     F.14. Version -11 to -12
-     F.15. Version -10 to -11
-     F.16. Version -09 to -10
-     F.17. Version -08 to -09
-     F.18. Version -07 to -08
-     F.19. Version -06 to -07
-     F.20. Version -05 to -06
-     F.21. Version -04 to -05
-     F.22. Version -03 to -04
-     F.23. Version -02 to -03
-     F.24. Version -01 to -02
-     F.25. Version -00 to -01
+     F.1.  Version -25 to -26
+     F.2.  Version -24 to -25
+     F.3.  Version -23 to -24
+     F.4.  Version -22 to -23
+     F.5.  Version -21 to -22
+     F.6.  Version -20 to -21
+     F.7.  Version -19 to -20
+     F.8.  Version -18 to -19
+     F.9.  Version -17 to -18
+     F.10. Version -16 to -17
+     F.11. Version -15 to -16
+     F.12. Version -14 to -15
+     F.13. Version -13 to -14
+     F.14. Version -12 to -13
+     F.15. Version -11 to -12
+     F.16. Version -10 to -11
+     F.17. Version -09 to -10
+     F.18. Version -08 to -09
+     F.19. Version -07 to -08
+     F.20. Version -06 to -07
+     F.21. Version -05 to -06
+     F.22. Version -04 to -05
+     F.23. Version -03 to -04
+     F.24. Version -02 to -03
+     F.25. Version -01 to -02
+     F.26. Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -273,7 +274,7 @@ Table of Contents
    additionally protected with Group OSCORE between the CoAP client and
    the target CoAP servers.
 
-   Group OSCORE defines two modes of operation, that can be used
+   Group OSCORE defines two modes of operation that can be used
    independently or together:
 
    *  In the group mode, Group OSCORE requests and responses are
@@ -369,7 +370,7 @@ Table of Contents
       [I-D.ietf-core-groupcomm-bis]), not to be confused with "CoAP
       group" or "application group".
 
-   *  Group Manager: an entity responsible for a group, neither required
+   *  Group Manager: an entity responsible for a group, required neither
       to be an actual group member nor to take part in the group
       communication.  The operations of the Group Manager are defined in
       Section 12 and its responsibilities are listed in Appendix D.
@@ -1115,8 +1116,8 @@ Table of Contents
    usable value.  This may be influenced by additional limitations
    besides the mere 40-bit size limit of the Partial IV.  If an
    implementation's integers support wrapping addition, the
-   implementation MUST treat the Sender Sequence Number as exhausted
-   when a wrap-around is detected.
+   implementation MUST treat the Sender Sequence Number space as
+   exhausted when a wrap-around is detected.
 
    Upon exhausting the Sender Sequence Number space, the endpoint MUST
    NOT use this Security Context to protect further messages including a
@@ -1143,7 +1144,7 @@ Table of Contents
    As group membership changes, or as group members get new Sender IDs
    (see Section 2.6.3.1), so do the relevant Recipient IDs that the
    other endpoints need to keep track of.  As a consequence, group
-   members may end up retaining stale Recipient Contexts, that are no
+   members may end up retaining stale Recipient Contexts that are no
    longer useful to verify incoming secure messages.
 
    The Recipient ID ('kid') SHOULD NOT be considered as a persistent and
@@ -2071,7 +2072,7 @@ Table of Contents
 
    A server SHOULD NOT process a request if the received Recipient ID
    ('kid') is equal to its own Sender ID in its own Sender Context.  For
-   an example where this is not fulfilled, see Section 9.2.1 of
+   an example where this is not fulfilled, see
    [I-D.ietf-core-observe-multicast-notifications].
 
    In addition, the following applies if the request establishes a long
@@ -3098,7 +3099,7 @@ Table of Contents
    recipient endpoint storing the latest group keying material does not
    store the authentication credentials of sender endpoints that are not
    current group members.  This in turn allows group members to rely on
-   stored authentication credentials to confidently assert the group
+   stored authentication credentials to confidently verify the group
    membership of sender endpoints, when receiving incoming messages
    protected in group mode (see Section 7).
 
@@ -3515,9 +3516,9 @@ Table of Contents
 
       This allows a recipient endpoint to rely on the stored
       authentication credentials and public keys included therein, in
-      order to always confidently assert the group membership of a
+      order to always confidently verify the group membership of a
       sender endpoint when processing an incoming message, i.e., to
-      assert that the sender endpoint was a group member when it signed
+      verify that the sender endpoint was a group member when it signed
       the message.  In turn, this prevents a former group member from
       possibly re-signing and injecting in the group a stored message
       that was protected with old keying material.
@@ -3907,7 +3908,7 @@ Table of Contents
    process for Group OSCORE on the server side.  In particular, Group
    OSCORE does not protect network addressing information such as the IP
    address of the intended recipient server.  It follows that the
-   server(s) receiving the redirected request cannot assert whether that
+   server(s) receiving the redirected request cannot verify whether that
    was the original intention of the client, and would thus simply
    assume so.
 
@@ -3930,8 +3931,7 @@ Table of Contents
    Agreement Algorithm are set in the Security Context, a client
    supporting the pairwise mode SHOULD use it to protect requests sent
    to a single group member over unicast.  For an example where this is
-   not fulfilled, see Section 9.2.1 of
-   [I-D.ietf-core-observe-multicast-notifications].
+   not fulfilled, see [I-D.ietf-core-observe-multicast-notifications].
 
    The use of block-wise transfers [RFC7959] with group communication
    for CoAP is as discussed in Section 3.8 of
@@ -4091,7 +4091,7 @@ Table of Contents
    Section 3.1).  This is motivated by enabling signature checkers (see
    Section 12.3), which do not join a group as members but are allowed
    to verify countersignatures of messages protected in group mode
-   without being able to decrypt them (see Section 7.5).
+   without being able to decrypt those messages (see Section 7.5).
 
    If the Group Encryption Algorithm used in group mode provides
    integrity protection, countersignatures of COSE_Encrypt0 with short
@@ -4713,7 +4713,7 @@ Appendix B.  List of Use Cases
       follow those roles.
 
    *  Integrated building control: enabling Building Automation and
-      Control Systems (BACSs) to control multiple heating, ventilation
+      Control Systems (BACSs) to control multiple heating, ventilation,
       and air-conditioning units to predefined presets.  Controlled
       units can be organized into application groups and CoAP groups in
       order to reflect their physical position in the building, e.g.,
@@ -4934,7 +4934,11 @@ Appendix F.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-F.1.  Version -24 to -25
+F.1.  Version -25 to -26
+
+   *  Editorial fixes and improvements.
+
+F.2.  Version -24 to -25
 
    *  Made RFC 5869 a normative reference.
 
@@ -4943,13 +4947,13 @@ F.1.  Version -24 to -25
 
    *  More precise phrasing on using the encryption nonce.
 
-F.2.  Version -23 to -24
+F.3.  Version -23 to -24
 
    *  Added section "Implementation Status", according to RFC 7942.
 
    *  Fixed "P-521" (instead of "P-512").
 
-F.3.  Version -22 to -23
+F.4.  Version -22 to -23
 
    *  Examples of non-AEAD algorithms as Group Encryption Algorithm.
 
@@ -4965,7 +4969,7 @@ F.3.  Version -22 to -23
 
    *  Editorial improvements.
 
-F.4.  Version -21 to -22
+F.5.  Version -21 to -22
 
    *  Removed mentioning of the CBOR encoding of the HKDF Algorithm.
 
@@ -4995,7 +4999,7 @@ F.4.  Version -21 to -22
 
    *  Editorial improvements.
 
-F.5.  Version -20 to -21
+F.6.  Version -20 to -21
 
    *  Updated author list.
 
@@ -5006,17 +5010,17 @@ F.5.  Version -20 to -21
 
    *  Editorial: expanded name of the "CoRE Parameters" registry group.
 
-F.6.  Version -19 to -20
+F.7.  Version -19 to -20
 
    *  Change Controller for the target attribute "gosc" set to "IETF".
 
-F.7.  Version -18 to -19
+F.8.  Version -18 to -19
 
    *  Unified presentation of handling of multiple responses.
 
    *  Added Rikard Höglund as Contributor.
 
-F.8.  Version -17 to -18
+F.9.  Version -17 to -18
 
    *  Changed document title.
 
@@ -5061,13 +5065,13 @@ F.8.  Version -17 to -18
 
    *  Clarifications, fixes and editorial improvements.
 
-F.9.  Version -16 to -17
+F.10.  Version -16 to -17
 
    *  Definition and registration of the target attribute "gosc".
 
    *  Reference update and editorial fixes.
 
-F.10.  Version -15 to -16
+F.11.  Version -15 to -16
 
    *  Clients "SHOULD" use the group mode for one-to-many requests.
 
@@ -5080,11 +5084,11 @@ F.10.  Version -15 to -16
 
    *  Editorial improvements.
 
-F.11.  Version -14 to -15
+F.12.  Version -14 to -15
 
    *  Updated references and editorial fixes.
 
-F.12.  Version -13 to -14
+F.13.  Version -13 to -14
 
    *  Replaced "node" with "endpoint" where appropriate.
 
@@ -5111,7 +5115,7 @@ F.12.  Version -13 to -14
 
    *  Clarifications and editorial improvements.
 
-F.13.  Version -12 to -13
+F.14.  Version -12 to -13
 
    *  Fixes in the derivation of the Group Encryption Key.
 
@@ -5119,7 +5123,7 @@ F.13.  Version -12 to -13
 
    *  Changed UCCS to CCS.
 
-F.14.  Version -11 to -12
+F.15.  Version -11 to -12
 
    *  No mode of operation is mandatory to support.
 
@@ -5157,7 +5161,7 @@ F.14.  Version -11 to -12
 
    *  Fixes and editorial improvements.
 
-F.15.  Version -10 to -11
+F.16.  Version -10 to -11
 
    *  Loss of Recipient Contexts due to their overflow.
 
@@ -5204,7 +5208,7 @@ F.15.  Version -10 to -11
 
    *  Fixes and editorial improvements.
 
-F.16.  Version -09 to -10
+F.17.  Version -09 to -10
 
    *  Removed 'Counter Signature Key Parameters' from the Common
       Context.
@@ -5242,7 +5246,7 @@ F.16.  Version -09 to -10
 
    *  Overall clarifications and editorial revision.
 
-F.17.  Version -08 to -09
+F.18.  Version -08 to -09
 
    *  Pairwise keys are discarded after group rekeying.
 
@@ -5280,7 +5284,7 @@ F.17.  Version -08 to -09
 
    *  Clarifications and editorial improvements.
 
-F.18.  Version -07 to -08
+F.19.  Version -07 to -08
 
    *  Clarified relation between pairwise mode and group communication
       (Section 1).
@@ -5344,7 +5348,7 @@ F.18.  Version -07 to -08
 
    *  Editorial improvements.
 
-F.19.  Version -06 to -07
+F.20.  Version -06 to -07
 
    *  Updated abstract and introduction.
 
@@ -5376,7 +5380,7 @@ F.19.  Version -06 to -07
    *  New pairwise mode, using pairwise keying material for both
       requests and responses.
 
-F.20.  Version -05 to -06
+F.21.  Version -05 to -06
 
    *  Group IDs mandated to be unique under the same Group Manager.
 
@@ -5404,7 +5408,7 @@ F.20.  Version -05 to -06
 
    *  Editorial improvements.
 
-F.21.  Version -04 to -05
+F.22.  Version -04 to -05
 
    *  Added references to draft-dijk-core-groupcomm-bis.
 
@@ -5423,7 +5427,7 @@ F.21.  Version -04 to -05
    *  New "Counter Signature Key Parameters" IANA Registry
       (Section 9.2).
 
-F.22.  Version -03 to -04
+F.23.  Version -03 to -04
 
    *  Added the new "Counter Signature Parameters" in the Common Context
       (see Section 2).
@@ -5467,7 +5471,7 @@ F.22.  Version -03 to -04
    *  New IANA Registry "Counter Signature Parameters" (see
       Section 9.1).
 
-F.23.  Version -02 to -03
+F.24.  Version -02 to -03
 
    *  Revised structure and phrasing for improved readability and better
       alignment with draft-ietf-core-object-security.
@@ -5501,7 +5505,7 @@ F.23.  Version -02 to -03
    *  Revised Appendix D, now giving a short high-level description of a
       new endpoint set-up.
 
-F.24.  Version -01 to -02
+F.25.  Version -01 to -02
 
    *  Terminology has been made more aligned with RFC7252 and draft-
       ietf-core-object-security: i) "client" and "server" replace the
@@ -5536,7 +5540,7 @@ F.24.  Version -01 to -02
       synchronization of sequence numbers based on the Echo Option from
       draft-ietf-core-echo-request-tag.
 
-F.25.  Version -00 to -01
+F.26.  Version -00 to -01
 
    *  Section 1.1 has been updated with the definition of group as
       "security group".
