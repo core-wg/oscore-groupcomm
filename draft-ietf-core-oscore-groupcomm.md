@@ -1857,9 +1857,7 @@ The impact of such an attack depends especially on the REST method of the reques
 
 A client can instead use the pairwise mode as defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, a client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast. For an example where this is not fulfilled, see {{I-D.ietf-core-observe-multicast-notifications}}.
 
-The use of block-wise transfers {{RFC7959}} with group communication for CoAP is as discussed in {{Section 3.8 of I-D.ietf-core-groupcomm-bis}}. Note that, after a first block-wise request which targets all servers in the group and includes the CoAP Block2 Option, following block-wise exchanges rely on unicast requests that should therefore be protected using the pairwise mode.
-
-Editor's note: The paragraph above will have to be re-checked against the Section "Block-Wise Transfer" of {{I-D.ietf-core-groupcomm-bis}}, in order to ensure that it is aligned with that.
+The use of block-wise transfers {{RFC7959}} with group communication for CoAP is as discussed in {{Section 3.8 of I-D.ietf-core-groupcomm-bis}}. Note that, after a first block-wise request that targets all servers in the group and includes the CoAP Block2 Option, following block-wise exchanges to retrieve any further blocks can rely on unicast requests, which should therefore be protected using the pairwise mode. The same applies to unicast requests used in block-wise exchanges following a first block-wise request that targeted all servers in the group and did not include the CoAP Block2 Option, while the corresponding responses included the Block2 Option at the servers' own initiative.
 
 Additional considerations are discussed in {{sec-synch-challenge-response}}, with respect to requests including a CoAP Echo Option {{RFC9175}} that have to be sent over unicast, as a challenge-response method for servers to achieve freshness or to initialize as valid a previously invalid Replay Window.
 
@@ -2126,6 +2124,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 ## Version -25 to -26 ## {#sec-25-26}
 
 * Not only CWTs but also CCSs can be tagged.
+
+* Generalized use of the Block2 Option in protected (group) requests.
 
 * Editorial fixes and improvements.
 
