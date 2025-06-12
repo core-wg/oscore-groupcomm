@@ -3938,13 +3938,14 @@ Table of Contents
    The use of block-wise transfers [RFC7959] with group communication
    for CoAP is as discussed in Section 3.8 of
    [I-D.ietf-core-groupcomm-bis].  Note that, after a first block-wise
-   request which targets all servers in the group and includes the CoAP
-   Block2 Option, following block-wise exchanges rely on unicast
-   requests that should therefore be protected using the pairwise mode.
-
-   Editor's note: The paragraph above will have to be re-checked against
-   the Section "Block-Wise Transfer" of [I-D.ietf-core-groupcomm-bis],
-   in order to ensure that it is aligned with that.
+   request that targets all servers in the group and includes the CoAP
+   Block2 Option, following block-wise exchanges to retrieve any further
+   blocks can rely on unicast requests, which should therefore be
+   protected using the pairwise mode.  The same applies to unicast
+   requests used in block-wise exchanges following a first block-wise
+   request that targeted all servers in the group and did not include
+   the CoAP Block2 Option, while the corresponding responses included
+   the Block2 Option at the servers' own initiative.
 
    Additional considerations are discussed in Section 9, with respect to
    requests including a CoAP Echo Option [RFC9175] that have to be sent
@@ -4939,6 +4940,9 @@ Appendix F.  Document Updates
 F.1.  Version -25 to -26
 
    *  Not only CWTs but also CCSs can be tagged.
+
+   *  Generalized use of the Block2 Option in protected (group)
+      requests.
 
    *  Editorial fixes and improvements.
 
