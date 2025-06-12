@@ -768,11 +768,12 @@ Table of Contents
    or CCS associated with an entity is stored in the Security Context
    and used as authentication credential for that entity.
 
-   If authentication credentials are X.509 / C509 certificates or CWTs,
-   and the authentication credential associated with an entity is
+   If authentication credentials are X.509 / C509 certificates, CWTs, or
+   CCSs and the authentication credential associated with an entity is
    provided within a chain or a bag, then only the end-entity
-   certificate or end-entity untagged CWT is stored in the Security
-   Context and used as authentication credential for that entity.
+   certificate or end-entity untagged CWT / CCS is stored in the
+   Security Context and used as authentication credential for that
+   entity.
 
    Storing whole authentication credentials rather than only a subset of
    those may result in a non-negligible storage overhead.  On the other
@@ -3213,9 +3214,10 @@ Table of Contents
       that entity is the untagged CWT or CCS.
 
       If the signature checker is provided with a chain or a bag of
-      X.509 / C509 certificates or of CWTs for a given entity, then the
-      authentication credential associated with that entity is the end-
-      entity certificate or end-entity untagged CWT.
+      X.509 / C509 certificates, or of CWTs, or of CCSs for a given
+      entity, then the authentication credential associated with that
+      entity is the end-entity certificate or end-entity untagged CWT /
+      CCS.
 
    *  The current Signature Encryption Key (see Section 2.1.9).
 
