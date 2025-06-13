@@ -1783,7 +1783,7 @@ A given endpoint is allowed to and would likely use the same pair (private key, 
 
 When a sender endpoint sends a message protected in pairwise mode to a recipient endpoint in an OSCORE group, a malicious group member may attempt to inject the message to a different OSCORE group also including the same endpoints (see {{ssec-cross-group-injection-attack}}).
 
-This relies on altering the content of the OSCORE Option while having the same MAC in the ciphertext that can still be correctly validated, which has a success probability depending on the size of the MAC.
+This relies on altering the content of the OSCORE Option while having the same MAC in the ciphertext that is still going to be correctly validated, which has a success probability depending on the size of the MAC.
 
 As discussed in {{sssec-cross-group-injection-group-mode}}, the attack is practically infeasible if the message is protected in group mode, thanks to the countersignature also bound to the OSCORE Option through the Additional Authenticated Data used in the signing process (see {{sec-cose-object-ext-aad}}).
 
