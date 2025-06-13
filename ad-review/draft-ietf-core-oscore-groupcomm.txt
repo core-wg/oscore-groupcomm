@@ -3463,7 +3463,7 @@ Table of Contents
 
    As discussed in Section 6.2.3 of [I-D.ietf-core-groupcomm-bis], Group
    OSCORE addresses security attacks against CoAP listed in Sections
-   11.2-11.6 of [RFC7252], especially when run over IP multicast.
+   11.2–11.6 of [RFC7252], especially when run over IP multicast.
 
    The rest of this section first discusses security aspects to be taken
    into account when using Group OSCORE.  Then it goes through aspects
