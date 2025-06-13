@@ -3479,13 +3479,13 @@ Table of Contents
    version of the group keying material.
 
    *  Source authentication of messages sent to a group is ensured
-      through a countersignature, which is computed by the sender using
-      its own private key and then appended to the message payload.  The
-      countersignature is also encrypted using a keystream derived from
-      the group keying material (see Section 4).  This ensures group
-      privacy, i.e., an attacker cannot track an endpoint over two
-      groups by linking messages between the two groups unless the
-      attacker is also a member of both groups.
+      through a countersignature, which is computed by the sender
+      endpoint using its own private key and then appended to the
+      message payload.  The countersignature is also encrypted using a
+      keystream derived from the group keying material (see Section 4).
+      This ensures group privacy, i.e., an attacker cannot track an
+      endpoint over two groups by linking messages between the two
+      groups unless the attacker is also a member of both groups.
 
    *  Messages are encrypted at a group level (group-level data
       confidentiality), i.e., they can be decrypted by any member of the
