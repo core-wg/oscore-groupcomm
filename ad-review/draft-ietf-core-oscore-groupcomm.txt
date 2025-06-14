@@ -3089,7 +3089,7 @@ Table of Contents
       group member re-joins the group.
 
    *  The group member re-joins the group with the same roles it
-      currently has in the group, and, during the re-joining process, it
+      currently has in the group, and, during the re-join process, it
       asks the Group Manager for the authentication credentials of all
       the current group members.
 
