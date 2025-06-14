@@ -540,7 +540,7 @@ An adversary may leverage the above to perform a Denial of Service attack and pr
 
 #### Deliberately Deleted Recipient Contexts {#ssec-loss-mutable-context-overflow}
 
-The Security Context may contain a large and variable number of Recipient Contexts. A Recipient Context may need to be deleted, because the maximum number of Recipient Contexts has been reached (see {{ssec-sender-recipient-context}}), or due to some other reason.
+The Security Context may contain a large and variable number of Recipient Contexts. While Group OSCORE in itself does not establish a maximum number of Recipient Contexts, there are circumstances by which implementations might choose to discard Recipient Contexts or have to do so in accordance with enforced application policies. Such circumstances include the need to reclaim memory or other resources on the node hosting the endpoint, for example because the predefined maximum number of Recipient Contexts has been reached in the Security Context (see {{ssec-sender-recipient-context}}).
 
 When a Recipient Context is deleted, this not only results in losing information about previously received messages from the corresponding other endpoint. It also results in the inability to be aware of the Security Contexts from which information has been lost.
 
