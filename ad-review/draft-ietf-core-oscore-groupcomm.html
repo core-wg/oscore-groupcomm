@@ -2101,12 +2101,12 @@ In case the other endpoint's public key has COSE Key Type "EC2" <span>[<a href="
           <h4 id="name-loss-of-mutable-security-co">
 <a href="#section-2.6.1" class="section-number selfRef">2.6.1. </a><a href="#name-loss-of-mutable-security-co" class="section-name selfRef">Loss of Mutable Security Context</a>
           </h4>
-<p id="section-2.6.1-1">An endpoint may lose its mutable Security Context, e.g., if a reboot occurred in an unprepared way (see <a href="#ssec-loss-mutable-context-total" class="auto internal xref">Section 2.6.1.1</a>) or due to a deleted Recipient Context (see <a href="#ssec-loss-mutable-context-overflow" class="auto internal xref">Section 2.6.1.2</a>).<a href="#section-2.6.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.6.1-1">An endpoint may lose its mutable Security Context due to accidental events, e.g., if a reboot occurred in an unprepared way (see <a href="#ssec-loss-mutable-context-total" class="auto internal xref">Section 2.6.1.1</a>) or due to a deliberately deleted Recipient Context (see <a href="#ssec-loss-mutable-context-overflow" class="auto internal xref">Section 2.6.1.2</a>).<a href="#section-2.6.1-1" class="pilcrow">¶</a></p>
 <p id="section-2.6.1-2">If it is not feasible or practically possible to store and maintain up-to-date the mutable part in non-volatile memory (e.g., due to limited number of write operations), the endpoint <span class="bcp14">MUST</span> be able to detect a loss of the mutable Security Context, to prevent the re-use of a nonce with the same key, and to handle incoming replayed messages.<a href="#section-2.6.1-2" class="pilcrow">¶</a></p>
 <div id="ssec-loss-mutable-context-total">
 <section id="section-2.6.1.1">
-            <h5 id="name-total-loss">
-<a href="#section-2.6.1.1" class="section-number selfRef">2.6.1.1. </a><a href="#name-total-loss" class="section-name selfRef">Total Loss</a>
+            <h5 id="name-accidental-loss-of-sender-c">
+<a href="#section-2.6.1.1" class="section-number selfRef">2.6.1.1. </a><a href="#name-accidental-loss-of-sender-c" class="section-name selfRef">Accidental Loss of Sender Context and/or Recipient Contexts</a>
             </h5>
 <p id="section-2.6.1.1-1">In case a loss of the Sender Context and/or of the Recipient Contexts is detected (e.g., if a reboot occurred in an unprepared way), the endpoint <span class="bcp14">MUST NOT</span> protect further messages using this Security Context, to avoid reusing a nonce with the same key.<a href="#section-2.6.1.1-1" class="pilcrow">¶</a></p>
 <p id="section-2.6.1.1-2">Before resuming its operations in the group, the endpoint <span class="bcp14">MUST</span> retrieve new Security Context parameters from the Group Manager (see <a href="#sec-group-re-join" class="auto internal xref">Section 2.6.3</a>) and use them to derive a new Sender Context and Recipient Contexts (see <a href="#ssec-sender-recipient-context" class="auto internal xref">Section 2.2</a>). Since the new Sender Context includes newly derived encryption keys, an endpoint will not reuse the same pair (key, nonce), even when it is a server using the Partial IV of (old re-injected) requests to build the nonce for protecting the responses.<a href="#section-2.6.1.1-2" class="pilcrow">¶</a></p>
@@ -2118,8 +2118,8 @@ In case the other endpoint's public key has COSE Key Type "EC2" <span>[<a href="
 </div>
 <div id="ssec-loss-mutable-context-overflow">
 <section id="section-2.6.1.2">
-            <h5 id="name-deleted-recipient-contexts">
-<a href="#section-2.6.1.2" class="section-number selfRef">2.6.1.2. </a><a href="#name-deleted-recipient-contexts" class="section-name selfRef">Deleted Recipient Contexts</a>
+            <h5 id="name-deliberately-deleted-recipi">
+<a href="#section-2.6.1.2" class="section-number selfRef">2.6.1.2. </a><a href="#name-deliberately-deleted-recipi" class="section-name selfRef">Deliberately Deleted Recipient Contexts</a>
             </h5>
 <p id="section-2.6.1.2-1">The Security Context may contain a large and variable number of Recipient Contexts. A Recipient Context may need to be deleted, because the maximum number of Recipient Contexts has been reached (see <a href="#ssec-sender-recipient-context" class="auto internal xref">Section 2.2</a>), or due to some other reason.<a href="#section-2.6.1.2-1" class="pilcrow">¶</a></p>
 <p id="section-2.6.1.2-2">When a Recipient Context is deleted, this not only results in losing information about previously received messages from the corresponding other endpoint. It also results in the inability to be aware of the Security Contexts from which information has been lost.<a href="#section-2.6.1.2-2" class="pilcrow">¶</a></p>

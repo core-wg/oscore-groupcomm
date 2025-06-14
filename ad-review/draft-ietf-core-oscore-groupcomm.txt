@@ -1023,9 +1023,10 @@ Table of Contents
 
 2.6.1.  Loss of Mutable Security Context
 
-   An endpoint may lose its mutable Security Context, e.g., if a reboot
-   occurred in an unprepared way (see Section 2.6.1.1) or due to a
-   deleted Recipient Context (see Section 2.6.1.2).
+   An endpoint may lose its mutable Security Context due to accidental
+   events, e.g., if a reboot occurred in an unprepared way (see
+   Section 2.6.1.1) or due to a deliberately deleted Recipient Context
+   (see Section 2.6.1.2).
 
    If it is not feasible or practically possible to store and maintain
    up-to-date the mutable part in non-volatile memory (e.g., due to
@@ -1034,7 +1035,7 @@ Table of Contents
    of a nonce with the same key, and to handle incoming replayed
    messages.
 
-2.6.1.1.  Total Loss
+2.6.1.1.  Accidental Loss of Sender Context and/or Recipient Contexts
 
    In case a loss of the Sender Context and/or of the Recipient Contexts
    is detected (e.g., if a reboot occurred in an unprepared way), the
@@ -1082,7 +1083,7 @@ Table of Contents
    would not be able to further communicate in the group until
    connectivity with the Group Manager is restored.
 
-2.6.1.2.  Deleted Recipient Contexts
+2.6.1.2.  Deliberately Deleted Recipient Contexts
 
    The Security Context may contain a large and variable number of
    Recipient Contexts.  A Recipient Context may need to be deleted,
