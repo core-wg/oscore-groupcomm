@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 15 December 2025                                   F. Palombini
+Expires: 16 December 2025                                   F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                            13 June 2025
+                                                            14 June 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 December 2025.
+   This Internet-Draft will expire on 16 December 2025.
 
 Copyright Notice
 
@@ -383,7 +383,8 @@ Table of Contents
       error responses reporting a Group OSCORE error.
 
    *  Group Identifier (Gid): identifier assigned to the group, unique
-      within the set of groups of a given Group Manager.
+      within the set of groups of a given Group Manager.  The Gid value
+      changes every time the group is rekeyed (see Section 12.2).
 
    *  Birth Gid: with respect to a group member, the Gid obtained by
       that group member upon (re-)joining the group.
