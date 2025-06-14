@@ -1469,7 +1469,7 @@ Alternatively, the group member can re-join the group. In such a case, the group
 
 * First, the group member performs steps 2 and 3 above. Then, the group member re-joins the group.
 
-* The group member re-joins the group with the same roles it currently has in the group, and, during the re-joining process, it asks the Group Manager for the authentication credentials of all the current group members.
+* The group member re-joins the group with the same roles it currently has in the group, and, during the re-join process, it asks the Group Manager for the authentication credentials of all the current group members.
 
    Then, given Z the set of authentication credentials received from the Group Manager, the group member removes every authentication credential which is not in Z from its list of group members' authentication credentials used in the group, and deletes each of its Recipient Contexts used in the group that does not include any of the authentication credentials in Z.
 
