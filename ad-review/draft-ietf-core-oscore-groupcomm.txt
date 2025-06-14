@@ -828,9 +828,11 @@ Table of Contents
    Using the Group OSCORE Security Context (see Section 2), a group
    member can derive AEAD keys, to protect point-to-point communication
    between itself and any other endpoint X in the group by means of the
-   AEAD Algorithm from the Common Context (see Section 2.1.1).  The key
-   derivation of these so-called pairwise keys follows the same
-   construction as in Section 3.2.1 of [RFC8613]:
+   AEAD Algorithm from the Common Context (see Section 2.1.1).
+
+   Analogous to the construction used by OSCORE in Section 3.2.1 of
+   [RFC8613], the key derivation of these so-called pairwise keys relies
+   on an HKDF algorithm and is as defined below:
 
   Pairwise Sender Key    = HKDF(Sender Key, IKM-Sender, info, L)
   Pairwise Recipient Key = HKDF(Recipient Key, IKM-Recipient, info, L)
@@ -872,12 +874,12 @@ Table of Contents
       keys in Section 14.16.
 
       In case the other endpoint's public key has COSE Key Type "EC2"
-      (e.g., for the curves P-256, P-384, and P-521), then the public
-      key is used as is.  In case the other endpoint's public key has
-      COSE Key Type "OKP", the procedure is described in Section 5 of
-      [RFC7748].  In particular, if the public key is for X25519 or
-      X448, it is used as is.  Otherwise, if the public key is for the
-      curve Ed25519 or Ed448, it is first mapped to Montgomery
+      [RFC9053] (e.g., for the curves P-256, P-384, and P-521), then the
+      public key is used as is.  In case the other endpoint's public key
+      has COSE Key Type "OKP" [RFC9053], the procedure is described in
+      Section 5 of [RFC7748].  In particular, if the public key is for
+      X25519 or X448, it is used as is.  Otherwise, if the public key is
+      for the curve Ed25519 or Ed448, it is first mapped to Montgomery
       coordinates (see Section 2.5.2).
 
    *  IKM-Sender is the Input Keying Material (IKM) used in the HKDF for
