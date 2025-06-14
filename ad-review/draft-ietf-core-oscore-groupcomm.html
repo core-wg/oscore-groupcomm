@@ -3363,7 +3363,7 @@ Further information may be distributed, depending on the specific group key mana
             <p id="section-12.2-14.2.1">The group member asks the Group Manager for the set of stale Sender IDs between GEN_OLD and GEN_NEW.<a href="#section-12.2-14.2.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-12.2-14.3">
-            <p id="section-12.2-14.3.1">If no exact indication can be obtained from the Group Manager, the group member <span class="bcp14">MUST</span> remove all the authentication credentials from its list of group members' authentication credentials used in the group and <span class="bcp14">MUST</span> delete all its Recipient Contexts used in the group.<a href="#section-12.2-14.3.1" class="pilcrow">¶</a></p>
+            <p id="section-12.2-14.3.1">If no exact and complete indication can be obtained from the Group Manager, the group member <span class="bcp14">MUST</span> remove all the authentication credentials from its list of group members' authentication credentials used in the group and <span class="bcp14">MUST</span> delete all its Recipient Contexts used in the group.<a href="#section-12.2-14.3.1" class="pilcrow">¶</a></p>
 <p id="section-12.2-14.3.2">
 Otherwise, the group member <span class="bcp14">MUST</span> remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group, and <span class="bcp14">MUST</span> delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.<a href="#section-12.2-14.3.2" class="pilcrow">¶</a></p>
 </li>
