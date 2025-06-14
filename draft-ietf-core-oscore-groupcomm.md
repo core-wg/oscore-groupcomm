@@ -214,7 +214,7 @@ This document refers also to the following terminology.
 
 * Keying material: data that is necessary to establish and maintain secure communication among endpoints. This includes, for instance, keys and IVs {{RFC4949}}.
 
-* Authentication credential: information associated with an entity, including that entity's public key and parameters associated with the public key. Examples of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) {{RFC8392}}, X.509 certificates {{RFC5280}} and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}. Further details about authentication credentials are provided in {{sec-pub-key-format}}.
+* Authentication credential: information associated with an entity, including that entity's public key and parameters associated with the public key. Examples of formats of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) {{RFC8392}}, X.509 certificates {{RFC5280}}, and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}. Further details about authentication credentials are provided in {{sec-pub-key-format}}.
 
 * Group: a set of endpoints that share group keying material and security parameters (Common Context, see {{sec-context}}). That is, unless otherwise specified, the term group used in this document refers to a "security group" (see {{Section 2.1 of I-D.ietf-core-groupcomm-bis}}), not to be confused with "CoAP group" or "application group".
 
@@ -399,14 +399,15 @@ The derivation of Sender/Recipient Keys and of the Common IV defined in OSCORE a
 
 ## Authentication Credentials ## {#sec-pub-key-format}
 
-The authentication credentials of the endpoints in a group MUST be encoded according to the format used in the group, as indicated by the Authentication Credential Format parameter in the Common Context (see {{ssec-common-context-authcred-format}}). The authentication credential of the Group Manager SHOULD be encoded according to that same format. The format of authentication credentials MUST provide the public key and a comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable).
+The authentication credentials of the endpoints in a group MUST be encoded according to the format used in the group, as indicated by the Authentication Credential Format parameter in the Common Context (see {{ssec-common-context-authcred-format}}). The authentication credential of the Group Manager SHOULD be encoded according to that same format.
 
+The format of authentication credentials MUST provide the public key and a comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable). If Group Encryption Algorithm in the Common Context is not set (see {{ssec-common-context-cs-enc-alg}}), then the public key algorithm is the Pairwise Key Agreement Algorithm used in the group (see {{ssec-common-context-dh-alg}}), else the Signature Algorithm used in the group (see {{ssec-common-context-cs-alg}}).
 
-   If Group Encryption Algorithm in the Common Context is not set (see {{ssec-common-context-cs-enc-alg}}), then the public key algorithm is the Pairwise Key Agreement Algorithm used in the group (see {{ssec-common-context-dh-alg}}), else the Signature Algorithm used in the group (see {{ssec-common-context-cs-alg}}).
+Examples of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) {{RFC8392}}, X.509 certificates {{RFC5280}}, and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}.
 
-   If the authentication credentials are X.509 certificates {{RFC5280}} or C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
+If the authentication credentials are X.509 certificates or C509 certificates, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
 
-   If authentication credentials are CBOR Web Tokens (CWTs) or CWT Claims Sets (CCSs) {{RFC8392}}, the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.
+If authentication credentials are CBOR Web Tokens (CWTs) or CWT Claims Sets (CCSs), the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.
 
 Authentication credentials are used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data when processing messages (see {{sec-cose-object-ext-aad}}). In both these cases, an endpoint in a group MUST treat authentication credentials as opaque data, i.e., by considering the same binary representation made available to other endpoints in the group, possibly through a designated trusted source (e.g., the Group Manager).
 
