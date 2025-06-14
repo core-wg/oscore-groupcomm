@@ -520,11 +520,11 @@ The mutable parts of the Security Context are updated by the endpoint when execu
 
 ### Loss of Mutable Security Context {#ssec-loss-mutable-context}
 
-An endpoint may lose its mutable Security Context, e.g., if a reboot occurred in an unprepared way (see {{ssec-loss-mutable-context-total}}) or due to a deleted Recipient Context (see {{ssec-loss-mutable-context-overflow}}).
+An endpoint may lose its mutable Security Context due to accidental events, e.g., if a reboot occurred in an unprepared way (see {{ssec-loss-mutable-context-total}}) or due to a deliberately deleted Recipient Context (see {{ssec-loss-mutable-context-overflow}}).
 
 If it is not feasible or practically possible to store and maintain up-to-date the mutable part in non-volatile memory (e.g., due to limited number of write operations), the endpoint MUST be able to detect a loss of the mutable Security Context, to prevent the re-use of a nonce with the same key, and to handle incoming replayed messages.
 
-#### Total Loss {#ssec-loss-mutable-context-total}
+#### Accidental Loss of Sender Context and/or Recipient Contexts {#ssec-loss-mutable-context-total}
 
 In case a loss of the Sender Context and/or of the Recipient Contexts is detected (e.g., if a reboot occurred in an unprepared way), the endpoint MUST NOT protect further messages using this Security Context, to avoid reusing a nonce with the same key.
 
@@ -538,7 +538,7 @@ If an endpoint is configured as a silent server and is not able to establish an 
 
 An adversary may leverage the above to perform a Denial of Service attack and prevent some group members from communicating altogether. That is, the adversary can first block the communication path between the Group Manager and some individual group members. This can be achieved, for instance, by injecting fake responses to DNS queries for the Group Manager hostname, or by removing a network link used for routing traffic towards the Group Manager. Then, the adversary can induce an unprepared reboot for some endpoints in the group, e.g., by triggering a short power outage. After that, such endpoints that have lost their Sender Context and/or Recipient Contexts following the reboot would not be able to obtain new Security Context parameters from the Group Manager, as specified above. Thus, they would not be able to further communicate in the group until connectivity with the Group Manager is restored.
 
-#### Deleted Recipient Contexts {#ssec-loss-mutable-context-overflow}
+#### Deliberately Deleted Recipient Contexts {#ssec-loss-mutable-context-overflow}
 
 The Security Context may contain a large and variable number of Recipient Contexts. A Recipient Context may need to be deleted, because the maximum number of Recipient Contexts has been reached (see {{ssec-sender-recipient-context}}), or due to some other reason.
 
