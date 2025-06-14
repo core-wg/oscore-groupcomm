@@ -433,7 +433,9 @@ Group OSCORE keys used for both signature and encryption MUST be used only for p
 
 ### Derivation of Pairwise Keys ### {#key-derivation-pairwise}
 
-Using the Group OSCORE Security Context (see {{sec-context}}), a group member can derive AEAD keys, to protect point-to-point communication between itself and any other endpoint X in the group by means of the AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}). The key derivation of these so-called pairwise keys follows the same construction as in {{Section 3.2.1 of RFC8613}}:
+Using the Group OSCORE Security Context (see {{sec-context}}), a group member can derive AEAD keys, to protect point-to-point communication between itself and any other endpoint X in the group by means of the AEAD Algorithm from the Common Context (see {{ssec-common-context-aead-alg}}).
+
+Analogous to the construction used by OSCORE in {{Section 3.2.1 of RFC8613}}, the key derivation of these so-called pairwise keys relies on an HKDF algorithm and is as defined below:
 
 ~~~~~~~~~~~
 Pairwise Sender Key    = HKDF(Sender Key, IKM-Sender, info, L)
@@ -463,7 +465,7 @@ where:
 
 * The Shared Secret is computed as a cofactor Diffie-Hellman shared secret, see Section 5.7.1.2 of {{NIST-800-56A}}, using the Pairwise Key Agreement Algorithm. The endpoint uses its private key from the Sender Context and the other endpoint's public key included in Recipient Auth Cred. Note the requirement of validation of public keys in {{ssec-crypto-considerations}}.
 
-   In case the other endpoint's public key has COSE Key Type "EC2" (e.g., for the curves P-256, P-384, and P-521), then the public key is used as is. In case the other endpoint's public key has COSE Key Type "OKP", the procedure is described in {{Section 5 of RFC7748}}. In particular, if the public key is for X25519 or X448, it is used as is. Otherwise, if the public key is for the curve Ed25519 or Ed448, it is first mapped to Montgomery coordinates (see {{montgomery}}).
+   In case the other endpoint's public key has COSE Key Type "EC2" {{RFC9053}} (e.g., for the curves P-256, P-384, and P-521), then the public key is used as is. In case the other endpoint's public key has COSE Key Type "OKP" {{RFC9053}}, the procedure is described in {{Section 5 of RFC7748}}. In particular, if the public key is for X25519 or X448, it is used as is. Otherwise, if the public key is for the curve Ed25519 or Ed448, it is first mapped to Montgomery coordinates (see {{montgomery}}).
 
 * IKM-Sender is the Input Keying Material (IKM) used in the HKDF for the derivation of the Pairwise Sender Key. IKM-Sender is the byte string concatenation of Sender Auth Cred, Recipient Auth Cred, and the Shared Secret. The authentication credentials Sender Auth Cred and Recipient Auth Cred are binary encoded as defined in {{sec-pub-key-format}}.
 
