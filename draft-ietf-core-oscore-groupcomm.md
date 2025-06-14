@@ -222,7 +222,7 @@ This document refers also to the following terminology.
 
 * Silent server: a member of a group that performs only group mode processing on incoming requests and never sends responses protected with Group OSCORE. For CoAP group communications, requests are normally sent without necessarily expecting a response. A silent server may send unprotected responses, as error responses reporting a Group OSCORE error.
 
-* Group Identifier (Gid): identifier assigned to the group, unique within the set of groups of a given Group Manager.
+* Group Identifier (Gid): identifier assigned to the group, unique within the set of groups of a given Group Manager. The Gid value changes every time the group is rekeyed (see {{sec-group-key-management}}).
 
 * Birth Gid: with respect to a group member, the Gid obtained by that group member upon (re-)joining the group.
 
