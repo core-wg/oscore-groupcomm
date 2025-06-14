@@ -329,7 +329,7 @@ The new parameter Authentication Credential Format specifies the format of authe
 
 ### Group Manager Authentication Credential ## {#ssec-common-context-gm-pub-key}
 
-The new parameter Group Manager Authentication Credential specifies the authentication credential of the Group Manager, including the Group Manager's public key. The endpoint MUST achieve proof-of-possession of the corresponding private key. Further details on the provisioning of the Group Manager's authentication credential to the group members are out of the scope of this document.
+The new parameter Group Manager Authentication Credential specifies the authentication credential of the Group Manager, including the Group Manager's public key. The endpoint MUST achieve proof-of-possession of the corresponding private key. As an example, such proof-of-possession is possible to achieve during the join process provided by the realization of Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}}. Further details on the provisioning of the Group Manager's authentication credential to the group members are out of the scope of this document.
 
 ### Group Encryption Algorithm ## {#ssec-common-context-cs-enc-alg}
 
@@ -1397,7 +1397,7 @@ From the Group Manager, an endpoint acquires group data such as the Gid and OSCO
 
 When joining the group or later on as a group member, an endpoint can also retrieve from the Group Manager the authentication credential of the Group Manager as well as the authentication credential and other information associated with other members of the group, with which it can derive the corresponding Recipient Context. An application can configure a group member to asynchronously retrieve information about Recipient Contexts, e.g., by Observing {{RFC7641}} a resource at the Group Manager to get updates on the group membership.
 
-Upon endpoints' joining, the Group Manager collects their authentication credentials and MUST verify proof-of-possession of the respective private key. Together with the requested authentication credentials of other group members, the Group Manager MUST provide the joining endpoints with the Sender ID of the associated group members and the current Key Generation Number in the group (see {{sec-group-key-management}}).
+Upon endpoints' joining, the Group Manager collects their authentication credentials and MUST verify proof-of-possession of the respective private key. As an example, such proof-of-possession is possible to achieve during the join process provided by the realization of Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}}. Together with the requested authentication credentials of other group members, the Group Manager MUST provide the joining endpoints with the Sender ID of the associated group members and the current Key Generation Number in the group (see {{sec-group-key-management}}).
 
 An endpoint may join a group, for example, by explicitly interacting with the responsible Group Manager, or by being configured with some tool performing the tasks of the Group Manager. When becoming members of a group, endpoints are not required to know how many and what endpoints are in the same group.
 
@@ -2122,6 +2122,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 {:removeinrfc}
 
 ## Version -25 to -26 ## {#sec-25-26}
+
+* Reference on achieving proof-of-possession for group members and Group Manager.
 
 * Not only CWTs but also CCSs can be tagged.
 
