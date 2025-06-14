@@ -573,7 +573,10 @@ Table of Contents
    The new parameter Group Manager Authentication Credential specifies
    the authentication credential of the Group Manager, including the
    Group Manager's public key.  The endpoint MUST achieve proof-of-
-   possession of the corresponding private key.  Further details on the
+   possession of the corresponding private key.  As an example, such
+   proof-of-possession is possible to achieve during the join process
+   provided by the realization of Group Manager specified in
+   [I-D.ietf-ace-key-groupcomm-oscore].  Further details on the
    provisioning of the Group Manager's authentication credential to the
    group members are out of the scope of this document.
 
@@ -2925,11 +2928,14 @@ Table of Contents
 
    Upon endpoints' joining, the Group Manager collects their
    authentication credentials and MUST verify proof-of-possession of the
-   respective private key.  Together with the requested authentication
-   credentials of other group members, the Group Manager MUST provide
-   the joining endpoints with the Sender ID of the associated group
-   members and the current Key Generation Number in the group (see
-   Section 12.2).
+   respective private key.  As an example, such proof-of-possession is
+   possible to achieve during the join process provided by the
+   realization of Group Manager specified in
+   [I-D.ietf-ace-key-groupcomm-oscore].  Together with the requested
+   authentication credentials of other group members, the Group Manager
+   MUST provide the joining endpoints with the Sender ID of the
+   associated group members and the current Key Generation Number in the
+   group (see Section 12.2).
 
    An endpoint may join a group, for example, by explicitly interacting
    with the responsible Group Manager, or by being configured with some
@@ -4941,6 +4947,9 @@ Appendix F.  Document Updates
    This section is to be removed before publishing as an RFC.
 
 F.1.  Version -25 to -26
+
+   *  Reference on achieving proof-of-possession for group members and
+      Group Manager.
 
    *  Not only CWTs but also CCSs can be tagged.
 
