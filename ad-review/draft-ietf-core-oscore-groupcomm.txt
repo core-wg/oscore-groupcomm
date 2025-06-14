@@ -3076,7 +3076,7 @@ Table of Contents
        group keying material yet.
 
    2.  The group member asks the Group Manager for the set of stale
-       Sender IDs.
+       Sender IDs between GEN_OLD and GEN_NEW.
 
    3.  If no exact indication can be obtained from the Group Manager,
        the group member MUST remove all the authentication credentials
