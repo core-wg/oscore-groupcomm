@@ -502,7 +502,7 @@ The private signing key byte strings (i.e., the lower 57 bytes used for generati
 
 When using any of its Pairwise Sender Keys, a sender endpoint including the 'Partial IV' parameter in the protected message MUST use the current fresh value of the Sender Sequence Number from its Sender Context (see {{ssec-sender-recipient-context}}). That is, the same Sender Sequence Number space is used for all outgoing messages protected with Group OSCORE, thus limiting both storage and complexity.
 
-On the other hand, when combining communications with the group mode and the pairwise mode, this may result in the Partial IV values moving forward more often. This can happen when a client engages in frequent or long sequences of one-to-one exchanges with servers in the group, by sending requests over unicast. In turn, this contributes to a sooner exhaustion of the Sender Sequence Number space of the client, which would then require to take actions for deriving a new Sender Context before resuming communications in the group (see {{ssec-wrap-around-partial-iv}}).
+When combining communications with the group mode and the pairwise mode, this may result in the Partial IV values moving forward more often. This can happen when a client engages in frequent or long sequences of one-to-one exchanges with servers in the group, by sending requests over unicast. In turn, this contributes to a sooner exhaustion of the Sender Sequence Number space of the client, which would then require to take actions for deriving a new Sender Context before resuming communications in the group (see {{ssec-wrap-around-partial-iv}}).
 
 ### Security Context for Pairwise Mode  ### {#pairwise-implementation}
 
