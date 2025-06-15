@@ -1017,7 +1017,7 @@ In addition, the following applies when sending a request that establishes a lon
 
    - The client MUST store an invariant identifier of the group, which is immutable even if the Security Context of the group is re-established.  For example, this invariant identifier can be the "group name" in {{I-D.ietf-ace-key-groupcomm-oscore}}, where it is used for joining the group and retrieving the current group keying material from the Group Manager.
 
-      After a group rekeying, this information makes it simpler for the client to retrieve the current group keying material from the Group Manager, in case the client has missed both the rekeying messages and the first response protected with the new Security Context (see {{ssec-protect-response}}).
+     After a group rekeying, the client might have missed both the rekeying messages and the servers' first responses that are protected with the new Security Context and include the new ID Context (Gid) in the 'kid context' parameter (see {{ssec-protect-response}}). In such a case, while still not knowing the new ID Context (Gid) used in the group, the client is able to retrieve the current group keying material from the Group Manager, using the invariant identifier to unambiguously refer to the group.
 
 ## Verifying the Request ## {#ssec-verify-request}
 
