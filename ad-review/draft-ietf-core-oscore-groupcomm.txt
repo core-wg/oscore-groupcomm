@@ -2001,11 +2001,14 @@ Table of Contents
          it is used for joining the group and retrieving the current
          group keying material from the Group Manager.
 
-         After a group rekeying, this information makes it simpler for
-         the client to retrieve the current group keying material from
-         the Group Manager, in case the client has missed both the
-         rekeying messages and the first response protected with the new
-         Security Context (see Section 7.3).
+         After a group rekeying, the client might have missed both the
+         rekeying messages and the servers' first responses that are
+         protected with the new Security Context and include the new ID
+         Context (Gid) in the 'kid context' parameter (see Section 7.3).
+         In such a case, while still not knowing the new ID Context
+         (Gid) used in the group, the client is able to retrieve the
+         current group keying material from the Group Manager, using the
+         invariant identifier to unambiguously refer to the group.
 
 7.2.  Verifying the Request
 
