@@ -991,7 +991,7 @@ Furthermore, endpoints in the group locally perform error handling and processin
 
 In either case, it is RECOMMENDED that a server does not send back any error message in reply to a received request if either of the following conditions holds:
 
-* The server is not able to identify the received request as a group request, i.e., as sent to all servers in the group.
+* The server is not able to identify whether the received request is a group request, i.e., as sent to all servers in the group.
 
 * The server identifies the received request as a group request.
 
