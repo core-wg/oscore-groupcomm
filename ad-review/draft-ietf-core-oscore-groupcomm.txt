@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 16 December 2025                                   F. Palombini
+Expires: 17 December 2025                                   F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                            14 June 2025
+                                                            15 June 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 December 2025.
+   This Internet-Draft will expire on 17 December 2025.
 
 Copyright Notice
 
@@ -114,10 +114,12 @@ Table of Contents
      3.3.  Nonce Computation
      3.4.  external_aad
    4.  OSCORE Header Compression
-     4.1.  Keystream Derivation for Countersignature Encryption
-     4.2.  Examples of Compressed COSE Objects
-       4.2.1.  Examples in Group Mode
-       4.2.2.  Examples in Pairwise Mode
+     4.1.  Encoding of the OSCORE Option Value and Group OSCORE
+           Payload
+     4.2.  Keystream Derivation for Countersignature Encryption
+     4.3.  Examples of Compressed COSE Objects
+       4.3.1.  Examples in Group Mode
+       4.3.2.  Examples in Pairwise Mode
    5.  Message Binding, Sequence Numbers, Freshness, and Replay
            Protection
      5.1.  Supporting Multiple Responses in Long Exchanges
@@ -1463,6 +1465,12 @@ Table of Contents
 
 4.  OSCORE Header Compression
 
+   Group OSCORE relies on a header compression mechanism similar to the
+   one used by OSCORE and specified in Section 4.1.  Examples are
+   provided in Section 4.3.
+
+4.1.  Encoding of the OSCORE Option Value and Group OSCORE Payload
+
    The OSCORE header compression defined in Section 6 of [RFC8613] is
    used for compactly encoding the COSE_Encrypt0 object specified in
    Section 3 of this document, with the following differences.
@@ -1482,7 +1490,7 @@ Table of Contents
 
          ENC_SIGNATURE = SIGNATURE XOR KEYSTREAM
 
-         where KEYSTREAM is derived as per Section 4.1.
+         where KEYSTREAM is derived as per Section 4.2.
 
    *  When the Group OSCORE message is protected in pairwise mode, the
       message payload SHALL encode the ciphertext of the COSE object.
@@ -1500,7 +1508,7 @@ Table of Contents
       MUST also be set to 0 for ordinary OSCORE messages processed
       according to [RFC8613].
 
-4.1.  Keystream Derivation for Countersignature Encryption
+4.2.  Keystream Derivation for Countersignature Encryption
 
    The following defines how an endpoint derives the keystream
    KEYSTREAM, used to encrypt/decrypt the countersignature of an
@@ -1551,18 +1559,18 @@ Table of Contents
    *  L is the size of the countersignature, as per Signature Algorithm
       from the Common Context (see Section 2.1.8), in bytes.
 
-4.2.  Examples of Compressed COSE Objects
+4.3.  Examples of Compressed COSE Objects
 
    This section covers a list of OSCORE Header Compression examples of
-   Group OSCORE used in group mode (see Section 4.2.1) or in pairwise
-   mode (see Section 4.2.2).
+   Group OSCORE used in group mode (see Section 4.3.1) or in pairwise
+   mode (see Section 4.3.2).
 
    The examples assume that the COSE_Encrypt0 object is set (which means
    the CoAP message and cryptographic material is known).  Note that the
    examples do not include the full CoAP unprotected message or the full
    Security Context, but only the input necessary to the compression
    mechanism, i.e., the COSE_Encrypt0 object.  The output is the
-   compressed COSE object as defined in Section 4 and divided into two
+   compressed COSE object as defined in Section 4.1 and divided into two
    parts, since the object is transported in two CoAP fields: OSCORE
    Option and payload.
 
@@ -1572,7 +1580,7 @@ Table of Contents
    group mode, the COSE_Countersignature0 byte string as described in
    Section 3 is assumed to be 64 bytes long.
 
-4.2.1.  Examples in Group Mode
+4.3.1.  Examples in Group Mode
 
    Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25,
    Partial IV = 5 and kid context = 0x44616c.
@@ -1629,7 +1637,7 @@ Table of Contents
       Payload: 0x60b035059d9ef5667c5a0710823b ca1e ... b3
       (14 bytes + size of the encrypted countersignature)
 
-4.2.2.  Examples in Pairwise Mode
+4.3.2.  Examples in Pairwise Mode
 
    Request with ciphertext = 0xaea0155667924dff8a24e4cb35b9, kid = 0x25,
    Partial IV = 5 and kid context = 0x44616c.
@@ -2054,7 +2062,7 @@ Table of Contents
 
          SIGNATURE = ENC_SIGNATURE XOR KEYSTREAM
 
-         where KEYSTREAM is derived as per Section 4.1.
+         where KEYSTREAM is derived as per Section 4.2.
 
       -  The server verifies the original countersignature SIGNATURE as
          described in Sections 3.2 and 3.3 of [RFC9338] by using the
@@ -2197,7 +2205,7 @@ Table of Contents
       OSCORE message is modified as described in Section 3 and Section 4
       of this document.  In particular the payload of the Group OSCORE
       message includes also the encrypted countersignature (see
-      Section 4).
+      Section 4.1).
 
 7.4.  Verifying the Response
 
@@ -2269,7 +2277,7 @@ Table of Contents
 
          SIGNATURE = ENC_SIGNATURE XOR KEYSTREAM
 
-         where KEYSTREAM is derived as per Section 4.1.
+         where KEYSTREAM is derived as per Section 4.2.
 
          The client verifies the original countersignature SIGNATURE.
 
@@ -2352,7 +2360,7 @@ Table of Contents
       was protected in pairwise mode - then the client will compute a
       wrong keystream to decrypt the countersignature (i.e., by using
       "kid1" rather than "kid2" in the 'id' field of the 'info' array in
-      Section 4.1), thus subsequently failing to verify the
+      Section 4.2), thus subsequently failing to verify the
       countersignature and discarding the response.
 
       This ensures that the client remains able to correctly perform the
@@ -2389,7 +2397,7 @@ Table of Contents
 
       SIGNATURE = ENC_SIGNATURE XOR KEYSTREAM
 
-      where KEYSTREAM is derived as per Section 4.1.
+      where KEYSTREAM is derived as per Section 4.2.
 
    *  The signature checker verifies the original countersignature
       SIGNATURE, by using the public key of the sender endpoint as
@@ -3500,10 +3508,11 @@ Table of Contents
       through a countersignature, which is computed by the sender
       endpoint using its own private key and then appended to the
       message payload.  The countersignature is also encrypted using a
-      keystream derived from the group keying material (see Section 4).
-      This ensures group privacy, i.e., an attacker cannot track an
-      endpoint over two groups by linking messages between the two
-      groups unless the attacker is also a member of both groups.
+      keystream derived from the group keying material (see Section 4.1
+      and Section 4.2).  This ensures group privacy, i.e., an attacker
+      cannot track an endpoint over two groups by linking messages
+      between the two groups unless the attacker is also a member of
+      both groups.
 
    *  Messages are encrypted at a group level (group-level data
       confidentiality), i.e., they can be decrypted by any member of the
@@ -4190,7 +4199,7 @@ Table of Contents
 
    *  When protecting a message in group mode, the countersignature is
       encrypted by using a keystream derived from the group keying
-      material (see Section 4 and Section 4.1).  This ensures group
+      material (see Section 4.1 and Section 4.2).  This ensures group
       privacy.  That is, an attacker cannot track an endpoint over two
       groups by linking messages between the two groups, unless being
       also a member of those groups.
