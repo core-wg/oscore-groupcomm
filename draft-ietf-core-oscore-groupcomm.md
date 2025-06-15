@@ -708,6 +708,10 @@ Compared with {{Section 5.4 of RFC8613}}, the aad_array has the following differ
 
 # OSCORE Header Compression {#compression}
 
+Group OSCORE relies on a header compression mechanism similar to the one used by OSCORE and specified in {{compression-details}}. Examples are provided in {{compression-examples}}.
+
+## Encoding of the OSCORE Option Value and Group OSCORE Payload {#compression-details}
+
 The OSCORE header compression defined in {{Section 6 of RFC8613}} is used for compactly encoding the COSE_Encrypt0 object specified in {{sec-cose-object}} of this document, with the following differences.
 
 * When the Group OSCORE message is protected in group mode, the message payload SHALL encode the ciphertext of the COSE object, concatenated with the encrypted countersignature of the COSE object. That is:
@@ -765,11 +769,11 @@ where:
 
 - L is the size of the countersignature, as per Signature Algorithm from the Common Context (see {{ssec-common-context-cs-alg}}), in bytes.
 
-## Examples of Compressed COSE Objects
+## Examples of Compressed COSE Objects ## {#compression-examples}
 
 This section covers a list of OSCORE Header Compression examples of Group OSCORE used in group mode (see {{sssec-example-cose-group}}) or in pairwise mode (see {{sssec-example-cose-pairwise}}).
 
-The examples assume that the COSE_Encrypt0 object is set (which means the CoAP message and cryptographic material is known). Note that the examples do not include the full CoAP unprotected message or the full Security Context, but only the input necessary to the compression mechanism, i.e., the COSE_Encrypt0 object. The output is the compressed COSE object as defined in {{compression}} and divided into two parts, since the object is transported in two CoAP fields: OSCORE Option and payload.
+The examples assume that the COSE_Encrypt0 object is set (which means the CoAP message and cryptographic material is known). Note that the examples do not include the full CoAP unprotected message or the full Security Context, but only the input necessary to the compression mechanism, i.e., the COSE_Encrypt0 object. The output is the compressed COSE object as defined in {{compression-details}} and divided into two parts, since the object is transported in two CoAP fields: OSCORE Option and payload.
 
 The examples assume that the plaintext (see {{Section 5.3 of RFC8613}}) is 6 bytes long, and that the AEAD tag is 8 bytes long, hence resulting in a ciphertext which is 14 bytes long. When using the group mode, the COSE_Countersignature0 byte string as described in {{sec-cose-object}} is assumed to be 64 bytes long.
 
@@ -1093,7 +1097,7 @@ Note that the server always protects a response with the Sender Context from its
 
       That is, when responding to a request protected in pairwise mode, the server SHOULD include the 'kid' parameter in a response protected in group mode, if it is replying to that client for the first time since the assignment of its new Sender ID.
 
-* In step 5, the countersignature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this document. In particular the payload of the Group OSCORE message includes also the encrypted countersignature (see {{compression}}).
+* In step 5, the countersignature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this document. In particular the payload of the Group OSCORE message includes also the encrypted countersignature (see {{compression-details}}).
 
 ## Verifying the Response ## {#ssec-verify-response}
 
@@ -1680,7 +1684,7 @@ The rest of this section first discusses security aspects to be taken into accou
 
 The group mode defined in {{mess-processing}} relies on shared group keying material to protect communication within a group. Using the group mode has the implications discussed below. The following refers to group members as the endpoints in the group storing the latest version of the group keying material.
 
-* Source authentication of messages sent to a group is ensured through a countersignature, which is computed by the sender endpoint using its own private key and then appended to the message payload. The countersignature is also encrypted using a keystream derived from the group keying material (see {{compression}}). This ensures group privacy, i.e., an attacker cannot track an endpoint over two groups by linking messages between the two groups unless the attacker is also a member of both groups.
+* Source authentication of messages sent to a group is ensured through a countersignature, which is computed by the sender endpoint using its own private key and then appended to the message payload. The countersignature is also encrypted using a keystream derived from the group keying material (see {{compression-details}} and {{sssec-encrypted-signature-keystream}}). This ensures group privacy, i.e., an attacker cannot track an endpoint over two groups by linking messages between the two groups unless the attacker is also a member of both groups.
 
 * Messages are encrypted at a group level (group-level data confidentiality), i.e., they can be decrypted by any member of the group, but not by an external adversary or other external entities.
 
@@ -1947,7 +1951,7 @@ The same considerations from {{Section 12.7 of RFC8613}} hold for Group OSCORE.
 
 Group OSCORE ensures end-to-end integrity protection and encryption of the message payload and of all the options that are not used for proxy operations. In particular, options are processed according to the same class U/I/E that they have for OSCORE. Therefore, the same privacy considerations from {{Section 12.8 of RFC8613}} hold for Group OSCORE, with the following addition.
 
-* When protecting a message in group mode, the countersignature is encrypted by using a keystream derived from the group keying material (see {{compression}} and {{sssec-encrypted-signature-keystream}}). This ensures group privacy. That is, an attacker cannot track an endpoint over two groups by linking messages between the two groups, unless being also a member of those groups.
+* When protecting a message in group mode, the countersignature is encrypted by using a keystream derived from the group keying material (see {{compression-details}} and {{sssec-encrypted-signature-keystream}}). This ensures group privacy. That is, an attacker cannot track an endpoint over two groups by linking messages between the two groups, unless being also a member of those groups.
 
 Furthermore, the following privacy considerations hold about the OSCORE Option, which may reveal information on the communicating endpoints.
 
