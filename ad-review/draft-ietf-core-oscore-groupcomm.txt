@@ -2694,9 +2694,9 @@ Table of Contents
    Identifier (see Section 12.2), the server MUST delete all the stored
    Echo values associated with members of the group.
 
-   Upon receiving a 4.01 (Unauthorized) response that includes an Echo
-   Option and originates from a verified group member, the subsequent
-   client request echoing the Echo Option value MUST be sent as a
+   After receiving a 4.01 (Unauthorized) response that includes an Echo
+   Option and originates from a verified group member, a subsequently
+   sent client request echoing the Echo Option value MUST be sent as a
    unicast message to the same server.
 
    If in the group the AEAD Algorithm and Pairwise Key Agreement
