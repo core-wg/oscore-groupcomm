@@ -2752,7 +2752,8 @@ Table of Contents
       1.  The server updates the Replay Window by marking as received
           the Sender Sequence Number from the latest received request.
           This becomes the lower limit of the Replay Window, while all
-          the other values are marked as not received.
+          the greater Sender Sequence Number values within the Replay
+          Window are marked as not received.
 
       2.  The server makes the Replay Window valid, and accepts the
           request as fresh.
@@ -4985,7 +4986,7 @@ F.1.  Version -25 to -26
    *  Generalized use of the Block2 Option in protected (group)
       requests.
 
-   *  Editorial fixes and improvements.
+   *  Editorial clarifications and fixes.
 
 F.2.  Version -24 to -25
 

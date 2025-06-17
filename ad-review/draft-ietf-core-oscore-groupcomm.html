@@ -3189,7 +3189,7 @@ where KEYSTREAM is derived as per <a href="#sssec-encrypted-signature-keystream"
           <p id="section-9-13.1.1">If the Replay Window is invalid, the steps below occur.<a href="#section-9-13.1.1" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-9-13.1.2">
 <li id="section-9-13.1.2.1">
-              <p id="section-9-13.1.2.1.1">The server updates the Replay Window by marking as received the Sender Sequence Number from the latest received request. This becomes the lower limit of the Replay Window, while all the other values are marked as not received.<a href="#section-9-13.1.2.1.1" class="pilcrow">¶</a></p>
+              <p id="section-9-13.1.2.1.1">The server updates the Replay Window by marking as received the Sender Sequence Number from the latest received request. This becomes the lower limit of the Replay Window, while all the greater Sender Sequence Number values within the Replay Window are marked as not received.<a href="#section-9-13.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-9-13.1.2.2">
               <p id="section-9-13.1.2.2.1">The server makes the Replay Window valid, and accepts the request as fresh.<a href="#section-9-13.1.2.2.1" class="pilcrow">¶</a></p>
@@ -4582,7 +4582,7 @@ Therefore, it is ensured by construction that no client can have with the same s
             <p id="appendix-F.1-1.4.1">Generalized use of the Block2 Option in protected (group) requests.<a href="#appendix-F.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-F.1-1.5">
-            <p id="appendix-F.1-1.5.1">Editorial fixes and improvements.<a href="#appendix-F.1-1.5.1" class="pilcrow">¶</a></p>
+            <p id="appendix-F.1-1.5.1">Editorial clarifications and fixes.<a href="#appendix-F.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
