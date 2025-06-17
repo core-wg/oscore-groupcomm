@@ -18,7 +18,7 @@
 <meta content="draft-ietf-core-oscore-groupcomm-latest" name="ietf.draft">
 <!-- Generator version information:
   xml2rfc 3.28.1
-    Python 3.12.10
+    Python 3.12.11
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
@@ -27,7 +27,7 @@
     platformdirs 4.3.8
     pycountry 24.6.1
     PyYAML 6.0.2
-    requests 2.32.3
+    requests 2.32.4
     setuptools 80.9.0
     wcwidth 0.2.13
 -->
@@ -1052,7 +1052,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Tiloca, et al.</td>
-<td class="center">Expires 17 December 2025</td>
+<td class="center">Expires 19 December 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1065,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-core-oscore-groupcomm-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-06-15" class="published">15 June 2025</time>
+<time datetime="2025-06-17" class="published">17 June 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-12-17">17 December 2025</time></dd>
+<dd class="expires"><time datetime="2025-12-19">19 December 2025</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1135,7 +1135,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 17 December 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 19 December 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -3027,7 +3027,7 @@ where KEYSTREAM is derived as per <a href="#sssec-encrypted-signature-keystream"
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-pre-conditions" class="section-name selfRef">Pre-Conditions</a>
         </h3>
 <p id="section-8.1-1">In order to protect an outgoing message in pairwise mode, the sender needs to know the authentication credential and the Recipient ID for the recipient endpoint, as stored in the Recipient Context associated with that endpoint (see <a href="#pairwise-implementation" class="auto internal xref">Section 2.5.4</a>).<a href="#section-8.1-1" class="pilcrow">¶</a></p>
-<p id="section-8.1-2">Furthermore, the sender needs to know the individual address of the recipient endpoint. This information may not be known at any given point in time. For instance, right after having joined the group, a client may know the authentication credential and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
+<p id="section-8.1-2">Typically, the sender endpoint sends the message protected in pairwise mode over unicast, so that the message is delivered only to the intended recipient endpoint for which it is protected. This requires the sender to know the individual address of that recipient endpoint, which the sender may not know at any given point in time. For instance, right after having joined the group, a client may know the authentication credential and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
 <p id="section-8.1-3">In order to make addressing information of individual endpoints available, servers in the group <span class="bcp14">MAY</span> expose a resource to which a client can send a request targeting a set of servers, identified by their 'kid' values specified in the request payload, or implicitly if the request is sent in pairwise mode. Further details of such an interface are out of scope for this document.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -4576,10 +4576,13 @@ Therefore, it is ensured by construction that no client can have with the same s
             <p id="appendix-F.1-1.2.1">Not only CWTs but also CCSs can be tagged.<a href="#appendix-F.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-F.1-1.3">
-            <p id="appendix-F.1-1.3.1">Generalized use of the Block2 Option in protected (group) requests.<a href="#appendix-F.1-1.3.1" class="pilcrow">¶</a></p>
+            <p id="appendix-F.1-1.3.1">Clearer generalization of delivery of messages protected in pairwise mode.<a href="#appendix-F.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-F.1-1.4">
-            <p id="appendix-F.1-1.4.1">Editorial fixes and improvements.<a href="#appendix-F.1-1.4.1" class="pilcrow">¶</a></p>
+            <p id="appendix-F.1-1.4.1">Generalized use of the Block2 Option in protected (group) requests.<a href="#appendix-F.1-1.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-F.1-1.5">
+            <p id="appendix-F.1-1.5.1">Editorial fixes and improvements.<a href="#appendix-F.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>

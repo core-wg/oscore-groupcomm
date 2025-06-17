@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 17 December 2025                                   F. Palombini
+Expires: 19 December 2025                                   F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                            15 June 2025
+                                                            17 June 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 December 2025.
+   This Internet-Draft will expire on 19 December 2025.
 
 Copyright Notice
 
@@ -2487,12 +2487,15 @@ Table of Contents
    the recipient endpoint, as stored in the Recipient Context associated
    with that endpoint (see Section 2.5.4).
 
-   Furthermore, the sender needs to know the individual address of the
-   recipient endpoint.  This information may not be known at any given
-   point in time.  For instance, right after having joined the group, a
-   client may know the authentication credential and Recipient ID for a
-   given server, but not the addressing information required to reach it
-   with an individual, one-to-one request.
+   Typically, the sender endpoint sends the message protected in
+   pairwise mode over unicast, so that the message is delivered only to
+   the intended recipient endpoint for which it is protected.  This
+   requires the sender to know the individual address of that recipient
+   endpoint, which the sender may not know at any given point in time.
+   For instance, right after having joined the group, a client may know
+   the authentication credential and Recipient ID for a given server,
+   but not the addressing information required to reach it with an
+   individual, one-to-one request.
 
    In order to make addressing information of individual endpoints
    available, servers in the group MAY expose a resource to which a
@@ -4975,6 +4978,9 @@ F.1.  Version -25 to -26
       Group Manager.
 
    *  Not only CWTs but also CCSs can be tagged.
+
+   *  Clearer generalization of delivery of messages protected in
+      pairwise mode.
 
    *  Generalized use of the Block2 Option in protected (group)
       requests.
