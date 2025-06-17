@@ -1209,7 +1209,7 @@ However, a sender can use the pairwise mode to protect a message sent to (but no
 
 In order to protect an outgoing message in pairwise mode, the sender needs to know the authentication credential and the Recipient ID for the recipient endpoint, as stored in the Recipient Context associated with that endpoint (see {{pairwise-implementation}}).
 
-Furthermore, the sender needs to know the individual address of the recipient endpoint. This information may not be known at any given point in time. For instance, right after having joined the group, a client may know the authentication credential and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.
+Typically, the sender endpoint sends the message protected in pairwise mode over unicast, so that the message is delivered only to the intended recipient endpoint for which it is protected. This requires the sender to know the individual address of that recipient endpoint, which the sender may not know at any given point in time. For instance, right after having joined the group, a client may know the authentication credential and Recipient ID for a given server, but not the addressing information required to reach it with an individual, one-to-one request.
 
 In order to make addressing information of individual endpoints available, servers in the group MAY expose a resource to which a client can send a request targeting a set of servers, identified by their 'kid' values specified in the request payload, or implicitly if the request is sent in pairwise mode. Further details of such an interface are out of scope for this document.
 
@@ -2133,6 +2133,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 * Reference on achieving proof-of-possession for group members and Group Manager.
 
 * Not only CWTs but also CCSs can be tagged.
+
+* Clearer generalization of delivery of messages protected in pairwise mode.
 
 * Generalized use of the Block2 Option in protected (group) requests.
 
