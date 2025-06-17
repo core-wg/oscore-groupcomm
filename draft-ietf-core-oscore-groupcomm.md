@@ -1313,7 +1313,7 @@ If the verifications above are successful, the server considers the Recipient Co
 
 * If the Replay Window is invalid, the steps below occur.
 
-   1. The server updates the Replay Window by marking as received the Sender Sequence Number from the latest received request. This becomes the lower limit of the Replay Window, while all the other values are marked as not received.
+   1. The server updates the Replay Window by marking as received the Sender Sequence Number from the latest received request. This becomes the lower limit of the Replay Window, while all the greater Sender Sequence Number values within the Replay Window are marked as not received.
 
    2. The server makes the Replay Window valid, and accepts the request as fresh.
 
@@ -2138,7 +2138,7 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 
 * Generalized use of the Block2 Option in protected (group) requests.
 
-* Editorial fixes and improvements.
+* Editorial clarifications and fixes.
 
 ## Version -24 to -25 ## {#sec-24-25}
 
