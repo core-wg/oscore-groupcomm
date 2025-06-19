@@ -187,34 +187,33 @@ Table of Contents
    Appendix B.  List of Use Cases
    Appendix C.  Example of Group Identifier Format
    Appendix D.  Responsibilities of the Group Manager
-   Appendix E.  Reassignment of Group Identifiers
-   Appendix F.  Document Updates
-     F.1.  Version -25 to -26
-     F.2.  Version -24 to -25
-     F.3.  Version -23 to -24
-     F.4.  Version -22 to -23
-     F.5.  Version -21 to -22
-     F.6.  Version -20 to -21
-     F.7.  Version -19 to -20
-     F.8.  Version -18 to -19
-     F.9.  Version -17 to -18
-     F.10. Version -16 to -17
-     F.11. Version -15 to -16
-     F.12. Version -14 to -15
-     F.13. Version -13 to -14
-     F.14. Version -12 to -13
-     F.15. Version -11 to -12
-     F.16. Version -10 to -11
-     F.17. Version -09 to -10
-     F.18. Version -08 to -09
-     F.19. Version -07 to -08
-     F.20. Version -06 to -07
-     F.21. Version -05 to -06
-     F.22. Version -04 to -05
-     F.23. Version -03 to -04
-     F.24. Version -02 to -03
-     F.25. Version -01 to -02
-     F.26. Version -00 to -01
+   Appendix E.  Document Updates
+     E.1.  Version -25 to -26
+     E.2.  Version -24 to -25
+     E.3.  Version -23 to -24
+     E.4.  Version -22 to -23
+     E.5.  Version -21 to -22
+     E.6.  Version -20 to -21
+     E.7.  Version -19 to -20
+     E.8.  Version -18 to -19
+     E.9.  Version -17 to -18
+     E.10. Version -16 to -17
+     E.11. Version -15 to -16
+     E.12. Version -14 to -15
+     E.13. Version -13 to -14
+     E.14. Version -12 to -13
+     E.15. Version -11 to -12
+     E.16. Version -10 to -11
+     E.17. Version -09 to -10
+     E.18. Version -08 to -09
+     E.19. Version -07 to -08
+     E.20. Version -06 to -07
+     E.21. Version -05 to -06
+     E.22. Version -04 to -05
+     E.23. Version -03 to -04
+     E.24. Version -02 to -03
+     E.25. Version -01 to -02
+     E.26. Version -00 to -01
    Acknowledgments
    Authors' Addresses
 
@@ -3222,7 +3221,49 @@ Table of Contents
       even once the whole space of Gid values has been used.
 
       The Group Manager MAY support and use this approach, according to
-      what is specified in Appendix E.
+      what is specified in Section 12.2.1.1.1.
+
+12.2.1.1.1.  Reassignment of Group Identifiers
+
+   If the Group Manager supports and performs the reassignment of Gid
+   values previously used during a group's lifetime, the Group Manager
+   MUST take additional actions when handling Gid values and rekeying
+   the group, as specified below.
+
+   When a node (re-)joins the group and it is provided with the current
+   Gid to use in the group, the Group Manager considers such a Gid as
+   the Birth Gid of that endpoint for that group.  For each group
+   member, the Group Manager MUST store the latest corresponding Birth
+   Gid until that member leaves the group.  In case the endpoint has in
+   fact re-joined the group, the newly determined Birth Gid overwrites
+   the one currently stored.
+
+   When establishing a new Security Context for the group, the Group
+   Manager takes the additional following step between steps 1 and 2 of
+   Section 12.2.
+
+   A.  The Group Manager MUST check if the new Gid to be distributed is
+   equal to the Birth Gid of any of the current group members.  If any
+   of such "elder members" is found in the group, then:
+
+   *  The Group Manager MUST evict the elder members from the group.
+      That is, the Group Manager MUST terminate their membership and, in
+      the following steps, it MUST rekey the group in such a way that
+      the new keying material is not provided to those evicted elder
+      members.
+
+      This ensures that any response from the same server to the request
+      of a long exchange can never successfully match against the
+      request of two different long exchanges.
+
+      The excluded elder members could eventually re-join the group,
+      thus terminating any of their ongoing long exchanges (see
+      Section 5.1).
+
+      Therefore, it is ensured by construction that no client can have
+      with the same server two ongoing long exchanges, such that the two
+      respective requests were protected using the same Partial IV, Gid,
+      and Sender ID.
 
 12.2.1.2.  Recycling of Sender IDs
 
@@ -4993,57 +5034,11 @@ Appendix D.  Responsibilities of the Group Manager
    The Group Manager specified in [I-D.ietf-ace-key-groupcomm-oscore]
    provides this functionality.
 
-Appendix E.  Reassignment of Group Identifiers
-
-   As defined in Section 12.2.1.1, the Group manager MAY support and
-   perform the reassignment of Gid values previously used during a
-   group's lifetime.  This enables the group to continue to exist even
-   once the whole space of Gid values has been used.
-
-   If the Group Manager uses this approach, the Group Manager MUST take
-   additional actions when handling Gid values and rekeying the group,
-   as specified below.
-
-   When a node (re-)joins the group and it is provided with the current
-   Gid to use in the group, the Group Manager considers such a Gid as
-   the Birth Gid of that endpoint for that group.  For each group
-   member, the Group Manager MUST store the latest corresponding Birth
-   Gid until that member leaves the group.  In case the endpoint has in
-   fact re-joined the group, the newly determined Birth Gid overwrites
-   the one currently stored.
-
-   When establishing a new Security Context for the group, the Group
-   Manager takes the additional following step between steps 1 and 2 of
-   Section 12.2.
-
-   A.  The Group Manager MUST check if the new Gid to be distributed is
-   equal to the Birth Gid of any of the current group members.  If any
-   of such "elder members" is found in the group, then:
-
-   *  The Group Manager MUST evict the elder members from the group.
-      That is, the Group Manager MUST terminate their membership and, in
-      the following steps, it MUST rekey the group in such a way that
-      the new keying material is not provided to those evicted elder
-      members.
-
-      This ensures that any response from the same server to the request
-      of a long exchange can never successfully match against the
-      request of two different long exchanges.
-
-      The excluded elder members could eventually re-join the group,
-      thus terminating any of their ongoing long exchanges (see
-      Section 5.1).
-
-      Therefore, it is ensured by construction that no client can have
-      with the same server two ongoing long exchanges, such that the two
-      respective requests were protected using the same Partial IV, Gid,
-      and Sender ID.
-
-Appendix F.  Document Updates
+Appendix E.  Document Updates
 
    This section is to be removed before publishing as an RFC.
 
-F.1.  Version -25 to -26
+E.1.  Version -25 to -26
 
    *  Reference on achieving proof-of-possession for group members and
       Group Manager.
@@ -5076,12 +5071,15 @@ F.1.  Version -25 to -26
    *  Suggested means for silent servers to make Replay Windows valid
       again.
 
+   *  Optional procedure for reassigning Gids moved to the document
+      body.
+
    *  Discussed server-side mitigations against unicast requests
       protected in group mode.
 
    *  Editorial clarifications and fixes.
 
-F.2.  Version -24 to -25
+E.2.  Version -24 to -25
 
    *  Made RFC 5869 a normative reference.
 
@@ -5090,13 +5088,13 @@ F.2.  Version -24 to -25
 
    *  More precise phrasing on using the encryption nonce.
 
-F.3.  Version -23 to -24
+E.3.  Version -23 to -24
 
    *  Added section "Implementation Status", according to RFC 7942.
 
    *  Fixed "P-521" (instead of "P-512").
 
-F.4.  Version -22 to -23
+E.4.  Version -22 to -23
 
    *  Examples of non-AEAD algorithms as Group Encryption Algorithm.
 
@@ -5112,7 +5110,7 @@ F.4.  Version -22 to -23
 
    *  Editorial improvements.
 
-F.5.  Version -21 to -22
+E.5.  Version -21 to -22
 
    *  Removed mentioning of the CBOR encoding of the HKDF Algorithm.
 
@@ -5142,7 +5140,7 @@ F.5.  Version -21 to -22
 
    *  Editorial improvements.
 
-F.6.  Version -20 to -21
+E.6.  Version -20 to -21
 
    *  Updated author list.
 
@@ -5153,17 +5151,17 @@ F.6.  Version -20 to -21
 
    *  Editorial: expanded name of the "CoRE Parameters" registry group.
 
-F.7.  Version -19 to -20
+E.7.  Version -19 to -20
 
    *  Change Controller for the target attribute "gosc" set to "IETF".
 
-F.8.  Version -18 to -19
+E.8.  Version -18 to -19
 
    *  Unified presentation of handling of multiple responses.
 
    *  Added Rikard Höglund as Contributor.
 
-F.9.  Version -17 to -18
+E.9.  Version -17 to -18
 
    *  Changed document title.
 
@@ -5208,13 +5206,13 @@ F.9.  Version -17 to -18
 
    *  Clarifications, fixes and editorial improvements.
 
-F.10.  Version -16 to -17
+E.10.  Version -16 to -17
 
    *  Definition and registration of the target attribute "gosc".
 
    *  Reference update and editorial fixes.
 
-F.11.  Version -15 to -16
+E.11.  Version -15 to -16
 
    *  Clients "SHOULD" use the group mode for one-to-many requests.
 
@@ -5227,11 +5225,11 @@ F.11.  Version -15 to -16
 
    *  Editorial improvements.
 
-F.12.  Version -14 to -15
+E.12.  Version -14 to -15
 
    *  Updated references and editorial fixes.
 
-F.13.  Version -13 to -14
+E.13.  Version -13 to -14
 
    *  Replaced "node" with "endpoint" where appropriate.
 
@@ -5258,7 +5256,7 @@ F.13.  Version -13 to -14
 
    *  Clarifications and editorial improvements.
 
-F.14.  Version -12 to -13
+E.14.  Version -12 to -13
 
    *  Fixes in the derivation of the Group Encryption Key.
 
@@ -5266,7 +5264,7 @@ F.14.  Version -12 to -13
 
    *  Changed UCCS to CCS.
 
-F.15.  Version -11 to -12
+E.15.  Version -11 to -12
 
    *  No mode of operation is mandatory to support.
 
@@ -5304,7 +5302,7 @@ F.15.  Version -11 to -12
 
    *  Fixes and editorial improvements.
 
-F.16.  Version -10 to -11
+E.16.  Version -10 to -11
 
    *  Loss of Recipient Contexts due to their overflow.
 
@@ -5351,7 +5349,7 @@ F.16.  Version -10 to -11
 
    *  Fixes and editorial improvements.
 
-F.17.  Version -09 to -10
+E.17.  Version -09 to -10
 
    *  Removed 'Counter Signature Key Parameters' from the Common
       Context.
@@ -5389,7 +5387,7 @@ F.17.  Version -09 to -10
 
    *  Overall clarifications and editorial revision.
 
-F.18.  Version -08 to -09
+E.18.  Version -08 to -09
 
    *  Pairwise keys are discarded after group rekeying.
 
@@ -5427,7 +5425,7 @@ F.18.  Version -08 to -09
 
    *  Clarifications and editorial improvements.
 
-F.19.  Version -07 to -08
+E.19.  Version -07 to -08
 
    *  Clarified relation between pairwise mode and group communication
       (Section 1).
@@ -5491,7 +5489,7 @@ F.19.  Version -07 to -08
 
    *  Editorial improvements.
 
-F.20.  Version -06 to -07
+E.20.  Version -06 to -07
 
    *  Updated abstract and introduction.
 
@@ -5523,7 +5521,7 @@ F.20.  Version -06 to -07
    *  New pairwise mode, using pairwise keying material for both
       requests and responses.
 
-F.21.  Version -05 to -06
+E.21.  Version -05 to -06
 
    *  Group IDs mandated to be unique under the same Group Manager.
 
@@ -5551,7 +5549,7 @@ F.21.  Version -05 to -06
 
    *  Editorial improvements.
 
-F.22.  Version -04 to -05
+E.22.  Version -04 to -05
 
    *  Added references to draft-dijk-core-groupcomm-bis.
 
@@ -5570,7 +5568,7 @@ F.22.  Version -04 to -05
    *  New "Counter Signature Key Parameters" IANA Registry
       (Section 9.2).
 
-F.23.  Version -03 to -04
+E.23.  Version -03 to -04
 
    *  Added the new "Counter Signature Parameters" in the Common Context
       (see Section 2).
@@ -5614,7 +5612,7 @@ F.23.  Version -03 to -04
    *  New IANA Registry "Counter Signature Parameters" (see
       Section 9.1).
 
-F.24.  Version -02 to -03
+E.24.  Version -02 to -03
 
    *  Revised structure and phrasing for improved readability and better
       alignment with draft-ietf-core-object-security.
@@ -5648,7 +5646,7 @@ F.24.  Version -02 to -03
    *  Revised Appendix D, now giving a short high-level description of a
       new endpoint set-up.
 
-F.25.  Version -01 to -02
+E.25.  Version -01 to -02
 
    *  Terminology has been made more aligned with RFC7252 and draft-
       ietf-core-object-security: i) "client" and "server" replace the
@@ -5683,7 +5681,7 @@ F.25.  Version -01 to -02
       synchronization of sequence numbers based on the Echo Option from
       draft-ietf-core-echo-request-tag.
 
-F.26.  Version -00 to -01
+E.26.  Version -00 to -01
 
    *  Section 1.1 has been updated with the definition of group as
       "security group".
