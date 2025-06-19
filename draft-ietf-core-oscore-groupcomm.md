@@ -987,7 +987,7 @@ The possible use of the group mode is indicated by the Group Manager as part of 
 
 During all the steps of the message processing, an endpoint MUST use the same Security Context for the considered group. That is, an endpoint MUST NOT install a new Security Context for that group (see {{new-sec-context}}) until the message processing is completed.
 
-The group mode SHOULD be used to protect group requests intended for multiple recipients or for the whole group. For an example where this is not fulfilled, see {{I-D.amsuess-core-cachable-oscore}}. This applies to both requests directly addressed to multiple recipients, e.g., sent by the client over multicast, as well as requests sent by the client over unicast to a proxy that forwards them to the intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}.
+The group mode SHOULD be used to protect group requests intended for multiple recipients or for the whole group. This applies to both requests directly addressed to multiple recipients, e.g., sent by the client over multicast, as well as requests sent by the client over unicast to a proxy that forwards them to the intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}. Exceptions where the requirement above is not fulfilled and the pairwise mode is used to protect group requests include: the efficient discovery of a server's address in the group (see {{ssec-pre-conditions}}); or the enabling of simple constructions where a variation of the pairwise mode protects requests possibly intended to multiple servers, in such a way that the corresponding responses are effectively cacheable by intermediaries (e.g., see {{I-D.amsuess-core-cachable-oscore}}).
 
 As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-confirmable, and thus are not retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a predefined, sufficient amount of time, in order to correctly perform potential retransmissions at the application layer. If performed, these retransmissions are repetitions of previous protected messages, which the sender endpoint does not protect again with Group OSCORE.
 
@@ -1061,7 +1061,7 @@ Upon receiving a protected request with the Group Flag set to 1, following the p
 
   If the server deletes the used Recipient Context in this particular circumstance, then this deletion does not require the server to initialize as invalid the Replay Window of any new Recipient Context created later within the Security Context (see {{ssec-loss-mutable-context-overflow}}).
 
-A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. For an example where this is not fulfilled, see {{I-D.ietf-core-observe-multicast-notifications}}.
+A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. As an exception where the requirement above is not fulfilled, the server could have deliberately prepared such a request to be sent to itself (e.g., see {{I-D.ietf-core-observe-multicast-notifications}}).
 
 In addition, the following applies if the request establishes a long exchange and the server intends to reply with multiple responses.
 
@@ -1872,7 +1872,9 @@ This is due to the fact that the client is not able to indicate the single inten
 
 The impact of such an attack depends especially on the REST method of the request, i.e., the Inner CoAP Code of the OSCORE request message. In particular, safe methods such as GET and FETCH would trigger (several) unintended responses from the targeted server(s), while not resulting in destructive behavior. On the other hand, non safe methods such as PUT, POST, and PATCH/iPATCH would result in the target server(s) taking active actions on their resources and possible cyber-physical environment, with the risk of destructive consequences and possible implications for safety.
 
-A client can instead use the pairwise mode as defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, a client supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast. For an example where this is not fulfilled, see {{I-D.ietf-core-observe-multicast-notifications}}.
+A client can instead use the pairwise mode as defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request.
+
+In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, an endpoint supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast. As an exception where the requirement above is not fulfilled and the group mode is used to protect such requests, an endpoint could need to make the request possible to decrypt and verify for multiple other group members. An example of this exception is the method defined in {{I-D.ietf-core-observe-multicast-notifications}}.
 
 The use of block-wise transfers {{RFC7959}} with group communication for CoAP is as discussed in {{Section 3.8 of I-D.ietf-core-groupcomm-bis}}. Note that, after a first block-wise request that targets all servers in the group and includes the CoAP Block2 Option, following block-wise exchanges to retrieve any further blocks can rely on unicast requests, which should therefore be protected using the pairwise mode. The same applies to unicast requests used in block-wise exchanges following a first block-wise request that targeted all servers in the group and did not include the CoAP Block2 Option, while the corresponding responses included the Block2 Option at the servers' own initiative.
 
@@ -2151,6 +2153,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 * The exhaustion of Sender Sequence Numbers should be handled with margin.
 
 * Highlighted overhead for accepting out-of-order responses within a long exchange.
+
+* Generalization of exceptions to behaviors that are defined as SHOULD.
 
 * Clearer generalization of delivery of messages protected in pairwise mode.
 
