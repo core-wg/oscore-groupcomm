@@ -1722,11 +1722,7 @@ The group mode defined in {{mess-processing}} relies on shared group keying mate
 
    On the other hand, proof of group membership is always ensured by construction through the strict management of the group keying material (see {{sec-group-key-management}}). That is, the group is rekeyed when members leave and the current group members are informed of former group members. Thus, a current group member storing the latest group keying material does not store the authentication credential of any former group member.
 
-   This allows a recipient endpoint to rely on the stored authentication credentials and public keys included therein, in order to always confidently verify the group membership of a sender endpoint when processing an incoming message, i.e., to verify that the sender endpoint was a group member when it signed the message. In turn, this prevents a former group member from possibly re-signing and injecting in the group a stored message that was protected with old keying material.
-
-   A case in point is a group where the Group Encryption Algorithm does not provide integrity protection; a group member leaves the group; and, after the group rekeying, associates with the group as external signature checker (see {{sec-processing-signature-checker}}). When doing so, it obtains from the Group Manager the new Signature Encryption Key, from which it can derive keystreams for encrypting and decrypting the countersignatures of messages protected in group mode.
-
-   If, when participating in the group rekeying, the current group members had not deleted the Recipient Context and authentication credential of the former group member, then the signature checker would be able to successfully inject messages protected in group mode, as encrypted with the old group keying material, signed with its own private key, and with the countersignature encrypted by means of the latest Signature Encryption Key. Then, the group members, as still retaining the authentication credential of the signature checker, will verify and accept the message, even though the sender was not a group member when signing the message.
+   This allows a recipient endpoint to rely on the stored authentication credentials and public keys included therein, in order to always confidently verify the group membership of a sender endpoint when processing an incoming message, i.e., to verify that the sender endpoint was a group member when it signed the message. In turn, this prevents a former group member from possibly re-signing and injecting in the group a stored message that was protected with old keying material. A case in point is discussed in {{ssec-need-proof-group-membership}}.
 
 The security properties of the group mode are summarized below.
 
@@ -1741,6 +1737,12 @@ The security properties of the group mode are summarized below.
 5. Group privacy, by encrypting the countersignature.
 
 The group mode fulfills the security properties above while also displaying the following benefits. First, the use of a Group Encryption Algorithm that does not provide integrity protection results in a minimal communication overhead, by limiting the message payload to the ciphertext without integrity tag together with the encrypted countersignature. Second, it is possible to deploy semi-trusted entities such as signature checkers (see {{sec-additional-entities}}), which can break property 5, but cannot break properties 1, 2, 3, and 4.
+
+### Example of Need for Proof of Group Membership {#ssec-need-proof-group-membership}
+
+As a case in point, the importance to achieve proof of group membership is evident in a group where the Group Encryption Algorithm does not provide integrity protection; a group member leaves the group; and, after the group rekeying, associates with the group as external signature checker (see {{sec-processing-signature-checker}}). When doing so, it obtains from the Group Manager the new Signature Encryption Key, from which it can derive keystreams for encrypting and decrypting the countersignatures of messages protected in group mode.
+
+However, when participating in the group rekeying, the current group members deleted the Recipient Context and authentication credential of the former group member. Consequently, the signature checker is not able to successfully inject messages protected in group mode, as encrypted with the old group keying material, signed with its own private key, and with the countersignature encrypted by means of the latest Signature Encryption Key. That is, if the signature checker attempts to do that, then the group members will fail to verify the messages from the signature checker and thus will discard those messages.
 
 ## Security of the Pairwise Mode {#ssec-pairwise-mode-security}
 
