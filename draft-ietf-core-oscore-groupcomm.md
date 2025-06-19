@@ -1917,7 +1917,7 @@ As in OSCORE, Group OSCORE provides only the guarantee that the request is not o
 
 The challenge-response approach described in {{sec-synch-challenge-response}} provides an assurance of freshness of the request without depending on the honesty of the client. However, it can result in an impact on performance which is undesirable or unbearable, especially in large groups where many endpoints at the same time might join as new members.
 
-Endpoints configured as silent servers are not able to perform the challenge-response described above, as they do not store a Sender Context to secure the 4.01 (Unauthorized) response to the client. Thus, silent servers should adopt alternative approaches to make their Replay Windows valid.
+Endpoints configured as silent servers are not able to perform the challenge-response described above, as they do not store a Sender Context to secure the 4.01 (Unauthorized) response to the client. Thus, silent servers should adopt alternative approaches to make their Replay Windows valid. For example, a silent server can retrieve or wait for new Security Context parameters from the Group Manager and derive new Recipient Contexts. When doing so, the Replay Windows of all Recipient Contexts become valid if they are not already. In particular, any invalid Replay Window is re-initialized as valid and with 0 as its current lower limit.
 
 Since requests including the Echo Option are sent over unicast, a server can be the victim of the attack discussed in {{ssec-unicast-requests}} if such requests are protected in group mode. Instead, protecting those requests with the pairwise mode prevents the attack above. In fact, only the server involved in the challenge-response exchange is able to derive the pairwise key used by the client to protect the request including the Echo Option.
 
@@ -2163,6 +2163,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 * Clearer generalization of delivery of messages protected in pairwise mode.
 
 * Generalized use of the Block2 Option in protected (group) requests.
+
+* Suggested means for silent servers to make Replay Windows valid again.
 
 * Discussed server-side mitigations against unicast requests protected in group mode.
 
