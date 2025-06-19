@@ -949,7 +949,9 @@ Then, separately for each server, the client uses the associated Response Number
 
 For every long exchange, the Response Number associated with a server is initialized to the Partial IV of the response from that server such that, within the long exchange, it is the first response from that server to include a Partial IV and to be successfully verified with the used Security Context. Note that, when a new Security Context is established in the group, the client sets the Response Number of each associated server as not initialized (see {{new-sec-context}}), hence later responses within the same long exchange and protected with the new Security Context will result in a new initialization of Response Numbers. Furthermore, for every long exchange, a client MUST only accept at most one response without Partial IV from each server, and treat it as the oldest response from that server within that long exchange.
 
-During a long exchange, a client receiving a response containing a Partial IV SHALL compare the Partial IV with the Response Number associated with the replying server within that long exchange. The client MUST stop processing a response from a server, if that response has a Partial IV that has been previously received from that server during that long exchange, while using the same Security Context. Applications MAY decide that a client only processes responses within a long exchange if those have a greater Partial IV than the Response Number associated with the replying server within that long exchange.
+During a long exchange, a client receiving a response containing a Partial IV SHALL compare the Partial IV with the Response Number associated with the replying server within that long exchange. The client MUST stop processing a response from a server, if that response has a Partial IV that has been previously received from that server during that long exchange, while using the same Security Context.
+
+Applications MAY decide that a client only processes responses within a long exchange if those have a greater Partial IV than the Response Number associated with the replying server within that long exchange. This limits the storage overhead on the client to maintaining one Response Number per replying server within the long exchange. Conversely, more permissive applications can allow clients to also process responses that have a smaller Partial IV than the Response Number associated with the replying server. For a client, the ability to detect previously received Partial IVs while admitting the processing of such responses comes at the cost of additional storage overhead, for which a reasonable bound has to be defined by the application. A possible way to achieve that relies on using a sliding Replay Window uniquely paired with the replying server within the long exchange, similarly to that used by a server for detecting replayed requests.
 
 If the verification of the response succeeds, and the received Partial IV (when included) was greater than the Response Number associated with the replying server, then the client SHALL overwrite that Response Number with the received Partial IV.
 
@@ -2147,6 +2149,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 * Clearer handling of incoming messages if the Replay Window is invalid.
 
 * The exhaustion of Sender Sequence Numbers should be handled with margin.
+
+* Highlighted overhead for accepting out-of-order responses within a long exchange.
 
 * Clearer generalization of delivery of messages protected in pairwise mode.
 
