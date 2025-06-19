@@ -544,7 +544,7 @@ The Security Context may contain a large and variable number of Recipient Contex
 
 When a Recipient Context is deleted, this not only results in losing information about previously received messages from the corresponding other endpoint. It also results in the inability to be aware of the Security Contexts from which information has been lost.
 
-Therefore, if the Recipient Context is derived again from the same Security Context, there is a risk that a replayed message is not detected. If one Recipient Context has been deleted from the current Security Context, then the Replay Window of any new Recipient Context in this Security Context MUST be initialized as invalid. Messages associated with a Recipient Context that has an invalid Replay Window MUST NOT be delivered to the application.
+Therefore, if the Recipient Context is derived again from the same Security Context, there is a risk that a replayed message is not detected. If one Recipient Context has been deleted from the current Security Context, then the Replay Window of any new Recipient Context in this Security Context MUST be initialized as invalid. An exception applies when the deleted Recipient Context was created upon receiving a message and that message was not verified successfully (see {{ssec-verify-request}}, {{ssec-verify-response}}, {{sec-pairwise-verify-req}}, and {{sec-pairwise-verify-resp}}). Messages associated with a Recipient Context that has an invalid Replay Window MUST NOT be delivered to the application.
 
 If the endpoint receives a request to be processed with the new Recipient Context and the endpoint supports the CoAP Echo Option {{RFC9175}}, then it is RECOMMENDED to follow the procedure specified in {{sec-synch-challenge-response}} which establishes a valid Replay Window. In particular, the endpoint MUST use its Partial IV when generating the nonce and MUST include the Partial IV in the response message conveying the Echo Option.
 
@@ -1053,6 +1053,8 @@ Upon receiving a protected request with the Group Flag set to 1, following the p
 
 * Additionally, if the used Recipient Context was created upon receiving this request and the message is not verified successfully, the server MAY delete that Recipient Context. When this behavior is specified by the application, it mitigates attacks that aim at overloading the server's storage.
 
+  If the server deletes the used Recipient Context in this particular circumstance, then this deletion does not require the server to initialize as invalid the Replay Window of any new Recipient Context created later within the Security Context (see {{ssec-loss-mutable-context-overflow}}).
+
 A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. For an example where this is not fulfilled, see {{I-D.ietf-core-observe-multicast-notifications}}.
 
 In addition, the following applies if the request establishes a long exchange and the server intends to reply with multiple responses.
@@ -1160,6 +1162,8 @@ Note that a client may receive a response protected with a Security Context diff
    This ensures that the client remains able to correctly perform the ordering and replay protection of responses within a long exchange, even if the server legitimately starts using a new Sender ID, as received from the Group Manager when individually rekeyed (see {{new-sender-id}}) or when re-joining the group.
 
 * In step 8, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client MAY delete that Recipient Context. When this behavior is specified by the application, it mitigates attacks that aim at overloading the client's storage.
+
+  If the client deletes the used Recipient Context in this particular circumstance, then this deletion does not require the client to initialize as invalid the Replay Window of any new Recipient Context created later within the Security Context (see {{ssec-loss-mutable-context-overflow}}).
 
 ## External Signature Checkers # {#sec-processing-signature-checker}
 
@@ -2133,6 +2137,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 * Reference on achieving proof-of-possession for group members and Group Manager.
 
 * Not only CWTs but also CCSs can be tagged.
+
+* Exceptional handling after deleting a Recipient Context.
 
 * Clearer generalization of delivery of messages protected in pairwise mode.
 
