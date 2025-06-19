@@ -1750,7 +1750,7 @@ The pairwise mode defined in {{sec-pairwise-protection}} protects messages by us
 
 The used AEAD Algorithm MUST provide integrity protection. Therefore, the pairwise mode ensures both pairwise data-confidentiality and source authentication of messages, without using countersignatures. Furthermore, the recipient endpoint achieves proof of group membership for the sender endpoint, since only current group members have the required keying material to derive a valid Pairwise Sender/Recipient Key.
 
-The long-term storing of the Diffie-Hellman shared secret is a potential security issue. In fact, if the shared secret of two group members is leaked, a third group member can exploit it to impersonate either of the two group members to the other, by deriving and using their pairwise keys. The possibility of such leakage should be considered more likely than the leakage of a private key, which could be rather protected at a significantly higher level than generic memory, e.g., by using a Trusted Platform Module. Therefore, there is a trade-off between the maximum amount of time a same shared secret is stored and the frequency of its re-computing.
+The long-term storing of the Diffie-Hellman shared secret is a potential security issue. In fact, if the shared secret of two group members is leaked, a third group member can exploit it to derive their pairwise keys and use those to impersonate either of the two group members to the other, or to decrypt previously stored messages exchanged between those two members and protected with their pairwise keys. The possibility of such leakage should be considered more likely than the leakage of a private key, which could be rather protected at a significantly higher level than generic memory, e.g., by using a Trusted Platform Module. Therefore, there is a trade-off between the maximum amount of time a same shared secret is stored and the frequency of its re-computing.
 
 ## Uniqueness of (key, nonce) {#ssec-key-nonce-uniqueness}
 
@@ -2163,6 +2163,8 @@ The Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}} provides th
 * Discussed server-side mitigations against unicast requests protected in group mode.
 
 * Removed hypothetical discussions on alternative protocol designs.
+
+* Expanded considerations on leakage of Diffie-Hellman shared secret.
 
 * Editorial clarifications and fixes.
 
