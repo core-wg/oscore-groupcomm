@@ -1152,9 +1152,14 @@ Table of Contents
    NOT use this Security Context to protect further messages including a
    Partial IV.
 
-   The endpoint SHOULD inform the Group Manager, retrieve new Security
-   Context parameters from the Group Manager (see Section 2.6.3), and
-   use them to derive a new Sender Context (see Section 2.2).
+   Upon (approaching) the exhaustion of the Sender Sequence Number
+   space, the endpoint SHOULD inform the Group Manager, retrieve new
+   Security Context parameters from the Group Manager (see
+   Section 2.6.3), and use them to derive a new Sender Context (see
+   Section 2.2).  It is RECOMMENDED that the endpoint takes this course
+   of action with some margin, i.e., well before exhausting the Sender
+   Sequence Number space, in order to avoid a period of inability to
+   protect messages including a Partial IV.
 
    From then on, the endpoint MUST use its latest installed Sender
    Context to protect outgoing messages.
@@ -1211,11 +1216,11 @@ Table of Contents
 
    The assignment of a new Sender ID may be the result of different
    processes.  The endpoint may request a new Sender ID, e.g., because
-   of the exhaustion of the Sender Sequence Number space (see
-   Section 2.6.2).  An endpoint may request to re-join the group, e.g.,
-   because of losing its mutable Security Context (see Section 2.6.1),
-   and is provided with a new Sender ID together with the latest
-   immutable Security Context.
+   of (approaching) the exhaustion of the Sender Sequence Number space
+   (see Section 2.6.2).  An endpoint may request to re-join the group,
+   e.g., because of losing its mutable Security Context (see
+   Section 2.6.1), and is provided with a new Sender ID together with
+   the latest immutable Security Context.
 
    For the other group members, the Recipient Context corresponding to
    the old Sender ID becomes stale (see Section 12.2).
@@ -5006,6 +5011,9 @@ F.1.  Version -25 to -26
 
    *  Clearer handling of incoming messages if the Replay Window is
       invalid.
+
+   *  The exhaustion of Sender Sequence Numbers should be handled with
+      margin.
 
    *  Clearer generalization of delivery of messages protected in
       pairwise mode.
