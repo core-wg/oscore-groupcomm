@@ -3548,8 +3548,12 @@ Table of Contents
 
 14.  Security Considerations
 
-   The same threat model discussed for OSCORE in Appendix D.1 of
-   [RFC8613] holds for Group OSCORE.
+   The same considerations from Appendix D of [RFC8613] on the security
+   properties of OSCORE hold for Group OSCORE, with the differences
+   discussed in the following.  Those considerations are about the
+   reference threat model, the support for Proxy operations, the
+   protection of message fields, and the uniqueness of (key, nonce)
+   pairs (which is further discussed in Section 14.3 of this document).
 
    For Group OSCORE, the Sender Context and Recipient Context
    additionally contain asymmetric keys, which are used to provide
@@ -3567,27 +3571,16 @@ Table of Contents
    in practice and enables a prompt detection/reaction in case of
    misbehaving.
 
-   The same considerations on supporting Proxy operations discussed for
-   OSCORE in Appendix D.2 of [RFC8613] hold for Group OSCORE.
-
-   The same considerations on protected message fields for OSCORE
-   discussed in Appendix D.3 of [RFC8613] hold for Group OSCORE.
-
-   The same considerations on uniqueness of (key, nonce) pairs for
-   OSCORE discussed in Appendix D.4 of [RFC8613] hold for Group OSCORE.
-   This is further discussed in Section 14.3 of this document.
-
-   The same considerations on unprotected message fields for OSCORE
-   discussed in Appendix D.5 of [RFC8613] hold for Group OSCORE, with
-   the following differences.  First, the 'kid context' of request
-   messages is part of the Additional Authenticated Data, making it
-   possible to keep long exchanges active safely beyond a possible
-   change of ID Context (Gid) following a group rekeying (see
-   Section 3.4).  Second, the countersignature included in a Group
-   OSCORE message protected in group mode is also computed over the
-   value of the OSCORE Option, which is also part of the Additional
-   Authenticated Data used in the signing process.  This is further
-   discussed in Section 14.7 of this document.
+   With respect to unprotected message fields, the following holds.
+   First, the 'kid context' of request messages is part of the
+   Additional Authenticated Data, making it possible to keep long
+   exchanges active safely beyond a possible change of ID Context (Gid)
+   following a group rekeying (see Section 3.4).  Second, the
+   countersignature included in a Group OSCORE message protected in
+   group mode is also computed over the value of the OSCORE Option,
+   which is also part of the Additional Authenticated Data used in the
+   signing process.  This is further discussed in Section 14.7 of this
+   document.
 
    As discussed in Section 6.2.3 of [I-D.ietf-core-groupcomm-bis], Group
    OSCORE addresses security attacks against CoAP listed in Sections
