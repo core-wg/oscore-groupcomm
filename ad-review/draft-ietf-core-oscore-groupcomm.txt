@@ -2860,11 +2860,8 @@ Table of Contents
       taking AAD as input.
 
    *  For many constrained IoT devices, it is problematic to support
-      more than one signature algorithm.  Existing devices can be
-      expected to support either EdDSA or ECDSA.  In order to enable as
-      much interoperability as we can reasonably achieve, the following
-      applies with respect to the Signature Algorithm (see
-      Section 2.1.8).
+      more than one signature algorithm.  The following applies with
+      respect to the Signature Algorithm (see Section 2.1.8).
 
       Less constrained endpoints SHOULD implement both: the EdDSA
       signature algorithm together with the elliptic curve Ed25519
@@ -2898,9 +2895,7 @@ Table of Contents
       [RFC9053] is mandatory to implement as Pairwise Key Agreement
       Algorithm (see Section 2.1.10).
 
-   *  In order to enable as much interoperability as we can reasonably
-      achieve in the presence of constrained devices (see above), the
-      following applies.
+   *  The following applies with respect to ECDH curves.
 
       Less constrained endpoints SHOULD implement both the X25519 curve
       [RFC7748] and the P-256 curve as ECDH curves.

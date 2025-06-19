@@ -3244,7 +3244,7 @@ When invoking the execution of the Group Encryption Algorithm, the Group OSCORE 
 If the used COSE library adheres to the mandate in <span><a href="https://rfc-editor.org/rfc/rfc9459#section-6" class="relref">Section 6</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>, then a Group OSCORE implementation requires that the COSE library supports using the Group Encryption Algorithm without taking AAD as input.<a href="#section-10-4.3.4" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-10-4.4">
-          <p id="section-10-4.4.1">For many constrained IoT devices, it is problematic to support more than one signature algorithm. Existing devices can be expected to support either EdDSA or ECDSA. In order to enable as much interoperability as we can reasonably achieve, the following applies with respect to the Signature Algorithm (see <a href="#ssec-common-context-cs-alg" class="auto internal xref">Section 2.1.8</a>).<a href="#section-10-4.4.1" class="pilcrow">¶</a></p>
+          <p id="section-10-4.4.1">For many constrained IoT devices, it is problematic to support more than one signature algorithm. The following applies with respect to the Signature Algorithm (see <a href="#ssec-common-context-cs-alg" class="auto internal xref">Section 2.1.8</a>).<a href="#section-10-4.4.1" class="pilcrow">¶</a></p>
 <p id="section-10-4.4.2">
 Less constrained endpoints <span class="bcp14">SHOULD</span> implement both: the EdDSA signature algorithm together with the elliptic curve Ed25519 <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; and the ECDSA signature algorithm together with the elliptic curve P-256.<a href="#section-10-4.4.2" class="pilcrow">¶</a></p>
 <p id="section-10-4.4.3">
@@ -3263,7 +3263,7 @@ Constrained endpoints <span class="bcp14">SHOULD</span> implement: the EdDSA sig
           <p id="section-10-6.2.1">The ECDH-SS + HKDF-256 algorithm specified in <span><a href="https://rfc-editor.org/rfc/rfc9053#section-6.3.1" class="relref">Section 6.3.1</a> of [<a href="#RFC9053" class="cite xref">RFC9053</a>]</span> is mandatory to implement as Pairwise Key Agreement Algorithm (see <a href="#ssec-common-context-dh-alg" class="auto internal xref">Section 2.1.10</a>).<a href="#section-10-6.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-10-6.3">
-          <p id="section-10-6.3.1">In order to enable as much interoperability as we can reasonably achieve in the presence of constrained devices (see above), the following applies.<a href="#section-10-6.3.1" class="pilcrow">¶</a></p>
+          <p id="section-10-6.3.1">The following applies with respect to ECDH curves.<a href="#section-10-6.3.1" class="pilcrow">¶</a></p>
 <p id="section-10-6.3.2">
 Less constrained endpoints <span class="bcp14">SHOULD</span> implement both the X25519 curve <span>[<a href="#RFC7748" class="cite xref">RFC7748</a>]</span> and the P-256 curve as ECDH curves.<a href="#section-10-6.3.2" class="pilcrow">¶</a></p>
 <p id="section-10-6.3.3">
