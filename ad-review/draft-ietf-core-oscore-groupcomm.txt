@@ -2514,7 +2514,8 @@ Table of Contents
 
    Endpoints using the CoAP Echo Option [RFC9175] in a group where the
    AEAD Algorithm and Pairwise Key Agreement Algorithm are set MUST
-   support the pairwise mode.  This prevents the attack described in
+   support the pairwise mode.  When using the challenge-response method
+   defined in Section 9, this prevents the attack described in
    Section 14.9, which leverages requests sent over unicast to a single
    group member and protected in group mode.
 
@@ -4015,6 +4016,20 @@ Table of Contents
    to derive the pairwise keying material used by the client to protect
    the request.
 
+   Before delivering to the application an incoming request protected in
+   group mode that was sent over unicast, a server should carefully
+   consider the impact that processing the request would have, without
+   dismissing the possibility that the request reception was in fact the
+   result of the attack discussed above.  This is especially important
+   for endpoints implementing only a silent server, since they do not
+   support the pairwise mode and thus are able to process only requests
+   protected in group mode.  Application policies can also define
+   specific exceptional cases where it is safe for a server to deliver
+   such requests to the application, which can then take a final
+   decision about whether acting on the request or not.  For instance,
+   such decision can leverage an application-level unique identifier of
+   the server specified in the payload of the request.
+
    In a group where the AEAD Algorithm and Pairwise Key Agreement
    Algorithm are set in the Security Context, an endpoint supporting the
    pairwise mode SHOULD use it to protect requests sent to a single
@@ -5057,6 +5072,9 @@ F.1.  Version -25 to -26
 
    *  Generalized use of the Block2 Option in protected (group)
       requests.
+
+   *  Discussed server-side mitigations against unicast requests
+      protected in group mode.
 
    *  Editorial clarifications and fixes.
 
