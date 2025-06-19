@@ -3459,8 +3459,17 @@ Therefore, it is ensured by construction that no client can have with the same s
             <h5 id="name-recycling-of-sender-ids">
 <a href="#section-12.2.1.2" class="section-number selfRef">12.2.1.2. </a><a href="#name-recycling-of-sender-ids" class="section-name selfRef">Recycling of Sender IDs</a>
             </h5>
-<p id="section-12.2.1.2-1">From the moment when a Gid is assigned to a group until the moment a new Gid is assigned to that same group, the Group Manager <span class="bcp14">MUST NOT</span> reassign a Sender ID within the group. This prevents from reusing a Sender ID ('kid') with the same triple (Gid, Master Secret, Master Salt). Within this restriction, the Group Manager can assign a Sender ID used under an old Gid value (including under a same, recycled Gid value), thus avoiding Sender ID values to irrecoverably grow in size.<a href="#section-12.2.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-12.2.1.2-2">Even when an endpoint joining a group is recognized as a current member of that group, e.g., through the ongoing secure communication association, the Group Manager <span class="bcp14">MUST</span> assign a new Sender ID different than the one currently used by the endpoint in the group, unless the group is rekeyed first and a new Gid value is established.<a href="#section-12.2.1.2-2" class="pilcrow">¶</a></p>
+<p id="section-12.2.1.2-1">From the moment T_start when a Gid is assigned to a group until the moment when a new Gid is assigned to that same group, the following restrictions apply within the group.<a href="#section-12.2.1.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-12.2.1.2-2.1">
+                <p id="section-12.2.1.2-2.1.1">The Group Manager <span class="bcp14">MUST NOT</span> assign a Sender ID that was already the Sender ID of an endpoint in the group at T_start.<a href="#section-12.2.1.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+              <li class="normal" id="section-12.2.1.2-2.2">
+                <p id="section-12.2.1.2-2.2.1">The Group Manager <span class="bcp14">MUST NOT</span> assign a given Sender ID more than once.<a href="#section-12.2.1.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
+<p id="section-12.2.1.2-3">That is, under the ongoing use of the current Gid, a given Sender ID is not reassigned to the same or a different endpoint. This prevents from reusing a Sender ID ('kid') with the same triple (Gid, Master Secret, Master Salt). Within these restrictions, the Group Manager can assign a Sender ID used under an old Gid value (including under a same, recycled Gid value), thus avoiding Sender ID values to irrecoverably grow in size.<a href="#section-12.2.1.2-3" class="pilcrow">¶</a></p>
+<p id="section-12.2.1.2-4">Even when an endpoint joining a group is recognized as a current member of that group, e.g., through the ongoing secure communication association, the Group Manager <span class="bcp14">MUST</span> assign a new Sender ID different than the one currently used by the endpoint in the group, unless the group is rekeyed first and a new Gid value is established.<a href="#section-12.2.1.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="relation-between-identifiers-and-keying-material">
@@ -4619,10 +4628,13 @@ In a 1-to-N communication model, only a single client transmits data to the CoAP
             <p id="appendix-E.1-1.12.1">Optional procedure for reassigning Gids moved to the document body.<a href="#appendix-E.1-1.12.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.13">
-            <p id="appendix-E.1-1.13.1">Discussed server-side mitigations against unicast requests protected in group mode.<a href="#appendix-E.1-1.13.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.13.1">Specific definition of reassignment of Sender IDs in a group.<a href="#appendix-E.1-1.13.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.14">
-            <p id="appendix-E.1-1.14.1">Editorial clarifications and fixes.<a href="#appendix-E.1-1.14.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.14.1">Discussed server-side mitigations against unicast requests protected in group mode.<a href="#appendix-E.1-1.14.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-E.1-1.15">
+            <p id="appendix-E.1-1.15.1">Editorial clarifications and fixes.<a href="#appendix-E.1-1.15.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
