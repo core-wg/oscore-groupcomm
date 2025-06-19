@@ -1106,9 +1106,12 @@ Table of Contents
    Security Context, there is a risk that a replayed message is not
    detected.  If one Recipient Context has been deleted from the current
    Security Context, then the Replay Window of any new Recipient Context
-   in this Security Context MUST be initialized as invalid.  Messages
-   associated with a Recipient Context that has an invalid Replay Window
-   MUST NOT be delivered to the application.
+   in this Security Context MUST be initialized as invalid.  An
+   exception applies when the deleted Recipient Context was created upon
+   receiving a message and that message was not verified successfully
+   (see Section 7.2, Section 7.4, Section 8.4, and Section 8.6).
+   Messages associated with a Recipient Context that has an invalid
+   Replay Window MUST NOT be delivered to the application.
 
    If the endpoint receives a request to be processed with the new
    Recipient Context and the endpoint supports the CoAP Echo Option
@@ -2096,6 +2099,12 @@ Table of Contents
       this behavior is specified by the application, it mitigates
       attacks that aim at overloading the server's storage.
 
+      If the server deletes the used Recipient Context in this
+      particular circumstance, then this deletion does not require the
+      server to initialize as invalid the Replay Window of any new
+      Recipient Context created later within the Security Context (see
+      Section 2.6.1.2).
+
    A server SHOULD NOT process a request if the received Recipient ID
    ('kid') is equal to its own Sender ID in its own Sender Context.  For
    an example where this is not fulfilled, see
@@ -2378,6 +2387,12 @@ Table of Contents
       successfully, the client MAY delete that Recipient Context.  When
       this behavior is specified by the application, it mitigates
       attacks that aim at overloading the client's storage.
+
+      If the client deletes the used Recipient Context in this
+      particular circumstance, then this deletion does not require the
+      client to initialize as invalid the Replay Window of any new
+      Recipient Context created later within the Security Context (see
+      Section 2.6.1.2).
 
 7.5.  External Signature Checkers
 
@@ -4980,6 +4995,8 @@ F.1.  Version -25 to -26
       Group Manager.
 
    *  Not only CWTs but also CCSs can be tagged.
+
+   *  Exceptional handling after deleting a Recipient Context.
 
    *  Clearer generalization of delivery of messages protected in
       pairwise mode.
