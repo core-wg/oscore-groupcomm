@@ -4040,7 +4040,7 @@ Note that, by changing the Partial IV as discussed above, any member of G1 would
         </h3>
 <p id="section-14.14-1">As in OSCORE, Group OSCORE provides only the guarantee that the request is not older than the Group OSCORE Security Context used to protect it. Other aspects of freshness are discussed in <a href="#sec-freshness" class="auto internal xref">Section 5.2</a>.<a href="#section-14.14-1" class="pilcrow">¶</a></p>
 <p id="section-14.14-2">The challenge-response approach described in <a href="#sec-synch-challenge-response" class="auto internal xref">Section 9</a> provides an assurance of freshness of the request without depending on the honesty of the client. However, it can result in an impact on performance which is undesirable or unbearable, especially in large groups where many endpoints at the same time might join as new members.<a href="#section-14.14-2" class="pilcrow">¶</a></p>
-<p id="section-14.14-3">Endpoints configured as silent servers are not able to perform the challenge-response described above, as they do not store a Sender Context to secure the 4.01 (Unauthorized) response to the client. Thus, silent servers should adopt alternative approaches to make their Replay Windows valid.<a href="#section-14.14-3" class="pilcrow">¶</a></p>
+<p id="section-14.14-3">Endpoints configured as silent servers are not able to perform the challenge-response described above, as they do not store a Sender Context to secure the 4.01 (Unauthorized) response to the client. Thus, silent servers should adopt alternative approaches to make their Replay Windows valid. For example, a silent server can retrieve or wait for new Security Context parameters from the Group Manager and derive new Recipient Contexts. When doing so, the Replay Windows of all Recipient Contexts become valid if they are not already. In particular, any invalid Replay Window is re-initialized as valid and with 0 as its current lower limit.<a href="#section-14.14-3" class="pilcrow">¶</a></p>
 <p id="section-14.14-4">Since requests including the Echo Option are sent over unicast, a server can be the victim of the attack discussed in <a href="#ssec-unicast-requests" class="auto internal xref">Section 14.9</a> if such requests are protected in group mode. Instead, protecting those requests with the pairwise mode prevents the attack above. In fact, only the server involved in the challenge-response exchange is able to derive the pairwise key used by the client to protect the request including the Echo Option.<a href="#section-14.14-4" class="pilcrow">¶</a></p>
 <p id="section-14.14-5">In either case, an internal on-path adversary would not be able to transpose the Echo Option value of two different unicast requests, sent by a same client to any two different servers in the group. In fact, even if the group mode was used, this would require the adversary to forge the countersignature of both requests. As a consequence, each of the two servers remains able to selectively accept a request with the Echo Option only if it is waiting for that exact integrity-protected Echo Option value, and is thus the intended recipient.<a href="#section-14.14-5" class="pilcrow">¶</a></p>
 </section>
@@ -4617,10 +4617,13 @@ Therefore, it is ensured by construction that no client can have with the same s
             <p id="appendix-F.1-1.10.1">Generalized use of the Block2 Option in protected (group) requests.<a href="#appendix-F.1-1.10.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-F.1-1.11">
-            <p id="appendix-F.1-1.11.1">Discussed server-side mitigations against unicast requests protected in group mode.<a href="#appendix-F.1-1.11.1" class="pilcrow">¶</a></p>
+            <p id="appendix-F.1-1.11.1">Suggested means for silent servers to make Replay Windows valid again.<a href="#appendix-F.1-1.11.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-F.1-1.12">
-            <p id="appendix-F.1-1.12.1">Editorial clarifications and fixes.<a href="#appendix-F.1-1.12.1" class="pilcrow">¶</a></p>
+            <p id="appendix-F.1-1.12.1">Discussed server-side mitigations against unicast requests protected in group mode.<a href="#appendix-F.1-1.12.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-F.1-1.13">
+            <p id="appendix-F.1-1.13.1">Editorial clarifications and fixes.<a href="#appendix-F.1-1.13.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>

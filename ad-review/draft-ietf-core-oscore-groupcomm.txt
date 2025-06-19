@@ -4142,7 +4142,12 @@ Table of Contents
    challenge-response described above, as they do not store a Sender
    Context to secure the 4.01 (Unauthorized) response to the client.
    Thus, silent servers should adopt alternative approaches to make
-   their Replay Windows valid.
+   their Replay Windows valid.  For example, a silent server can
+   retrieve or wait for new Security Context parameters from the Group
+   Manager and derive new Recipient Contexts.  When doing so, the Replay
+   Windows of all Recipient Contexts become valid if they are not
+   already.  In particular, any invalid Replay Window is re-initialized
+   as valid and with 0 as its current lower limit.
 
    Since requests including the Echo Option are sent over unicast, a
    server can be the victim of the attack discussed in Section 14.9 if
@@ -5072,6 +5077,9 @@ F.1.  Version -25 to -26
 
    *  Generalized use of the Block2 Option in protected (group)
       requests.
+
+   *  Suggested means for silent servers to make Replay Windows valid
+      again.
 
    *  Discussed server-side mitigations against unicast requests
       protected in group mode.
