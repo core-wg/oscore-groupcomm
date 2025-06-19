@@ -3850,7 +3850,7 @@ This allows a recipient endpoint to rely on the stored authentication credential
         </h3>
 <p id="section-14.2-1">The pairwise mode defined in <a href="#sec-pairwise-protection" class="auto internal xref">Section 8</a> protects messages by using pairwise symmetric keys, derived from the static-static Diffie-Hellman shared secret computed from the asymmetric keys of the sender and recipient endpoint (see <a href="#sec-derivation-pairwise" class="auto internal xref">Section 2.5</a>).<a href="#section-14.2-1" class="pilcrow">¶</a></p>
 <p id="section-14.2-2">The used AEAD Algorithm <span class="bcp14">MUST</span> provide integrity protection. Therefore, the pairwise mode ensures both pairwise data-confidentiality and source authentication of messages, without using countersignatures. Furthermore, the recipient endpoint achieves proof of group membership for the sender endpoint, since only current group members have the required keying material to derive a valid Pairwise Sender/Recipient Key.<a href="#section-14.2-2" class="pilcrow">¶</a></p>
-<p id="section-14.2-3">The long-term storing of the Diffie-Hellman shared secret is a potential security issue. In fact, if the shared secret of two group members is leaked, a third group member can exploit it to impersonate either of the two group members to the other, by deriving and using their pairwise keys. The possibility of such leakage should be considered more likely than the leakage of a private key, which could be rather protected at a significantly higher level than generic memory, e.g., by using a Trusted Platform Module. Therefore, there is a trade-off between the maximum amount of time a same shared secret is stored and the frequency of its re-computing.<a href="#section-14.2-3" class="pilcrow">¶</a></p>
+<p id="section-14.2-3">The long-term storing of the Diffie-Hellman shared secret is a potential security issue. In fact, if the shared secret of two group members is leaked, a third group member can exploit it to derive their pairwise keys and use those to impersonate either of the two group members to the other, or to decrypt previously stored messages exchanged between those two members and protected with their pairwise keys. The possibility of such leakage should be considered more likely than the leakage of a private key, which could be rather protected at a significantly higher level than generic memory, e.g., by using a Trusted Platform Module. Therefore, there is a trade-off between the maximum amount of time a same shared secret is stored and the frequency of its re-computing.<a href="#section-14.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-key-nonce-uniqueness">
@@ -4631,7 +4631,10 @@ In a 1-to-N communication model, only a single client transmits data to the CoAP
             <p id="appendix-E.1-1.15.1">Removed hypothetical discussions on alternative protocol designs.<a href="#appendix-E.1-1.15.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.16">
-            <p id="appendix-E.1-1.16.1">Editorial clarifications and fixes.<a href="#appendix-E.1-1.16.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.16.1">Expanded considerations on leakage of Diffie-Hellman shared secret.<a href="#appendix-E.1-1.16.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-E.1-1.17">
+            <p id="appendix-E.1-1.17.1">Editorial clarifications and fixes.<a href="#appendix-E.1-1.17.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
