@@ -1209,7 +1209,7 @@ The pairwise mode does not support external verifiers of source authentication a
 
 An endpoint implementing only a silent server does not support the pairwise mode.
 
-Endpoints using the CoAP Echo Option {{RFC9175}} in a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set MUST support the pairwise mode. This prevents the attack described in {{ssec-unicast-requests}}, which leverages requests sent over unicast to a single group member and protected in group mode.
+Endpoints using the CoAP Echo Option {{RFC9175}} in a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set MUST support the pairwise mode. When using the challenge-response method defined in {{sec-synch-challenge-response}}, this prevents the attack described in {{ssec-unicast-requests}}, which leverages requests sent over unicast to a single group member and protected in group mode.
 
 The pairwise mode cannot be used to protect messages intended for multiple recipients, as the keying material used for the pairwise mode is shared only between two endpoints.
 
@@ -1874,6 +1874,8 @@ The impact of such an attack depends especially on the REST method of the reques
 
 A client can instead use the pairwise mode as defined in {{sec-pairwise-protection-req}}, in order to protect a request sent to a single group member by using pairwise keying material (see {{sec-derivation-pairwise}}). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request.
 
+Before delivering to the application an incoming request protected in group mode that was sent over unicast, a server should carefully consider the impact that processing the request would have, without dismissing the possibility that the request reception was in fact the result of the attack discussed above. This is especially important for endpoints implementing only a silent server, since they do not support the pairwise mode and thus are able to process only requests protected in group mode. Application policies can also define specific exceptional cases where it is safe for a server to deliver such requests to the application, which can then take a final decision about whether acting on the request or not. For instance, such decision can leverage an application-level unique identifier of the server specified in the payload of the request.
+
 In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, an endpoint supporting the pairwise mode SHOULD use it to protect requests sent to a single group member over unicast. As an exception where the requirement above is not fulfilled and the group mode is used to protect such requests, an endpoint could need to make the request possible to decrypt and verify for multiple other group members. An example of this exception is the method defined in {{I-D.ietf-core-observe-multicast-notifications}}.
 
 The use of block-wise transfers {{RFC7959}} with group communication for CoAP is as discussed in {{Section 3.8 of I-D.ietf-core-groupcomm-bis}}. Note that, after a first block-wise request that targets all servers in the group and includes the CoAP Block2 Option, following block-wise exchanges to retrieve any further blocks can rely on unicast requests, which should therefore be protected using the pairwise mode. The same applies to unicast requests used in block-wise exchanges following a first block-wise request that targeted all servers in the group and did not include the CoAP Block2 Option, while the corresponding responses included the Block2 Option at the servers' own initiative.
@@ -2161,6 +2163,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 * Clearer generalization of delivery of messages protected in pairwise mode.
 
 * Generalized use of the Block2 Option in protected (group) requests.
+
+* Discussed server-side mitigations against unicast requests protected in group mode.
 
 * Editorial clarifications and fixes.
 
