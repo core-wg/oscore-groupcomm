@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 19 December 2025                                   F. Palombini
+Expires: 21 December 2025                                   F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                            17 June 2025
+                                                            19 June 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 December 2025.
+   This Internet-Draft will expire on 21 December 2025.
 
 Copyright Notice
 
@@ -1122,7 +1122,8 @@ Table of Contents
    Context parameters from the Group Manager and derive new Sender and
    Recipient Contexts, as defined in Section 2.6.1.1.  In this case the
    Replay Windows of all Recipient Contexts become valid if they are not
-   already.
+   already.  In particular, any invalid Replay Window is re-initialized
+   as valid and with 0 as its current lower limit.
 
 2.6.2.  Exhaustion of Sender Sequence Number Space
 
