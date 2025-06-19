@@ -154,6 +154,7 @@ Table of Contents
      13.3.  Interoperability
    14. Security Considerations
      14.1.  Security of the Group Mode
+       14.1.1.  Example of Need for Proof of Group Membership
      14.2.  Security of the Pairwise Mode
      14.3.  Uniqueness of (key, nonce)
      14.4.  Management of Group Keying Material
@@ -3643,26 +3644,8 @@ Table of Contents
       verify that the sender endpoint was a group member when it signed
       the message.  In turn, this prevents a former group member from
       possibly re-signing and injecting in the group a stored message
-      that was protected with old keying material.
-
-      A case in point is a group where the Group Encryption Algorithm
-      does not provide integrity protection; a group member leaves the
-      group; and, after the group rekeying, associates with the group as
-      external signature checker (see Section 7.5).  When doing so, it
-      obtains from the Group Manager the new Signature Encryption Key,
-      from which it can derive keystreams for encrypting and decrypting
-      the countersignatures of messages protected in group mode.
-
-      If, when participating in the group rekeying, the current group
-      members had not deleted the Recipient Context and authentication
-      credential of the former group member, then the signature checker
-      would be able to successfully inject messages protected in group
-      mode, as encrypted with the old group keying material, signed with
-      its own private key, and with the countersignature encrypted by
-      means of the latest Signature Encryption Key. Then, the group
-      members, as still retaining the authentication credential of the
-      signature checker, will verify and accept the message, even though
-      the sender was not a group member when signing the message.
+      that was protected with old keying material.  A case in point is
+      discussed in Section 14.1.1.
 
    The security properties of the group mode are summarized below.
 
@@ -3690,6 +3673,28 @@ Table of Contents
    encrypted countersignature.  Second, it is possible to deploy semi-
    trusted entities such as signature checkers (see Section 12.3), which
    can break property 5, but cannot break properties 1, 2, 3, and 4.
+
+14.1.1.  Example of Need for Proof of Group Membership
+
+   As a case in point, the importance to achieve proof of group
+   membership is evident in a group where the Group Encryption Algorithm
+   does not provide integrity protection; a group member leaves the
+   group; and, after the group rekeying, associates with the group as
+   external signature checker (see Section 7.5).  When doing so, it
+   obtains from the Group Manager the new Signature Encryption Key, from
+   which it can derive keystreams for encrypting and decrypting the
+   countersignatures of messages protected in group mode.
+
+   However, when participating in the group rekeying, the current group
+   members deleted the Recipient Context and authentication credential
+   of the former group member.  Consequently, the signature checker is
+   not able to successfully inject messages protected in group mode, as
+   encrypted with the old group keying material, signed with its own
+   private key, and with the countersignature encrypted by means of the
+   latest Signature Encryption Key. That is, if the signature checker
+   attempts to do that, then the group members will fail to verify the
+   messages from the signature checker and thus will discard those
+   messages.
 
 14.2.  Security of the Pairwise Mode
 
