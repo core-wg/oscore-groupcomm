@@ -1530,7 +1530,13 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 
 #### Recycling of Sender IDs ### {#sec-sid-recycling}
 
-From the moment when a Gid is assigned to a group until the moment a new Gid is assigned to that same group, the Group Manager MUST NOT reassign a Sender ID within the group. This prevents from reusing a Sender ID ('kid') with the same triple (Gid, Master Secret, Master Salt). Within this restriction, the Group Manager can assign a Sender ID used under an old Gid value (including under a same, recycled Gid value), thus avoiding Sender ID values to irrecoverably grow in size.
+From the moment T_start when a Gid is assigned to a group until the moment when a new Gid is assigned to that same group, the following restrictions apply within the group.
+
+* The Group Manager MUST NOT assign a Sender ID that was already the Sender ID of an endpoint in the group at T_start.
+
+* The Group Manager MUST NOT assign a given Sender ID more than once.
+
+That is, under the ongoing use of the current Gid, a given Sender ID is not reassigned to the same or a different endpoint. This prevents from reusing a Sender ID ('kid') with the same triple (Gid, Master Secret, Master Salt). Within these restrictions, the Group Manager can assign a Sender ID used under an old Gid value (including under a same, recycled Gid value), thus avoiding Sender ID values to irrecoverably grow in size.
 
 Even when an endpoint joining a group is recognized as a current member of that group, e.g., through the ongoing secure communication association, the Group Manager MUST assign a new Sender ID different than the one currently used by the endpoint in the group, unless the group is rekeyed first and a new Gid value is established.
 
@@ -2165,6 +2171,8 @@ The Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}} provides th
 * Suggested means for silent servers to make Replay Windows valid again.
 
 * Optional procedure for reassigning Gids moved to the document body.
+
+* Specific definition of reassignment of Sender IDs in a group.
 
 * Discussed server-side mitigations against unicast requests protected in group mode.
 
