@@ -546,9 +546,13 @@ When a Recipient Context is deleted, this not only results in losing information
 
 Therefore, if the Recipient Context is derived again from the same Security Context, there is a risk that a replayed message is not detected. If one Recipient Context has been deleted from the current Security Context, then the Replay Window of any new Recipient Context in this Security Context MUST be initialized as invalid. An exception applies when the deleted Recipient Context was created upon receiving a message and that message was not verified successfully (see {{ssec-verify-request}}, {{ssec-verify-response}}, {{sec-pairwise-verify-req}}, and {{sec-pairwise-verify-resp}}). Messages associated with a Recipient Context that has an invalid Replay Window MUST NOT be delivered to the application.
 
-If the endpoint receives a request to be processed with the new Recipient Context and the endpoint supports the CoAP Echo Option {{RFC9175}}, then it is RECOMMENDED to follow the procedure specified in {{sec-synch-challenge-response}} which establishes a valid Replay Window. In particular, the endpoint MUST use its Partial IV when generating the nonce and MUST include the Partial IV in the response message conveying the Echo Option.
+If the endpoint receives a message to be processed with any such new Recipient Context whose Replay Window is invalid, then the endpoint MUST take one of the following courses of action.
 
-Alternatively, the endpoint MAY retrieve or wait for new Security Context parameters from the Group Manager and derive new Sender and Recipient Contexts, as defined in {{ssec-loss-mutable-context-total}}. In this case the Replay Windows of all Recipient Contexts become valid if they are not already. In particular, any invalid Replay Window is re-initialized as valid and with 0 as its current lower limit.
+* The endpoint discards the message.
+
+* The endpoint follows the procedure based on the CoAP Echo Option {{RFC9175}} and specified in {{sec-synch-challenge-response}}, in order to establish a valid Replay Window. In particular, the endpoint MUST use its Partial IV when generating the nonce and MUST include the Partial IV in the response message conveying the Echo Option. If the endpoint supports the CoAP Echo Option, then it is RECOMMENDED to take this course of action.
+
+* The endpoint retrieves or waits for new Security Context parameters from the Group Manager and derives new Sender and Recipient Contexts, as defined in {{ssec-loss-mutable-context-total}}. In this case the Replay Windows of all Recipient Contexts become valid if they are not already. In particular, any invalid Replay Window is re-initialized as valid and with 0 as its current lower limit.
 
 ### Exhaustion of Sender Sequence Number Space {#ssec-wrap-around-partial-iv}
 
@@ -2139,6 +2143,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 * Not only CWTs but also CCSs can be tagged.
 
 * Exceptional handling after deleting a Recipient Context.
+
+* Clearer handling of incoming messages if the Replay Window is invalid.
 
 * Clearer generalization of delivery of messages protected in pairwise mode.
 
