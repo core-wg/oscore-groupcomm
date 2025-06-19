@@ -1510,6 +1510,24 @@ The occurrence of such an event and how long it would take to occur depend on th
 
   The Group Manager MAY support and use this approach, according to what is specified in {{gid-reassignment}}.
 
+##### Reassignment of Group Identifiers {#gid-reassignment}
+
+If the Group Manager supports and performs the reassignment of Gid values previously used during a group's lifetime, the Group Manager MUST take additional actions when handling Gid values and rekeying the group, as specified below.
+
+When a node (re-)joins the group and it is provided with the current Gid to use in the group, the Group Manager considers such a Gid as the Birth Gid of that endpoint for that group. For each group member, the Group Manager MUST store the latest corresponding Birth Gid until that member leaves the group. In case the endpoint has in fact re-joined the group, the newly determined Birth Gid overwrites the one currently stored.
+
+When establishing a new Security Context for the group, the Group Manager takes the additional following step between steps 1 and 2 of {{sec-group-key-management}}.
+
+A. The Group Manager MUST check if the new Gid to be distributed is equal to the Birth Gid of any of the current group members. If any of such "elder members" is found in the group, then:
+
+- The Group Manager MUST evict the elder members from the group. That is, the Group Manager MUST terminate their membership and, in the following steps, it MUST rekey the group in such a way that the new keying material is not provided to those evicted elder members.
+
+  This ensures that any response from the same server to the request of a long exchange can never successfully match against the request of two different long exchanges.
+
+  The excluded elder members could eventually re-join the group, thus terminating any of their ongoing long exchanges (see {{sec-long-exchanges}}).
+
+  Therefore, it is ensured by construction that no client can have with the same server two ongoing long exchanges, such that the two respective requests were protected using the same Partial IV, Gid, and Sender ID.
+
 #### Recycling of Sender IDs ### {#sec-sid-recycling}
 
 From the moment when a Gid is assigned to a group until the moment a new Gid is assigned to that same group, the Group Manager MUST NOT reassign a Sender ID within the group. This prevents from reusing a Sender ID ('kid') with the same triple (Gid, Master Secret, Master Salt). Within this restriction, the Group Manager can assign a Sender ID used under an old Gid value (including under a same, recycled Gid value), thus avoiding Sender ID values to irrecoverably grow in size.
@@ -2119,26 +2137,6 @@ The Group Manager is responsible for performing the following tasks:
 
 The Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}} provides this functionality.
 
-# Reassignment of Group Identifiers {#gid-reassignment}
-
-As defined in {{sec-gid-recycling}}, the Group manager MAY support and perform the reassignment of Gid values previously used during a group's lifetime. This enables the group to continue to exist even once the whole space of Gid values has been used.
-
-If the Group Manager uses this approach, the Group Manager MUST take additional actions when handling Gid values and rekeying the group, as specified below.
-
-When a node (re-)joins the group and it is provided with the current Gid to use in the group, the Group Manager considers such a Gid as the Birth Gid of that endpoint for that group. For each group member, the Group Manager MUST store the latest corresponding Birth Gid until that member leaves the group. In case the endpoint has in fact re-joined the group, the newly determined Birth Gid overwrites the one currently stored.
-
-When establishing a new Security Context for the group, the Group Manager takes the additional following step between steps 1 and 2 of {{sec-group-key-management}}.
-
-A. The Group Manager MUST check if the new Gid to be distributed is equal to the Birth Gid of any of the current group members. If any of such "elder members" is found in the group, then:
-
-- The Group Manager MUST evict the elder members from the group. That is, the Group Manager MUST terminate their membership and, in the following steps, it MUST rekey the group in such a way that the new keying material is not provided to those evicted elder members.
-
-  This ensures that any response from the same server to the request of a long exchange can never successfully match against the request of two different long exchanges.
-
-  The excluded elder members could eventually re-join the group, thus terminating any of their ongoing long exchanges (see {{sec-long-exchanges}}).
-
-  Therefore, it is ensured by construction that no client can have with the same server two ongoing long exchanges, such that the two respective requests were protected using the same Partial IV, Gid, and Sender ID.
-
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
 
@@ -2165,6 +2163,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 * Generalized use of the Block2 Option in protected (group) requests.
 
 * Suggested means for silent servers to make Replay Windows valid again.
+
+* Optional procedure for reassigning Gids moved to the document body.
 
 * Discussed server-side mitigations against unicast requests protected in group mode.
 
