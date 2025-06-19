@@ -2086,12 +2086,13 @@ Table of Contents
          present, Section 5.10.5 of [RFC7252] specifies a default retry
          time of 60 seconds.
 
-      -  The server MUST perform signature verification before
-         decrypting the COSE object, as defined below.  Implementations
-         that cannot perform the two steps in this order MUST ensure
-         that no access to the plaintext is possible before a successful
-         signature verification and MUST prevent any possible leak of
-         time-related information that can yield side-channel attacks.
+      -  The signature verification as defined below SHOULD be performed
+         before decrypting the COSE object.  An exception applies to
+         implementations that cannot perform the two steps in this
+         order.  Those implementations MUST ensure that no access to the
+         plaintext is possible before a successful signature
+         verification and MUST prevent any possible leak of time-related
+         information that can yield side-channel attacks.
 
       -  The server retrieves the encrypted countersignature
          ENC_SIGNATURE from the message payload, and computes the
@@ -2308,10 +2309,11 @@ Table of Contents
       the public key from the server's authentication credential stored
       in the associated Recipient Context.  In particular:
 
-      -  The client MUST perform signature verification as defined below
-         before decrypting the COSE object.  Implementations that cannot
-         perform the two steps in this order MUST ensure that no access
-         to the plaintext is possible before a successful signature
+      -  The signature verification as defined below SHOULD be performed
+         before decrypting the COSE object.  An exception applies to
+         implementations that cannot perform the two steps in this
+         order.  Those implementations MUST ensure that no access to the
+         plaintext is possible before a successful signature
          verification and MUST prevent any possible leak of time-related
          information that can yield side-channel attacks.
 
@@ -5046,6 +5048,9 @@ F.1.  Version -25 to -26
 
    *  Generalization of exceptions to behaviors that are defined as
       SHOULD.
+
+   *  Clearer phrasing for the requirement on early signature
+      verification.
 
    *  Clearer generalization of delivery of messages protected in
       pairwise mode.
