@@ -562,7 +562,7 @@ Implementations MUST be able to detect an exhaustion of Sender Sequence Number s
 
 Upon exhausting the Sender Sequence Number space, the endpoint MUST NOT use this Security Context to protect further messages including a Partial IV.
 
-The endpoint SHOULD inform the Group Manager, retrieve new Security Context parameters from the Group Manager (see {{sec-group-re-join}}), and use them to derive a new Sender Context (see {{ssec-sender-recipient-context}}).
+Upon (approaching) the exhaustion of the Sender Sequence Number space, the endpoint SHOULD inform the Group Manager, retrieve new Security Context parameters from the Group Manager (see {{sec-group-re-join}}), and use them to derive a new Sender Context (see {{ssec-sender-recipient-context}}). It is RECOMMENDED that the endpoint takes this course of action with some margin, i.e., well before exhausting the Sender Sequence Number space, in order to avoid a period of inability to protect messages including a Partial IV.
 
 From then on, the endpoint MUST use its latest installed Sender Context to protect outgoing messages.
 
@@ -584,7 +584,7 @@ Having retrieved the new Sender ID, and potentially other missing data of the im
 
 From then on, the endpoint MUST use its latest installed Sender Context to protect outgoing messages.
 
-The assignment of a new Sender ID may be the result of different processes. The endpoint may request a new Sender ID, e.g., because of the exhaustion of the Sender Sequence Number space (see {{ssec-wrap-around-partial-iv}}). An endpoint may request to re-join the group, e.g., because of losing its mutable Security Context (see {{ssec-loss-mutable-context}}), and is provided with a new Sender ID together with the latest immutable Security Context.
+The assignment of a new Sender ID may be the result of different processes. The endpoint may request a new Sender ID, e.g., because of (approaching) the exhaustion of the Sender Sequence Number space (see {{ssec-wrap-around-partial-iv}}). An endpoint may request to re-join the group, e.g., because of losing its mutable Security Context (see {{ssec-loss-mutable-context}}), and is provided with a new Sender ID together with the latest immutable Security Context.
 
 For the other group members, the Recipient Context corresponding to the old Sender ID becomes stale (see {{sec-group-key-management}}).
 
@@ -2145,6 +2145,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 * Exceptional handling after deleting a Recipient Context.
 
 * Clearer handling of incoming messages if the Replay Window is invalid.
+
+* The exhaustion of Sender Sequence Numbers should be handled with margin.
 
 * Clearer generalization of delivery of messages protected in pairwise mode.
 
