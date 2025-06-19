@@ -1041,7 +1041,7 @@ Upon receiving a protected request with the Group Flag set to 1, following the p
 
    - If the server does not have the public key of the client yet, the server MUST stop processing the request and MAY respond with a 5.03 (Service Unavailable) response. The response MAY include a Max-Age Option, indicating to the client the number of seconds after which to retry. If the Max-Age Option is not present, {{Section 5.10.5 of RFC7252}} specifies a default retry time of 60 seconds.
 
-   - The server MUST perform signature verification before decrypting the COSE object, as defined below. Implementations that cannot perform the two steps in this order MUST ensure that no access to the plaintext is possible before a successful signature verification and MUST prevent any possible leak of time-related information that can yield side-channel attacks.
+   - The signature verification as defined below SHOULD be performed before decrypting the COSE object. An exception applies to implementations that cannot perform the two steps in this order. Those implementations MUST ensure that no access to the plaintext is possible before a successful signature verification and MUST prevent any possible leak of time-related information that can yield side-channel attacks.
 
    - The server retrieves the encrypted countersignature ENC_SIGNATURE from the message payload, and computes the original countersignature SIGNATURE as
 
@@ -1129,7 +1129,7 @@ Note that a client may receive a response protected with a Security Context diff
 
 * In step 5, the client also verifies the countersignature by using the public key from the server's authentication credential stored in the associated Recipient Context. In particular:
 
-   - The client MUST perform signature verification as defined below before decrypting the COSE object. Implementations that cannot perform the two steps in this order MUST ensure that no access to the plaintext is possible before a successful signature verification and MUST prevent any possible leak of time-related information that can yield side-channel attacks.
+   - The signature verification as defined below SHOULD be performed before decrypting the COSE object. An exception applies to implementations that cannot perform the two steps in this order. Those implementations MUST ensure that no access to the plaintext is possible before a successful signature verification and MUST prevent any possible leak of time-related information that can yield side-channel attacks.
 
    - The client retrieves the encrypted countersignature ENC_SIGNATURE from the message payload, and computes the original countersignature SIGNATURE as
 
@@ -2155,6 +2155,8 @@ A. The Group Manager MUST check if the new Gid to be distributed is equal to the
 * Highlighted overhead for accepting out-of-order responses within a long exchange.
 
 * Generalization of exceptions to behaviors that are defined as SHOULD.
+
+* Clearer phrasing for the requirement on early signature verification.
 
 * Clearer generalization of delivery of messages protected in pairwise mode.
 
