@@ -1512,7 +1512,7 @@ The occurrence of such an event and how long it would take to occur depend on th
 
 ##### Reassignment of Group Identifiers {#gid-reassignment}
 
-If the Group Manager supports and performs the reassignment of Gid values previously used during a group's lifetime, the Group Manager MUST take additional actions when handling Gid values and rekeying the group, as specified below.
+If the Group Manager performs the reassignment of Gid values previously used during a group's lifetime, the Group Manager MUST take additional actions when handling Gid values and rekeying the group, as specified below.
 
 When a node (re-)joins the group and it is provided with the current Gid to use in the group, the Group Manager considers such a Gid as the Birth Gid of that endpoint for that group. For each group member, the Group Manager MUST store the latest corresponding Birth Gid until that member leaves the group. In case the endpoint has in fact re-joined the group, the newly determined Birth Gid overwrites the one currently stored.
 
