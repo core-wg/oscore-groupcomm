@@ -659,7 +659,7 @@ For example, if X = 7 and the Common IV is 0x00112233445566778899aabbcc (13 byte
 
 The constructed nonce is used both by the AEAD Algorithm (see {{ssec-common-context-aead-alg}}) and by the Group Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}), independent of whether they are AEAD or plain encryption algorithms. Algorithms that do not use a nonce are not supported, as per {{ssec-common-context-cs-enc-alg}}.
 
-## external_aad # {#sec-cose-object-ext-aad}
+## Additional Authenticated Data # {#sec-cose-object-ext-aad}
 
 The external_aad of the Additional Authenticated Data (AAD) is different compared to OSCORE {{RFC8613}} and is defined in this section.
 
@@ -1084,9 +1084,9 @@ Note that the server always protects a response with the Sender Context from its
 
    In addition, the following applies if the server intends to reply with multiple responses within the long exchange established by the corresponding request.
 
-   - The server MUST use the stored value of the 'kid' parameter from the request (see {{ssec-verify-request}}), as value for the 'request_kid' parameter in the external_aad structure (see {{sec-cose-object-ext-aad}}).
+   - The server MUST use the stored value of the 'kid' parameter from the request (see {{ssec-verify-request}}), as value for the 'request_kid' parameter in the external_aad (see {{sec-cose-object-ext-aad}}).
 
-   - The server MUST use the stored value of the 'kid context' parameter from the request (see {{ssec-verify-request}}), as value for the 'request_kid_context' parameter in the external_aad structure (see {{sec-cose-object-ext-aad}}).
+   - The server MUST use the stored value of the 'kid context' parameter from the request (see {{ssec-verify-request}}), as value for the 'request_kid_context' parameter in the external_aad (see {{sec-cose-object-ext-aad}}).
 
 * In step 3, if either of the following conditions holds, the server MUST include its Sender Sequence Number as Partial IV in the response and use it to build the nonce to protect the response. This prevents the server from reusing the nonce from the request together with the same encryption key.
 
@@ -1126,9 +1126,9 @@ Note that a client may receive a response protected with a Security Context diff
 
    In addition, the following applies if the client processes a response to a request within a long exchange.
 
-   *  The client MUST use the stored value of the 'kid' parameter from the request (see {{ssec-protect-request}}), as value for the 'request_kid' parameter in the external_aad structure (see {{sec-cose-object-ext-aad}}).
+   *  The client MUST use the stored value of the 'kid' parameter from the request (see {{ssec-protect-request}}), as value for the 'request_kid' parameter in the external_aad (see {{sec-cose-object-ext-aad}}).
 
-   *  The client MUST use the stored value of the 'kid context' parameter from the request (see {{ssec-protect-request}}), as value for the 'request_kid_context' parameter in the external_aad structure (see {{sec-cose-object-ext-aad}}).
+   *  The client MUST use the stored value of the 'kid context' parameter from the request (see {{ssec-protect-request}}), as value for the 'request_kid_context' parameter in the external_aad (see {{sec-cose-object-ext-aad}}).
 
    This ensures that, throughout a long exchange, the client can correctly verify the received responses, even if the client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}), as well as when it installs a new Security Context with a new ID Context (Gid) following a group rekeying (see {{sec-group-key-management}}).
 
