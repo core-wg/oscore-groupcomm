@@ -1092,13 +1092,13 @@ Note that the server always protects a response with the Sender Context from its
 
    - The response is not the first response that the server sends to the request.
 
-   - The server is using a different Security Context for the response compared to what was used to verify the request (see {{sec-group-key-management}}).
+   - The server is using a different Security Context for the response than the one that was used to verify the request (see {{sec-group-key-management}}).
 
 * In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this document. The encoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, the Group Flag MUST be set to 1. The Group Encryption Algorithm from the Common Context MUST be used.
 
    In addition, the following applies.
 
-   * If the server is using a different ID Context (Gid) for the response compared to what was used to verify the request (see {{sec-group-key-management}}) and this is the first response from the server to that request, then the new ID Context MUST be included in the 'kid context' parameter of the response.
+   * If the server is using a different ID Context (Gid) for the response than the one that was used to verify the request (see {{sec-group-key-management}}) and this is the first response from the server to that request, then the new ID Context MUST be included in the 'kid context' parameter of the response.
 
    * The server may be replying to a request that was protected with an old Security Context. After completing the establishment of a new Security Context, the server MUST protect all the responses to that request with the Sender Context of the new Security Context.
 
