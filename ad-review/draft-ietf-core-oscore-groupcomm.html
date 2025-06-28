@@ -1240,7 +1240,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.2.2.6.1"><a href="#section-2.6" class="auto internal xref">2.6</a>.  <a href="#name-update-of-security-context" class="internal xref">Update of Security Context</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.6.2.1">
-                    <p id="section-toc.1-1.2.2.6.2.1.1"><a href="#section-2.6.1" class="auto internal xref">2.6.1</a>.  <a href="#name-loss-of-mutable-security-co" class="internal xref">Loss of Mutable Security Context</a></p>
+                    <p id="section-toc.1-1.2.2.6.2.1.1"><a href="#section-2.6.1" class="auto internal xref">2.6.1</a>.  <a href="#name-loss-of-the-varying-part-of" class="internal xref">Loss of the Varying Part of the Security Context</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.6.2.2">
                     <p id="section-toc.1-1.2.2.6.2.2.1"><a href="#section-2.6.2" class="auto internal xref">2.6.2</a>.  <a href="#name-exhaustion-of-sender-sequen" class="internal xref">Exhaustion of Sender Sequence Number Space</a></p>
@@ -1732,6 +1732,8 @@ The Security Context of Group OSCORE extends the OSCORE Security Context defined
               <p id="section-2-4.1.2.4.1">For the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm (see <a href="#ssec-common-context-dh-alg" class="auto internal xref">Section 2.1.10</a>) used for the agreement on a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see <a href="#key-derivation-pairwise" class="auto internal xref">Section 2.5.1</a>).<a href="#section-2-4.1.2.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2-4.1.3">
+The content of the Common Context is long-term, as it is meant to be stable once the Common Context is established.<a href="#section-2-4.1.3" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-2-4.2">
           <p id="section-2-4.2.1">One Sender Context, extended with the following new parameters.<a href="#section-2-4.2.1" class="pilcrow">¶</a></p>
@@ -1747,7 +1749,9 @@ The Security Context of Group OSCORE extends the OSCORE Security Context defined
 </li>
           </ul>
 <p id="section-2-4.2.3">
-If the endpoint is configured exclusively as a silent server (see <a href="#terminology" class="auto internal xref">Section 1.1</a>), then the Sender Context is omitted.<a href="#section-2-4.2.3" class="pilcrow">¶</a></p>
+Except for the Sender Sequence Number defined in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, the content of the Sender Context is long-term, as it is meant to be stable once the Sender Context is established.<a href="#section-2-4.2.3" class="pilcrow">¶</a></p>
+<p id="section-2-4.2.4">
+If the endpoint is configured exclusively as a silent server (see <a href="#terminology" class="auto internal xref">Section 1.1</a>), then the Sender Context is omitted.<a href="#section-2-4.2.4" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-2-4.3">
           <p id="section-2-4.3.1">One Recipient Context for each other endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated with endpoints from which messages are not (expected to be) received.<a href="#section-2-4.3.1" class="pilcrow">¶</a></p>
@@ -1759,11 +1763,14 @@ If the endpoint is configured exclusively as a silent server (see <a href="#term
               <p id="section-2-4.3.2.2.1">For the pairwise mode, each Recipient Context is extended with the Pairwise Recipient Key associated with the other endpoint (see <a href="#sec-derivation-pairwise" class="auto internal xref">Section 2.5</a>).<a href="#section-2-4.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2-4.3.3">
+Except for the Replay Window defined in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, the content of each Recipient Context is long-term, as it is meant to be stable once the Recipient Context is established.<a href="#section-2-4.3.3" class="pilcrow">¶</a></p>
 </li>
       </ul>
+<p id="section-2-5">The varying part of the OSCORE Security Context is composed of the Sender Sequence Number in the Sender Context and the Replay Windows in the different Recipient Contexts.<a href="#section-2-5" class="pilcrow">¶</a></p>
 <span id="name-additions-to-the-oscore-sec"></span><div id="fig-additional-context-information">
 <figure id="figure-1">
-        <div class="alignCenter art-text artwork" id="section-2-5.1">
+        <div class="alignCenter art-text artwork" id="section-2-6.1">
 <pre>
 +-------------------+-------------------------------------------------+
 | Context Component | New Information Elements                        |
@@ -1793,8 +1800,7 @@ If the endpoint is configured exclusively as a silent server (see <a href="#term
         <h3 id="name-common-context">
 <a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-common-context" class="section-name selfRef">Common Context</a>
         </h3>
-<p id="section-2.1-1">The following sections specify how the Common Context is used and extended compared to <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>. All algorithms (AEAD, Group Encryption, Signature, Pairwise Key Agreement) are immutable once the Common Context is established.
-The Common Context may be acquired from the Group Manager (see <a href="#group-manager" class="auto internal xref">Section 12</a>).<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.1-1">The following sections specify how the Common Context is used and extended compared to <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>. The Common Context may be acquired from the Group Manager (see <a href="#group-manager" class="auto internal xref">Section 12</a>).<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 <div id="ssec-common-context-aead-alg">
 <section id="section-2.1.1">
           <h4 id="name-aead-algorithm">
@@ -2099,15 +2105,15 @@ In case the other endpoint's public key has COSE Key Type "EC2" <span>[<a href="
         <h3 id="name-update-of-security-context">
 <a href="#section-2.6" class="section-number selfRef">2.6. </a><a href="#name-update-of-security-context" class="section-name selfRef">Update of Security Context</a>
         </h3>
-<p id="section-2.6-1">It is <span class="bcp14">RECOMMENDED</span> that the immutable part of the Security Context is stored in non-volatile memory, or that it can otherwise be reliably accessed throughout the operation of the group, e.g., after device reboots. However, also immutable parts of the Security Context may need to be updated, for example due to scheduled key renewal, new or re-joining members in the group, or the fact that the endpoint changes Sender ID (see <a href="#sec-group-re-join" class="auto internal xref">Section 2.6.3</a>).<a href="#section-2.6-1" class="pilcrow">¶</a></p>
-<p id="section-2.6-2">The mutable parts of the Security Context are updated by the endpoint when executing the security protocol, but may be lost (see <a href="#ssec-loss-mutable-context" class="auto internal xref">Section 2.6.1</a>) or become outdated by exhaustion of Sender Sequence Numbers (see <a href="#ssec-wrap-around-partial-iv" class="auto internal xref">Section 2.6.2</a>).<a href="#section-2.6-2" class="pilcrow">¶</a></p>
+<p id="section-2.6-1">It is <span class="bcp14">RECOMMENDED</span> that the long-term part of the Security Context is stored in non-volatile memory, or that it can otherwise be reliably accessed throughout the operation of the group, e.g., after device reboots. However, also data in the long-term part of the Security Context may need to be updated, for example due to scheduled key renewal, new or re-joining members in the group, or the fact that the endpoint changes Sender ID (see <a href="#sec-group-re-join" class="auto internal xref">Section 2.6.3</a>).<a href="#section-2.6-1" class="pilcrow">¶</a></p>
+<p id="section-2.6-2">The data in the varying part of the Security Context are updated by the endpoint when executing the security protocol, but may be lost (see <a href="#ssec-loss-mutable-context" class="auto internal xref">Section 2.6.1</a>) or become outdated by exhaustion of Sender Sequence Numbers (see <a href="#ssec-wrap-around-partial-iv" class="auto internal xref">Section 2.6.2</a>).<a href="#section-2.6-2" class="pilcrow">¶</a></p>
 <div id="ssec-loss-mutable-context">
 <section id="section-2.6.1">
-          <h4 id="name-loss-of-mutable-security-co">
-<a href="#section-2.6.1" class="section-number selfRef">2.6.1. </a><a href="#name-loss-of-mutable-security-co" class="section-name selfRef">Loss of Mutable Security Context</a>
+          <h4 id="name-loss-of-the-varying-part-of">
+<a href="#section-2.6.1" class="section-number selfRef">2.6.1. </a><a href="#name-loss-of-the-varying-part-of" class="section-name selfRef">Loss of the Varying Part of the Security Context</a>
           </h4>
-<p id="section-2.6.1-1">An endpoint may lose its mutable Security Context due to accidental events, e.g., if a reboot occurred in an unprepared way (see <a href="#ssec-loss-mutable-context-total" class="auto internal xref">Section 2.6.1.1</a>) or due to a deliberately deleted Recipient Context (see <a href="#ssec-loss-mutable-context-overflow" class="auto internal xref">Section 2.6.1.2</a>).<a href="#section-2.6.1-1" class="pilcrow">¶</a></p>
-<p id="section-2.6.1-2">If it is not feasible or practically possible to store and maintain up-to-date the mutable part in non-volatile memory (e.g., due to limited number of write operations), the endpoint <span class="bcp14">MUST</span> be able to detect a loss of the mutable Security Context, to prevent the re-use of a nonce with the same key, and to handle incoming replayed messages.<a href="#section-2.6.1-2" class="pilcrow">¶</a></p>
+<p id="section-2.6.1-1">An endpoint may lose the varying part of its Security Context due to accidental events, e.g., if a reboot occurred in an unprepared way (see <a href="#ssec-loss-mutable-context-total" class="auto internal xref">Section 2.6.1.1</a>) or due to a deliberately deleted Recipient Context (see <a href="#ssec-loss-mutable-context-overflow" class="auto internal xref">Section 2.6.1.2</a>).<a href="#section-2.6.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.6.1-2">If it is not feasible or practically possible to store and maintain up-to-date the varying part in non-volatile memory (e.g., due to limited number of write operations), the endpoint <span class="bcp14">MUST</span> be able to detect a loss of the varying part of the Security Context, to prevent the re-use of a nonce with the same key and to handle incoming replayed messages.<a href="#section-2.6.1-2" class="pilcrow">¶</a></p>
 <div id="ssec-loss-mutable-context-total">
 <section id="section-2.6.1.1">
             <h5 id="name-accidental-loss-of-sender-c">
@@ -2172,9 +2178,9 @@ In case the other endpoint's public key has COSE Key Type "EC2" <span>[<a href="
 <a href="#section-2.6.3.1" class="section-number selfRef">2.6.3.1. </a><a href="#name-new-sender-id-for-the-endpo" class="section-name selfRef">New Sender ID for the Endpoint</a>
             </h5>
 <p id="section-2.6.3.1-1">The Group Manager may assign a new Sender ID to an endpoint, while leaving the Gid, Master Secret, and Master Salt unchanged in the group. In this case, the Group Manager assigns a Sender ID that has not been used in the group since the latest time when the current Gid value was assigned to the group (see <a href="#sec-group-key-management" class="auto internal xref">Section 12.2</a>).<a href="#section-2.6.3.1-1" class="pilcrow">¶</a></p>
-<p id="section-2.6.3.1-2">Having retrieved the new Sender ID, and potentially other missing data of the immutable Security Context, the endpoint can derive a new Sender Context (see <a href="#ssec-sender-recipient-context" class="auto internal xref">Section 2.2</a>). When doing so, the endpoint resets the Sender Sequence Number in its Sender Context to 0, and derives a new Sender Key. This is in turn used to possibly derive new Pairwise Sender Keys.<a href="#section-2.6.3.1-2" class="pilcrow">¶</a></p>
+<p id="section-2.6.3.1-2">Having retrieved the new Sender ID, and potentially other missing data for the long-term part of the Security Context, the endpoint can derive a new Sender Context (see <a href="#ssec-sender-recipient-context" class="auto internal xref">Section 2.2</a>). When doing so, the endpoint resets the Sender Sequence Number in its Sender Context to 0, and derives a new Sender Key. This is in turn used to possibly derive new Pairwise Sender Keys.<a href="#section-2.6.3.1-2" class="pilcrow">¶</a></p>
 <p id="section-2.6.3.1-3">From then on, the endpoint <span class="bcp14">MUST</span> use its latest installed Sender Context to protect outgoing messages.<a href="#section-2.6.3.1-3" class="pilcrow">¶</a></p>
-<p id="section-2.6.3.1-4">The assignment of a new Sender ID may be the result of different processes. The endpoint may request a new Sender ID, e.g., because of (approaching) the exhaustion of the Sender Sequence Number space (see <a href="#ssec-wrap-around-partial-iv" class="auto internal xref">Section 2.6.2</a>). An endpoint may request to re-join the group, e.g., because of losing its mutable Security Context (see <a href="#ssec-loss-mutable-context" class="auto internal xref">Section 2.6.1</a>), and is provided with a new Sender ID together with the latest immutable Security Context.<a href="#section-2.6.3.1-4" class="pilcrow">¶</a></p>
+<p id="section-2.6.3.1-4">The assignment of a new Sender ID may be the result of different processes. The endpoint may request a new Sender ID, e.g., because of (approaching) the exhaustion of the Sender Sequence Number space (see <a href="#ssec-wrap-around-partial-iv" class="auto internal xref">Section 2.6.2</a>). An endpoint may request to re-join the group, e.g., because of losing the varying part of its Security Context (see <a href="#ssec-loss-mutable-context" class="auto internal xref">Section 2.6.1</a>), and is provided with a new Sender ID together with the latest long-term part of the Security Context.<a href="#section-2.6.3.1-4" class="pilcrow">¶</a></p>
 <p id="section-2.6.3.1-5">For the other group members, the Recipient Context corresponding to the old Sender ID becomes stale (see <a href="#sec-group-key-management" class="auto internal xref">Section 12.2</a>).<a href="#section-2.6.3.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -4586,55 +4592,58 @@ In a 1-to-N communication model, only a single client transmits data to the CoAP
         </h3>
 <ul class="normal">
 <li class="normal" id="appendix-E.1-1.1">
-            <p id="appendix-E.1-1.1.1">Reference on achieving proof-of-possession for group members and Group Manager.<a href="#appendix-E.1-1.1.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.1.1">Terminology for Security Context: avoid "immutable"; use "long-term" and "varying".<a href="#appendix-E.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.2">
-            <p id="appendix-E.1-1.2.1">Not only CWTs but also CCSs can be tagged.<a href="#appendix-E.1-1.2.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.2.1">Reference on achieving proof-of-possession for group members and Group Manager.<a href="#appendix-E.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.3">
-            <p id="appendix-E.1-1.3.1">Exceptional handling after deleting a Recipient Context.<a href="#appendix-E.1-1.3.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.3.1">Not only CWTs but also CCSs can be tagged.<a href="#appendix-E.1-1.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.4">
-            <p id="appendix-E.1-1.4.1">Clearer handling of incoming messages if the Replay Window is invalid.<a href="#appendix-E.1-1.4.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.4.1">Exceptional handling after deleting a Recipient Context.<a href="#appendix-E.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.5">
-            <p id="appendix-E.1-1.5.1">The exhaustion of Sender Sequence Numbers should be handled with margin.<a href="#appendix-E.1-1.5.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.5.1">Clearer handling of incoming messages if the Replay Window is invalid.<a href="#appendix-E.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.6">
-            <p id="appendix-E.1-1.6.1">Highlighted overhead for accepting out-of-order responses within a long exchange.<a href="#appendix-E.1-1.6.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.6.1">The exhaustion of Sender Sequence Numbers should be handled with margin.<a href="#appendix-E.1-1.6.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.7">
-            <p id="appendix-E.1-1.7.1">Generalization of exceptions to behaviors that are defined as <span class="bcp14">SHOULD</span>.<a href="#appendix-E.1-1.7.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.7.1">Highlighted overhead for accepting out-of-order responses within a long exchange.<a href="#appendix-E.1-1.7.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.8">
-            <p id="appendix-E.1-1.8.1">Clearer phrasing for the requirement on early signature verification.<a href="#appendix-E.1-1.8.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.8.1">Generalization of exceptions to behaviors that are defined as <span class="bcp14">SHOULD</span>.<a href="#appendix-E.1-1.8.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.9">
-            <p id="appendix-E.1-1.9.1">Clearer generalization of delivery of messages protected in pairwise mode.<a href="#appendix-E.1-1.9.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.9.1">Clearer phrasing for the requirement on early signature verification.<a href="#appendix-E.1-1.9.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.10">
-            <p id="appendix-E.1-1.10.1">Generalized use of the Block2 Option in protected (group) requests.<a href="#appendix-E.1-1.10.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.10.1">Clearer generalization of delivery of messages protected in pairwise mode.<a href="#appendix-E.1-1.10.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.11">
-            <p id="appendix-E.1-1.11.1">Suggested means for silent servers to make Replay Windows valid again.<a href="#appendix-E.1-1.11.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.11.1">Generalized use of the Block2 Option in protected (group) requests.<a href="#appendix-E.1-1.11.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.12">
-            <p id="appendix-E.1-1.12.1">Optional procedure for reassigning Gids moved to the document body.<a href="#appendix-E.1-1.12.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.12.1">Suggested means for silent servers to make Replay Windows valid again.<a href="#appendix-E.1-1.12.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.13">
-            <p id="appendix-E.1-1.13.1">Specific definition of reassignment of Sender IDs in a group.<a href="#appendix-E.1-1.13.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.13.1">Optional procedure for reassigning Gids moved to the document body.<a href="#appendix-E.1-1.13.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.14">
-            <p id="appendix-E.1-1.14.1">Discussed server-side mitigations against unicast requests protected in group mode.<a href="#appendix-E.1-1.14.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.14.1">Specific definition of reassignment of Sender IDs in a group.<a href="#appendix-E.1-1.14.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.15">
-            <p id="appendix-E.1-1.15.1">Removed hypothetical discussions on alternative protocol designs.<a href="#appendix-E.1-1.15.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.15.1">Discussed server-side mitigations against unicast requests protected in group mode.<a href="#appendix-E.1-1.15.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.16">
-            <p id="appendix-E.1-1.16.1">Expanded considerations on leakage of Diffie-Hellman shared secret.<a href="#appendix-E.1-1.16.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.16.1">Removed hypothetical discussions on alternative protocol designs.<a href="#appendix-E.1-1.16.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.17">
-            <p id="appendix-E.1-1.17.1">Editorial clarifications and fixes.<a href="#appendix-E.1-1.17.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.17.1">Expanded considerations on leakage of Diffie-Hellman shared secret.<a href="#appendix-E.1-1.17.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-E.1-1.18">
+            <p id="appendix-E.1-1.18.1">Editorial clarifications and fixes.<a href="#appendix-E.1-1.18.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
