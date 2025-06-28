@@ -543,8 +543,6 @@ If an endpoint is not configured as a silent server and is not able to establish
 
 If an endpoint is configured as a silent server and is not able to establish an updated Security Context, e.g., because of lack of connectivity with the Group Manager, then the endpoint MUST NOT accept incoming messages from other group members, as it is currently unable to detect possible replays.
 
-An adversary may leverage the above to perform a Denial of Service attack and prevent some group members from communicating altogether. That is, the adversary can first block the communication path between the Group Manager and some individual group members. This can be achieved, for instance, by injecting fake responses to DNS queries for the Group Manager hostname, or by removing a network link used for routing traffic towards the Group Manager. Then, the adversary can induce an unprepared reboot for some endpoints in the group, e.g., by triggering a short power outage. After that, such endpoints that have lost their Sender Context and/or Recipient Contexts following the reboot would not be able to obtain new Security Context parameters from the Group Manager, as specified above. Thus, they would not be able to further communicate in the group until connectivity with the Group Manager is restored.
-
 #### Deliberately Deleted Recipient Contexts {#ssec-loss-mutable-context-overflow}
 
 The Security Context may contain a large and variable number of Recipient Contexts. While Group OSCORE in itself does not establish a maximum number of Recipient Contexts, there are circumstances by which implementations might choose to discard Recipient Contexts or have to do so in accordance with enforced application policies. Such circumstances include the need to reclaim memory or other resources on the node hosting the endpoint, for example because the predefined maximum number of Recipient Contexts has been reached in the Security Context (see {{ssec-sender-recipient-context}}).
@@ -1779,6 +1777,14 @@ The protocol described in this document should take into account the risk of com
 
 Alternative rekeying schemes that are more scalable with the group size may be needed in dynamic, large groups where endpoints can join and leave at any time, in order to limit the impact on performance due to the Security Context and keying material update.
 
+### Denial of Service
+
+An adversary may leverage the loss of Sender Contexts and/or Recipient Contexts as described in {{ssec-loss-mutable-context-total}}, in order to perform a Denial of Service attack and prevent some group members from communicating altogether.
+
+That is, the adversary can first block the communication path between the Group Manager and some individual group members. This can be achieved, for instance, by injecting fake responses to DNS queries for the Group Manager hostname, or by removing a network link used for routing traffic towards the Group Manager.
+
+Then, the adversary can induce an unprepared reboot for some endpoints in the group, e.g., by triggering a short power outage. After that, such endpoints that have lost their Sender Context and/or Recipient Contexts following the reboot would not be able to obtain new Security Context parameters from the Group Manager, as specified in {{ssec-loss-mutable-context-total}}. Thus, they would not be able to further communicate in the group until connectivity with the Group Manager is restored.
+
 ## Update of Security Context and Key Rotation {#ssec-key-rotation}
 
 A group member can receive a message shortly after the group has been rekeyed, and new security parameters and keying material have been distributed by the Group Manager.
@@ -2172,6 +2178,8 @@ The Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}} provides th
 * Discussed server-side mitigations against unicast requests protected in group mode.
 
 * Removed hypothetical discussions on alternative protocol designs.
+
+* Discussion on Denial of Service moved to security considerations.
 
 * Expanded considerations on leakage of Diffie-Hellman shared secret.
 
