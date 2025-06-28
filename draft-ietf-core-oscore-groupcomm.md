@@ -1334,7 +1334,7 @@ If the verifications above are successful, the server considers the Recipient Co
 
 * If the Replay Window is already valid, the server discards the verification result and accepts the request as fresh or treats it as a replay, according to the existing Replay Window.
 
-A server should not deliver requests from a given client to the application until one valid request from that same client has been verified as fresh, as conveying an echoed Echo Option. A server may perform the challenge-response described above at any time, e.g., after a device reboot occurred in an unprepared way. A client has to be ready to perform the challenge-response based on the Echo Option if a server starts it.
+A server should not deliver requests from a given client to the application until one valid request from that same client has been verified as fresh via an echoed Echo Option included therein. A server may perform the challenge-response described above at any time, e.g., after a device reboot occurred in an unprepared way. A client has to be ready to perform the challenge-response based on the Echo Option if a server starts it.
 
 Message freshness is further discussed in {{ssec-seccons-freshness}}.
 
