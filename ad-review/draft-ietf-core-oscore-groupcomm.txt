@@ -1776,14 +1776,16 @@ Table of Contents
    clients.  Note that there can be large jumps in these Sender Sequence
    Number values, for example when a client exchanges unicast messages
    with other servers.  The operation of validating the Partial IV and
-   performing replay protection MUST be atomic.  The update of Replay
-   Windows is described in Section 2.6.1.
+   performing replay protection MUST be atomic.  Section 2.6.1 and
+   Section 2.6.3.2 describe the update of Replay Windows after the loss
+   of data from the Security Context and the retrieving of new Security
+   Context parameters.
 
    The protection from replay of requests is performed as per
    Section 7.4 of [RFC8613], separately for each client and by
    leveraging the Replay Window in the corresponding Recipient Context.
    The protection from replay of responses in a long exchange is
-   performed as defined in Section 5.3.1.
+   performed as defined in Section 5.3.1 of this document.
 
 5.3.1.  Replay Protection of Responses
 
