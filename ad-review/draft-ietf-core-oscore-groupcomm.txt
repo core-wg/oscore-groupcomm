@@ -2440,9 +2440,9 @@ Table of Contents
    Since they do not join a group as members, external signature
    checkers need to retrieve from the Group Manager the authentication
    credentials of group members and other selected group data, such as
-   the current Signature Encryption Key (see Section 2.1.9).  The
-   support for signature checkers from the Group Manager is defined in
-   Section 12.3.
+   the current Signature Encryption Key (see Section 2.1.9).
+   Section 12.3 describes how the Group Manager supports signature
+   checkers.
 
    When receiving a message protected in group mode, a signature checker
    proceeds as follows.
