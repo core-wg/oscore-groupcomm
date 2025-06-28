@@ -158,6 +158,7 @@ Table of Contents
      14.2.  Security of the Pairwise Mode
      14.3.  Uniqueness of (key, nonce)
      14.4.  Management of Group Keying Material
+       14.4.1.  Denial of Service
      14.5.  Update of Security Context and Key Rotation
        14.5.1.  Late Update on the Sender
        14.5.2.  Late Update on the Recipient
@@ -1082,21 +1083,6 @@ Table of Contents
    connectivity with the Group Manager, then the endpoint MUST NOT
    accept incoming messages from other group members, as it is currently
    unable to detect possible replays.
-
-   An adversary may leverage the above to perform a Denial of Service
-   attack and prevent some group members from communicating altogether.
-   That is, the adversary can first block the communication path between
-   the Group Manager and some individual group members.  This can be
-   achieved, for instance, by injecting fake responses to DNS queries
-   for the Group Manager hostname, or by removing a network link used
-   for routing traffic towards the Group Manager.  Then, the adversary
-   can induce an unprepared reboot for some endpoints in the group,
-   e.g., by triggering a short power outage.  After that, such endpoints
-   that have lost their Sender Context and/or Recipient Contexts
-   following the reboot would not be able to obtain new Security Context
-   parameters from the Group Manager, as specified above.  Thus, they
-   would not be able to further communicate in the group until
-   connectivity with the Group Manager is restored.
 
 2.6.1.2.  Deliberately Deleted Recipient Contexts
 
@@ -3782,6 +3768,28 @@ Table of Contents
    and leave at any time, in order to limit the impact on performance
    due to the Security Context and keying material update.
 
+14.4.1.  Denial of Service
+
+   An adversary may leverage the loss of Sender Contexts and/or
+   Recipient Contexts as described in Section 2.6.1.1, in order to
+   perform a Denial of Service attack and prevent some group members
+   from communicating altogether.
+
+   That is, the adversary can first block the communication path between
+   the Group Manager and some individual group members.  This can be
+   achieved, for instance, by injecting fake responses to DNS queries
+   for the Group Manager hostname, or by removing a network link used
+   for routing traffic towards the Group Manager.
+
+   Then, the adversary can induce an unprepared reboot for some
+   endpoints in the group, e.g., by triggering a short power outage.
+   After that, such endpoints that have lost their Sender Context and/or
+   Recipient Contexts following the reboot would not be able to obtain
+   new Security Context parameters from the Group Manager, as specified
+   in Section 2.6.1.1.  Thus, they would not be able to further
+   communicate in the group until connectivity with the Group Manager is
+   restored.
+
 14.5.  Update of Security Context and Key Rotation
 
    A group member can receive a message shortly after the group has been
@@ -5082,6 +5090,8 @@ E.1.  Version -25 to -26
       protected in group mode.
 
    *  Removed hypothetical discussions on alternative protocol designs.
+
+   *  Discussion on Denial of Service moved to security considerations.
 
    *  Expanded considerations on leakage of Diffie-Hellman shared
       secret.
