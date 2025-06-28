@@ -261,21 +261,29 @@ The Security Context of Group OSCORE extends the OSCORE Security Context defined
 
     *  For the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm (see {{ssec-common-context-dh-alg}}) used for the agreement on a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}).
 
+    The content of the Common Context is long-term, as it is meant to be stable once the Common Context is established.
+
 * One Sender Context, extended with the following new parameters.
 
-   * The endpoint's own private key used to sign messages protected in group mode (see {{mess-processing}}), or for deriving pairwise keys used with the pairwise mode (see {{sec-derivation-pairwise}}).
+  * The endpoint's own private key used to sign messages protected in group mode (see {{mess-processing}}), or for deriving pairwise keys used with the pairwise mode (see {{sec-derivation-pairwise}}).
 
-   * The endpoint's own authentication credential containing its public key (see {{sec-pub-key-format}}).
+  * The endpoint's own authentication credential containing its public key (see {{sec-pub-key-format}}).
 
-    * For the pairwise mode, the Sender Context is extended with the Pairwise Sender Keys associated with the other endpoints (see {{sec-derivation-pairwise}}).
+  * For the pairwise mode, the Sender Context is extended with the Pairwise Sender Keys associated with the other endpoints (see {{sec-derivation-pairwise}}).
 
-    If the endpoint is configured exclusively as a silent server (see {{terminology}}), then the Sender Context is omitted.
+  Except for the Sender Sequence Number defined in {{Section 3.1 of RFC8613}}, the content of the Sender Context is long-term, as it is meant to be stable once the Sender Context is established.
+
+  If the endpoint is configured exclusively as a silent server (see {{terminology}}), then the Sender Context is omitted.
 
 * One Recipient Context for each other endpoint from which messages are received. It is not necessary to maintain Recipient Contexts associated with endpoints from which messages are not (expected to be) received.
 
-   * Each Recipient Context is extended with the authentication credential of the other endpoint, used to verify the signature of messages protected in group mode, or for deriving the pairwise keys used with the pairwise mode (see {{sec-derivation-pairwise}}).
+  * Each Recipient Context is extended with the authentication credential of the other endpoint, used to verify the signature of messages protected in group mode, or for deriving the pairwise keys used with the pairwise mode (see {{sec-derivation-pairwise}}).
 
-    * For the pairwise mode, each Recipient Context is extended with the Pairwise Recipient Key associated with the other endpoint (see {{sec-derivation-pairwise}}).
+  * For the pairwise mode, each Recipient Context is extended with the Pairwise Recipient Key associated with the other endpoint (see {{sec-derivation-pairwise}}).
+
+  Except for the Replay Window defined in {{Section 3.1 of RFC8613}}, the content of each Recipient Context is long-term, as it is meant to be stable once the Recipient Context is established.
+
+The varying part of the OSCORE Security Context is composed of the Sender Sequence Number in the Sender Context and the Replay Windows in the different Recipient Contexts.
 
 ~~~~~~~~~~~
 +-------------------+-------------------------------------------------+
@@ -300,8 +308,7 @@ The Security Context of Group OSCORE extends the OSCORE Security Context defined
 
 ## Common Context ## {#ssec-common-context}
 
-The following sections specify how the Common Context is used and extended compared to {{RFC8613}}. All algorithms (AEAD, Group Encryption, Signature, Pairwise Key Agreement) are immutable once the Common Context is established.
-The Common Context may be acquired from the Group Manager (see {{group-manager}}).
+The following sections specify how the Common Context is used and extended compared to {{RFC8613}}. The Common Context may be acquired from the Group Manager (see {{group-manager}}).
 
 ### AEAD Algorithm ## {#ssec-common-context-aead-alg}
 
@@ -514,15 +521,15 @@ In the pairwise mode, the Sender Context includes the Pairwise Sender Keys to us
 
 ## Update of Security Context {#ssec-sec-context-persistence}
 
-It is RECOMMENDED that the immutable part of the Security Context is stored in non-volatile memory, or that it can otherwise be reliably accessed throughout the operation of the group, e.g., after device reboots. However, also immutable parts of the Security Context may need to be updated, for example due to scheduled key renewal, new or re-joining members in the group, or the fact that the endpoint changes Sender ID (see {{sec-group-re-join}}).
+It is RECOMMENDED that the long-term part of the Security Context is stored in non-volatile memory, or that it can otherwise be reliably accessed throughout the operation of the group, e.g., after device reboots. However, also data in the long-term part of the Security Context may need to be updated, for example due to scheduled key renewal, new or re-joining members in the group, or the fact that the endpoint changes Sender ID (see {{sec-group-re-join}}).
 
-The mutable parts of the Security Context are updated by the endpoint when executing the security protocol, but may be lost (see {{ssec-loss-mutable-context}}) or become outdated by exhaustion of Sender Sequence Numbers (see {{ssec-wrap-around-partial-iv}}).
+The data in the varying part of the Security Context are updated by the endpoint when executing the security protocol, but may be lost (see {{ssec-loss-mutable-context}}) or become outdated by exhaustion of Sender Sequence Numbers (see {{ssec-wrap-around-partial-iv}}).
 
-### Loss of Mutable Security Context {#ssec-loss-mutable-context}
+### Loss of the Varying Part of the Security Context {#ssec-loss-mutable-context}
 
-An endpoint may lose its mutable Security Context due to accidental events, e.g., if a reboot occurred in an unprepared way (see {{ssec-loss-mutable-context-total}}) or due to a deliberately deleted Recipient Context (see {{ssec-loss-mutable-context-overflow}}).
+An endpoint may lose the varying part of its Security Context due to accidental events, e.g., if a reboot occurred in an unprepared way (see {{ssec-loss-mutable-context-total}}) or due to a deliberately deleted Recipient Context (see {{ssec-loss-mutable-context-overflow}}).
 
-If it is not feasible or practically possible to store and maintain up-to-date the mutable part in non-volatile memory (e.g., due to limited number of write operations), the endpoint MUST be able to detect a loss of the mutable Security Context, to prevent the re-use of a nonce with the same key, and to handle incoming replayed messages.
+If it is not feasible or practically possible to store and maintain up-to-date the varying part in non-volatile memory (e.g., due to limited number of write operations), the endpoint MUST be able to detect a loss of the varying part of the Security Context, to prevent the re-use of a nonce with the same key and to handle incoming replayed messages.
 
 #### Accidental Loss of Sender Context and/or Recipient Contexts {#ssec-loss-mutable-context-total}
 
@@ -580,11 +587,11 @@ Furthermore, applications MAY define policies to: i) delete (long-)unused Recipi
 
 The Group Manager may assign a new Sender ID to an endpoint, while leaving the Gid, Master Secret, and Master Salt unchanged in the group. In this case, the Group Manager assigns a Sender ID that has not been used in the group since the latest time when the current Gid value was assigned to the group (see {{sec-group-key-management}}).
 
-Having retrieved the new Sender ID, and potentially other missing data of the immutable Security Context, the endpoint can derive a new Sender Context (see {{ssec-sender-recipient-context}}). When doing so, the endpoint resets the Sender Sequence Number in its Sender Context to 0, and derives a new Sender Key. This is in turn used to possibly derive new Pairwise Sender Keys.
+Having retrieved the new Sender ID, and potentially other missing data for the long-term part of the Security Context, the endpoint can derive a new Sender Context (see {{ssec-sender-recipient-context}}). When doing so, the endpoint resets the Sender Sequence Number in its Sender Context to 0, and derives a new Sender Key. This is in turn used to possibly derive new Pairwise Sender Keys.
 
 From then on, the endpoint MUST use its latest installed Sender Context to protect outgoing messages.
 
-The assignment of a new Sender ID may be the result of different processes. The endpoint may request a new Sender ID, e.g., because of (approaching) the exhaustion of the Sender Sequence Number space (see {{ssec-wrap-around-partial-iv}}). An endpoint may request to re-join the group, e.g., because of losing its mutable Security Context (see {{ssec-loss-mutable-context}}), and is provided with a new Sender ID together with the latest immutable Security Context.
+The assignment of a new Sender ID may be the result of different processes. The endpoint may request a new Sender ID, e.g., because of (approaching) the exhaustion of the Sender Sequence Number space (see {{ssec-wrap-around-partial-iv}}). An endpoint may request to re-join the group, e.g., because of losing the varying part of its Security Context (see {{ssec-loss-mutable-context}}), and is provided with a new Sender ID together with the latest long-term part of the Security Context.
 
 For the other group members, the Recipient Context corresponding to the old Sender ID becomes stale (see {{sec-group-key-management}}).
 
@@ -2133,6 +2140,8 @@ The Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}} provides th
 {:removeinrfc}
 
 ## Version -25 to -26 ## {#sec-25-26}
+
+* Terminology for Security Context: avoid "immutable"; use "long-term" and "varying".
 
 * Reference on achieving proof-of-possession for group members and Group Manager.
 
