@@ -2203,7 +2203,7 @@ Table of Contents
          the request.
 
       -  The server is using a different Security Context for the
-         response compared to what was used to verify the request (see
+         response than the one that was used to verify the request (see
          Section 12.2).
 
    *  In step 4, the encryption of the COSE object is modified as
@@ -2216,7 +2216,7 @@ Table of Contents
       In addition, the following applies.
 
       -  If the server is using a different ID Context (Gid) for the
-         response compared to what was used to verify the request (see
+         response than the one that was used to verify the request (see
          Section 12.2) and this is the first response from the server to
          that request, then the new ID Context MUST be included in the
          'kid context' parameter of the response.
