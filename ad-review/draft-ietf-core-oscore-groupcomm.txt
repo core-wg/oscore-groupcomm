@@ -112,7 +112,7 @@ Table of Contents
        3.1.1.  Clarifications on Using a Countersignature
      3.2.  The 'kid' and 'kid context' parameters
      3.3.  Nonce Computation
-     3.4.  external_aad
+     3.4.  Additional Authenticated Data
    4.  OSCORE Header Compression
      4.1.  Encoding of the OSCORE Option Value and Group OSCORE
            Payload
@@ -1356,7 +1356,7 @@ Table of Contents
    encryption algorithms.  Algorithms that do not use a nonce are not
    supported, as per Section 2.1.7.
 
-3.4.  external_aad
+3.4.  Additional Authenticated Data
 
    The external_aad of the Additional Authenticated Data (AAD) is
    different compared to OSCORE [RFC8613] and is defined in this
@@ -2179,13 +2179,12 @@ Table of Contents
 
       -  The server MUST use the stored value of the 'kid' parameter
          from the request (see Section 7.2), as value for the
-         'request_kid' parameter in the external_aad structure (see
-         Section 3.4).
+         'request_kid' parameter in the external_aad (see Section 3.4).
 
       -  The server MUST use the stored value of the 'kid context'
          parameter from the request (see Section 7.2), as value for the
-         'request_kid_context' parameter in the external_aad structure
-         (see Section 3.4).
+         'request_kid_context' parameter in the external_aad (see
+         Section 3.4).
 
    *  In step 3, if either of the following conditions holds, the server
       MUST include its Sender Sequence Number as Partial IV in the
@@ -2289,13 +2288,12 @@ Table of Contents
 
       -  The client MUST use the stored value of the 'kid' parameter
          from the request (see Section 7.1), as value for the
-         'request_kid' parameter in the external_aad structure (see
-         Section 3.4).
+         'request_kid' parameter in the external_aad (see Section 3.4).
 
       -  The client MUST use the stored value of the 'kid context'
          parameter from the request (see Section 7.1), as value for the
-         'request_kid_context' parameter in the external_aad structure
-         (see Section 3.4).
+         'request_kid_context' parameter in the external_aad (see
+         Section 3.4).
 
       This ensures that, throughout a long exchange, the client can
       correctly verify the received responses, even if the client is
