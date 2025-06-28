@@ -936,9 +936,9 @@ Like in OSCORE {{RFC8613}}, assuming an honest server, the message binding guara
 
 ## Replay Protection # {#sec-replay-protection}
 
-Like in OSCORE {{RFC8613}}, the replay protection relies on the Partial IV of incoming messages. A server updates the Replay Window of its Recipient Contexts based on the Partial IV values in received request messages, which correspond to the Sender Sequence Numbers of the clients. Note that there can be large jumps in these Sender Sequence Number values, for example when a client exchanges unicast messages with other servers. The operation of validating the Partial IV and performing replay protection MUST be atomic. The update of Replay Windows is described in {{ssec-loss-mutable-context}}.
+Like in OSCORE {{RFC8613}}, the replay protection relies on the Partial IV of incoming messages. A server updates the Replay Window of its Recipient Contexts based on the Partial IV values in received request messages, which correspond to the Sender Sequence Numbers of the clients. Note that there can be large jumps in these Sender Sequence Number values, for example when a client exchanges unicast messages with other servers. The operation of validating the Partial IV and performing replay protection MUST be atomic. {{ssec-loss-mutable-context}} and {{new-sec-context}} describe the update of Replay Windows after the loss of data from the Security Context and the retrieving of new Security Context parameters.
 
-The protection from replay of requests is performed as per {{Section 7.4 of RFC8613}}, separately for each client and by leveraging the Replay Window in the corresponding Recipient Context. The protection from replay of responses in a long exchange is performed as defined in {{sec-replay-protection-responses}}.
+The protection from replay of requests is performed as per {{Section 7.4 of RFC8613}}, separately for each client and by leveraging the Replay Window in the corresponding Recipient Context. The protection from replay of responses in a long exchange is performed as defined in {{sec-replay-protection-responses}} of this document.
 
 ### Replay Protection of Responses # {#sec-replay-protection-responses}
 
