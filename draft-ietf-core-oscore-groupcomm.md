@@ -1715,7 +1715,7 @@ The rest of this section first discusses security aspects to be taken into accou
 
 ## Security of the Group Mode {#ssec-group-mode-security}
 
-The group mode defined in {{mess-processing}} relies on shared group keying material to protect communication within a group. Using the group mode has the implications discussed below. The following refers to group members as the endpoints in the group storing the latest version of the group keying material.
+The group mode defined in {{mess-processing}} relies on shared group keying material to protect communication within a group. Using the group mode has the implications discussed below. The text in this section refers to group members as the endpoints in the group storing the latest version of the group keying material.
 
 * Source authentication of messages sent to a group is ensured through a countersignature, which is computed by the sender endpoint using its own private key and then appended to the message payload. The countersignature is also encrypted using a keystream derived from the group keying material (see {{compression-details}} and {{sssec-encrypted-signature-keystream}}). This ensures group privacy, i.e., an attacker cannot track an endpoint over two groups by linking messages between the two groups unless the attacker is also a member of both groups.
 
