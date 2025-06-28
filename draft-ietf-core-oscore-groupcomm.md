@@ -1180,7 +1180,7 @@ Note that a client may receive a response protected with a Security Context diff
 
 When a message is protected in group mode, it is possible for designated external signature checkers, e.g., intermediary gateways, to verify the countersignature of the message.
 
-Since they do not join a group as members, external signature checkers need to retrieve from the Group Manager the authentication credentials of group members and other selected group data, such as the current Signature Encryption Key (see {{ssec-common-context-group-enc-key}}). The support for signature checkers from the Group Manager is defined in {{sec-additional-entities}}.
+Since they do not join a group as members, external signature checkers need to retrieve from the Group Manager the authentication credentials of group members and other selected group data, such as the current Signature Encryption Key (see {{ssec-common-context-group-enc-key}}). {{sec-additional-entities}} describes how the Group Manager supports signature checkers.
 
 When receiving a message protected in group mode, a signature checker proceeds as follows.
 
