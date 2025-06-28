@@ -2958,10 +2958,13 @@ Table of Contents
    to acquire OSCORE input parameters, information about the group(s)
    and about other endpoints in the group(s).
 
-   This document is based on the existence of an entity called Group
-   Manager that is responsible for the group, but it does not mandate
-   how the Group Manager interacts with the group members.  The list of
-   responsibilities of the Group Manager is compiled in Appendix D.
+   Every group is associated with a Group Manager that is responsible
+   for distributing security parameters and keying material within the
+   group, among other tasks.  The details of how the Group Manager
+   interacts with (candidate) group members or with external entities
+   like signature checkers, as well as the protocols used for those
+   interactions, are out of scope.  The list of responsibilities of the
+   Group Manager is compiled in Appendix D.
 
    The Group Manager assigns unique Group Identifiers (Gids) to the
    groups under its control.  Within each of such groups, the Group
