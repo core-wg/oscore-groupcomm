@@ -1402,42 +1402,45 @@ Table of Contents
    *  The 'algorithms' array is extended as follows.
 
       The parameter 'alg_aead' MUST be set to the CBOR simple value null
-      (0xf6) if the parameter AEAD Algorithm in the Security Context is
-      not set (see Section 2).  Otherwise, regardless of whether the
-      endpoint supports the pairwise mode or not, this parameter MUST
-      specify AEAD Algorithm from the Common Context (see Section 2.1.1)
-      as per Section 5.4 of [RFC8613].
+      (0xf6) if the parameter AEAD Algorithm is not set in the Common
+      Context of the Security Context used (see Section 2.1.1).
+      Otherwise, regardless of whether the endpoint supports the
+      pairwise mode or not, this parameter MUST specify AEAD Algorithm
+      from the Common Context (see Section 2.1.1) as per Section 5.4 of
+      [RFC8613].
 
       Furthermore, the 'algorithms' array additionally includes:
 
       -  'alg_group_enc', which specifies Group Encryption Algorithm
-         from the Common Context (see Section 2.1.7).  This parameter
-         MUST be set to the CBOR simple value null (0xf6) if the
-         parameter Group Encryption Algorithm in the Common Context is
-         not set.  Otherwise, regardless of whether the endpoint
-         supports the group mode or not, this parameter MUST specify
-         Group Encryption Algorithm as a CBOR integer or text string,
-         consistently with the "Value" field in the "COSE Algorithms"
-         Registry for this algorithm.
-
-      -  'alg_signature', which specifies Signature Algorithm from the
-         Common Context (see Section 2.1.8).  This parameter MUST be set
-         to the CBOR simple value null (0xf6) if the parameter Signature
-         Algorithm in the Common Context is not set.  Otherwise,
-         regardless of whether the endpoint supports the group mode or
-         not, this parameter MUST specify Signature Algorithm as a CBOR
+         from the Common Context of the Security Context used (see
+         Section 2.1.7).  This parameter MUST be set to the CBOR simple
+         value null (0xf6) if the parameter Group Encryption Algorithm
+         in the Common Context is not set.  Otherwise, regardless of
+         whether the endpoint supports the group mode or not, this
+         parameter MUST specify Group Encryption Algorithm as a CBOR
          integer or text string, consistently with the "Value" field in
          the "COSE Algorithms" Registry for this algorithm.
 
-      -  'alg_pairwise_key_agreement', which specifies Pairwise Key
-         Agreement Algorithm from the Common Context (see
-         Section 2.1.10).  This parameter MUST be set to the CBOR simple
-         value null (0xf6) if Pairwise Key Agreement Algorithm in the
+      -  'alg_signature', which specifies Signature Algorithm from the
+         Common Context of the Security Context used (see
+         Section 2.1.8).  This parameter MUST be set to the CBOR simple
+         value null (0xf6) if the parameter Signature Algorithm in the
          Common Context is not set.  Otherwise, regardless of whether
-         the endpoint supports the pairwise mode or not, this parameter
-         MUST specify Pairwise Key Agreement Algorithm as a CBOR integer
-         or text string, consistently with the "Value" field in the
-         "COSE Algorithms" Registry for this algorithm.
+         the endpoint supports the group mode or not, this parameter
+         MUST specify Signature Algorithm as a CBOR integer or text
+         string, consistently with the "Value" field in the "COSE
+         Algorithms" Registry for this algorithm.
+
+      -  'alg_pairwise_key_agreement', which specifies Pairwise Key
+         Agreement Algorithm from the Common Context of the Security
+         Context used (see Section 2.1.10).  This parameter MUST be set
+         to the CBOR simple value null (0xf6) if Pairwise Key Agreement
+         Algorithm in the Common Context is not set.  Otherwise,
+         regardless of whether the endpoint supports the pairwise mode
+         or not, this parameter MUST specify Pairwise Key Agreement
+         Algorithm as a CBOR integer or text string, consistently with
+         the "Value" field in the "COSE Algorithms" Registry for this
+         algorithm.
 
    *  The new element 'request_kid_context' contains the value of the
       'kid context' in the COSE object of the request (see Section 3.2).
