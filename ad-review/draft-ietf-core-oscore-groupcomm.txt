@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 21 December 2025                                   F. Palombini
+Expires: 30 December 2025                                   F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                            19 June 2025
+                                                            28 June 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 December 2025.
+   This Internet-Draft will expire on 30 December 2025.
 
 Copyright Notice
 
@@ -3226,10 +3226,10 @@ Table of Contents
 
 12.2.1.1.1.  Reassignment of Group Identifiers
 
-   If the Group Manager supports and performs the reassignment of Gid
-   values previously used during a group's lifetime, the Group Manager
-   MUST take additional actions when handling Gid values and rekeying
-   the group, as specified below.
+   If the Group Manager performs the reassignment of Gid values
+   previously used during a group's lifetime, the Group Manager MUST
+   take additional actions when handling Gid values and rekeying the
+   group, as specified below.
 
    When a node (re-)joins the group and it is provided with the current
    Gid to use in the group, the Group Manager considers such a Gid as
@@ -4547,9 +4547,9 @@ Table of Contents
               Mattsson, J. P., Selander, G., Raza, S., Höglund, J., and
               M. Furuhed, "CBOR Encoded X.509 Certificates (C509
               Certificates)", Work in Progress, Internet-Draft, draft-
-              ietf-cose-cbor-encoded-cert-13, 3 March 2025,
+              ietf-cose-cbor-encoded-cert-14, 23 June 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-cose-
-              cbor-encoded-cert-13>.
+              cbor-encoded-cert-14>.
 
    [I-D.ietf-iotops-security-protocol-comparison]
               Mattsson, J. P., Palombini, F., and M. Vučinić,
