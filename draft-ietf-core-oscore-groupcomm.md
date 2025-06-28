@@ -204,7 +204,7 @@ In some circumstances, Group OSCORE messages may be transported in HTTP, e.g., w
 
 {::boilerplate bcp14-tagged}
 
-Readers are expected to be familiar with the terms and concepts described in CoAP {{RFC7252}}, including "endpoint", "client", "server", "sender", and "recipient"; group communication for CoAP {{I-D.ietf-core-groupcomm-bis}}; Observe {{RFC7641}}; CBOR {{RFC8949}}; COSE {{RFC9052}}{{RFC9053}} and related countersignatures  {{RFC9338}}.
+Readers are expected to be familiar with the terms and concepts described in CoAP {{RFC7252}}, including "endpoint", "client", "server", "sender", and "recipient"; group communication for CoAP {{I-D.ietf-core-groupcomm-bis}}; Observe {{RFC7641}}; Concise Binary Object Representation (CBOR) {{RFC8949}}; Concise Data Definition Language (CDDL) {{RFC8610}}; COSE {{RFC9052}}{{RFC9053}} and related countersignatures  {{RFC9338}}.
 
 Readers are also expected to be familiar with the terms and concepts for protection and processing of CoAP messages through OSCORE, such as "Security Context" and "Master Secret", defined in {{RFC8613}}.
 
@@ -755,7 +755,7 @@ The input parameters of HKDF are as follows.
 
 * IKM is the Signature Encryption Key from the Common Context (see {{ssec-common-context-group-enc-key}}).
 
-* info is the serialization of a CBOR array consisting of (the notation follows {{RFC8610}}):
+* info is the serialization of a CBOR array with the structure defined below, following the notation of {{RFC8610}}:
 
 ~~~~~~~~~~~ CDDL
    info = [
