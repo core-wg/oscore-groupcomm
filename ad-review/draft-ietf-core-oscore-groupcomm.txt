@@ -510,9 +510,9 @@ Table of Contents
       the content of each Recipient Context is long-term, as it is meant
       to be stable once the Recipient Context is established.
 
-   The varying part of the OSCORE Security Context is composed of the
-   Sender Sequence Number in the Sender Context and the Replay Windows
-   in the different Recipient Contexts.
+   The varying part of the Group OSCORE Security Context is composed of
+   the Sender Sequence Number in the Sender Context and the Replay
+   Windows in the different Recipient Contexts.
 
  +-------------------+-------------------------------------------------+
  | Context Component | New Information Elements                        |
@@ -1221,7 +1221,7 @@ Table of Contents
    (see Section 2.6.2).  An endpoint may request to re-join the group,
    e.g., because of losing the varying part of its Security Context (see
    Section 2.6.1), and is provided with a new Sender ID together with
-   the latest long-term part of the Security Context.
+   the latest data for the long-term part of the Security Context.
 
    For the other group members, the Recipient Context corresponding to
    the old Sender ID becomes stale (see Section 12.2).
