@@ -283,7 +283,7 @@ The Security Context of Group OSCORE extends the OSCORE Security Context defined
 
   Except for the Replay Window defined in {{Section 3.1 of RFC8613}}, the content of each Recipient Context is long-term, as it is meant to be stable once the Recipient Context is established.
 
-The varying part of the OSCORE Security Context is composed of the Sender Sequence Number in the Sender Context and the Replay Windows in the different Recipient Contexts.
+The varying part of the Group OSCORE Security Context is composed of the Sender Sequence Number in the Sender Context and the Replay Windows in the different Recipient Contexts.
 
 ~~~~~~~~~~~
 +-------------------+-------------------------------------------------+
@@ -589,7 +589,7 @@ Having retrieved the new Sender ID, and potentially other missing data for the l
 
 From then on, the endpoint MUST use its latest installed Sender Context to protect outgoing messages.
 
-The assignment of a new Sender ID may be the result of different processes. The endpoint may request a new Sender ID, e.g., because of (approaching) the exhaustion of the Sender Sequence Number space (see {{ssec-wrap-around-partial-iv}}). An endpoint may request to re-join the group, e.g., because of losing the varying part of its Security Context (see {{ssec-loss-mutable-context}}), and is provided with a new Sender ID together with the latest long-term part of the Security Context.
+The assignment of a new Sender ID may be the result of different processes. The endpoint may request a new Sender ID, e.g., because of (approaching) the exhaustion of the Sender Sequence Number space (see {{ssec-wrap-around-partial-iv}}). An endpoint may request to re-join the group, e.g., because of losing the varying part of its Security Context (see {{ssec-loss-mutable-context}}), and is provided with a new Sender ID together with the latest data for the long-term part of the Security Context.
 
 For the other group members, the Recipient Context corresponding to the old Sender ID becomes stale (see {{sec-group-key-management}}).
 
