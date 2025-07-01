@@ -1066,7 +1066,7 @@ Upon receiving a protected request with the Group Flag set to 1, following the p
 
   If the server deletes the used Recipient Context in this particular circumstance, then this deletion does not require the server to initialize as invalid the Replay Window of any new Recipient Context created later within the Security Context (see {{ssec-loss-mutable-context-overflow}}).
 
-A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. As an exception where the requirement above is not fulfilled, the server could have deliberately prepared such a request to be sent to itself (e.g., see {{I-D.ietf-core-observe-multicast-notifications}}).
+A server SHOULD NOT process a request if the received Recipient ID ('kid') is equal to its own Sender ID in its own Sender Context. However, in some applications the server can prepare a request to be sent to itself (e.g., see {{I-D.ietf-core-observe-multicast-notifications}}), in which case such requests would be expected.
 
 In addition, the following applies if the request establishes a long exchange and the server intends to reply with multiple responses.
 
