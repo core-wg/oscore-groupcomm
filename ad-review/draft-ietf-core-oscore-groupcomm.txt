@@ -2751,9 +2751,9 @@ Table of Contents
    Echo values associated with members of the group.
 
    After receiving a 4.01 (Unauthorized) response that includes an Echo
-   Option and originates from a verified group member, a subsequently
-   sent client request echoing the Echo Option value MUST be sent as a
-   unicast message to the same server.
+   Option and originates from a verified group member, a subsequent
+   client request sent to that server and echoing the Echo Option value
+   MUST be sent as a unicast message to that server.
 
    If in the group the AEAD Algorithm and Pairwise Key Agreement
    Algorithm are set in the Security Context, the client MUST use the
