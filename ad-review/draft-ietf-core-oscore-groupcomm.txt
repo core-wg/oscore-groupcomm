@@ -3604,9 +3604,9 @@ Table of Contents
 
    The group mode defined in Section 7 relies on shared group keying
    material to protect communication within a group.  Using the group
-   mode has the implications discussed below.  The text in this section
-   refers to group members as the endpoints in the group storing the
-   latest version of the group keying material.
+   mode has the implications discussed below.  This section uses the
+   term 'group members' to describe endpoints which possess the latest
+   version of the group keying material.
 
    *  Source authentication of messages sent to a group is ensured
       through a countersignature, which is computed by the sender
