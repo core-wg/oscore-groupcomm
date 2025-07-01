@@ -28,9 +28,9 @@ Abstract
    client to multiple servers, and for protection of the corresponding
    CoAP responses.  Group OSCORE also defines a pairwise mode where each
    member of the group can efficiently derive a symmetric pairwise key
-   with any other member of the group for pairwise OSCORE communication.
-   Group OSCORE can be used between endpoints communicating with CoAP or
-   CoAP-mappable HTTP.
+   with each other member of the group for pairwise OSCORE
+   communication.  Group OSCORE can be used between endpoints
+   communicating with CoAP or CoAP-mappable HTTP.
 
 About This Document
 
@@ -256,10 +256,10 @@ Table of Contents
    authentication for group requests sent by a client to multiple
    servers, and for protection of the corresponding responses.  Group
    OSCORE also defines a pairwise mode where each member of the group
-   can efficiently derive a symmetric pairwise key with any other member
-   of the group for pairwise-protected OSCORE communication.  Just like
-   OSCORE, Group OSCORE is independent of the transport layer and works
-   wherever CoAP does.
+   can efficiently derive a symmetric pairwise key with each other
+   member of the group for pairwise-protected OSCORE communication.
+   Just like OSCORE, Group OSCORE is independent of the transport layer
+   and works wherever CoAP does.
 
    As with OSCORE, it is possible to combine Group OSCORE with
    communication security on other layers.  One example is the use of
@@ -845,7 +845,7 @@ Table of Contents
 
    Using the Group OSCORE Security Context (see Section 2), a group
    member can derive AEAD keys, to protect point-to-point communication
-   between itself and any other endpoint X in the group by means of the
+   between itself and each other endpoint X in the group by means of the
    AEAD Algorithm from the Common Context (see Section 2.1.1).
 
    Analogous to the construction used by OSCORE in Section 3.2.1 of
@@ -2500,7 +2500,7 @@ Table of Contents
    (see Section 2).
 
    The pairwise mode takes advantage of an existing Security Context to
-   establish keying material shared exclusively with any other member.
+   establish keying material shared exclusively with each other member.
    For encryption and decryption operations in pairwise mode, the AEAD
    Algorithm from the Common Context is used (see Section 2.1.1).
 
