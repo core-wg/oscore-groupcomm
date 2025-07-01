@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 31 December 2025                                   F. Palombini
+Expires: 2 January 2026                                     F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                            29 June 2025
+                                                             1 July 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 December 2025.
+   This Internet-Draft will expire on 2 January 2026.
 
 Copyright Notice
 
@@ -3683,10 +3683,10 @@ Table of Contents
 
 14.1.1.  Example of Need for Proof of Group Membership
 
-   As a case in point, the importance to achieve proof of group
+   As a case in point, the importance of reliable proof of group
    membership is evident in a group where the Group Encryption Algorithm
-   does not provide integrity protection; a group member leaves the
-   group; and, after the group rekeying, associates with the group as
+   does not provide integrity protection.  Suppose a group member leaves
+   the group and, after the group rekeying, associates with the group as
    external signature checker (see Section 7.5).  When doing so, it
    obtains from the Group Manager the new Signature Encryption Key, from
    which it can derive keystreams for encrypting and decrypting the
