@@ -567,7 +567,7 @@ Implementations MUST be able to detect an exhaustion of Sender Sequence Number s
 
 Upon exhausting the Sender Sequence Number space, the endpoint MUST NOT use this Security Context to protect further messages including a Partial IV.
 
-Upon (approaching) the exhaustion of the Sender Sequence Number space, the endpoint SHOULD inform the Group Manager, retrieve new Security Context parameters from the Group Manager (see {{sec-group-re-join}}), and use them to derive a new Sender Context (see {{ssec-sender-recipient-context}}). It is RECOMMENDED that the endpoint takes this course of action with some margin, i.e., well before exhausting the Sender Sequence Number space, in order to avoid a period of inability to protect messages including a Partial IV.
+When approaching the exhaustion of the Sender Sequence Number space, the endpoint SHOULD inform the Group Manager, retrieve new Security Context parameters from the Group Manager (see {{sec-group-re-join}}), and use them to derive a new Sender Context (see {{ssec-sender-recipient-context}}). It is RECOMMENDED that the endpoint takes this course of action with some margin, i.e., well before exhausting the Sender Sequence Number space, in order to avoid a period of inability to protect messages including a Partial IV.
 
 From then on, the endpoint MUST use its latest installed Sender Context to protect outgoing messages.
 
