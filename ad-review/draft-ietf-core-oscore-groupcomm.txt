@@ -4081,12 +4081,10 @@ Table of Contents
    In a group where the AEAD Algorithm and Pairwise Key Agreement
    Algorithm are set in the Security Context, an endpoint supporting the
    pairwise mode SHOULD use it to protect requests sent to a single
-   group member over unicast.  As an exception where the requirement
-   above is not fulfilled and the group mode is used to protect such
-   requests, an endpoint could need to make the request possible to
-   decrypt and verify for multiple other group members.  An example of
-   this exception is the method defined in
-   [I-D.ietf-core-observe-multicast-notifications].
+   group member over unicast.  Using the group mode to protect such
+   requests would make the request possible to decrypt and verify for
+   any other group member; this may sometimes be a desired property
+   (e.g. see [I-D.ietf-core-observe-multicast-notifications]).
 
    The use of block-wise transfers [RFC7959] with group communication
    for CoAP is as discussed in Section 3.8 of
