@@ -3910,10 +3910,9 @@ Table of Contents
    attempt to inject the message to a different OSCORE group also
    including the same endpoints (see Section 14.7.1).
 
-   This relies on altering the content of the OSCORE Option while having
-   the same MAC in the ciphertext that is still going to be correctly
-   validated, which has a success probability depending on the size of
-   the MAC.
+   This relies on altering the content of the OSCORE Option in such a
+   way that the MAC in the ciphertext will still be correctly validated,
+   which has a success probability depending on the size of the MAC.
 
    As discussed in Section 14.7.2, the attack is practically infeasible
    if the message is protected in group mode, thanks to the
