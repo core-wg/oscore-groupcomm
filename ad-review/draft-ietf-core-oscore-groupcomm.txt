@@ -1105,14 +1105,15 @@ Table of Contents
 
    Therefore, if the Recipient Context is derived again from the same
    Security Context, there is a risk that a replayed message is not
-   detected.  If one Recipient Context has been deleted from the current
-   Security Context, then the Replay Window of any new Recipient Context
-   in this Security Context MUST be initialized as invalid.  An
-   exception applies when the deleted Recipient Context was created upon
-   receiving a message and that message was not verified successfully
-   (see Section 7.2, Section 7.4, Section 8.4, and Section 8.6).
-   Messages associated with a Recipient Context that has an invalid
-   Replay Window MUST NOT be delivered to the application.
+   detected.  If any Recipient Context associated with any peer has ever
+   been deleted from the current Security Context, then the Replay
+   Window of any new Recipient Context in this Security Context MUST be
+   initialized as invalid.  An exception applies when the deleted
+   Recipient Context was created upon receiving a message and that
+   message was not verified successfully (see Section 7.2, Section 7.4,
+   Section 8.4, and Section 8.6).  Messages associated with a Recipient
+   Context that has an invalid Replay Window MUST NOT be delivered to
+   the application.
 
    If the endpoint receives a message to be processed with any such new
    Recipient Context whose Replay Window is invalid, then the endpoint
