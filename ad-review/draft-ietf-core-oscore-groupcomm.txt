@@ -1217,9 +1217,9 @@ Table of Contents
 
    The assignment of a new Sender ID may be the result of different
    processes.  The endpoint may request a new Sender ID, e.g., because
-   of (approaching) the exhaustion of the Sender Sequence Number space
-   (see Section 2.6.2).  An endpoint may request to re-join the group,
-   e.g., because of losing the varying part of its Security Context (see
+   of the impending exhaustion of the Sender Sequence Number space (see
+   Section 2.6.2).  An endpoint may request to re-join the group, e.g.,
+   because of losing the varying part of its Security Context (see
    Section 2.6.1), and is provided with a new Sender ID together with
    the latest data for the long-term part of the Security Context.
 
