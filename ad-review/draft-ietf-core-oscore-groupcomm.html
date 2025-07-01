@@ -3258,9 +3258,9 @@ If the used COSE library adheres to the mandate in <span><a href="https://rfc-ed
         <li class="normal" id="section-10-4.4">
           <p id="section-10-4.4.1">For many constrained IoT devices, it is problematic to support more than one signature algorithm. The following applies with respect to the Signature Algorithm (see <a href="#ssec-common-context-cs-alg" class="auto internal xref">Section 2.1.8</a>).<a href="#section-10-4.4.1" class="pilcrow">¶</a></p>
 <p id="section-10-4.4.2">
-Less constrained endpoints <span class="bcp14">SHOULD</span> implement both: the EdDSA signature algorithm together with the elliptic curve Ed25519 <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; and the ECDSA signature algorithm together with the elliptic curve P-256.<a href="#section-10-4.4.2" class="pilcrow">¶</a></p>
+Less constrained endpoints <span class="bcp14">MUST</span> implement at least one of the following and <span class="bcp14">SHOULD</span> implement both: the EdDSA signature algorithm together with the elliptic curve Ed25519 <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; the ECDSA signature algorithm together with the elliptic curve P-256.<a href="#section-10-4.4.2" class="pilcrow">¶</a></p>
 <p id="section-10-4.4.3">
-Constrained endpoints <span class="bcp14">SHOULD</span> implement: the EdDSA signature algorithm together with the elliptic curve Ed25519 <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; or the ECDSA signature algorithm together with the elliptic curve P-256.<a href="#section-10-4.4.3" class="pilcrow">¶</a></p>
+Constrained endpoints <span class="bcp14">MUST</span> implement at least one of the following: the EdDSA signature algorithm together with the elliptic curve Ed25519 <span>[<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>; the ECDSA signature algorithm together with the elliptic curve P-256.<a href="#section-10-4.4.3" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-10-4.5">
           <p id="section-10-4.5.1">Endpoints that implement the ECDSA signature algorithm <span class="bcp14">MAY</span> use "deterministic ECDSA" as specified in <span>[<a href="#RFC6979" class="cite xref">RFC6979</a>]</span>. Pure deterministic elliptic-curve signature algorithms such as deterministic ECDSA and EdDSA have the advantage of not requiring access to a source of high-quality randomness. However, these signature algorithms have been shown vulnerable to some side-channel and fault injection attacks due to their determinism, which can result in extracting a device's private key. As suggested in <span><a href="https://rfc-editor.org/rfc/rfc9053#section-2.1.1" class="relref">Section 2.1.1</a> of [<a href="#RFC9053" class="cite xref">RFC9053</a>]</span>, this can be addressed by combining both randomness and determinism <span>[<a href="#I-D.irtf-cfrg-det-sigs-with-noise" class="cite xref">I-D.irtf-cfrg-det-sigs-with-noise</a>]</span>.<a href="#section-10-4.5.1" class="pilcrow">¶</a></p>
@@ -3277,9 +3277,9 @@ Constrained endpoints <span class="bcp14">SHOULD</span> implement: the EdDSA sig
         <li class="normal" id="section-10-6.3">
           <p id="section-10-6.3.1">The following applies with respect to ECDH curves.<a href="#section-10-6.3.1" class="pilcrow">¶</a></p>
 <p id="section-10-6.3.2">
-Less constrained endpoints <span class="bcp14">SHOULD</span> implement both the X25519 curve <span>[<a href="#RFC7748" class="cite xref">RFC7748</a>]</span> and the P-256 curve as ECDH curves.<a href="#section-10-6.3.2" class="pilcrow">¶</a></p>
+Less constrained endpoints <span class="bcp14">MUST</span> implement at least one of the following ECDH curves and <span class="bcp14">SHOULD</span> implement both: the X25519 curve <span>[<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>; the P-256 curve.<a href="#section-10-6.3.2" class="pilcrow">¶</a></p>
 <p id="section-10-6.3.3">
-Constrained endpoints <span class="bcp14">SHOULD</span> implement the X25519 curve <span>[<a href="#RFC7748" class="cite xref">RFC7748</a>]</span> or the P-256 curve as ECDH curve.<a href="#section-10-6.3.3" class="pilcrow">¶</a></p>
+Constrained endpoints <span class="bcp14">MUST</span> implement at least one of the following ECDH curves: the X25519 curve <span>[<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>; the P-256 curve.<a href="#section-10-6.3.3" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-10-7">Constrained IoT devices may alternatively represent Montgomery curves and (twisted) Edwards curves <span>[<a href="#RFC7748" class="cite xref">RFC7748</a>]</span> in the short-Weierstrass form Wei25519, with which the algorithms ECDSA25519 and ECDH25519 can be used for signature operations and Diffie-Hellman secret calculation, respectively <span>[<a href="#I-D.ietf-lwig-curve-representations" class="cite xref">I-D.ietf-lwig-curve-representations</a>]</span>.<a href="#section-10-7" class="pilcrow">¶</a></p>
@@ -4639,28 +4639,31 @@ In a 1-to-N communication model, only a single client transmits data to the CoAP
             <p id="appendix-E.1-1.11.1">Generalized use of the Block2 Option in protected (group) requests.<a href="#appendix-E.1-1.11.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.12">
-            <p id="appendix-E.1-1.12.1">Suggested means for silent servers to make Replay Windows valid again.<a href="#appendix-E.1-1.12.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.12.1">Clearer statements on implementation compliance.<a href="#appendix-E.1-1.12.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.13">
-            <p id="appendix-E.1-1.13.1">Optional procedure for reassigning Gids moved to the document body.<a href="#appendix-E.1-1.13.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.13.1">Suggested means for silent servers to make Replay Windows valid again.<a href="#appendix-E.1-1.13.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.14">
-            <p id="appendix-E.1-1.14.1">Specific definition of reassignment of Sender IDs in a group.<a href="#appendix-E.1-1.14.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.14.1">Optional procedure for reassigning Gids moved to the document body.<a href="#appendix-E.1-1.14.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.15">
-            <p id="appendix-E.1-1.15.1">Discussed server-side mitigations against unicast requests protected in group mode.<a href="#appendix-E.1-1.15.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.15.1">Specific definition of reassignment of Sender IDs in a group.<a href="#appendix-E.1-1.15.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.16">
-            <p id="appendix-E.1-1.16.1">Removed hypothetical discussions on alternative protocol designs.<a href="#appendix-E.1-1.16.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.16.1">Discussed server-side mitigations against unicast requests protected in group mode.<a href="#appendix-E.1-1.16.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.17">
-            <p id="appendix-E.1-1.17.1">Discussion on Denial of Service moved to security considerations.<a href="#appendix-E.1-1.17.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.17.1">Removed hypothetical discussions on alternative protocol designs.<a href="#appendix-E.1-1.17.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.18">
-            <p id="appendix-E.1-1.18.1">Expanded considerations on leakage of Diffie-Hellman shared secret.<a href="#appendix-E.1-1.18.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.18.1">Discussion on Denial of Service moved to security considerations.<a href="#appendix-E.1-1.18.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-E.1-1.19">
-            <p id="appendix-E.1-1.19.1">Editorial clarifications and fixes.<a href="#appendix-E.1-1.19.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-1.19.1">Expanded considerations on leakage of Diffie-Hellman shared secret.<a href="#appendix-E.1-1.19.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-E.1-1.20">
+            <p id="appendix-E.1-1.20.1">Editorial clarifications and fixes.<a href="#appendix-E.1-1.20.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
