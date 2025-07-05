@@ -1362,7 +1362,7 @@ For endpoints that support the group mode, the following applies.
 
    Less constrained endpoints MUST implement at least one of the following and SHOULD implement both: the EdDSA signature algorithm together with the elliptic curve Ed25519 {{RFC8032}}; the ECDSA signature algorithm together with the elliptic curve P-256.
 
-   Constrained endpoints MUST implement at least one of the following: the EdDSA signature algorithm together with the elliptic curve Ed25519 {{RFC8032}}; the ECDSA signature algorithm together with the elliptic curve P-256.
+   Constrained endpoints MUST implement at least one of the following and, if affordable, SHOULD implement both: the EdDSA signature algorithm together with the elliptic curve Ed25519 {{RFC8032}}; the ECDSA signature algorithm together with the elliptic curve P-256.
 
 * Endpoints that implement the ECDSA signature algorithm MAY use "deterministic ECDSA" as specified in {{RFC6979}}. Pure deterministic elliptic-curve signature algorithms such as deterministic ECDSA and EdDSA have the advantage of not requiring access to a source of high-quality randomness. However, these signature algorithms have been shown vulnerable to some side-channel and fault injection attacks due to their determinism, which can result in extracting a device's private key. As suggested in {{Section 2.1.1 of RFC9053}}, this can be addressed by combining both randomness and determinism {{I-D.irtf-cfrg-det-sigs-with-noise}}.
 
@@ -1376,7 +1376,7 @@ For endpoints that support the pairwise mode, the following applies.
 
    Less constrained endpoints MUST implement at least one of the following ECDH curves and SHOULD implement both: the X25519 curve {{RFC7748}}; the P-256 curve.
 
-   Constrained endpoints MUST implement at least one of the following ECDH curves: the X25519 curve {{RFC7748}}; the P-256 curve.
+   Constrained endpoints MUST implement at least one of the following ECDH curves and, if affordable, SHOULD implement both: the X25519 curve {{RFC7748}}; the P-256 curve.
 
 Constrained IoT devices may alternatively represent Montgomery curves and (twisted) Edwards curves {{RFC7748}} in the short-Weierstrass form Wei25519, with which the algorithms ECDSA25519 and ECDH25519 can be used for signature operations and Diffie-Hellman secret calculation, respectively {{I-D.ietf-lwig-curve-representations}}.
 
