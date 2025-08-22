@@ -968,7 +968,7 @@ The method defined in this section is not relevant for responses to requests tha
 
 Upon receiving a protected message, a recipient endpoint retrieves a Security Context as in {{RFC8613}}. An endpoint MUST be able to distinguish between a Security Context to process OSCORE messages as in {{RFC8613}} and a Group OSCORE Security Context to process Group OSCORE messages as defined in this document.
 
-To this end, an endpoint can take into account the different structure of the Security Context defined in {{sec-context}}, for example based on the presence of Signature Algorithm and Pairwise Key Agreement Algorithm in the Common Context. Alternatively, implementations can use an additional parameter in the Security Context, to explicitly mark that it is intended for processing Group OSCORE messages.
+The way to accomplish this distinction is implementation specific. For example, an endpoint can take into account the different structure of the Security Context defined in {{sec-context}}, e.g., based on the presence of Signature Algorithm and Pairwise Key Agreement Algorithm in the Common Context. Alternatively, at the cost of increasing storage, implementations can use an additional parameter in the Security Context, to explicitly mark that it is intended for processing Group OSCORE messages.
 
 If either of the following conditions holds, a recipient endpoint MUST discard the incoming protected message:
 
