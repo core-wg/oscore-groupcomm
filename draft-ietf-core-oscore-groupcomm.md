@@ -172,7 +172,7 @@ entity:
 
 --- abstract
 
-This document defines the security protocol Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of CoAP messages exchanged between members of a group, e.g., sent over IP multicast. In particular, the described protocol defines how OSCORE is used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with each other member of the group for pairwise OSCORE communication. Group OSCORE can be used between endpoints communicating with CoAP or CoAP-mappable HTTP.
+This document defines the security protocol Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of messages exchanged with the Constrained Application Protocol (CoAP) between members of a group, e.g., sent over IP multicast. In particular, the described protocol defines how OSCORE is used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with each other member of the group for pairwise OSCORE communication. Group OSCORE can be used between endpoints communicating with CoAP or CoAP-mappable HTTP.
 
 --- middle
 
