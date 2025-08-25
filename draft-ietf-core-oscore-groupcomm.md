@@ -1405,13 +1405,17 @@ RES: 2.05 Content
 
 As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant Security Context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s).
 
-Every group is associated with a Group Manager that is responsible for distributing security parameters and keying material within the group, among other tasks. The details of how the Group Manager interacts with (candidate) group members or with external entities like signature checkers, as well as the protocols used for those interactions, are out of scope. The list of responsibilities of the Group Manager is compiled in {{sec-group-manager}}.
+Every group is associated with a Group Manager that is responsible for distributing security parameters and keying material within the group, among other tasks. The details of how the Group Manager interacts with (candidate) group members or with external entities like signature checkers, as well as the protocols used for those interactions, are out of scope. 
 
 The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. Within each of such groups, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. The maximum length of Sender IDs depends on the length of the nonce for the algorithms used in the group (see {{ssec-sender-recipient-context}}).
 
 According to a hierarchical approach, the Gid value assigned to a group is associated with a dedicated space for the values of Sender ID and Recipient ID of the members of that group. When an endpoint (re-)joins a group, it is provided with the current Gid to use in the group. The Group Manager also assigns an integer Key Generation Number counter to each of its groups, identifying the current version of the keying material used in that group. Further details about identifiers and keys are provided in {{sec-group-key-management}}.
 
 The Group Manager maintains records of the authentication credentials of endpoints in a group, and provides information about the group and its members to other group members (see {{setup}}). Optionally, the Group Manager provides information about the group and its members to external entities with a specific role, such as signature checkers (see {{sec-additional-entities}}).
+
+The list of responsibilities of the Group Manager is compiled in {{sec-group-manager}}.
+
+One realization of a Group Manager is specified in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the process by which an endpoint (re-)joins a group is based on the ACE framework for authentication and authorization in constrained environments {{RFC9200}}.
 
 ## Set-up of New Endpoints # {#setup}
 
@@ -1428,8 +1432,6 @@ Communications that the Group Manager has with joining endpoints and group membe
 The Group Manager MUST verify that the joining endpoint is authorized to join the group. To this end, the Group Manager can directly authorize the joining endpoint, or expect it to provide authorization evidence previously obtained from a trusted entity. Further details about the authorization of joining endpoints are out of the scope of this document.
 
 In case of successful authorization check, the Group Manager provides the joining endpoint with the keying material to initialize the Security Context. The actual provisioning of keying material and parameters to the joining endpoint is out of the scope of this document.
-
-One realization of a Group Manager is specified in {{I-D.ietf-ace-key-groupcomm-oscore}}, where the join process is based on the ACE framework for authentication and authorization in constrained environments {{RFC9200}}.
 
 ## Management of Group Keying Material # {#sec-group-key-management}
 
