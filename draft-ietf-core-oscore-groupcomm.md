@@ -1405,7 +1405,7 @@ RES: 2.05 Content
 
 As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant Security Context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s).
 
-Every group is associated with a Group Manager that is responsible for distributing security parameters and keying material within the group, among other tasks. The details of how the Group Manager interacts with (candidate) group members or with external entities like signature checkers, as well as the protocols used for those interactions, are out of scope. 
+Every group is associated with a Group Manager that is responsible for distributing security parameters and keying material within the group, among other tasks. The details of how the Group Manager interacts with (candidate) group members or with external entities like signature checkers, as well as the protocols used for those interactions, are out of scope.
 
 The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. Within each of such groups, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. The maximum length of Sender IDs depends on the length of the nonce for the algorithms used in the group (see {{ssec-sender-recipient-context}}).
 
