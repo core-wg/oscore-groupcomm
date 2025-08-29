@@ -1729,7 +1729,7 @@ The group mode defined in {{mess-processing}} relies on shared group keying mate
 
 * Source authentication of messages sent to a group is ensured through a countersignature, which is computed by the sender endpoint using its own private key and then appended to the message payload. The countersignature is also encrypted using a keystream derived from the group keying material (see {{compression-details}} and {{sssec-encrypted-signature-keystream}}). This ensures group privacy, i.e., an attacker cannot track an endpoint over two groups by linking messages between the two groups unless the attacker is also a member of both groups.
 
-* Messages are encrypted at a group level (group-level data confidentiality), i.e., they can be decrypted by any member of the group, but not by an external adversary or other external entities.
+* Messages are encrypted at a group level (group-level data confidentiality), i.e., they can be decrypted by any member of the group, but not by an external adversary or other external entities other than the Group Manager responsible for the Group.
 
 * If the used Group Encryption Algorithm provides integrity protection, then it also ensures group authentication and proof of group membership, but not source authentication. That is, it ensures that a message sent to a group has been sent by a member of that group, but not necessarily by the alleged sender. In fact, any group member is able to derive the Sender Key used by the actual sender endpoint, and thus can compute a valid authentication tag. Therefore, the message content could originate from any of the current group members.
 
