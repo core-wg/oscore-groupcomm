@@ -2070,7 +2070,7 @@ In case the other endpoint's public key has COSE Key Type "EC2" <span>[<a href="
 <a href="#section-2.5.2.1" class="section-number selfRef">2.5.2.1. </a><a href="#name-curve25519" class="section-name selfRef">Curve25519</a>
             </h5>
 <p id="section-2.5.2.1-1">The y-coordinate of the other endpoint's Ed25519 public key is decoded as specified in <span><a href="https://rfc-editor.org/rfc/rfc8032#section-5.1.3" class="relref">Section 5.1.3</a> of [<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>. The Curve25519 u-coordinate is recovered as u = (1 + y) / (1 - y) (mod p) following the map in <span><a href="https://rfc-editor.org/rfc/rfc7748#section-4.1" class="relref">Section 4.1</a> of [<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>. Note that the mapping is not defined for y = 1, and that y = -1 maps to u = 0 which corresponds to the neutral group element and thus will result in a degenerate shared secret. Therefore, implementations <span class="bcp14">MUST</span> abort if the y-coordinate of the other endpoint's Ed25519 public key is 1 or -1 (mod p).<a href="#section-2.5.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-2.5.2.1-2">The private signing key byte strings (i.e., the lower 32 bytes used for generating the public key, see step 1 of <span><a href="https://rfc-editor.org/rfc/rfc8032#section-5.1.5" class="relref">Section 5.1.5</a> of [<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>) are decoded the same way for signing in Ed25519 and scalar multiplication in X25519. Hence, in order to compute the shared secret, the endpoint applies the X25519 function to the Ed25519 private signing key byte string and the encoded u-coordinate byte string as specified in <span><a href="https://rfc-editor.org/rfc/rfc7748#section-5" class="relref">Section 5</a> of [<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>.<a href="#section-2.5.2.1-2" class="pilcrow">¶</a></p>
+<p id="section-2.5.2.1-2">The private signing key byte strings (i.e., the lower 32 bytes used for generating the public key, see Step 1 of <span><a href="https://rfc-editor.org/rfc/rfc8032#section-5.1.5" class="relref">Section 5.1.5</a> of [<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>) are decoded the same way for signing in Ed25519 and scalar multiplication in X25519. Hence, in order to compute the shared secret, the endpoint applies the X25519 function to the Ed25519 private signing key byte string and the encoded u-coordinate byte string as specified in <span><a href="https://rfc-editor.org/rfc/rfc7748#section-5" class="relref">Section 5</a> of [<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>.<a href="#section-2.5.2.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="curve448">
@@ -2079,7 +2079,7 @@ In case the other endpoint's public key has COSE Key Type "EC2" <span>[<a href="
 <a href="#section-2.5.2.2" class="section-number selfRef">2.5.2.2. </a><a href="#name-curve448" class="section-name selfRef">Curve448</a>
             </h5>
 <p id="section-2.5.2.2-1">The y-coordinate of the other endpoint's Ed448 public key is decoded as specified in <span><a href="https://rfc-editor.org/rfc/rfc8032#section-5.2.3." class="relref">Section 5.2.3.</a> of [<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>. The Curve448 u-coordinate is recovered as u = y^2 * (d * y^2 - 1) / (y^2 - 1) (mod p) following the map from "edwards448" in <span><a href="https://rfc-editor.org/rfc/rfc7748#section-4.2" class="relref">Section 4.2</a> of [<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>, and also using the relation x^2 = (y^2 - 1)/(d * y^2 - 1) from the curve equation. Note that the mapping is not defined for y = 1 or -1. Therefore, implementations <span class="bcp14">MUST</span> abort if the y-coordinate of the peer endpoint's Ed448 public key is 1 or -1 (mod p).<a href="#section-2.5.2.2-1" class="pilcrow">¶</a></p>
-<p id="section-2.5.2.2-2">The private signing key byte strings (i.e., the lower 57 bytes used for generating the public key, see step 1 of <span><a href="https://rfc-editor.org/rfc/rfc8032#section-5.2.5" class="relref">Section 5.2.5</a> of [<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>) are decoded the same way for signing in Ed448 and scalar multiplication in X448. Hence, in order to compute the shared secret, the endpoint applies the X448 function to the Ed448 private signing key byte string and the encoded u-coordinate byte string as specified in <span><a href="https://rfc-editor.org/rfc/rfc7748#section-5" class="relref">Section 5</a> of [<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>.<a href="#section-2.5.2.2-2" class="pilcrow">¶</a></p>
+<p id="section-2.5.2.2-2">The private signing key byte strings (i.e., the lower 57 bytes used for generating the public key, see Step 1 of <span><a href="https://rfc-editor.org/rfc/rfc8032#section-5.2.5" class="relref">Section 5.2.5</a> of [<a href="#RFC8032" class="cite xref">RFC8032</a>]</span>) are decoded the same way for signing in Ed448 and scalar multiplication in X448. Hence, in order to compute the shared secret, the endpoint applies the X448 function to the Ed448 private signing key byte string and the encoded u-coordinate byte string as specified in <span><a href="https://rfc-editor.org/rfc/rfc7748#section-5" class="relref">Section 5</a> of [<a href="#RFC7748" class="cite xref">RFC7748</a>]</span>.<a href="#section-2.5.2.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2285,8 +2285,12 @@ In particular, the Countersign_structure contains the context text string "Count
         <h3 id="name-nonce-computation">
 <a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-nonce-computation" class="section-name selfRef">Nonce Computation</a>
         </h3>
-<p id="section-3.3-1">The nonce is constructed like in OSCORE, with the difference that step 4 in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-5.2" class="relref">Section 5.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> is replaced with:<a href="#section-3.3-1" class="pilcrow">¶</a></p>
-<p id="section-3.3-2">A. and then XOR with X bytes from the Common IV's start, where X is the length in bytes of the nonce.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.3-1">The nonce is constructed like in OSCORE, with the difference that Step 4 in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-5.2" class="relref">Section 5.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> is replaced with:<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<ol start="4" type="1" class="normal type-1" id="section-3.3-2">
+<li id="section-3.3-2.1">
+            <p id="section-3.3-2.1.1">and then XOR with X bytes from the Common IV's start, where X is the length in bytes of the nonce.<a href="#section-3.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
 <p id="section-3.3-3">For example, if X = 7 and the Common IV is 0x00112233445566778899aabbcc (13 bytes), then the bytes to XOR are 0x00112233445566 (7 bytes).<a href="#section-3.3-3" class="pilcrow">¶</a></p>
 <p id="section-3.3-4">The constructed nonce is used both by the AEAD Algorithm (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a>) and by the Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>), independent of whether they are AEAD or plain encryption algorithms. Algorithms that do not use a nonce are not supported, as per <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
 </section>
@@ -2749,13 +2753,13 @@ Future specifications may define how to process incoming messages protected with
 <p id="section-7.1-1">When using the group mode to protect a request, a client proceeds as described in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.1" class="relref">Section 8.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> with the following modifications.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-7.1-2.1">
-            <p id="section-7.1-2.1.1">In step 2, the Additional Authenticated Data is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> of this document.<a href="#section-7.1-2.1.1" class="pilcrow">¶</a></p>
+            <p id="section-7.1-2.1.1">In Step 2, the Additional Authenticated Data is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> of this document.<a href="#section-7.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.1-2.2">
-            <p id="section-7.1-2.2.1">In step 4, the encryption of the COSE object is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> of this document. The encoding of the compressed COSE object is modified as described in <a href="#compression" class="auto internal xref">Section 4</a> of this document. In particular, the Group Flag <span class="bcp14">MUST</span> be set to 1. The Group Encryption Algorithm from the Common Context <span class="bcp14">MUST</span> be used.<a href="#section-7.1-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-7.1-2.2.1">In Step 4, the encryption of the COSE object is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> of this document. The encoding of the compressed COSE object is modified as described in <a href="#compression" class="auto internal xref">Section 4</a> of this document. In particular, the Group Flag <span class="bcp14">MUST</span> be set to 1. The Group Encryption Algorithm from the Common Context <span class="bcp14">MUST</span> be used.<a href="#section-7.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.1-2.3">
-            <p id="section-7.1-2.3.1">In step 5, the countersignature is computed and the format of the OSCORE message is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> and <a href="#compression" class="auto internal xref">Section 4</a> of this document. In particular, the payload of the Group OSCORE message includes also the encrypted countersignature.<a href="#section-7.1-2.3.1" class="pilcrow">¶</a></p>
+            <p id="section-7.1-2.3.1">In Step 5, the countersignature is computed and the format of the OSCORE message is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> and <a href="#compression" class="auto internal xref">Section 4</a> of this document. In particular, the payload of the Group OSCORE message includes also the encrypted countersignature.<a href="#section-7.1-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-7.1-3">In addition, the following applies when sending a request that establishes a long exchange.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
@@ -2787,7 +2791,7 @@ After a group rekeying, the client might have missed both the rekeying messages 
 <p id="section-7.2-1">Upon receiving a protected request with the Group Flag set to 1, following the procedure in <a href="#sec-message-reception" class="auto internal xref">Section 6</a>, a server proceeds as described in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-8.2" class="relref">Section 8.2</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> with the following modifications.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-7.2-2.1">
-            <p id="section-7.2-2.1.1">In step 2, the decoding of the compressed COSE object follows <a href="#compression" class="auto internal xref">Section 4</a> of this document. In particular:<a href="#section-7.2-2.1.1" class="pilcrow">¶</a></p>
+            <p id="section-7.2-2.1.1">In Step 2, the decoding of the compressed COSE object follows <a href="#compression" class="auto internal xref">Section 4</a> of this document. In particular:<a href="#section-7.2-2.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-7.2-2.1.2.1">
                 <p id="section-7.2-2.1.2.1.1">If the server discards the request due to not retrieving a Security Context associated with the OSCORE group, the server <span class="bcp14">MAY</span> respond with a 4.01 (Unauthorized) error message. When doing so, the server <span class="bcp14">MAY</span> set an Outer Max-Age Option with value zero, and <span class="bcp14">MAY</span> include a descriptive string as diagnostic payload.<a href="#section-7.2-2.1.2.1.1" class="pilcrow">¶</a></p>
@@ -2798,10 +2802,10 @@ After a group rekeying, the client might have missed both the rekeying messages 
             </ul>
 </li>
           <li class="normal" id="section-7.2-2.2">
-            <p id="section-7.2-2.2.1">In step 4, the Additional Authenticated Data is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> of this document.<a href="#section-7.2-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-7.2-2.2.1">In Step 4, the Additional Authenticated Data is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> of this document.<a href="#section-7.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.2-2.3">
-            <p id="section-7.2-2.3.1">In step 6, the server also verifies the countersignature by using the public key from the client's authentication credential stored in the associated Recipient Context. In particular:<a href="#section-7.2-2.3.1" class="pilcrow">¶</a></p>
+            <p id="section-7.2-2.3.1">In Step 6, the server also verifies the countersignature by using the public key from the client's authentication credential stored in the associated Recipient Context. In particular:<a href="#section-7.2-2.3.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-7.2-2.3.2.1">
                 <p id="section-7.2-2.3.2.1.1">If the server does not have the public key of the client yet, the server <span class="bcp14">MUST</span> stop processing the request and <span class="bcp14">MAY</span> respond with a 5.03 (Service Unavailable) response. The response <span class="bcp14">MAY</span> include a Max-Age Option, indicating to the client the number of seconds after which to retry. If the Max-Age Option is not present, <span><a href="https://rfc-editor.org/rfc/rfc7252#section-5.10.5" class="relref">Section 5.10.5</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span> specifies a default retry time of 60 seconds.<a href="#section-7.2-2.3.2.1.1" class="pilcrow">¶</a></p>
@@ -2856,7 +2860,7 @@ If the server deletes the used Recipient Context in this particular circumstance
 <p id="section-7.3-2">Note that the server always protects a response with the Sender Context from its latest Security Context, and that establishing a new Security Context resets the Sender Sequence Number to 0 (see <a href="#new-sender-id" class="auto internal xref">Section 2.6.3.1</a> and <a href="#new-sec-context" class="auto internal xref">Section 2.6.3.2</a>).<a href="#section-7.3-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-7.3-3.1">
-            <p id="section-7.3-3.1.1">In step 2, the Additional Authenticated Data is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> of this document.<a href="#section-7.3-3.1.1" class="pilcrow">¶</a></p>
+            <p id="section-7.3-3.1.1">In Step 2, the Additional Authenticated Data is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> of this document.<a href="#section-7.3-3.1.1" class="pilcrow">¶</a></p>
 <p id="section-7.3-3.1.2">
 In addition, the following applies if the server intends to reply with multiple responses within the long exchange established by the corresponding request.<a href="#section-7.3-3.1.2" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -2869,7 +2873,7 @@ In addition, the following applies if the server intends to reply with multiple 
             </ul>
 </li>
           <li class="normal" id="section-7.3-3.2">
-            <p id="section-7.3-3.2.1">In step 3, if either of the following conditions holds, the server <span class="bcp14">MUST</span> include its Sender Sequence Number as Partial IV in the response and use it to build the nonce to protect the response. This prevents the server from reusing the nonce from the request together with the same encryption key.<a href="#section-7.3-3.2.1" class="pilcrow">¶</a></p>
+            <p id="section-7.3-3.2.1">In Step 3, if either of the following conditions holds, the server <span class="bcp14">MUST</span> include its Sender Sequence Number as Partial IV in the response and use it to build the nonce to protect the response. This prevents the server from reusing the nonce from the request together with the same encryption key.<a href="#section-7.3-3.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-7.3-3.2.2.1">
                 <p id="section-7.3-3.2.2.1.1">The response is not the first response that the server sends to the request.<a href="#section-7.3-3.2.2.1.1" class="pilcrow">¶</a></p>
@@ -2880,7 +2884,7 @@ In addition, the following applies if the server intends to reply with multiple 
             </ul>
 </li>
           <li class="normal" id="section-7.3-3.3">
-            <p id="section-7.3-3.3.1">In step 4, the encryption of the COSE object is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> of this document. The encoding of the compressed COSE object is modified as described in <a href="#compression" class="auto internal xref">Section 4</a> of this document. In particular, the Group Flag <span class="bcp14">MUST</span> be set to 1. The Group Encryption Algorithm from the Common Context <span class="bcp14">MUST</span> be used.<a href="#section-7.3-3.3.1" class="pilcrow">¶</a></p>
+            <p id="section-7.3-3.3.1">In Step 4, the encryption of the COSE object is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> of this document. The encoding of the compressed COSE object is modified as described in <a href="#compression" class="auto internal xref">Section 4</a> of this document. In particular, the Group Flag <span class="bcp14">MUST</span> be set to 1. The Group Encryption Algorithm from the Common Context <span class="bcp14">MUST</span> be used.<a href="#section-7.3-3.3.1" class="pilcrow">¶</a></p>
 <p id="section-7.3-3.3.2">
 In addition, the following applies.<a href="#section-7.3-3.3.2" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -2902,7 +2906,7 @@ That is, when responding to a request protected in pairwise mode, the server <sp
             </ul>
 </li>
           <li class="normal" id="section-7.3-3.4">
-            <p id="section-7.3-3.4.1">In step 5, the countersignature is computed and the format of the OSCORE message is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> and <a href="#compression" class="auto internal xref">Section 4</a> of this document. In particular the payload of the Group OSCORE message includes also the encrypted countersignature (see <a href="#compression-details" class="auto internal xref">Section 4.1</a>).<a href="#section-7.3-3.4.1" class="pilcrow">¶</a></p>
+            <p id="section-7.3-3.4.1">In Step 5, the countersignature is computed and the format of the OSCORE message is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> and <a href="#compression" class="auto internal xref">Section 4</a> of this document. In particular the payload of the Group OSCORE message includes also the encrypted countersignature (see <a href="#compression-details" class="auto internal xref">Section 4.1</a>).<a href="#section-7.3-3.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2916,12 +2920,12 @@ That is, when responding to a request protected in pairwise mode, the server <sp
 <p id="section-7.4-2">Note that a client may receive a response protected with a Security Context different from the one used to protect the corresponding request, and that, upon the establishment of a new Security Context, the client re-initializes its Replay Windows in its Recipient Contexts (see <a href="#sec-group-key-management" class="auto internal xref">Section 12.2</a>).<a href="#section-7.4-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-7.4-3.1">
-            <p id="section-7.4-3.1.1">In step 2, the decoding of the compressed COSE object is modified as described in <a href="#compression" class="auto internal xref">Section 4</a> of this document. In particular, a 'kid' may not be present if the response is a reply to a request protected in pairwise mode. In such a case, the client assumes the response 'kid' to be the Recipient ID for the server for which the request protected in pairwise mode was intended.<a href="#section-7.4-3.1.1" class="pilcrow">¶</a></p>
+            <p id="section-7.4-3.1.1">In Step 2, the decoding of the compressed COSE object is modified as described in <a href="#compression" class="auto internal xref">Section 4</a> of this document. In particular, a 'kid' may not be present if the response is a reply to a request protected in pairwise mode. In such a case, the client assumes the response 'kid' to be the Recipient ID for the server for which the request protected in pairwise mode was intended.<a href="#section-7.4-3.1.1" class="pilcrow">¶</a></p>
 <p id="section-7.4-3.1.2">
 If the response 'kid context' matches an existing ID Context (Gid) but the received/assumed 'kid' does not match any Recipient ID in this Security Context, then the client <span class="bcp14">MAY</span> create a new Recipient Context for this Recipient ID and initialize it according to <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3" class="relref">Section 3</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, and also retrieve the authentication credential associated with the Recipient ID to be stored in the new Recipient Context. If the application does not specify dynamic derivation of new Recipient Contexts, then the client <span class="bcp14">SHALL</span> stop processing the response.<a href="#section-7.4-3.1.2" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.4-3.2">
-            <p id="section-7.4-3.2.1">In step 3, the Additional Authenticated Data is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> of this document.<a href="#section-7.4-3.2.1" class="pilcrow">¶</a></p>
+            <p id="section-7.4-3.2.1">In Step 3, the Additional Authenticated Data is modified as described in <a href="#sec-cose-object" class="auto internal xref">Section 3</a> of this document.<a href="#section-7.4-3.2.1" class="pilcrow">¶</a></p>
 <p id="section-7.4-3.2.2">
 In addition, the following applies if the client processes a response to a request within a long exchange.<a href="#section-7.4-3.2.2" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -2936,7 +2940,7 @@ In addition, the following applies if the client processes a response to a reque
 This ensures that, throughout a long exchange, the client can correctly verify the received responses, even if the client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see <a href="#new-sender-id" class="auto internal xref">Section 2.6.3.1</a>), as well as when it installs a new Security Context with a new ID Context (Gid) following a group rekeying (see <a href="#sec-group-key-management" class="auto internal xref">Section 12.2</a>).<a href="#section-7.4-3.2.4" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.4-3.3">
-            <p id="section-7.4-3.3.1">In step 5, the client also verifies the countersignature by using the public key from the server's authentication credential stored in the associated Recipient Context. In particular:<a href="#section-7.4-3.3.1" class="pilcrow">¶</a></p>
+            <p id="section-7.4-3.3.1">In Step 5, the client also verifies the countersignature by using the public key from the server's authentication credential stored in the associated Recipient Context. In particular:<a href="#section-7.4-3.3.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-7.4-3.3.2.1">
                 <p id="section-7.4-3.3.2.1.1">The signature verification as defined below <span class="bcp14">SHOULD</span> be performed before decrypting the COSE object. An exception applies to implementations that cannot perform the two steps in this order. Those implementations <span class="bcp14">MUST</span> ensure that no access to the plaintext is possible before a successful signature verification and <span class="bcp14">MUST</span> prevent any possible leak of time-related information that can yield side-channel attacks.<a href="#section-7.4-3.3.2.1.1" class="pilcrow">¶</a></p>
@@ -2971,7 +2975,7 @@ Otherwise, the client hereafter considers the received 'kid' as the current Reci
             </ul>
 </li>
           <li class="normal" id="section-7.4-3.4">
-            <p id="section-7.4-3.4.1">In step 5, when decrypting the COSE object using the Recipient Key, the Group Encryption Algorithm from the Common Context <span class="bcp14">MUST</span> be used.<a href="#section-7.4-3.4.1" class="pilcrow">¶</a></p>
+            <p id="section-7.4-3.4.1">In Step 5, when decrypting the COSE object using the Recipient Key, the Group Encryption Algorithm from the Common Context <span class="bcp14">MUST</span> be used.<a href="#section-7.4-3.4.1" class="pilcrow">¶</a></p>
 <p id="section-7.4-3.4.2">
 In addition, the client performs the following actions if the response is received within a long exchange.<a href="#section-7.4-3.4.2" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -2993,7 +2997,7 @@ Note that, if "kid2" is different from "kid1" and the 'kid' field is omitted fro
 This ensures that the client remains able to correctly perform the ordering and replay protection of responses within a long exchange, even if the server legitimately starts using a new Sender ID, as received from the Group Manager when individually rekeyed (see <a href="#new-sender-id" class="auto internal xref">Section 2.6.3.1</a>) or when re-joining the group.<a href="#section-7.4-3.4.5" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-7.4-3.5">
-            <p id="section-7.4-3.5.1">In step 8, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client <span class="bcp14">MAY</span> delete that Recipient Context. When this behavior is specified by the application, it mitigates attacks that aim at overloading the client's storage.<a href="#section-7.4-3.5.1" class="pilcrow">¶</a></p>
+            <p id="section-7.4-3.5.1">In Step 8, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client <span class="bcp14">MAY</span> delete that Recipient Context. When this behavior is specified by the application, it mitigates attacks that aim at overloading the client's storage.<a href="#section-7.4-3.5.1" class="pilcrow">¶</a></p>
 <p id="section-7.4-3.5.2">
 If the client deletes the used Recipient Context in this particular circumstance, then this deletion does not require the client to initialize as invalid the Replay Window of any new Recipient Context created later within the Security Context (see <a href="#ssec-loss-mutable-context-overflow" class="auto internal xref">Section 2.6.1.2</a>).<a href="#section-7.4-3.5.2" class="pilcrow">¶</a></p>
 </li>
@@ -3371,10 +3375,10 @@ RES: 2.05 Content
                 <p id="section-12.2-8.3.2.1.1">The new keying material, i.e., the new Master Secret, the new Gid and (optionally) the new Master Salt.<a href="#section-12.2-8.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-12.2-8.3.2.2">
-                <p id="section-12.2-8.3.2.2.1">The new Key Generation Number from step 1.<a href="#section-12.2-8.3.2.2.1" class="pilcrow">¶</a></p>
+                <p id="section-12.2-8.3.2.2.1">The new Key Generation Number from Step 1.<a href="#section-12.2-8.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-12.2-8.3.2.3">
-                <p id="section-12.2-8.3.2.3.1">The set of stale Sender IDs from step 2.<a href="#section-12.2-8.3.2.3.1" class="pilcrow">¶</a></p>
+                <p id="section-12.2-8.3.2.3.1">The set of stale Sender IDs from Step 2.<a href="#section-12.2-8.3.2.3.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 <p id="section-12.2-8.3.3">
@@ -3412,7 +3416,7 @@ Otherwise, the group member <span class="bcp14">MUST</span> remove every authent
 <p id="section-12.2-15">Alternatively, the group member can re-join the group. In such a case, the group member <span class="bcp14">MUST</span> take one of the following two actions.<a href="#section-12.2-15" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-12.2-16.1">
-            <p id="section-12.2-16.1.1">First, the group member performs steps 2 and 3 above. Then, the group member re-joins the group.<a href="#section-12.2-16.1.1" class="pilcrow">¶</a></p>
+            <p id="section-12.2-16.1.1">First, the group member performs Steps 2 and 3 above. Then, the group member re-joins the group.<a href="#section-12.2-16.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-12.2-16.2">
             <p id="section-12.2-16.2.1">The group member re-joins the group with the same roles it currently has in the group, and, during the re-join process, it asks the Group Manager for the authentication credentials of all the current group members.<a href="#section-12.2-16.2.1" class="pilcrow">¶</a></p>
@@ -3452,7 +3456,7 @@ The Group Manager <span class="bcp14">MAY</span> support and use this approach, 
               </h6>
 <p id="section-12.2.1.1.1-1">If the Group Manager performs the reassignment of Gid values previously used during a group's lifetime, the Group Manager <span class="bcp14">MUST</span> take additional actions when handling Gid values and rekeying the group, as specified below.<a href="#section-12.2.1.1.1-1" class="pilcrow">¶</a></p>
 <p id="section-12.2.1.1.1-2">When a node (re-)joins the group and it is provided with the current Gid to use in the group, the Group Manager considers such a Gid as the Birth Gid of that endpoint for that group. For each group member, the Group Manager <span class="bcp14">MUST</span> store the latest corresponding Birth Gid until that member leaves the group. In case the endpoint has in fact re-joined the group, the newly determined Birth Gid overwrites the one currently stored.<a href="#section-12.2.1.1.1-2" class="pilcrow">¶</a></p>
-<p id="section-12.2.1.1.1-3">When establishing a new Security Context for the group, the Group Manager takes the additional following step between steps 1 and 2 of <a href="#sec-group-key-management" class="auto internal xref">Section 12.2</a>.<a href="#section-12.2.1.1.1-3" class="pilcrow">¶</a></p>
+<p id="section-12.2.1.1.1-3">When establishing a new Security Context for the group, the Group Manager takes the additional following step between Steps 1 and 2 of <a href="#sec-group-key-management" class="auto internal xref">Section 12.2</a>.<a href="#section-12.2.1.1.1-3" class="pilcrow">¶</a></p>
 <p id="section-12.2.1.1.1-4">A. The Group Manager <span class="bcp14">MUST</span> check if the new Gid to be distributed is equal to the Birth Gid of any of the current group members. If any of such "elder members" is found in the group, then:<a href="#section-12.2.1.1.1-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-12.2.1.1.1-5.1">

@@ -959,7 +959,7 @@ Table of Contents
    the other endpoint's Ed25519 public key is 1 or -1 (mod p).
 
    The private signing key byte strings (i.e., the lower 32 bytes used
-   for generating the public key, see step 1 of Section 5.1.5 of
+   for generating the public key, see Step 1 of Section 5.1.5 of
    [RFC8032]) are decoded the same way for signing in Ed25519 and scalar
    multiplication in X25519.  Hence, in order to compute the shared
    secret, the endpoint applies the X25519 function to the Ed25519
@@ -978,7 +978,7 @@ Table of Contents
    peer endpoint's Ed448 public key is 1 or -1 (mod p).
 
    The private signing key byte strings (i.e., the lower 57 bytes used
-   for generating the public key, see step 1 of Section 5.2.5 of
+   for generating the public key, see Step 1 of Section 5.2.5 of
    [RFC8032]) are decoded the same way for signing in Ed448 and scalar
    multiplication in X448.  Hence, in order to compute the shared
    secret, the endpoint applies the X448 function to the Ed448 private
@@ -1351,10 +1351,10 @@ Table of Contents
 3.3.  Nonce Computation
 
    The nonce is constructed like in OSCORE, with the difference that
-   step 4 in Section 5.2 of [RFC8613] is replaced with:
+   Step 4 in Section 5.2 of [RFC8613] is replaced with:
 
-   A. and then XOR with X bytes from the Common IV's start, where X is
-   the length in bytes of the nonce.
+   4.  and then XOR with X bytes from the Common IV's start, where X is
+       the length in bytes of the nonce.
 
    For example, if X = 7 and the Common IV is
    0x00112233445566778899aabbcc (13 bytes), then the bytes to XOR are
@@ -2005,17 +2005,17 @@ Table of Contents
    described in Section 8.1 of [RFC8613] with the following
    modifications.
 
-   *  In step 2, the Additional Authenticated Data is modified as
+   *  In Step 2, the Additional Authenticated Data is modified as
       described in Section 3 of this document.
 
-   *  In step 4, the encryption of the COSE object is modified as
+   *  In Step 4, the encryption of the COSE object is modified as
       described in Section 3 of this document.  The encoding of the
       compressed COSE object is modified as described in Section 4 of
       this document.  In particular, the Group Flag MUST be set to 1.
       The Group Encryption Algorithm from the Common Context MUST be
       used.
 
-   *  In step 5, the countersignature is computed and the format of the
+   *  In Step 5, the countersignature is computed and the format of the
       OSCORE message is modified as described in Section 3 and Section 4
       of this document.  In particular, the payload of the Group OSCORE
       message includes also the encrypted countersignature.
@@ -2065,7 +2065,7 @@ Table of Contents
    following the procedure in Section 6, a server proceeds as described
    in Section 8.2 of [RFC8613] with the following modifications.
 
-   *  In step 2, the decoding of the compressed COSE object follows
+   *  In Step 2, the decoding of the compressed COSE object follows
       Section 4 of this document.  In particular:
 
       -  If the server discards the request due to not retrieving a
@@ -2086,10 +2086,10 @@ Table of Contents
          dynamic derivation of new Recipient Contexts, then the server
          SHALL stop processing the request.
 
-   *  In step 4, the Additional Authenticated Data is modified as
+   *  In Step 4, the Additional Authenticated Data is modified as
       described in Section 3 of this document.
 
-   *  In step 6, the server also verifies the countersignature by using
+   *  In Step 6, the server also verifies the countersignature by using
       the public key from the client's authentication credential stored
       in the associated Recipient Context.  In particular:
 
@@ -2187,7 +2187,7 @@ Table of Contents
    Security Context resets the Sender Sequence Number to 0 (see
    Section 2.6.3.1 and Section 2.6.3.2).
 
-   *  In step 2, the Additional Authenticated Data is modified as
+   *  In Step 2, the Additional Authenticated Data is modified as
       described in Section 3 of this document.
 
       In addition, the following applies if the server intends to reply
@@ -2203,7 +2203,7 @@ Table of Contents
          'request_kid_context' parameter in the external_aad (see
          Section 3.4).
 
-   *  In step 3, if either of the following conditions holds, the server
+   *  In Step 3, if either of the following conditions holds, the server
       MUST include its Sender Sequence Number as Partial IV in the
       response and use it to build the nonce to protect the response.
       This prevents the server from reusing the nonce from the request
@@ -2216,7 +2216,7 @@ Table of Contents
          response than the one that was used to verify the request (see
          Section 12.2).
 
-   *  In step 4, the encryption of the COSE object is modified as
+   *  In Step 4, the encryption of the COSE object is modified as
       described in Section 3 of this document.  The encoding of the
       compressed COSE object is modified as described in Section 4 of
       this document.  In particular, the Group Flag MUST be set to 1.
@@ -2261,7 +2261,7 @@ Table of Contents
          client for the first time since the assignment of its new
          Sender ID.
 
-   *  In step 5, the countersignature is computed and the format of the
+   *  In Step 5, the countersignature is computed and the format of the
       OSCORE message is modified as described in Section 3 and Section 4
       of this document.  In particular the payload of the Group OSCORE
       message includes also the encrypted countersignature (see
@@ -2280,7 +2280,7 @@ Table of Contents
    the client re-initializes its Replay Windows in its Recipient
    Contexts (see Section 12.2).
 
-   *  In step 2, the decoding of the compressed COSE object is modified
+   *  In Step 2, the decoding of the compressed COSE object is modified
       as described in Section 4 of this document.  In particular, a
       'kid' may not be present if the response is a reply to a request
       protected in pairwise mode.  In such a case, the client assumes
@@ -2297,7 +2297,7 @@ Table of Contents
       dynamic derivation of new Recipient Contexts, then the client
       SHALL stop processing the response.
 
-   *  In step 3, the Additional Authenticated Data is modified as
+   *  In Step 3, the Additional Authenticated Data is modified as
       described in Section 3 of this document.
 
       In addition, the following applies if the client processes a
@@ -2319,7 +2319,7 @@ Table of Contents
       installs a new Security Context with a new ID Context (Gid)
       following a group rekeying (see Section 12.2).
 
-   *  In step 5, the client also verifies the countersignature by using
+   *  In Step 5, the client also verifies the countersignature by using
       the public key from the server's authentication credential stored
       in the associated Recipient Context.  In particular:
 
@@ -2372,7 +2372,7 @@ Table of Contents
          Otherwise, the client hereafter considers the received 'kid' as
          the current Recipient ID for the server.
 
-   *  In step 5, when decrypting the COSE object using the Recipient
+   *  In Step 5, when decrypting the COSE object using the Recipient
       Key, the Group Encryption Algorithm from the Common Context MUST
       be used.
 
@@ -2429,7 +2429,7 @@ Table of Contents
       Sender ID, as received from the Group Manager when individually
       rekeyed (see Section 2.6.3.1) or when re-joining the group.
 
-   *  In step 8, if the used Recipient Context was created upon
+   *  In Step 8, if the used Recipient Context was created upon
       receiving this response and the message is not verified
       successfully, the client MAY delete that Recipient Context.  When
       this behavior is specified by the application, it mitigates
@@ -3119,9 +3119,9 @@ Table of Contents
        *  The new keying material, i.e., the new Master Secret, the new
           Gid and (optionally) the new Master Salt.
 
-       *  The new Key Generation Number from step 1.
+       *  The new Key Generation Number from Step 1.
 
-       *  The set of stale Sender IDs from step 2.
+       *  The set of stale Sender IDs from Step 2.
 
        Further information may be distributed, depending on the specific
        group key management scheme used in the group.
@@ -3178,7 +3178,7 @@ Table of Contents
    Alternatively, the group member can re-join the group.  In such a
    case, the group member MUST take one of the following two actions.
 
-   *  First, the group member performs steps 2 and 3 above.  Then, the
+   *  First, the group member performs Steps 2 and 3 above.  Then, the
       group member re-joins the group.
 
    *  The group member re-joins the group with the same roles it
@@ -3262,7 +3262,7 @@ Table of Contents
    the one currently stored.
 
    When establishing a new Security Context for the group, the Group
-   Manager takes the additional following step between steps 1 and 2 of
+   Manager takes the additional following step between Steps 1 and 2 of
    Section 12.2.
 
    A.  The Group Manager MUST check if the new Gid to be distributed is
