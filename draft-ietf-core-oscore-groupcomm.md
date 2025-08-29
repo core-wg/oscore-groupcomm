@@ -126,6 +126,7 @@ informative:
   I-D.ietf-core-groupcomm-proxy:
   I-D.irtf-cfrg-det-sigs-with-noise:
   I-D.amsuess-core-cachable-oscore:
+  RFC3629:
   RFC4944:
   RFC4949:
   RFC5280:
@@ -1708,6 +1709,8 @@ For Group OSCORE, the Sender Context and Recipient Context additionally contain 
 Note that, even if an endpoint is authorized to be a group member and to take part in group communications, there is a risk that it behaves inappropriately. For instance, it can forward the content of messages in the group to unauthorized entities. However, in many use cases, the devices in the group belong to a common authority and are configured by a commissioner (see {{sec-use-cases}}), which limits this risk in practice and enables a prompt detection/reaction in case of misbehaving.
 
 With respect to unprotected message fields, the following holds. First, the 'kid context' of request messages is part of the Additional Authenticated Data, making it possible to keep long exchanges active safely beyond a possible change of ID Context (Gid) following a group rekeying (see {{sec-cose-object-ext-aad}}). Second, the countersignature included in a Group OSCORE message protected in group mode is also computed over the value of the OSCORE Option, which is also part of the Additional Authenticated Data used in the signing process. This is further discussed in {{ssec-cross-group-injection}} of this document.
+
+In accordance with {{RFC8613}}, all elements used in Group OSCORE as opaque binary values (e.g., Sender ID, ID Context) are not to be interpreted as text, Unicode, or otherwise. Implementations ought not to apply encoding transformations to the content of those elements, e.g., UTF-8 decoding {{RFC3629}} or normalization. Information elements that may contain text such as those found within authentication credentials (e.g., X.509 distinguished names, CWT claims, or JSON Web Key fields) are to be treated as opaque structured data and to be interpreted only according to the rules of the credential format as defined in their respective specifications. This avoids misinterpretation, Unicode normalization attacks, or mismatches in identity comparison.
 
 As discussed in {{Section 6.2.3 of I-D.ietf-core-groupcomm-bis}}, Group OSCORE addresses security attacks against CoAP listed in Sections {{11.2<RFC7252}}–{{11.6<RFC7252}} of {{RFC7252}}, especially when run over IP multicast.
 
