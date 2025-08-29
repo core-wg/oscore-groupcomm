@@ -1711,6 +1711,16 @@ With respect to unprotected message fields, the following holds. First, the 'kid
 
 As discussed in {{Section 6.2.3 of I-D.ietf-core-groupcomm-bis}}, Group OSCORE addresses security attacks against CoAP listed in Sections {{11.2<RFC7252}}–{{11.6<RFC7252}} of {{RFC7252}}, especially when run over IP multicast.
 
+Group OSCORE does not aim to meet the following properties:
+
+* Verification of server aliveness, as discussed in {{sec-freshness}}.
+
+* Protection of network addressing information, as discussed in {{ssec-unicast-requests}}.
+
+* Management of group membership and group keying material, which is entrusted to the Group Manager (see {{group-manager}}). Related security considerations are discussed in {{sec-cons-group-key-management}} and {{ssec-key-rotation}}.
+
+* Confidentiality protection of the OSCORE Option. Related privacy considerations are discussed in {{ssec-privacy}}.
+
 The rest of this section first discusses security aspects to be taken into account when using Group OSCORE. Then it goes through aspects covered in the security considerations of OSCORE (see {{Section 12 of RFC8613}}), and discusses how they hold when Group OSCORE is used.
 
 ## Security of the Group Mode {#ssec-group-mode-security}
