@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 27 February 2026                                   F. Palombini
+Expires: 2 March 2026                                       F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                          26 August 2025
+                                                          29 August 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 February 2026.
+   This Internet-Draft will expire on 2 March 2026.
 
 Copyright Notice
 
@@ -788,7 +788,7 @@ Table of Contents
    authentication credentials, each is provided as the binary
    serialization of a (possibly tagged) CBOR array.  If CCSs are used as
    authentication credentials, each is provided as the binary
-   serialization of a CBOR map.
+   serialization of a (possibly tagged) CBOR map.
 
    If authentication credentials are CWTs or CCSs, then the untagged CWT
    or CCS associated with an entity is stored in the Security Context
@@ -4550,9 +4550,9 @@ Table of Contents
               Object Security for Constrained RESTful Environments
               (Group OSCORE) Using Authentication and Authorization for
               Constrained Environments (ACE)", Work in Progress,
-              Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-17, 11
-              April 2025, <https://datatracker.ietf.org/doc/html/draft-
-              ietf-ace-key-groupcomm-oscore-17>.
+              Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-18, 28
+              August 2025, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-ace-key-groupcomm-oscore-18>.
 
    [I-D.ietf-core-groupcomm-proxy]
               Tiloca, M. and E. Dijk, "Proxy Operations for CoAP Group
