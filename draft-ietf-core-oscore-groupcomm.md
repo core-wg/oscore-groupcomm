@@ -336,7 +336,7 @@ The new parameter Authentication Credential Format specifies the format of authe
 
 ### Group Manager Authentication Credential ## {#ssec-common-context-gm-pub-key}
 
-The new parameter Group Manager Authentication Credential specifies the authentication credential of the Group Manager, including the Group Manager's public key. The endpoint MUST achieve proof-of-possession of the corresponding private key. As an example, such proof-of-possession is possible to achieve during the join process provided by the realization of Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}}. Further details on the provisioning of the Group Manager's authentication credential to the group members are out of the scope of this document.
+The new parameter Group Manager Authentication Credential specifies the authentication credential of the Group Manager, including the Group Manager's public key. The endpoint MUST achieve proof of possession of the corresponding private key. As an example, such proof of possession is possible to achieve during the join process provided by the realization of Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}}. Further details on the provisioning of the Group Manager's authentication credential to the group members are out of the scope of this document.
 
 ### Group Encryption Algorithm ## {#ssec-common-context-cs-enc-alg}
 
@@ -436,7 +436,7 @@ Depending on the particular deployment and the intended group size, limiting the
 
 Certain signature schemes, such as EdDSA and ECDSA, support a secure combined signature and encryption scheme. This section specifies the derivation of "pairwise keys" for use in the pairwise mode defined in {{sec-pairwise-protection}}.
 
-Group OSCORE keys used for both signature and encryption MUST be used only for purposes related to Group OSCORE. These include the processing of messages with Group OSCORE, as well as performing proof-of-possession of private keys, e.g., upon joining a group through the Group Manager (see {{group-manager}}).
+Group OSCORE keys used for both signature and encryption MUST be used only for purposes related to Group OSCORE. These include the processing of messages with Group OSCORE, as well as performing proof of possession of private keys, e.g., upon joining a group through the Group Manager (see {{group-manager}}).
 
 ### Derivation of Pairwise Keys ### {#key-derivation-pairwise}
 
@@ -1310,7 +1310,7 @@ The Echo Option value SHOULD NOT be reused; if it is reused, it MUST be highly u
 
 The server stores the Echo Option value included in the response together with the pair (gid,kid), where 'gid' is the Group Identifier of the OSCORE group and 'kid' is the Sender ID of the client in the group. These are specified in the 'kid context' and 'kid' fields of the OSCORE Option of the request, respectively. After a group rekeying has been completed and a new Security Context has been established in the group, which results also in a new Group Identifier (see {{sec-group-key-management}}), the server MUST delete all the stored Echo values associated with members of the group.
 
-After receiving a 4.01 (Unauthorized) response that includes an Echo Option and originates from a verified group member, a subsequent client request sent to that server and echoing the Echo Option value MUST be sent as a unicast message to that server.
+After receiving a 4.01 (Unauthorized) response that includes an Echo Option and originates from a verified group member, a subsequent client request sent to that server and echoing the Echo Option value MUST be a message sent unicast to that server.
 
 If in the group the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, the client MUST use the pairwise mode to protect the request, as per {{sec-pairwise-protection-req}}. Note that, as defined in {{sec-pairwise-protection}}, endpoints that are members of such a group and that use the Echo Option support the pairwise mode. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are not set, only the group mode can be used. Hence, requests including the Echo Option can be protected only with the Group Mode, with the caveat due to the risk for those requests to be redirected to a different server than the intended one, as discussed in {{ssec-unicast-requests}}.
 
@@ -1419,7 +1419,7 @@ From the Group Manager, an endpoint acquires group data such as the Gid and OSCO
 
 When joining the group or later on as a group member, an endpoint can also retrieve from the Group Manager the authentication credential of the Group Manager as well as the authentication credential and other information associated with other members of the group, with which it can derive the corresponding Recipient Context. An application can configure a group member to asynchronously retrieve information about Recipient Contexts, e.g., by Observing {{RFC7641}} a resource at the Group Manager to get updates on the group membership.
 
-Upon endpoints' joining, the Group Manager collects their authentication credentials and MUST verify proof-of-possession of the respective private key. As an example, such proof-of-possession is possible to achieve during the join process provided by the realization of Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}}. Together with the requested authentication credentials of other group members, the Group Manager MUST provide the joining endpoints with the Sender ID of the associated group members and the current Key Generation Number in the group (see {{sec-group-key-management}}).
+Upon endpoints' joining, the Group Manager collects their authentication credentials and MUST verify proof of possession of the respective private key. As an example, such proof of possession is possible to achieve during the join process provided by the realization of Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}}. Together with the requested authentication credentials of other group members, the Group Manager MUST provide the joining endpoints with the Sender ID of the associated group members and the current Key Generation Number in the group (see {{sec-group-key-management}}).
 
 An endpoint may join a group, for example, by explicitly interacting with the responsible Group Manager, or by being configured with some tool performing the tasks of the Group Manager. When becoming members of a group, endpoints are not required to know how many and what endpoints are in the same group.
 
@@ -1441,7 +1441,7 @@ The set of group members should not be assumed as fixed, i.e., the group members
 
 The Group Manager MUST rekey the group without undue delay when one or more endpoints leave the group. An endpoint may leave the group at own initiative, or may be evicted from the group by the Group Manager, e.g., in case the endpoint is compromised, or is suspected to be compromised. In either case, rekeying the group excludes such endpoints from future communications in the group, and thus preserves forward security. If a network node is compromised or suspected to be compromised, the Group Manager MUST evict from the group all the endpoints hosted by that node that are members of the group and rekey the group accordingly.
 
-If required by the application, the Group Manager MUST also rekey the group before one or more new joining endpoints are added to the group, thus preserving backward security.
+If required by the application, the Group Manager MUST also rekey the group when one or more new joining endpoints are added to the group, thus preserving backward security.
 
 Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see below).
 
@@ -2171,7 +2171,7 @@ The Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}} provides th
 
 * Terminology for Security Context: avoid "immutable"; use "long-term" and "varying".
 
-* Reference on achieving proof-of-possession for group members and Group Manager.
+* Reference on achieving proof of possession for group members and Group Manager.
 
 * Not only CWTs but also CCSs can be tagged.
 
