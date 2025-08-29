@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 23 February 2026                                   F. Palombini
+Expires: 2 March 2026                                       F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                          22 August 2025
+                                                          29 August 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -64,7 +64,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 February 2026.
+   This Internet-Draft will expire on 2 March 2026.
 
 Copyright Notice
 
@@ -1152,9 +1152,10 @@ Table of Contents
    Sequence Number space, after the endpoint has consumed the largest
    usable value.  This may be influenced by additional limitations
    besides the mere 40-bit size limit of the Partial IV.  If an
-   implementation's integers support wrapping addition, the
+   implementation’s integers support wrapping addition, the
    implementation MUST treat the Sender Sequence Number space as
-   exhausted when a wrap-around is detected.
+   exhausted when a wrap-around is detected upon incrementing the value
+   that has been used as Partial IV.
 
    Upon exhausting the Sender Sequence Number space, the endpoint MUST
    NOT use this Security Context to protect further messages including a
@@ -4559,9 +4560,9 @@ Table of Contents
               Object Security for Constrained RESTful Environments
               (Group OSCORE) Using Authentication and Authorization for
               Constrained Environments (ACE)", Work in Progress,
-              Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-17, 11
-              April 2025, <https://datatracker.ietf.org/doc/html/draft-
-              ietf-ace-key-groupcomm-oscore-17>.
+              Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-18, 28
+              August 2025, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-ace-key-groupcomm-oscore-18>.
 
    [I-D.ietf-core-groupcomm-proxy]
               Tiloca, M. and E. Dijk, "Proxy Operations for CoAP Group
