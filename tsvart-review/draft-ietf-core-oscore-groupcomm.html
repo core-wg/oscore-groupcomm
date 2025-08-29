@@ -1052,7 +1052,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Tiloca, et al.</td>
-<td class="center">Expires 27 February 2026</td>
+<td class="center">Expires 2 March 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1065,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-core-oscore-groupcomm-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-08-26" class="published">26 August 2025</time>
+<time datetime="2025-08-29" class="published">29 August 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-02-27">27 February 2026</time></dd>
+<dd class="expires"><time datetime="2026-03-02">2 March 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1135,7 +1135,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 27 February 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 2 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -3320,7 +3320,7 @@ RES: 2.05 Content
 <p id="section-12-1">As with OSCORE, endpoints communicating with Group OSCORE need to establish the relevant Security Context. Group OSCORE endpoints need to acquire OSCORE input parameters, information about the group(s) and about other endpoints in the group(s).<a href="#section-12-1" class="pilcrow">¶</a></p>
 <p id="section-12-2">Every group is associated with a Group Manager that is responsible for distributing security parameters and keying material within the group, among other tasks. The details of how the Group Manager interacts with (candidate) group members or with external entities like signature checkers, as well as the protocols used for those interactions, are out of scope.<a href="#section-12-2" class="pilcrow">¶</a></p>
 <p id="section-12-3">The Group Manager assigns unique Group Identifiers (Gids) to the groups under its control. Within each of such groups, the Group Manager assigns unique Sender IDs (and thus Recipient IDs) to the respective group members. The maximum length of Sender IDs depends on the length of the nonce for the algorithms used in the group (see <a href="#ssec-sender-recipient-context" class="auto internal xref">Section 2.2</a>).<a href="#section-12-3" class="pilcrow">¶</a></p>
-<p id="section-12-4">According to a hierarchical approach, the Gid value assigned to a group is associated with a dedicated space for the values of Sender ID and Recipient ID of the members of that group. When an endpoint (re-)joins a group, it is provided with the current Gid to use in the group. The Group Manager also assigns an integer Key Generation Number counter to each of its groups, identifying the current version of the keying material used in that group. Further details about identifiers and keys are provided in <a href="#sec-group-key-management" class="auto internal xref">Section 12.2</a>.<a href="#section-12-4" class="pilcrow">¶</a></p>
+<p id="section-12-4">The Gid value assigned to a group is associated with a dedicated space for the values of Sender ID and Recipient ID of the members of that group. When an endpoint (re-)joins a group, it is provided with the current Gid to use in the group. The Group Manager also assigns an integer Key Generation Number counter to each of its groups, identifying the current version of the keying material used in that group. Further details about identifiers and keys are provided in <a href="#sec-group-key-management" class="auto internal xref">Section 12.2</a>.<a href="#section-12-4" class="pilcrow">¶</a></p>
 <p id="section-12-5">The Group Manager maintains records of the authentication credentials of endpoints in a group, and provides information about the group and its members to other group members (see <a href="#setup" class="auto internal xref">Section 12.1</a>). Optionally, the Group Manager provides information about the group and its members to external entities with a specific role, such as signature checkers (see <a href="#sec-additional-entities" class="auto internal xref">Section 12.3</a>).<a href="#section-12-5" class="pilcrow">¶</a></p>
 <p id="section-12-6">The list of responsibilities of the Group Manager is compiled in <a href="#sec-group-manager" class="auto internal xref">Appendix D</a>.<a href="#section-12-6" class="pilcrow">¶</a></p>
 <p id="section-12-7">One realization of a Group Manager is specified in <span>[<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>, where the process by which an endpoint (re-)joins a group is based on the ACE framework for authentication and authorization in constrained environments <span>[<a href="#RFC9200" class="cite xref">RFC9200</a>]</span>.<a href="#section-12-7" class="pilcrow">¶</a></p>
@@ -4324,7 +4324,7 @@ Reference: [RFC-XXXX]
 <dd class="break"></dd>
 <dt id="I-D.ietf-ace-key-groupcomm-oscore">[I-D.ietf-ace-key-groupcomm-oscore]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Key Management for Group Object Security for Constrained RESTful Environments (Group OSCORE) Using Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-17</span>, <time datetime="2025-04-11" class="refDate">11 April 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-17">https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-17</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Key Management for Group Object Security for Constrained RESTful Environments (Group OSCORE) Using Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-18</span>, <time datetime="2025-08-28" class="refDate">28 August 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-18">https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-18</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-groupcomm-proxy">[I-D.ietf-core-groupcomm-proxy]</dt>
         <dd>
