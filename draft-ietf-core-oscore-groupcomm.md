@@ -563,7 +563,7 @@ If the endpoint receives a message to be processed with any such new Recipient C
 
 Since an endpoint increments its Sender Sequence Number for each new outgoing message including a Partial IV, an endpoint can eventually exhaust the Sender Sequence Number space.
 
-Implementations MUST be able to detect an exhaustion of Sender Sequence Number space, after the endpoint has consumed the largest usable value. This may be influenced by additional limitations besides the mere 40-bit size limit of the Partial IV. If an implementation's integers support wrapping addition, the implementation MUST treat the Sender Sequence Number space as exhausted when a wrap-around is detected.
+Implementations MUST be able to detect an exhaustion of Sender Sequence Number space, after the endpoint has consumed the largest usable value. This may be influenced by additional limitations besides the mere 40-bit size limit of the Partial IV. If an implementation’s integers support wrapping addition, the implementation MUST treat the Sender Sequence Number space as exhausted when a wrap-around is detected upon incrementing the value that has been used as Partial IV.
 
 Upon exhausting the Sender Sequence Number space, the endpoint MUST NOT use this Security Context to protect further messages including a Partial IV.
 
