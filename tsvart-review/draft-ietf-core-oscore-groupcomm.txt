@@ -3058,8 +3058,10 @@ Table of Contents
    (Gid) and a new value for the Master Secret parameter.  When doing
    so, a new value for the Master Salt parameter MAY also be generated
    and assigned to the group.  When establishing the new Security
-   Context, the Group Manager should preserve the current value of the
-   Sender ID of each group member.
+   Context, the Group Manager SHOULD preserve the current value of the
+   Sender ID of each group member in order to ensure an efficient key
+   rollover.  Exceptions can apply if there are compelling reasons for
+   making available again some of the Sender ID values currently used.
 
    The specific group key management scheme used to distribute new
    keying material is out of the scope of this document.  A simple group
