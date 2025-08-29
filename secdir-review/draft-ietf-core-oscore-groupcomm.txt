@@ -590,9 +590,9 @@ Table of Contents
 
    The new parameter Group Manager Authentication Credential specifies
    the authentication credential of the Group Manager, including the
-   Group Manager's public key.  The endpoint MUST achieve proof-of-
+   Group Manager's public key.  The endpoint MUST achieve proof of
    possession of the corresponding private key.  As an example, such
-   proof-of-possession is possible to achieve during the join process
+   proof of possession is possible to achieve during the join process
    provided by the realization of Group Manager specified in
    [I-D.ietf-ace-key-groupcomm-oscore].  Further details on the
    provisioning of the Group Manager's authentication credential to the
@@ -837,9 +837,9 @@ Table of Contents
 
    Group OSCORE keys used for both signature and encryption MUST be used
    only for purposes related to Group OSCORE.  These include the
-   processing of messages with Group OSCORE, as well as performing
-   proof-of-possession of private keys, e.g., upon joining a group
-   through the Group Manager (see Section 12).
+   processing of messages with Group OSCORE, as well as performing proof
+   of possession of private keys, e.g., upon joining a group through the
+   Group Manager (see Section 12).
 
 2.5.1.  Derivation of Pairwise Keys
 
@@ -2754,7 +2754,7 @@ Table of Contents
    After receiving a 4.01 (Unauthorized) response that includes an Echo
    Option and originates from a verified group member, a subsequent
    client request sent to that server and echoing the Echo Option value
-   MUST be sent as a unicast message to that server.
+   MUST be a message sent unicast to that server.
 
    If in the group the AEAD Algorithm and Pairwise Key Agreement
    Algorithm are set in the Security Context, the client MUST use the
@@ -3010,8 +3010,8 @@ Table of Contents
    Group Manager to get updates on the group membership.
 
    Upon endpoints' joining, the Group Manager collects their
-   authentication credentials and MUST verify proof-of-possession of the
-   respective private key.  As an example, such proof-of-possession is
+   authentication credentials and MUST verify proof of possession of the
+   respective private key.  As an example, such proof of possession is
    possible to achieve during the join process provided by the
    realization of Group Manager specified in
    [I-D.ietf-ace-key-groupcomm-oscore].  Together with the requested
@@ -3080,8 +3080,8 @@ Table of Contents
    the group accordingly.
 
    If required by the application, the Group Manager MUST also rekey the
-   group before one or more new joining endpoints are added to the
-   group, thus preserving backward security.
+   group when one or more new joining endpoints are added to the group,
+   thus preserving backward security.
 
    Separately for each group, the value of the Key Generation Number
    increases by one each time the Group Manager distributes new keying
@@ -5097,7 +5097,7 @@ E.1.  Version -25 to -26
    *  Terminology for Security Context: avoid "immutable"; use "long-
       term" and "varying".
 
-   *  Reference on achieving proof-of-possession for group members and
+   *  Reference on achieving proof of possession for group members and
       Group Manager.
 
    *  Not only CWTs but also CCSs can be tagged.
