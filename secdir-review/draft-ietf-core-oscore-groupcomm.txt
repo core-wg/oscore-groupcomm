@@ -3639,7 +3639,7 @@ Table of Contents
    *  Messages are encrypted at a group level (group-level data
       confidentiality), i.e., they can be decrypted by any member of the
       group, but not by an external adversary or other external entities
-      other than the Group Manager responsible for the Group.
+      other than the Group Manager responsible for the group.
 
    *  If the used Group Encryption Algorithm provides integrity
       protection, then it also ensures group authentication and proof of
