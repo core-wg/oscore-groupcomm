@@ -1052,7 +1052,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Tiloca, et al.</td>
-<td class="center">Expires 21 February 2026</td>
+<td class="center">Expires 2 March 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1065,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-core-oscore-groupcomm-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-08-20" class="published">20 August 2025</time>
+<time datetime="2025-08-29" class="published">29 August 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-02-21">21 February 2026</time></dd>
+<dd class="expires"><time datetime="2026-03-02">2 March 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1135,7 +1135,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 21 February 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 2 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -3799,7 +3799,22 @@ to use this information as they see fit".<a href="#section-13-5" class="pilcrow"
 <p id="section-14-3">Note that, even if an endpoint is authorized to be a group member and to take part in group communications, there is a risk that it behaves inappropriately. For instance, it can forward the content of messages in the group to unauthorized entities. However, in many use cases, the devices in the group belong to a common authority and are configured by a commissioner (see <a href="#sec-use-cases" class="auto internal xref">Appendix B</a>), which limits this risk in practice and enables a prompt detection/reaction in case of misbehaving.<a href="#section-14-3" class="pilcrow">¶</a></p>
 <p id="section-14-4">With respect to unprotected message fields, the following holds. First, the 'kid context' of request messages is part of the Additional Authenticated Data, making it possible to keep long exchanges active safely beyond a possible change of ID Context (Gid) following a group rekeying (see <a href="#sec-cose-object-ext-aad" class="auto internal xref">Section 3.4</a>). Second, the countersignature included in a Group OSCORE message protected in group mode is also computed over the value of the OSCORE Option, which is also part of the Additional Authenticated Data used in the signing process. This is further discussed in <a href="#ssec-cross-group-injection" class="auto internal xref">Section 14.7</a> of this document.<a href="#section-14-4" class="pilcrow">¶</a></p>
 <p id="section-14-5">As discussed in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-14#section-6.2.3" class="relref">Section 6.2.3</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>, Group OSCORE addresses security attacks against CoAP listed in Sections <a href="https://rfc-editor.org/rfc/rfc7252#section-11.2" class="relref">11.2</a>–<a href="https://rfc-editor.org/rfc/rfc7252#section-11.6" class="relref">11.6</a> of <span>[<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>, especially when run over IP multicast.<a href="#section-14-5" class="pilcrow">¶</a></p>
-<p id="section-14-6">The rest of this section first discusses security aspects to be taken into account when using Group OSCORE. Then it goes through aspects covered in the security considerations of OSCORE (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-12" class="relref">Section 12</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>), and discusses how they hold when Group OSCORE is used.<a href="#section-14-6" class="pilcrow">¶</a></p>
+<p id="section-14-6">Group OSCORE does not aim to meet the following properties:<a href="#section-14-6" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-14-7.1">
+          <p id="section-14-7.1.1">Verification of server aliveness, as discussed in <a href="#sec-freshness" class="auto internal xref">Section 5.2</a>.<a href="#section-14-7.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-14-7.2">
+          <p id="section-14-7.2.1">Protection of network addressing information, as discussed in <a href="#ssec-unicast-requests" class="auto internal xref">Section 14.9</a>.<a href="#section-14-7.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-14-7.3">
+          <p id="section-14-7.3.1">Management of group membership and group keying material, which is entrusted to the Group Manager (see <a href="#group-manager" class="auto internal xref">Section 12</a>). Related security considerations are discussed in <a href="#sec-cons-group-key-management" class="auto internal xref">Section 14.4</a> and <a href="#ssec-key-rotation" class="auto internal xref">Section 14.5</a>.<a href="#section-14-7.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-14-7.4">
+          <p id="section-14-7.4.1">Confidentiality protection of the OSCORE Option. Related privacy considerations are discussed in <a href="#ssec-privacy" class="auto internal xref">Section 14.18</a>.<a href="#section-14-7.4.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-14-8">The rest of this section first discusses security aspects to be taken into account when using Group OSCORE. Then it goes through aspects covered in the security considerations of OSCORE (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-12" class="relref">Section 12</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>), and discusses how they hold when Group OSCORE is used.<a href="#section-14-8" class="pilcrow">¶</a></p>
 <div id="ssec-group-mode-security">
 <section id="section-14.1">
         <h3 id="name-security-of-the-group-mode">
@@ -4339,7 +4354,7 @@ Reference: [RFC-XXXX]
 <dd class="break"></dd>
 <dt id="I-D.ietf-ace-key-groupcomm-oscore">[I-D.ietf-ace-key-groupcomm-oscore]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Key Management for Group Object Security for Constrained RESTful Environments (Group OSCORE) Using Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-17</span>, <time datetime="2025-04-11" class="refDate">11 April 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-17">https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-17</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Key Management for Group Object Security for Constrained RESTful Environments (Group OSCORE) Using Authentication and Authorization for Constrained Environments (ACE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-18</span>, <time datetime="2025-08-28" class="refDate">28 August 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-18">https://datatracker.ietf.org/doc/html/draft-ietf-ace-key-groupcomm-oscore-18</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-groupcomm-proxy">[I-D.ietf-core-groupcomm-proxy]</dt>
         <dd>

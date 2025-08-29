@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 21 February 2026                                   F. Palombini
+Expires: 2 March 2026                                       F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                          20 August 2025
+                                                          29 August 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 February 2026.
+   This Internet-Draft will expire on 2 March 2026.
 
 Copyright Notice
 
@@ -3599,6 +3599,20 @@ Table of Contents
    OSCORE addresses security attacks against CoAP listed in Sections
    11.2–11.6 of [RFC7252], especially when run over IP multicast.
 
+   Group OSCORE does not aim to meet the following properties:
+
+   *  Verification of server aliveness, as discussed in Section 5.2.
+
+   *  Protection of network addressing information, as discussed in
+      Section 14.9.
+
+   *  Management of group membership and group keying material, which is
+      entrusted to the Group Manager (see Section 12).  Related security
+      considerations are discussed in Section 14.4 and Section 14.5.
+
+   *  Confidentiality protection of the OSCORE Option.  Related privacy
+      considerations are discussed in Section 14.18.
+
    The rest of this section first discusses security aspects to be taken
    into account when using Group OSCORE.  Then it goes through aspects
    covered in the security considerations of OSCORE (see Section 12 of
@@ -4574,9 +4588,9 @@ Table of Contents
               Object Security for Constrained RESTful Environments
               (Group OSCORE) Using Authentication and Authorization for
               Constrained Environments (ACE)", Work in Progress,
-              Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-17, 11
-              April 2025, <https://datatracker.ietf.org/doc/html/draft-
-              ietf-ace-key-groupcomm-oscore-17>.
+              Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-18, 28
+              August 2025, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-ace-key-groupcomm-oscore-18>.
 
    [I-D.ietf-core-groupcomm-proxy]
               Tiloca, M. and E. Dijk, "Proxy Operations for CoAP Group
