@@ -2173,6 +2173,30 @@ The Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}} provides th
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
 
+## Version -26 to -27 ## {#sec-26-27}
+
+* Clarified "SHOULD" for the Group Manager's authentication credential having the same format of that of the group members.
+
+* Avoid unnecessary details on Sequence Number wrap-around.
+
+* Clarified that using unreliable transports must not forego congestion control.
+
+* Clarified means for the Group Manager to determine compromised group members.
+
+* Normative "SHOULD" for preserving current Sender IDs upon group rekeying.
+
+* Updated security considerations:
+
+  * Explicit list of security properties of the pairwise mode.
+
+  * Clarified group-level data confidentiality in the group mode.
+
+  * Explicit list of security properties not aimed to be met.
+
+  * Security considerations on treating opaque binary data as such.
+
+* Minor clarifications and editorial improvements.
+
 ## Version -25 to -26 ## {#sec-25-26}
 
 * Terminology for Security Context: avoid "immutable"; use "long-term" and "varying".
