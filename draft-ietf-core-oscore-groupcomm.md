@@ -173,7 +173,7 @@ entity:
 
 --- abstract
 
-This document defines the security protocol Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of CoAP messages exchanged between members of a group, e.g., sent over IP multicast. In particular, the described protocol defines how OSCORE is used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with each other member of the group for pairwise OSCORE communication. Group OSCORE can be used between endpoints communicating with CoAP or CoAP-mappable HTTP.
+This document defines the security protocol Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of messages exchanged with the Constrained Application Protocol (CoAP) between members of a group, e.g., sent over IP multicast. In particular, the described protocol defines how OSCORE is used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with each other member of the group for pairwise OSCORE communication. Group OSCORE can be used between endpoints communicating with CoAP or CoAP-mappable HTTP.
 
 --- middle
 
@@ -407,7 +407,7 @@ The derivation of Sender/Recipient Keys and of the Common IV defined in OSCORE a
 
 ## Authentication Credentials ## {#sec-pub-key-format}
 
-The authentication credentials of the endpoints in a group MUST be encoded according to the format used in the group, as indicated by the Authentication Credential Format parameter in the Common Context (see {{ssec-common-context-authcred-format}}). The authentication credential of the Group Manager SHOULD be encoded according to that same format.
+The authentication credentials of the endpoints in a group MUST be encoded according to the format used in the group, as indicated by the Authentication Credential Format parameter in the Common Context (see {{ssec-common-context-authcred-format}}). The authentication credential of the Group Manager SHOULD be encoded according to that same format, in order to limit the number of formats that the group members have to support and handle, unless it is infeasible or impractical for the particular realization or instance of the Group Manager to have an own authentication credential encoded in that same format.
 
 The format of authentication credentials MUST provide the public key and a comprehensive set of information related to the public key algorithm, including, e.g., the used elliptic curve (when applicable). If Group Encryption Algorithm in the Common Context is not set (see {{ssec-common-context-cs-enc-alg}}), then the public key algorithm is the Pairwise Key Agreement Algorithm used in the group (see {{ssec-common-context-dh-alg}}), else the Signature Algorithm used in the group (see {{ssec-common-context-cs-alg}}).
 
@@ -497,13 +497,13 @@ As long as any two group members preserve the same asymmetric keys, their Diffie
 
 The y-coordinate of the other endpoint's Ed25519 public key is decoded as specified in {{Section 5.1.3 of RFC8032}}. The Curve25519 u-coordinate is recovered as u = (1 + y) / (1 - y) (mod p) following the map in {{Section 4.1 of RFC7748}}. Note that the mapping is not defined for y = 1, and that y = -1 maps to u = 0 which corresponds to the neutral group element and thus will result in a degenerate shared secret. Therefore, implementations MUST abort if the y-coordinate of the other endpoint's Ed25519 public key is 1 or -1 (mod p).
 
-The private signing key byte strings (i.e., the lower 32 bytes used for generating the public key, see step 1 of {{Section 5.1.5 of RFC8032}}) are decoded the same way for signing in Ed25519 and scalar multiplication in X25519. Hence, in order to compute the shared secret, the endpoint applies the X25519 function to the Ed25519 private signing key byte string and the encoded u-coordinate byte string as specified in {{Section 5 of RFC7748}}.
+The private signing key byte strings (i.e., the lower 32 bytes used for generating the public key, see Step 1 of {{Section 5.1.5 of RFC8032}}) are decoded the same way for signing in Ed25519 and scalar multiplication in X25519. Hence, in order to compute the shared secret, the endpoint applies the X25519 function to the Ed25519 private signing key byte string and the encoded u-coordinate byte string as specified in {{Section 5 of RFC7748}}.
 
 #### Curve448
 
 The y-coordinate of the other endpoint's Ed448 public key is decoded as specified in {{Section 5.2.3. of RFC8032}}. The Curve448 u-coordinate is recovered as u = y^2 * (d * y^2 - 1) / (y^2 - 1) (mod p) following the map from "edwards448" in {{Section 4.2 of RFC7748}}, and also using the relation x^2 = (y^2 - 1)/(d * y^2 - 1) from the curve equation. Note that the mapping is not defined for y = 1 or -1. Therefore, implementations MUST abort if the y-coordinate of the peer endpoint's Ed448 public key is 1 or -1 (mod p).
 
-The private signing key byte strings (i.e., the lower 57 bytes used for generating the public key, see step 1 of {{Section 5.2.5 of RFC8032}}) are decoded the same way for signing in Ed448 and scalar multiplication in X448. Hence, in order to compute the shared secret, the endpoint applies the X448 function to the Ed448 private signing key byte string and the encoded u-coordinate byte string as specified in {{Section 5 of RFC7748}}.
+The private signing key byte strings (i.e., the lower 57 bytes used for generating the public key, see Step 1 of {{Section 5.2.5 of RFC8032}}) are decoded the same way for signing in Ed448 and scalar multiplication in X448. Hence, in order to compute the shared secret, the endpoint applies the X448 function to the Ed448 private signing key byte string and the encoded u-coordinate byte string as specified in {{Section 5 of RFC7748}}.
 
 
 ### Usage of Sequence Numbers ### {#pairwise-seqno}
@@ -564,7 +564,7 @@ If the endpoint receives a message to be processed with any such new Recipient C
 
 Since an endpoint increments its Sender Sequence Number for each new outgoing message including a Partial IV, an endpoint can eventually exhaust the Sender Sequence Number space.
 
-Implementations MUST be able to detect an exhaustion of Sender Sequence Number space, after the endpoint has consumed the largest usable value. This may be influenced by additional limitations besides the mere 40-bit size limit of the Partial IV. If an implementation's integers support wrapping addition, the implementation MUST treat the Sender Sequence Number space as exhausted when a wrap-around is detected.
+Implementations MUST be able to detect an exhaustion of Sender Sequence Number space, after the endpoint has consumed the largest usable value. This may be influenced by additional limitations besides the mere 40-bit size limit of the Partial IV.
 
 Upon exhausting the Sender Sequence Number space, the endpoint MUST NOT use this Security Context to protect further messages including a Partial IV.
 
@@ -652,9 +652,10 @@ The value of the 'kid context' parameter in the 'unprotected' field of request m
 
 ## Nonce Computation # {#sec-cose-object-aead-nonce}
 
-The nonce is constructed like in OSCORE, with the difference that step 4 in {{Section 5.2 of RFC8613}} is replaced with:
+The nonce is constructed like in OSCORE, with the difference that Step 4 in {{Section 5.2 of RFC8613}} is replaced with:
 
-A. and then XOR with X bytes from the Common IV's start, where X is the length in bytes of the nonce.
+{:start="4"}
+4. and then XOR with X bytes from the Common IV's start, where X is the length in bytes of the nonce.
 
 For example, if X = 7 and the Common IV is 0x00112233445566778899aabbcc (13 bytes), then the bytes to XOR are 0x00112233445566 (7 bytes).
 
@@ -969,7 +970,7 @@ The method defined in this section is not relevant for responses to requests tha
 
 Upon receiving a protected message, a recipient endpoint retrieves a Security Context as in {{RFC8613}}. An endpoint MUST be able to distinguish between a Security Context to process OSCORE messages as in {{RFC8613}} and a Group OSCORE Security Context to process Group OSCORE messages as defined in this document.
 
-To this end, an endpoint can take into account the different structure of the Security Context defined in {{sec-context}}, for example based on the presence of Signature Algorithm and Pairwise Key Agreement Algorithm in the Common Context. Alternatively, implementations can use an additional parameter in the Security Context, to explicitly mark that it is intended for processing Group OSCORE messages.
+The way to accomplish this distinction is implementation specific. For example, an endpoint can take into account the different structure of the Security Context defined in {{sec-context}}, e.g., based on the presence of Signature Algorithm and Pairwise Key Agreement Algorithm in the Common Context. Alternatively, at the cost of increasing storage, implementations can use an additional parameter in the Security Context, to explicitly mark that it is intended for processing Group OSCORE messages.
 
 If either of the following conditions holds, a recipient endpoint MUST discard the incoming protected message:
 
@@ -1013,11 +1014,11 @@ This prevents servers from replying with multiple error messages to a client sen
 
 When using the group mode to protect a request, a client proceeds as described in {{Section 8.1 of RFC8613}} with the following modifications.
 
-* In step 2, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
+* In Step 2, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
 
-* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this document. The encoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, the Group Flag MUST be set to 1. The Group Encryption Algorithm from the Common Context MUST be used.
+* In Step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this document. The encoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, the Group Flag MUST be set to 1. The Group Encryption Algorithm from the Common Context MUST be used.
 
-* In step 5, the countersignature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this document. In particular, the payload of the Group OSCORE message includes also the encrypted countersignature.
+* In Step 5, the countersignature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this document. In particular, the payload of the Group OSCORE message includes also the encrypted countersignature.
 
 In addition, the following applies when sending a request that establishes a long exchange.
 
@@ -1035,15 +1036,15 @@ In addition, the following applies when sending a request that establishes a lon
 
 Upon receiving a protected request with the Group Flag set to 1, following the procedure in {{sec-message-reception}}, a server proceeds as described in {{Section 8.2 of RFC8613}} with the following modifications.
 
-* In step 2, the decoding of the compressed COSE object follows {{compression}} of this document. In particular:
+* In Step 2, the decoding of the compressed COSE object follows {{compression}} of this document. In particular:
 
    - If the server discards the request due to not retrieving a Security Context associated with the OSCORE group, the server MAY respond with a 4.01 (Unauthorized) error message. When doing so, the server MAY set an Outer Max-Age Option with value zero, and MAY include a descriptive string as diagnostic payload.
 
    - If the received 'kid context' matches an existing ID Context (Gid) but the received 'kid' does not match any Recipient ID in this Security Context, then the server MAY create a new Recipient Context for this Recipient ID and initialize it according to {{Section 3 of RFC8613}}, and also retrieve the authentication credential associated with the Recipient ID to be stored in the new Recipient Context. Such a configuration is application specific. If the application does not specify dynamic derivation of new Recipient Contexts, then the server SHALL stop processing the request.
 
-* In step 4, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
+* In Step 4, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
 
-* In step 6, the server also verifies the countersignature by using the public key from the client's authentication credential stored in the associated Recipient Context. In particular:
+* In Step 6, the server also verifies the countersignature by using the public key from the client's authentication credential stored in the associated Recipient Context. In particular:
 
    - If the server does not have the public key of the client yet, the server MUST stop processing the request and MAY respond with a 5.03 (Service Unavailable) response. The response MAY include a Max-Age Option, indicating to the client the number of seconds after which to retry. If the Max-Age Option is not present, {{Section 5.10.5 of RFC7252}} specifies a default retry time of 60 seconds.
 
@@ -1081,7 +1082,7 @@ When using the group mode to protect a response, a server proceeds as described 
 
 Note that the server always protects a response with the Sender Context from its latest Security Context, and that establishing a new Security Context resets the Sender Sequence Number to 0 (see {{new-sender-id}} and {{new-sec-context}}).
 
-* In step 2, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
+* In Step 2, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
 
    In addition, the following applies if the server intends to reply with multiple responses within the long exchange established by the corresponding request.
 
@@ -1089,13 +1090,13 @@ Note that the server always protects a response with the Sender Context from its
 
    - The server MUST use the stored value of the 'kid context' parameter from the request (see {{ssec-verify-request}}), as value for the 'request_kid_context' parameter in the external_aad (see {{sec-cose-object-ext-aad}}).
 
-* In step 3, if either of the following conditions holds, the server MUST include its Sender Sequence Number as Partial IV in the response and use it to build the nonce to protect the response. This prevents the server from reusing the nonce from the request together with the same encryption key.
+* In Step 3, if either of the following conditions holds, the server MUST include its Sender Sequence Number as Partial IV in the response and use it to build the nonce to protect the response. This prevents the server from reusing the nonce from the request together with the same encryption key.
 
    - The response is not the first response that the server sends to the request.
 
    - The server is using a different Security Context for the response than the one that was used to verify the request (see {{sec-group-key-management}}).
 
-* In step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this document. The encoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, the Group Flag MUST be set to 1. The Group Encryption Algorithm from the Common Context MUST be used.
+* In Step 4, the encryption of the COSE object is modified as described in {{sec-cose-object}} of this document. The encoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, the Group Flag MUST be set to 1. The Group Encryption Algorithm from the Common Context MUST be used.
 
    In addition, the following applies.
 
@@ -1111,7 +1112,7 @@ Note that the server always protects a response with the Sender Context from its
 
       That is, when responding to a request protected in pairwise mode, the server SHOULD include the 'kid' parameter in a response protected in group mode, if it is replying to that client for the first time since the assignment of its new Sender ID.
 
-* In step 5, the countersignature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this document. In particular the payload of the Group OSCORE message includes also the encrypted countersignature (see {{compression-details}}).
+* In Step 5, the countersignature is computed and the format of the OSCORE message is modified as described in {{sec-cose-object}} and {{compression}} of this document. In particular the payload of the Group OSCORE message includes also the encrypted countersignature (see {{compression-details}}).
 
 ## Verifying the Response ## {#ssec-verify-response}
 
@@ -1119,11 +1120,11 @@ Upon receiving a protected response with the Group Flag set to 1, following the 
 
 Note that a client may receive a response protected with a Security Context different from the one used to protect the corresponding request, and that, upon the establishment of a new Security Context, the client re-initializes its Replay Windows in its Recipient Contexts (see {{sec-group-key-management}}).
 
-* In step 2, the decoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, a 'kid' may not be present if the response is a reply to a request protected in pairwise mode. In such a case, the client assumes the response 'kid' to be the Recipient ID for the server to which the request protected in pairwise mode was intended for.
+* In Step 2, the decoding of the compressed COSE object is modified as described in {{compression}} of this document. In particular, a 'kid' may not be present if the response is a reply to a request protected in pairwise mode. In such a case, the client assumes the response 'kid' to be the Recipient ID for the server for which the request protected in pairwise mode was intended.
 
    If the response 'kid context' matches an existing ID Context (Gid) but the received/assumed 'kid' does not match any Recipient ID in this Security Context, then the client MAY create a new Recipient Context for this Recipient ID and initialize it according to {{Section 3 of RFC8613}}, and also retrieve the authentication credential associated with the Recipient ID to be stored in the new Recipient Context. If the application does not specify dynamic derivation of new Recipient Contexts, then the client SHALL stop processing the response.
 
-* In step 3, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
+* In Step 3, the Additional Authenticated Data is modified as described in {{sec-cose-object}} of this document.
 
    In addition, the following applies if the client processes a response to a request within a long exchange.
 
@@ -1133,7 +1134,7 @@ Note that a client may receive a response protected with a Security Context diff
 
    This ensures that, throughout a long exchange, the client can correctly verify the received responses, even if the client is individually rekeyed and starts using a new Sender ID received from the Group Manager (see {{new-sender-id}}), as well as when it installs a new Security Context with a new ID Context (Gid) following a group rekeying (see {{sec-group-key-management}}).
 
-* In step 5, the client also verifies the countersignature by using the public key from the server's authentication credential stored in the associated Recipient Context. In particular:
+* In Step 5, the client also verifies the countersignature by using the public key from the server's authentication credential stored in the associated Recipient Context. In particular:
 
    - The signature verification as defined below SHOULD be performed before decrypting the COSE object. An exception applies to implementations that cannot perform the two steps in this order. Those implementations MUST ensure that no access to the plaintext is possible before a successful signature verification and MUST prevent any possible leak of time-related information that can yield side-channel attacks.
 
@@ -1157,7 +1158,7 @@ Note that a client may receive a response protected with a Security Context diff
 
       Otherwise, the client hereafter considers the received 'kid' as the current Recipient ID for the server.
 
-* In step 5, when decrypting the COSE object using the Recipient Key, the Group Encryption Algorithm from the Common Context MUST be used.
+* In Step 5, when decrypting the COSE object using the Recipient Key, the Group Encryption Algorithm from the Common Context MUST be used.
 
    In addition, the client performs the following actions if the response is received within a long exchange.
 
@@ -1173,13 +1174,13 @@ Note that a client may receive a response protected with a Security Context diff
 
    This ensures that the client remains able to correctly perform the ordering and replay protection of responses within a long exchange, even if the server legitimately starts using a new Sender ID, as received from the Group Manager when individually rekeyed (see {{new-sender-id}}) or when re-joining the group.
 
-* In step 8, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client MAY delete that Recipient Context. When this behavior is specified by the application, it mitigates attacks that aim at overloading the client's storage.
+* In Step 8, if the used Recipient Context was created upon receiving this response and the message is not verified successfully, the client MAY delete that Recipient Context. When this behavior is specified by the application, it mitigates attacks that aim at overloading the client's storage.
 
   If the client deletes the used Recipient Context in this particular circumstance, then this deletion does not require the client to initialize as invalid the Replay Window of any new Recipient Context created later within the Security Context (see {{ssec-loss-mutable-context-overflow}}).
 
 ## External Signature Checkers # {#sec-processing-signature-checker}
 
-When a message is protected in group mode, it is possible for designated external signature checkers, e.g., intermediary gateways, to verify the countersignature of the message.
+When a message is protected in group mode, it is possible for designated external signature checkers to verify the countersignature of the message.  For example, an external signature checker can be an intermediary gateway that intercepts messages protected in group mode and ensures that they reach the intended recipients only if it successfully verifies their countersignatures.
 
 Since they do not join a group as members, external signature checkers need to retrieve from the Group Manager the authentication credentials of group members and other selected group data, such as the current Signature Encryption Key (see {{ssec-common-context-group-enc-key}}). {{sec-additional-entities}} describes how the Group Manager supports signature checkers.
 
@@ -1462,9 +1463,9 @@ The establishment of the new Security Context for the group takes the following 
 
    - The new keying material, i.e., the new Master Secret, the new Gid and (optionally) the new Master Salt.
 
-   - The new Key Generation Number from step 1.
+   - The new Key Generation Number from Step 1.
 
-   - The set of stale Sender IDs from step 2.
+   - The set of stale Sender IDs from Step 2.
 
    Further information may be distributed, depending on the specific group key management scheme used in the group.
 
@@ -1492,7 +1493,7 @@ Then, the group member proceeds according to the following steps.
 
 Alternatively, the group member can re-join the group. In such a case, the group member MUST take one of the following two actions.
 
-* First, the group member performs steps 2 and 3 above. Then, the group member re-joins the group.
+* First, the group member performs Steps 2 and 3 above. Then, the group member re-joins the group.
 
 * The group member re-joins the group with the same roles it currently has in the group, and, during the re-join process, it asks the Group Manager for the authentication credentials of all the current group members.
 
@@ -1524,7 +1525,7 @@ If the Group Manager performs the reassignment of Gid values previously used dur
 
 When a node (re-)joins the group and it is provided with the current Gid to use in the group, the Group Manager considers such a Gid as the Birth Gid of that endpoint for that group. For each group member, the Group Manager MUST store the latest corresponding Birth Gid until that member leaves the group. In case the endpoint has in fact re-joined the group, the newly determined Birth Gid overwrites the one currently stored.
 
-When establishing a new Security Context for the group, the Group Manager takes the additional following step between steps 1 and 2 of {{sec-group-key-management}}.
+When establishing a new Security Context for the group, the Group Manager takes the additional following step between Steps 1 and 2 of {{sec-group-key-management}}.
 
 A. The Group Manager MUST check if the new Gid to be distributed is equal to the Birth Gid of any of the current group members. If any of such "elder members" is found in the group, then:
 
@@ -2710,6 +2711,6 @@ member is now optional to support and use for the Group Manager.
 
 Jiye Park contributed as a co-author of initial versions of this document.
 
-The authors sincerely thank {{{Christian Amsüss}}}, {{{Stefan Beck}}}, {{{Mike Bishop}}}, {{{Rolf Blom}}}, {{{Carsten Bormann}}}, {{{Esko Dijk}}}, {{{Patrik Fältström}}}, {{{Martin Gunnarsson}}}, {{{Klaus Hartke}}}, {{{Richard Kelsey}}}, {{{Joerg Ott}}}, {{{Dave Robin}}}, {{{Jim Schaad}}}, {{{Ludwig Seitz}}}, {{{Peter van der Stok}}}, and {{{Erik Thormarker}}} for their feedback and comments.
+The authors sincerely thank {{{Christian Amsüss}}}, {{{Stefan Beck}}}, {{{Mike Bishop}}}, {{{Rolf Blom}}}, {{{Carsten Bormann}}}, {{{Esko Dijk}}}, {{{Patrik Fältström}}}, {{{Martin Gunnarsson}}}, {{{Klaus Hartke}}}, {{{Richard Kelsey}}}, {{{Paul Kyzivat}}}, {{{Joerg Ott}}}, {{{Dave Robin}}}, {{{Jim Schaad}}}, {{{Ludwig Seitz}}}, {{{Peter van der Stok}}}, and {{{Erik Thormarker}}} for their feedback and comments.
 
 The work on this document has been partly supported by the Sweden's Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and CYPRESS; the H2020 projects SIFIS-Home (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement 101020259); the SSF project SEC4Factory under the grant RIT17-0032; and the EIT-Digital High Impact Initiative ACTIVE.
