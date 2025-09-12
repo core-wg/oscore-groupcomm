@@ -337,7 +337,7 @@ The new parameter Authentication Credential Format specifies the format of authe
 
 ### Group Manager Authentication Credential ## {#ssec-common-context-gm-pub-key}
 
-The new parameter Group Manager Authentication Credential specifies the authentication credential of the Group Manager, including the Group Manager's public key. The endpoint MUST achieve proof-of-possession of the corresponding private key. As an example, such proof-of-possession is possible to achieve during the join process provided by the realization of Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}}. Further details on the provisioning of the Group Manager's authentication credential to the group members are out of the scope of this document.
+The new parameter Group Manager Authentication Credential specifies the authentication credential of the Group Manager, including the Group Manager's public key. The endpoint MUST achieve proof of possession of the corresponding private key. As an example, such proof of possession is possible to achieve during the join process provided by the realization of Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}}. Further details on the provisioning of the Group Manager's authentication credential to the group members are out of the scope of this document.
 
 ### Group Encryption Algorithm ## {#ssec-common-context-cs-enc-alg}
 
@@ -437,7 +437,7 @@ Depending on the particular deployment and the intended group size, limiting the
 
 Certain signature schemes, such as EdDSA and ECDSA, support a secure combined signature and encryption scheme. This section specifies the derivation of "pairwise keys" for use in the pairwise mode defined in {{sec-pairwise-protection}}.
 
-Group OSCORE keys used for both signature and encryption MUST be used only for purposes related to Group OSCORE. These include the processing of messages with Group OSCORE, as well as performing proof-of-possession of private keys, e.g., upon joining a group through the Group Manager (see {{group-manager}}).
+Group OSCORE keys used for both signature and encryption MUST be used only for purposes related to Group OSCORE. These include the processing of messages with Group OSCORE, as well as performing proof of possession of private keys, e.g., upon joining a group through the Group Manager (see {{group-manager}}).
 
 ### Derivation of Pairwise Keys ### {#key-derivation-pairwise}
 
@@ -1312,7 +1312,7 @@ The Echo Option value SHOULD NOT be reused; if it is reused, it MUST be highly u
 
 The server stores the Echo Option value included in the response together with the pair (gid,kid), where 'gid' is the Group Identifier of the OSCORE group and 'kid' is the Sender ID of the client in the group. These are specified in the 'kid context' and 'kid' fields of the OSCORE Option of the request, respectively. After a group rekeying has been completed and a new Security Context has been established in the group, which results also in a new Group Identifier (see {{sec-group-key-management}}), the server MUST delete all the stored Echo values associated with members of the group.
 
-After receiving a 4.01 (Unauthorized) response that includes an Echo Option and originates from a verified group member, a subsequent client request sent to that server and echoing the Echo Option value MUST be sent as a unicast message to that server.
+After receiving a 4.01 (Unauthorized) response that includes an Echo Option and originates from a verified group member, a subsequent client request sent to that server and echoing the Echo Option value MUST be a message sent unicast to that server.
 
 If in the group the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, the client MUST use the pairwise mode to protect the request, as per {{sec-pairwise-protection-req}}. Note that, as defined in {{sec-pairwise-protection}}, endpoints that are members of such a group and that use the Echo Option support the pairwise mode. In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are not set, only the group mode can be used. Hence, requests including the Echo Option can be protected only with the Group Mode, with the caveat due to the risk for those requests to be redirected to a different server than the intended one, as discussed in {{ssec-unicast-requests}}.
 
@@ -1425,7 +1425,7 @@ From the Group Manager, an endpoint acquires group data such as the Gid and OSCO
 
 When joining the group or later on as a group member, an endpoint can also retrieve from the Group Manager the authentication credential of the Group Manager as well as the authentication credential and other information associated with other members of the group, with which it can derive the corresponding Recipient Context. An application can configure a group member to asynchronously retrieve information about Recipient Contexts, e.g., by Observing {{RFC7641}} a resource at the Group Manager to get updates on the group membership.
 
-Upon endpoints' joining, the Group Manager collects their authentication credentials and MUST verify proof-of-possession of the respective private key. As an example, such proof-of-possession is possible to achieve during the join process provided by the realization of Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}}. Together with the requested authentication credentials of other group members, the Group Manager MUST provide the joining endpoints with the Sender ID of the associated group members and the current Key Generation Number in the group (see {{sec-group-key-management}}).
+Upon endpoints' joining, the Group Manager collects their authentication credentials and MUST verify proof of possession of the respective private key. As an example, such proof of possession is possible to achieve during the join process provided by the realization of Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}}. Together with the requested authentication credentials of other group members, the Group Manager MUST provide the joining endpoints with the Sender ID of the associated group members and the current Key Generation Number in the group (see {{sec-group-key-management}}).
 
 An endpoint may join a group, for example, by explicitly interacting with the responsible Group Manager, or by being configured with some tool performing the tasks of the Group Manager. When becoming members of a group, endpoints are not required to know how many and what endpoints are in the same group.
 
@@ -1445,7 +1445,7 @@ The set of group members should not be assumed as fixed, i.e., the group members
 
 The Group Manager MUST rekey the group without undue delay when one or more endpoints leave the group. An endpoint may leave the group at own initiative, or may be evicted from the group by the Group Manager, e.g., in case the endpoint is compromised, or is suspected to be compromised (as determined by the Group Manager through its own means or based on information that it obtains from a trusted source such as an Intrusion Detection System or an issuer of authentication credentials). In either case, rekeying the group excludes such endpoints from future communications in the group, and thus preserves forward security. If a network node is compromised or suspected to be compromised, the Group Manager MUST evict from the group all the endpoints hosted by that node that are members of the group and rekey the group accordingly.
 
-If required by the application, the Group Manager MUST also rekey the group before one or more new joining endpoints are added to the group, thus preserving backward security.
+If required by the application, the Group Manager MUST also rekey the group when one or more new joining endpoints are added to the group, thus preserving backward security.
 
 Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see below).
 
@@ -1717,6 +1717,16 @@ In accordance with {{RFC8613}}, all elements used in Group OSCORE as opaque bina
 
 As discussed in {{Section 6.2.3 of I-D.ietf-core-groupcomm-bis}}, Group OSCORE addresses security attacks against CoAP listed in Sections {{11.2<RFC7252}}–{{11.6<RFC7252}} of {{RFC7252}}, especially when run over IP multicast.
 
+Group OSCORE does not aim to meet the following properties:
+
+* Verification of server aliveness, as discussed in {{sec-freshness}}.
+
+* Protection of network addressing information, as discussed in {{ssec-unicast-requests}}.
+
+* Management of group membership and group keying material, which is entrusted to the Group Manager (see {{group-manager}}). Related security considerations are discussed in {{sec-cons-group-key-management}} and {{ssec-key-rotation}}.
+
+* Confidentiality protection of the OSCORE Option. Related privacy considerations are discussed in {{ssec-privacy}}.
+
 The rest of this section first discusses security aspects to be taken into account when using Group OSCORE. Then it goes through aspects covered in the security considerations of OSCORE (see {{Section 12 of RFC8613}}), and discusses how they hold when Group OSCORE is used.
 
 ## Security of the Group Mode {#ssec-group-mode-security}
@@ -1725,7 +1735,7 @@ The group mode defined in {{mess-processing}} relies on shared group keying mate
 
 * Source authentication of messages sent to a group is ensured through a countersignature, which is computed by the sender endpoint using its own private key and then appended to the message payload. The countersignature is also encrypted using a keystream derived from the group keying material (see {{compression-details}} and {{sssec-encrypted-signature-keystream}}). This ensures group privacy, i.e., an attacker cannot track an endpoint over two groups by linking messages between the two groups unless the attacker is also a member of both groups.
 
-* Messages are encrypted at a group level (group-level data confidentiality), i.e., they can be decrypted by any member of the group, but not by an external adversary or other external entities.
+* Messages are encrypted at a group level (group-level data confidentiality), i.e., they can be decrypted by any member of the group, but not by an external adversary or other external entities other than the Group Manager responsible for the group.
 
 * If the used Group Encryption Algorithm provides integrity protection, then it also ensures group authentication and proof of group membership, but not source authentication. That is, it ensures that a message sent to a group has been sent by a member of that group, but not necessarily by the alleged sender. In fact, any group member is able to derive the Sender Key used by the actual sender endpoint, and thus can compute a valid authentication tag. Therefore, the message content could originate from any of the current group members.
 
@@ -1760,6 +1770,18 @@ However, when participating in the group rekeying, the current group members del
 The pairwise mode defined in {{sec-pairwise-protection}} protects messages by using pairwise symmetric keys, derived from the static-static Diffie-Hellman shared secret computed from the asymmetric keys of the sender and recipient endpoint (see {{sec-derivation-pairwise}}).
 
 The used AEAD Algorithm MUST provide integrity protection. Therefore, the pairwise mode ensures both pairwise data-confidentiality and source authentication of messages, without using countersignatures. Furthermore, the recipient endpoint achieves proof of group membership for the sender endpoint, since only current group members have the required keying material to derive a valid Pairwise Sender/Recipient Key.
+
+Finally, the pairwise mode ensures group privacy, i.e., an attacker cannot track an endpoint over two groups by linking messages between the two groups unless the attacker is also a member of both groups. This follows from two different groups using different and uncorrelated group keying material, which yields different and uncorrelated pairwise keys for the same endpoint in any two groups. Therefore, the authentication tags generated by an endpoint in a group have no correlation with those generated by the same endpoint in another group.
+
+The security properties of the pairwise mode are summarized below.
+
+1. Symmetric source authentication, by means of an authentication tag.
+
+2. Symmetric pairwise confidentiality, by means of symmetric encryption.
+
+3. Proof of group membership, by strictly managing the group keying material, as well as by means of integrity tags.
+
+4. Group privacy, by virtue of the uncorrelated pairwise keys used in any two different groups.
 
 The long-term storing of the Diffie-Hellman shared secret is a potential security issue. In fact, if the shared secret of two group members is leaked, a third group member can exploit it to derive their pairwise keys and use those to impersonate either of the two group members to the other, or to decrypt previously stored messages exchanged between those two members and protected with their pairwise keys. The possibility of such leakage should be considered more likely than the leakage of a private key, which could be rather protected at a significantly higher level than generic memory, e.g., by using a Trusted Platform Module. Therefore, there is a trade-off between the maximum amount of time a same shared secret is stored and the frequency of its re-computing.
 
@@ -2155,7 +2177,7 @@ The Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}} provides th
 
 * Terminology for Security Context: avoid "immutable"; use "long-term" and "varying".
 
-* Reference on achieving proof-of-possession for group members and Group Manager.
+* Reference on achieving proof of possession for group members and Group Manager.
 
 * Not only CWTs but also CCSs can be tagged.
 
@@ -2711,6 +2733,6 @@ member is now optional to support and use for the Group Manager.
 
 Jiye Park contributed as a co-author of initial versions of this document.
 
-The authors sincerely thank {{{Christian Amsüss}}}, {{{Stefan Beck}}}, {{{Mike Bishop}}}, {{{Rolf Blom}}}, {{{Carsten Bormann}}}, {{{Esko Dijk}}}, {{{Patrik Fältström}}}, {{{Martin Gunnarsson}}}, {{{Klaus Hartke}}}, {{{Richard Kelsey}}}, {{{Paul Kyzivat}}}, {{{Joerg Ott}}}, {{{Dave Robin}}}, {{{Jim Schaad}}}, {{{Ludwig Seitz}}}, {{{Peter van der Stok}}}, and {{{Erik Thormarker}}} for their feedback and comments.
+The authors sincerely thank {{{Christian Amsüss}}}, {{{Stefan Beck}}}, {{{Mike Bishop}}}, {{{Rolf Blom}}}, {{{Carsten Bormann}}}, {{{Esko Dijk}}}, {{{Patrik Fältström}}}, {{{Martin Gunnarsson}}}, {{{Klaus Hartke}}}, {{{Richard Kelsey}}}, {{{Paul Kyzivat}}}, {{{Joerg Ott}}}, {{{Dave Robin}}}, {{{Jim Schaad}}}, {{{Ludwig Seitz}}}, {{{Peter van der Stok}}}, {{{Erik Thormarker}}}, and {{{Mališa Vučinić}}} for their feedback and comments.
 
 The work on this document has been partly supported by the Sweden's Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and CYPRESS; the H2020 projects SIFIS-Home (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement 101020259); the SSF project SEC4Factory under the grant RIT17-0032; and the EIT-Digital High Impact Initiative ACTIVE.
