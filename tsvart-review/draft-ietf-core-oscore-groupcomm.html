@@ -13,21 +13,21 @@
 <meta content="
        This document defines the security protocol Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of CoAP messages exchanged between members of a group, e.g., sent over IP multicast. In particular, the described protocol defines how OSCORE is used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with each other member of the group for pairwise OSCORE communication. Group OSCORE can be used between endpoints communicating with CoAP or CoAP-mappable HTTP. 
     " name="description">
-<meta content="xml2rfc 3.30.0" name="generator">
+<meta content="xml2rfc 3.30.1" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-core-oscore-groupcomm-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.30.0
+  xml2rfc 3.30.1
     Python 3.12.11
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
     lxml 5.3.1
-    platformdirs 4.3.8
+    platformdirs 4.4.0
     pycountry 24.6.1
     PyYAML 6.0.2
-    requests 2.32.4
+    requests 2.32.5
     setuptools 80.9.0
     wcwidth 0.2.13
 -->
@@ -1048,11 +1048,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Group OSCORE</td>
-<td class="right">August 2025</td>
+<td class="right">September 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Tiloca, et al.</td>
-<td class="center">Expires 2 March 2026</td>
+<td class="center">Expires 16 March 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1065,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-core-oscore-groupcomm-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-08-29" class="published">29 August 2025</time>
+<time datetime="2025-09-12" class="published">12 September 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-03-02">2 March 2026</time></dd>
+<dd class="expires"><time datetime="2026-03-16">16 March 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1135,7 +1135,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 2 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 16 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1968,7 +1968,7 @@ Except for the Replay Window defined in <span><a href="https://rfc-editor.org/rf
 <p id="section-2.4-4">If the authentication credentials are X.509 certificates or C509 certificates, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.<a href="#section-2.4-4" class="pilcrow">¶</a></p>
 <p id="section-2.4-5">If authentication credentials are CBOR Web Tokens (CWTs) or CWT Claims Sets (CCSs), the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.<a href="#section-2.4-5" class="pilcrow">¶</a></p>
 <p id="section-2.4-6">Authentication credentials are used to derive pairwise keys (see <a href="#key-derivation-pairwise" class="auto internal xref">Section 2.5.1</a>) and are included in the external additional authenticated data when processing messages (see <a href="#sec-cose-object-ext-aad" class="auto internal xref">Section 3.4</a>). In both these cases, an endpoint in a group <span class="bcp14">MUST</span> treat authentication credentials as opaque data, i.e., by considering the same binary representation made available to other endpoints in the group, possibly through a designated trusted source (e.g., the Group Manager).<a href="#section-2.4-6" class="pilcrow">¶</a></p>
-<p id="section-2.4-7">For example, an X.509 certificate is provided as its direct binary serialization. If C509 certificates or CWTs are used as authentication credentials, each is provided as the binary serialization of a (possibly tagged) CBOR array. If CCSs are used as authentication credentials, each is provided as the binary serialization of a CBOR map.<a href="#section-2.4-7" class="pilcrow">¶</a></p>
+<p id="section-2.4-7">For example, an X.509 certificate is provided as its direct binary serialization. If C509 certificates or CWTs are used as authentication credentials, each is provided as the binary serialization of a (possibly tagged) CBOR array. If CCSs are used as authentication credentials, each is provided as the binary serialization of a (possibly tagged) CBOR map.<a href="#section-2.4-7" class="pilcrow">¶</a></p>
 <p id="section-2.4-8">If authentication credentials are CWTs or CCSs, then the untagged CWT or CCS associated with an entity is stored in the Security Context and used as authentication credential for that entity.<a href="#section-2.4-8" class="pilcrow">¶</a></p>
 <p id="section-2.4-9">If authentication credentials are X.509 / C509 certificates, CWTs, or CCSs and the authentication credential associated with an entity is provided within a chain or a bag, then only the end-entity certificate or end-entity untagged CWT / CCS is stored in the Security Context and used as authentication credential for that entity.<a href="#section-2.4-9" class="pilcrow">¶</a></p>
 <p id="section-2.4-10">Storing whole authentication credentials rather than only a subset of those may result in a non-negligible storage overhead. On the other hand, it also ensures that authentication credentials are correctly used in a simple, flexible and non-error-prone way, also taking into account future credential formats as entirely new or extending existing ones. In particular, it is ensured that:<a href="#section-2.4-10" class="pilcrow">¶</a></p>
@@ -3799,8 +3799,9 @@ to use this information as they see fit".<a href="#section-13-5" class="pilcrow"
 <p id="section-14-2">For Group OSCORE, the Sender Context and Recipient Context additionally contain asymmetric keys, which are used to provide source authentication: in group mode, by means of countersignatures (see  <a href="#ssec-group-mode-security" class="auto internal xref">Section 14.1</a>); in pairwise mode, by using Diffie-Hellman (see <a href="#ssec-pairwise-mode-security" class="auto internal xref">Section 14.2</a>). The key pair can, for example, be generated by the endpoint or provisioned during manufacturing.<a href="#section-14-2" class="pilcrow">¶</a></p>
 <p id="section-14-3">Note that, even if an endpoint is authorized to be a group member and to take part in group communications, there is a risk that it behaves inappropriately. For instance, it can forward the content of messages in the group to unauthorized entities. However, in many use cases, the devices in the group belong to a common authority and are configured by a commissioner (see <a href="#sec-use-cases" class="auto internal xref">Appendix B</a>), which limits this risk in practice and enables a prompt detection/reaction in case of misbehaving.<a href="#section-14-3" class="pilcrow">¶</a></p>
 <p id="section-14-4">With respect to unprotected message fields, the following holds. First, the 'kid context' of request messages is part of the Additional Authenticated Data, making it possible to keep long exchanges active safely beyond a possible change of ID Context (Gid) following a group rekeying (see <a href="#sec-cose-object-ext-aad" class="auto internal xref">Section 3.4</a>). Second, the countersignature included in a Group OSCORE message protected in group mode is also computed over the value of the OSCORE Option, which is also part of the Additional Authenticated Data used in the signing process. This is further discussed in <a href="#ssec-cross-group-injection" class="auto internal xref">Section 14.7</a> of this document.<a href="#section-14-4" class="pilcrow">¶</a></p>
-<p id="section-14-5">As discussed in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-14#section-6.2.3" class="relref">Section 6.2.3</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>, Group OSCORE addresses security attacks against CoAP listed in Sections <a href="https://rfc-editor.org/rfc/rfc7252#section-11.2" class="relref">11.2</a>–<a href="https://rfc-editor.org/rfc/rfc7252#section-11.6" class="relref">11.6</a> of <span>[<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>, especially when run over IP multicast.<a href="#section-14-5" class="pilcrow">¶</a></p>
-<p id="section-14-6">The rest of this section first discusses security aspects to be taken into account when using Group OSCORE. Then it goes through aspects covered in the security considerations of OSCORE (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-12" class="relref">Section 12</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>), and discusses how they hold when Group OSCORE is used.<a href="#section-14-6" class="pilcrow">¶</a></p>
+<p id="section-14-5">In accordance with <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, all elements used in Group OSCORE as opaque binary values (e.g., Sender ID, ID Context) are not to be interpreted as text, Unicode, or otherwise. Implementations ought not to apply encoding transformations to the content of those elements, e.g., UTF-8 decoding <span>[<a href="#RFC3629" class="cite xref">RFC3629</a>]</span> or normalization. Information elements that may contain text such as those found within authentication credentials (e.g., X.509 distinguished names, CWT claims, or JSON Web Key fields) are to be treated as opaque structured data and to be interpreted only according to the rules of the credential format as defined in their respective specifications. This avoids misinterpretation, Unicode normalization attacks, or mismatches in identity comparison.<a href="#section-14-5" class="pilcrow">¶</a></p>
+<p id="section-14-6">As discussed in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-14#section-6.2.3" class="relref">Section 6.2.3</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>, Group OSCORE addresses security attacks against CoAP listed in Sections <a href="https://rfc-editor.org/rfc/rfc7252#section-11.2" class="relref">11.2</a>–<a href="https://rfc-editor.org/rfc/rfc7252#section-11.6" class="relref">11.6</a> of <span>[<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>, especially when run over IP multicast.<a href="#section-14-6" class="pilcrow">¶</a></p>
+<p id="section-14-7">The rest of this section first discusses security aspects to be taken into account when using Group OSCORE. Then it goes through aspects covered in the security considerations of OSCORE (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-12" class="relref">Section 12</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>), and discusses how they hold when Group OSCORE is used.<a href="#section-14-7" class="pilcrow">¶</a></p>
 <div id="ssec-group-mode-security">
 <section id="section-14.1">
         <h3 id="name-security-of-the-group-mode">
@@ -4328,7 +4329,7 @@ Reference: [RFC-XXXX]
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-groupcomm-proxy">[I-D.ietf-core-groupcomm-proxy]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">E. Dijk</span>, <span class="refTitle">"Proxy Operations for CoAP Group Communication"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-groupcomm-proxy-04</span>, <time datetime="2025-03-03" class="refDate">3 March 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-proxy-04">https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-proxy-04</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">E. Dijk</span>, <span class="refTitle">"Proxy Operations for CoAP Group Communication"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-groupcomm-proxy-05</span>, <time datetime="2025-09-03" class="refDate">3 September 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-proxy-05">https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-proxy-05</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-observe-multicast-notifications">[I-D.ietf-core-observe-multicast-notifications]</dt>
         <dd>
@@ -4336,7 +4337,7 @@ Reference: [RFC-XXXX]
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-oscore-capable-proxies">[I-D.ietf-core-oscore-capable-proxies]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"OSCORE-capable Proxies"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-oscore-capable-proxies-04</span>, <time datetime="2025-03-03" class="refDate">3 March 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-capable-proxies-04">https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-capable-proxies-04</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span> and <span class="refAuthor">R. Höglund</span>, <span class="refTitle">"OSCORE-capable Proxies"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-oscore-capable-proxies-05</span>, <time datetime="2025-09-03" class="refDate">3 September 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-capable-proxies-05">https://datatracker.ietf.org/doc/html/draft-ietf-core-oscore-capable-proxies-05</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-cose-cbor-encoded-cert">[I-D.ietf-cose-cbor-encoded-cert]</dt>
         <dd>
@@ -4353,6 +4354,10 @@ Reference: [RFC-XXXX]
 <dt id="I-D.irtf-cfrg-det-sigs-with-noise">[I-D.irtf-cfrg-det-sigs-with-noise]</dt>
         <dd>
 <span class="refAuthor">Mattsson, J. P.</span>, <span class="refAuthor">Thormarker, E.</span>, and <span class="refAuthor">S. Ruohomaa</span>, <span class="refTitle">"Hedged ECDSA and EdDSA Signatures"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-irtf-cfrg-det-sigs-with-noise-05</span>, <time datetime="2025-03-03" class="refDate">3 March 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-det-sigs-with-noise-05">https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-det-sigs-with-noise-05</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3629">[RFC3629]</dt>
+        <dd>
+<span class="refAuthor">Yergeau, F.</span>, <span class="refTitle">"UTF-8, a transformation format of ISO 10646"</span>, <span class="seriesInfo">STD 63</span>, <span class="seriesInfo">RFC 3629</span>, <span class="seriesInfo">DOI 10.17487/RFC3629</span>, <time datetime="2003-11" class="refDate">November 2003</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3629">https://www.rfc-editor.org/rfc/rfc3629</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC4944">[RFC4944]</dt>
         <dd>
@@ -5600,7 +5605,7 @@ member is now optional to support and use for the Group Manager.<a href="#append
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
 <p id="appendix-F-1">Jiye Park contributed as a co-author of initial versions of this document.<a href="#appendix-F-1" class="pilcrow">¶</a></p>
-<p id="appendix-F-2">The authors sincerely thank <span class="contact-name">Christian Amsüss</span>, <span class="contact-name">Stefan Beck</span>, <span class="contact-name">Mike Bishop</span>, <span class="contact-name">Rolf Blom</span>, <span class="contact-name">Carsten Bormann</span>, <span class="contact-name">Esko Dijk</span>, <span class="contact-name">Martin Gunnarsson</span>, <span class="contact-name">Klaus Hartke</span>, <span class="contact-name">Richard Kelsey</span>, <span class="contact-name">Joerg Ott</span>, <span class="contact-name">Dave Robin</span>, <span class="contact-name">Jim Schaad</span>, <span class="contact-name">Ludwig Seitz</span>, <span class="contact-name">Peter van der Stok</span>, and <span class="contact-name">Erik Thormarker</span> for their feedback and comments.<a href="#appendix-F-2" class="pilcrow">¶</a></p>
+<p id="appendix-F-2">The authors sincerely thank <span class="contact-name">Christian Amsüss</span>, <span class="contact-name">Stefan Beck</span>, <span class="contact-name">Mike Bishop</span>, <span class="contact-name">Rolf Blom</span>, <span class="contact-name">Carsten Bormann</span>, <span class="contact-name">Esko Dijk</span>, <span class="contact-name">Patrik Fältström</span>, <span class="contact-name">Martin Gunnarsson</span>, <span class="contact-name">Klaus Hartke</span>, <span class="contact-name">Richard Kelsey</span>, <span class="contact-name">Joerg Ott</span>, <span class="contact-name">Dave Robin</span>, <span class="contact-name">Jim Schaad</span>, <span class="contact-name">Ludwig Seitz</span>, <span class="contact-name">Peter van der Stok</span>, and <span class="contact-name">Erik Thormarker</span> for their feedback and comments.<a href="#appendix-F-2" class="pilcrow">¶</a></p>
 <p id="appendix-F-3">The work on this document has been partly supported by the Sweden's Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and CYPRESS; the H2020 projects SIFIS-Home (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement 101020259); the SSF project SEC4Factory under the grant RIT17-0032; and the EIT-Digital High Impact Initiative ACTIVE.<a href="#appendix-F-3" class="pilcrow">¶</a></p>
 </section>
 </div>
