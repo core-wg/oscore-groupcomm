@@ -126,6 +126,7 @@ informative:
   I-D.ietf-core-groupcomm-proxy:
   I-D.irtf-cfrg-det-sigs-with-noise:
   I-D.amsuess-core-cachable-oscore:
+  RFC3629:
   RFC4944:
   RFC4949:
   RFC5280:
@@ -418,7 +419,7 @@ If authentication credentials are CBOR Web Tokens (CWTs) or CWT Claims Sets (CCS
 
 Authentication credentials are used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data when processing messages (see {{sec-cose-object-ext-aad}}). In both these cases, an endpoint in a group MUST treat authentication credentials as opaque data, i.e., by considering the same binary representation made available to other endpoints in the group, possibly through a designated trusted source (e.g., the Group Manager).
 
-For example, an X.509 certificate is provided as its direct binary serialization. If C509 certificates or CWTs are used as authentication credentials, each is provided as the binary serialization of a (possibly tagged) CBOR array. If CCSs are used as authentication credentials, each is provided as the binary serialization of a CBOR map.
+For example, an X.509 certificate is provided as its direct binary serialization. If C509 certificates or CWTs are used as authentication credentials, each is provided as the binary serialization of a (possibly tagged) CBOR array. If CCSs are used as authentication credentials, each is provided as the binary serialization of a (possibly tagged) CBOR map.
 
 If authentication credentials are CWTs or CCSs, then the untagged CWT or CCS associated with an entity is stored in the Security Context and used as authentication credential for that entity.
 
@@ -1711,6 +1712,8 @@ Note that, even if an endpoint is authorized to be a group member and to take pa
 
 With respect to unprotected message fields, the following holds. First, the 'kid context' of request messages is part of the Additional Authenticated Data, making it possible to keep long exchanges active safely beyond a possible change of ID Context (Gid) following a group rekeying (see {{sec-cose-object-ext-aad}}). Second, the countersignature included in a Group OSCORE message protected in group mode is also computed over the value of the OSCORE Option, which is also part of the Additional Authenticated Data used in the signing process. This is further discussed in {{ssec-cross-group-injection}} of this document.
 
+In accordance with {{RFC8613}}, all elements used in Group OSCORE as opaque binary values (e.g., Sender ID, ID Context) are not to be interpreted as text, Unicode, or otherwise. Implementations ought not to apply encoding transformations to the content of those elements, e.g., UTF-8 decoding {{RFC3629}} or normalization. Information elements that may contain text such as those found within authentication credentials (e.g., X.509 distinguished names, CWT claims, or JSON Web Key fields) are to be treated as opaque structured data and to be interpreted only according to the rules of the credential format as defined in their respective specifications. This avoids misinterpretation, Unicode normalization attacks, or mismatches in identity comparison.
+
 As discussed in {{Section 6.2.3 of I-D.ietf-core-groupcomm-bis}}, Group OSCORE addresses security attacks against CoAP listed in Sections {{11.2<RFC7252}}–{{11.6<RFC7252}} of {{RFC7252}}, especially when run over IP multicast.
 
 The rest of this section first discusses security aspects to be taken into account when using Group OSCORE. Then it goes through aspects covered in the security considerations of OSCORE (see {{Section 12 of RFC8613}}), and discusses how they hold when Group OSCORE is used.
@@ -2707,6 +2710,6 @@ member is now optional to support and use for the Group Manager.
 
 Jiye Park contributed as a co-author of initial versions of this document.
 
-The authors sincerely thank {{{Christian Amsüss}}}, {{{Stefan Beck}}}, {{{Mike Bishop}}}, {{{Rolf Blom}}}, {{{Carsten Bormann}}}, {{{Esko Dijk}}}, {{{Martin Gunnarsson}}}, {{{Klaus Hartke}}}, {{{Richard Kelsey}}}, {{{Joerg Ott}}}, {{{Dave Robin}}}, {{{Jim Schaad}}}, {{{Ludwig Seitz}}}, {{{Peter van der Stok}}}, and {{{Erik Thormarker}}} for their feedback and comments.
+The authors sincerely thank {{{Christian Amsüss}}}, {{{Stefan Beck}}}, {{{Mike Bishop}}}, {{{Rolf Blom}}}, {{{Carsten Bormann}}}, {{{Esko Dijk}}}, {{{Patrik Fältström}}}, {{{Martin Gunnarsson}}}, {{{Klaus Hartke}}}, {{{Richard Kelsey}}}, {{{Joerg Ott}}}, {{{Dave Robin}}}, {{{Jim Schaad}}}, {{{Ludwig Seitz}}}, {{{Peter van der Stok}}}, and {{{Erik Thormarker}}} for their feedback and comments.
 
 The work on this document has been partly supported by the Sweden's Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and CYPRESS; the H2020 projects SIFIS-Home (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement 101020259); the SSF project SEC4Factory under the grant RIT17-0032; and the EIT-Digital High Impact Initiative ACTIVE.
