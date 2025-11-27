@@ -367,6 +367,8 @@ The Signature Encryption Key is derived as defined for Sender/Recipient Keys in 
 
 The new parameter Pairwise Key Agreement Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}). If this parameter is not set, the pairwise mode is not used in the group.
 
+When two endpoints compute their Diffie-Hellman shared secret, the Pairwise Key Agreement Algorithm takes as input the static-static Diffie-Hellman keys of the two endpoints. The lifetime of those keys is the same as the lifetime of the authentication credentials that the two endpoints use in the group. As detailed in {{key-derivation-pairwise}}, the derivation of the pairwise keys takes as input not only the Diffie-Hellman shared secret, but also group keying material from the latest established Security Context.
+
 If the HKDF Algorithm specified in the Common Context is "HKDF SHA-256" (identified as "HMAC 256/256"), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-256" (COSE algorithm encoding: -27).
 
 If the HKDF Algorithm specified in the Common Context is "HKDF SHA-512" (identified as "HMAC 512/512"), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-512" (COSE algorithm encoding: -28).
@@ -487,9 +489,9 @@ where:
 
 If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in {{Sections 4.1 and 4.2 of RFC7748}}, before using the X25519 or X448 function defined in {{Section 5 of RFC7748}}. For further details, see {{montgomery}}. ECC asymmetric keys in Montgomery or Weierstrass form are used directly in the key agreement algorithm, without coordinate mapping.
 
-After establishing a partially or completely new Security Context (see {{ssec-sec-context-persistence}} and {{sec-group-key-management}}), the old pairwise keys MUST be deleted. Since new Sender/Recipient Keys are derived from the new group keying material (see {{ssec-sender-recipient-context}}), every group member MUST use the new Sender/Recipient Keys when deriving new pairwise keys.
+As long as any two group members preserve the same asymmetric keys, their Diffie-Hellman shared secret does not change across updates of the group keying material. The lifetime of those keys is the same as the lifetime of the authentication credentials Sender Auth Cred and Recipient Auth Cred.
 
-As long as any two group members preserve the same asymmetric keys, their Diffie-Hellman shared secret does not change across updates of the group keying material.
+After establishing a partially or completely new Security Context (see {{ssec-sec-context-persistence}} and {{sec-group-key-management}}), the old pairwise keys MUST be deleted. Since new Sender/Recipient Keys are derived from the new group keying material (see {{ssec-sender-recipient-context}}), every group member MUST use the new Sender/Recipient Keys when deriving new pairwise keys.
 
 ### ECDH with Montgomery Coordinates {#montgomery}
 
