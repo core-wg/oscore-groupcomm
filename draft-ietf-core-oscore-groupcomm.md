@@ -241,7 +241,7 @@ This document refers also to the following terminology.
 
 This document refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol, see {{terminology}}. All members of a group maintain a Security Context as defined in this section.
 
-How the Security Context is established by the group members is out of scope for this document, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to tell which Security Context was latest established. The management of information about the group (i.e., identifiers, OSCORE input parameters, and keying material) is described in terms of a Group Manager (see {{group-manager}}).
+How the Security Context is established by the group members is out of scope for this document, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to determine which Security Context was latest established. The management of information about the group (i.e., identifiers, OSCORE input parameters, and keying material) is described in terms of a Group Manager (see {{group-manager}}).
 
 An endpoint of the group may use the group mode (see {{mess-processing}}), the pairwise mode (see {{sec-pairwise-protection}}), or both, depending on the modes it supports and on the parameters of the Security Context.
 The Security Context of Group OSCORE extends the OSCORE Security Context defined in {{Section 3 of RFC8613}} as follows (see {{fig-additional-context-information}}).
