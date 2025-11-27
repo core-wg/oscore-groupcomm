@@ -341,7 +341,7 @@ The new parameter Group Manager Authentication Credential specifies the authenti
 
 ### Group Encryption Algorithm ## {#ssec-common-context-cs-enc-alg}
 
-The new parameter Group Encryption Algorithm identifies the algorithm to use for encryption and decryption, when messages are protected in group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection. If this parameter is not set, the group mode is not used in the group.
+The new parameter Group Encryption Algorithm identifies the algorithm to use for encryption and decryption, when messages are protected in group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection. If it does not, integrity protection is still provided by the countersignature added to the message due to the use of the group mode. If this parameter is not set, the group mode is not used in the group.
 
 A non-authenticated algorithm MUST NOT be used as Group Encryption Algorithm if it is not possible to ensure uniqueness of the (key, nonce) pairs. This is the case, for instance, for A128CTR, A192CTR, and A256CTR {{RFC9459}}. Instead, examples of non-authenticated algorithms that can be used as Group Encryption Algorithm are A128CBC, A192CBC, and A256CBC {{RFC9459}}.
 
