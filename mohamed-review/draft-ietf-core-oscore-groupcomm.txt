@@ -429,10 +429,10 @@ Table of Contents
    How the Security Context is established by the group members is out
    of scope for this document, but if there is more than one Security
    Context applicable to a message, then the endpoints MUST be able to
-   tell which Security Context was latest established.  The management
-   of information about the group (i.e., identifiers, OSCORE input
-   parameters, and keying material) is described in terms of a Group
-   Manager (see Section 12).
+   determine which Security Context was latest established.  The
+   management of information about the group (i.e., identifiers, OSCORE
+   input parameters, and keying material) is described in terms of a
+   Group Manager (see Section 12).
 
    An endpoint of the group may use the group mode (see Section 7), the
    pairwise mode (see Section 8), or both, depending on the modes it
