@@ -629,8 +629,9 @@ Table of Contents
 2.1.9.  Signature Encryption Key
 
    The new parameter Signature Encryption Key specifies the encryption
-   key for deriving a keystream to encrypt/decrypt a countersignature,
-   when a message is protected in group mode (see Section 7).
+   key for deriving a keystream to encrypt/decrypt a countersignature
+   (see Section 4.2) when a message is protected in group mode (see
+   Section 7).
 
    The Signature Encryption Key is derived as defined for Sender/
    Recipient Keys in Section 3.2.1 of [RFC8613], with the following
