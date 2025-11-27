@@ -719,7 +719,9 @@ Table of Contents
    same Security Context, e.g., due to memory limitations.  After
    reaching that limit, the endpoint has to delete a current Recipient
    Context to install a new one (see Section 2.6.1.2).  It is up to the
-   application to define policies for Recipient Contexts to delete.
+   application to define the maximum number of Recipient Contexts for a
+   same Security Context as well as policies for deleting Recipient
+   Contexts.
 
 2.3.  Establishment of Security Context Parameters
 
