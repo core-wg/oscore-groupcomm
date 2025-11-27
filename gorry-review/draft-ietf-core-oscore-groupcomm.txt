@@ -3073,9 +3073,15 @@ Table of Contents
    The specific group key management scheme used to distribute new
    keying material is out of the scope of this document.  A simple group
    key management scheme is defined in
-   [I-D.ietf-ace-key-groupcomm-oscore].  When possible, the delivery of
-   rekeying messages should use a reliable transport, in order to reduce
-   chances of group members missing a rekeying instance.  The use of an
+   [I-D.ietf-ace-key-groupcomm-oscore].  Different group key management
+   schemes rely on diffent approaches to compose and deliver rekeying
+   messages, i.e., individually targeting single recipients, or
+   targeting multiple recipients at once (e.g., over UDP/IP multicast),
+   or a combination of the two approaches.  As long as it is viable for
+   the specific rekeying message to be delivered and it is supported by
+   the intended message recipient(s), using a reliable transport to
+   deliver a rekeying message should be preferred, as it reduces chances
+   of group members missing a rekeying instance.  The use of an
    unreliable transport MUST NOT forego enforcing congestion control as
    appropriate for that transport.
 
