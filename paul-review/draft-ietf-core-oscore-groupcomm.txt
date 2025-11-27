@@ -605,7 +605,9 @@ Table of Contents
    The new parameter Group Encryption Algorithm identifies the algorithm
    to use for encryption and decryption, when messages are protected in
    group mode (see Section 7).  This algorithm MAY provide integrity
-   protection.  If this parameter is not set, the group mode is not used
+   protection.  If it does not, integrity protection is still provided
+   by the countersignature added to the message due to the use of the
+   group mode.  If this parameter is not set, the group mode is not used
    in the group.
 
    A non-authenticated algorithm MUST NOT be used as Group Encryption
