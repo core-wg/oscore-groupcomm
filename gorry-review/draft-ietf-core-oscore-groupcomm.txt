@@ -3081,9 +3081,20 @@ Table of Contents
    the specific rekeying message to be delivered and it is supported by
    the intended message recipient(s), using a reliable transport to
    deliver a rekeying message should be preferred, as it reduces chances
-   of group members missing a rekeying instance.  The use of an
-   unreliable transport MUST NOT forego enforcing congestion control as
-   appropriate for that transport.
+   of group members missing a rekeying instance.
+
+   Irrespective of the transport used being reliable or unreliable,
+   appropriate congestion control MUST be enforced.  If the key
+   distribution traffic uses CoAP over UDP or over other unreliable
+   transports, mechanisms for enforcing congestion control are specified
+   in Section 4.7 of [RFC7252] and in Section 3.6 of
+   [I-D.ietf-core-groupcomm-bis] for the case of group communication
+   (e.g., over UDP/IP multicast).  If, irrespective of using CoAP, the
+   key distribution traffic relies on alternative setups with unreliable
+   transports, one can rely on general congestion-control mechanisms
+   such as DCCP [RFC4340], or on dedicated congestion control mechanisms
+   for the transport specifically used (e.g., those defined in [RFC9002]
+   for QUIC [RFC9000]).
 
    The set of group members should not be assumed as fixed, i.e., the
    group membership is subject to changes, possibly on a frequent basis.
@@ -4527,6 +4538,11 @@ Table of Contents
               DOI 10.17487/RFC4086, June 2005,
               <https://www.rfc-editor.org/rfc/rfc4086>.
 
+   [RFC4340]  Kohler, E., Handley, M., and S. Floyd, "Datagram
+              Congestion Control Protocol (DCCP)", RFC 4340,
+              DOI 10.17487/RFC4340, March 2006,
+              <https://www.rfc-editor.org/rfc/rfc4340>.
+
    [RFC5869]  Krawczyk, H. and P. Eronen, "HMAC-based Extract-and-Expand
               Key Derivation Function (HKDF)", RFC 5869,
               DOI 10.17487/RFC5869, May 2010,
@@ -4579,6 +4595,15 @@ Table of Contents
               Representation (CBOR)", STD 94, RFC 8949,
               DOI 10.17487/RFC8949, December 2020,
               <https://www.rfc-editor.org/rfc/rfc8949>.
+
+   [RFC9000]  Iyengar, J., Ed. and M. Thomson, Ed., "QUIC: A UDP-Based
+              Multiplexed and Secure Transport", RFC 9000,
+              DOI 10.17487/RFC9000, May 2021,
+              <https://www.rfc-editor.org/rfc/rfc9000>.
+
+   [RFC9002]  Iyengar, J., Ed. and I. Swett, Ed., "QUIC Loss Detection
+              and Congestion Control", RFC 9002, DOI 10.17487/RFC9002,
+              May 2021, <https://www.rfc-editor.org/rfc/rfc9002>.
 
    [RFC9052]  Schaad, J., "CBOR Object Signing and Encryption (COSE):
               Structures and Process", STD 96, RFC 9052,
