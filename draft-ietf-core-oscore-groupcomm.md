@@ -391,7 +391,7 @@ The authentication credentials in the Recipient Contexts can be retrieved from t
 
 For severely constrained devices, it may be infeasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the sender endpoint's authentication credential. Such devices can be configured to drop a received message for which there is no (complete) Recipient Context, and retrieve the sender endpoint's authentication credential in order to have it available to verify subsequent messages from that endpoint.
 
-An endpoint may admit a maximum number of Recipient Contexts for a same Security Context, e.g., due to memory limitations. After reaching that limit, the endpoint has to delete a current Recipient Context to install a new one (see {{ssec-loss-mutable-context-overflow}}). It is up to the application to define policies for Recipient Contexts to delete.
+An endpoint may admit a maximum number of Recipient Contexts for a same Security Context, e.g., due to memory limitations. After reaching that limit, the endpoint has to delete a current Recipient Context to install a new one (see {{ssec-loss-mutable-context-overflow}}). It is up to the application to define the maximum number of Recipient Contexts for a same Security Context as well as policies for deleting Recipient Contexts.
 
 ## Establishment of Security Context Parameters ## {#ssec-establishment-context-parameters}
 
