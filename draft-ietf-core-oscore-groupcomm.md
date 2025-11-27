@@ -313,19 +313,19 @@ The following sections specify how the Common Context is used and extended compa
 
 ### AEAD Algorithm ## {#ssec-common-context-aead-alg}
 
-The AEAD Algorithm (see {{Section 3.1 of RFC8613}}) SHALL identify the COSE AEAD algorithm to use for encryption and decryption when messages are protected using the pairwise mode (see {{sec-pairwise-protection}}). This algorithm MUST provide integrity protection. If this parameter is not set, the pairwise mode is not used in the group.
+The AEAD Algorithm (see {{Section 3.1 of RFC8613}}) identifies the COSE AEAD algorithm to use for encryption and decryption when messages are protected using the pairwise mode (see {{sec-pairwise-protection}}). This algorithm MUST provide integrity protection. If this parameter is not set, the pairwise mode is not used in the group.
 
 ### HKDF Algorithm ## {#ssec-common-context-hkdf-alg}
 
-The HKDF Algorithm (see {{Section 3.1 of RFC8613}}) SHALL identify the used key derivation function, which MUST be one of the HMAC-based HKDF {{RFC5869}} algorithms defined for COSE (see {{Section 5.1 of RFC9053}}) and registered at {{COSE.Algorithms}}.
+The HKDF Algorithm (see {{Section 3.1 of RFC8613}}) identifies the used key derivation function, which MUST be one of the HMAC-based HKDF {{RFC5869}} algorithms defined for COSE (see {{Section 5.1 of RFC9053}}) and registered at {{COSE.Algorithms}}.
 
 ### ID Context ## {#ssec-common-context-id-context}
 
-The ID Context parameter (see {{Sections 3.1 and 3.3 of RFC8613}}) SHALL contain the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle potential collisions between Gids (see {{ssec-gid-collision}}).
+The ID Context parameter (see {{Sections 3.1 and 3.3 of RFC8613}}) contains the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle potential collisions between Gids (see {{ssec-gid-collision}}).
 
 ### Common IV ##  {#ssec-common-common-iv}
 
-The Common IV parameter (see {{Section 3.1 of RFC8613}}) SHALL identify the Common IV used in the group. Differently from OSCORE, the length of the Common IV is determined as follows.
+The Common IV parameter (see {{Section 3.1 of RFC8613}}) identifies the Common IV used in the group. Differently from OSCORE, the length of the Common IV is determined as follows.
 
 * If only one among the AEAD Algorithm and the Group Encryption Algorithm is set (see {{ssec-common-context-aead-alg}} and {{ssec-common-context-cs-enc-alg}}), the length of the Common IV is the nonce length for the set algorithm.
 
