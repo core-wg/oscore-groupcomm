@@ -1965,7 +1965,7 @@ Table of Contents
    intermediaries (e.g., see [I-D.amsuess-core-cachable-oscore]).
 
    As per [RFC7252][I-D.ietf-core-groupcomm-bis], group requests sent
-   over multicast MUST be Non-confirmable, and thus are not
+   over multicast are always Non-confirmable, and thus are not
    retransmitted by the CoAP messaging layer.  Instead, applications
    should store such outgoing messages for a predefined, sufficient
    amount of time, in order to correctly perform potential
@@ -1973,12 +1973,12 @@ Table of Contents
    retransmissions are repetitions of previous protected messages, which
    the sender endpoint does not protect again with Group OSCORE.
 
-   According to Section 5.2.3 of [RFC7252], responses to Non-confirmable
-   group requests SHOULD also be Non-confirmable, but endpoints MUST be
-   prepared to receive Confirmable responses in reply to a Non-
-   confirmable group request.  Confirmable group requests are
-   acknowledged when sent over non-multicast transports, as specified in
-   [RFC7252].
+   According to Section 5.2.3 of [RFC7252], "[i]f the request message is
+   Non-confirmable, then the response SHOULD be returned in a Non-
+   confirmable message as well.  However, an endpoint MUST be prepared
+   to receive (...) a Confirmable response in reply to a Non-confirmable
+   request."  Confirmable group requests are acknowledged when sent over
+   non-multicast transports, as specified in [RFC7252].
 
    Furthermore, endpoints in the group locally perform error handling
    and processing of invalid messages according to the same principles
