@@ -351,7 +351,7 @@ The new parameter Signature Algorithm identifies the digital signature algorithm
 
 ### Signature Encryption Key ## {#ssec-common-context-group-enc-key}
 
-The new parameter Signature Encryption Key specifies the encryption key for deriving a keystream to encrypt/decrypt a countersignature, when a message is protected in group mode (see {{mess-processing}}).
+The new parameter Signature Encryption Key specifies the encryption key for deriving a keystream to encrypt/decrypt a countersignature (see {{sssec-encrypted-signature-keystream}}) when a message is protected in group mode (see {{mess-processing}}).
 
 The Signature Encryption Key is derived as defined for Sender/Recipient Keys in {{Section 3.2.1 of RFC8613}}, with the following differences.
 
