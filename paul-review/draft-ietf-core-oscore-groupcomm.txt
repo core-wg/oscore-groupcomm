@@ -546,33 +546,33 @@ Table of Contents
 
 2.1.1.  AEAD Algorithm
 
-   The AEAD Algorithm (see Section 3.1 of [RFC8613]) SHALL identify the
-   COSE AEAD algorithm to use for encryption and decryption when
-   messages are protected using the pairwise mode (see Section 8).  This
-   algorithm MUST provide integrity protection.  If this parameter is
-   not set, the pairwise mode is not used in the group.
+   The AEAD Algorithm (see Section 3.1 of [RFC8613]) identifies the COSE
+   AEAD algorithm to use for encryption and decryption when messages are
+   protected using the pairwise mode (see Section 8).  This algorithm
+   MUST provide integrity protection.  If this parameter is not set, the
+   pairwise mode is not used in the group.
 
 2.1.2.  HKDF Algorithm
 
-   The HKDF Algorithm (see Section 3.1 of [RFC8613]) SHALL identify the
-   used key derivation function, which MUST be one of the HMAC-based
-   HKDF [RFC5869] algorithms defined for COSE (see Section 5.1 of
-   [RFC9053]) and registered at [COSE.Algorithms].
+   The HKDF Algorithm (see Section 3.1 of [RFC8613]) identifies the used
+   key derivation function, which MUST be one of the HMAC-based HKDF
+   [RFC5869] algorithms defined for COSE (see Section 5.1 of [RFC9053])
+   and registered at [COSE.Algorithms].
 
 2.1.3.  ID Context
 
    The ID Context parameter (see Sections 3.1 and 3.3 of [RFC8613])
-   SHALL contain the Group Identifier (Gid) of the group.  The choice of
-   the Gid format is application specific.  An example of specific
+   contains the Group Identifier (Gid) of the group.  The choice of the
+   Gid format is application specific.  An example of specific
    formatting of the Gid is given in Appendix C.  The application needs
    to specify how to handle potential collisions between Gids (see
    Section 14.6).
 
 2.1.4.  Common IV
 
-   The Common IV parameter (see Section 3.1 of [RFC8613]) SHALL identify
-   the Common IV used in the group.  Differently from OSCORE, the length
-   of the Common IV is determined as follows.
+   The Common IV parameter (see Section 3.1 of [RFC8613]) identifies the
+   Common IV used in the group.  Differently from OSCORE, the length of
+   the Common IV is determined as follows.
 
    *  If only one among the AEAD Algorithm and the Group Encryption
       Algorithm is set (see Section 2.1.1 and Section 2.1.7), the length

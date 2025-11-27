@@ -1813,7 +1813,7 @@ Except for the Replay Window defined in <span><a href="https://rfc-editor.org/rf
           <h4 id="name-aead-algorithm">
 <a href="#section-2.1.1" class="section-number selfRef">2.1.1. </a><a href="#name-aead-algorithm" class="section-name selfRef">AEAD Algorithm</a>
           </h4>
-<p id="section-2.1.1-1">The AEAD Algorithm (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>) <span class="bcp14">SHALL</span> identify the COSE AEAD algorithm to use for encryption and decryption when messages are protected using the pairwise mode (see <a href="#sec-pairwise-protection" class="auto internal xref">Section 8</a>). This algorithm <span class="bcp14">MUST</span> provide integrity protection. If this parameter is not set, the pairwise mode is not used in the group.<a href="#section-2.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.1-1">The AEAD Algorithm (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>) identifies the COSE AEAD algorithm to use for encryption and decryption when messages are protected using the pairwise mode (see <a href="#sec-pairwise-protection" class="auto internal xref">Section 8</a>). This algorithm <span class="bcp14">MUST</span> provide integrity protection. If this parameter is not set, the pairwise mode is not used in the group.<a href="#section-2.1.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-common-context-hkdf-alg">
@@ -1821,7 +1821,7 @@ Except for the Replay Window defined in <span><a href="https://rfc-editor.org/rf
           <h4 id="name-hkdf-algorithm">
 <a href="#section-2.1.2" class="section-number selfRef">2.1.2. </a><a href="#name-hkdf-algorithm" class="section-name selfRef">HKDF Algorithm</a>
           </h4>
-<p id="section-2.1.2-1">The HKDF Algorithm (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>) <span class="bcp14">SHALL</span> identify the used key derivation function, which <span class="bcp14">MUST</span> be one of the HMAC-based HKDF <span>[<a href="#RFC5869" class="cite xref">RFC5869</a>]</span> algorithms defined for COSE (see <span><a href="https://rfc-editor.org/rfc/rfc9053#section-5.1" class="relref">Section 5.1</a> of [<a href="#RFC9053" class="cite xref">RFC9053</a>]</span>) and registered at <span>[<a href="#COSE.Algorithms" class="cite xref">COSE.Algorithms</a>]</span>.<a href="#section-2.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.2-1">The HKDF Algorithm (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>) identifies the used key derivation function, which <span class="bcp14">MUST</span> be one of the HMAC-based HKDF <span>[<a href="#RFC5869" class="cite xref">RFC5869</a>]</span> algorithms defined for COSE (see <span><a href="https://rfc-editor.org/rfc/rfc9053#section-5.1" class="relref">Section 5.1</a> of [<a href="#RFC9053" class="cite xref">RFC9053</a>]</span>) and registered at <span>[<a href="#COSE.Algorithms" class="cite xref">COSE.Algorithms</a>]</span>.<a href="#section-2.1.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-common-context-id-context">
@@ -1829,7 +1829,7 @@ Except for the Replay Window defined in <span><a href="https://rfc-editor.org/rf
           <h4 id="name-id-context">
 <a href="#section-2.1.3" class="section-number selfRef">2.1.3. </a><a href="#name-id-context" class="section-name selfRef">ID Context</a>
           </h4>
-<p id="section-2.1.3-1">The ID Context parameter (see Sections <a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">3.1</a> and <a href="https://rfc-editor.org/rfc/rfc8613#section-3.3" class="relref">3.3</a> of <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>) <span class="bcp14">SHALL</span> contain the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in <a href="#gid-ex" class="auto internal xref">Appendix C</a>. The application needs to specify how to handle potential collisions between Gids (see <a href="#ssec-gid-collision" class="auto internal xref">Section 14.6</a>).<a href="#section-2.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.3-1">The ID Context parameter (see Sections <a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">3.1</a> and <a href="https://rfc-editor.org/rfc/rfc8613#section-3.3" class="relref">3.3</a> of <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>) contains the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in <a href="#gid-ex" class="auto internal xref">Appendix C</a>. The application needs to specify how to handle potential collisions between Gids (see <a href="#ssec-gid-collision" class="auto internal xref">Section 14.6</a>).<a href="#section-2.1.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-common-common-iv">
@@ -1837,7 +1837,7 @@ Except for the Replay Window defined in <span><a href="https://rfc-editor.org/rf
           <h4 id="name-common-iv">
 <a href="#section-2.1.4" class="section-number selfRef">2.1.4. </a><a href="#name-common-iv" class="section-name selfRef">Common IV</a>
           </h4>
-<p id="section-2.1.4-1">The Common IV parameter (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>) <span class="bcp14">SHALL</span> identify the Common IV used in the group. Differently from OSCORE, the length of the Common IV is determined as follows.<a href="#section-2.1.4-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.4-1">The Common IV parameter (see <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>) identifies the Common IV used in the group. Differently from OSCORE, the length of the Common IV is determined as follows.<a href="#section-2.1.4-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2.1.4-2.1">
               <p id="section-2.1.4-2.1.1">If only one among the AEAD Algorithm and the Group Encryption Algorithm is set (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a> and <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>), the length of the Common IV is the nonce length for the set algorithm.<a href="#section-2.1.4-2.1.1" class="pilcrow">¶</a></p>
