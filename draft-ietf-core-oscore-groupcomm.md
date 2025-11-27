@@ -413,9 +413,9 @@ The format of authentication credentials MUST provide the public key and a compr
 
 Examples of formats of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) {{RFC8392}}, X.509 certificates {{RFC5280}}, and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}.
 
-If the authentication credentials are X.509 certificates or C509 certificates, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
+If the authentication credentials are X.509 certificates or C509 certificates, the public key algorithm is identified by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
 
-If authentication credentials are CBOR Web Tokens (CWTs) or CWT Claims Sets (CCSs), the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.
+If authentication credentials are CBOR Web Tokens (CWTs) or CWT Claims Sets (CCSs), then a COSE Key structure and its "kty" and "crv" parameters identify the types of pertinent public key algorithms. For example: the pair ("crv" = X25519, "kty" = OKP) indicates that the public key is meant to be used with X25519 ECDH key agreement; the pair ("crv" = Ed25519, "kty" = OKP) indicates that the public key is meant to be used with the signature algorithm EdDSA; the pair ("crv" = P-256, "kty" = EC2) indicates that the public key is meant to be used with the signature algorithm ECDSA and/or with P-256 ECDH key agreement.
 
 Authentication credentials are used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data when processing messages (see {{sec-cose-object-ext-aad}}). In both these cases, an endpoint in a group MUST treat authentication credentials as opaque data, i.e., by considering the same binary representation made available to other endpoints in the group, possibly through a designated trusted source (e.g., the Group Manager).
 
