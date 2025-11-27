@@ -4217,8 +4217,7 @@ Table of Contents
    must have a good amount of randomness, and the Group Manager can
    generate it offline using a good random number generator.  This
    includes the case where the Group Manager rekeys the group by
-   generating and distributing a new Master Secret.  Randomness
-   requirements for security are described in [RFC4086].
+   generating and distributing a new Master Secret.
 
 14.12.  Replay Protection
 
@@ -4529,11 +4528,6 @@ Table of Contents
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
-
-   [RFC4086]  Eastlake 3rd, D., Schiller, J., and S. Crocker,
-              "Randomness Requirements for Security", BCP 106, RFC 4086,
-              DOI 10.17487/RFC4086, June 2005,
-              <https://www.rfc-editor.org/rfc/rfc4086>.
 
    [RFC5869]  Krawczyk, H. and P. Eronen, "HMAC-based Extract-and-Expand
               Key Derivation Function (HKDF)", RFC 5869,

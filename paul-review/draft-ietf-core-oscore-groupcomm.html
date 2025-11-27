@@ -4092,7 +4092,7 @@ This allows a recipient endpoint to rely on the stored authentication credential
 <a href="#section-14.11" class="section-number selfRef">14.11. </a><a href="#name-master-secret" class="section-name selfRef">Master Secret</a>
         </h3>
 <p id="section-14.11-1">Group OSCORE derives the Security Context using the same construction used by OSCORE, and by using the Group Identifier of a group as the related ID Context. Hence, the same required properties of the Security Context parameters discussed in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.3" class="relref">Section 3.3</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> hold for this document.<a href="#section-14.11-1" class="pilcrow">¶</a></p>
-<p id="section-14.11-2">With particular reference to the OSCORE Master Secret, it has to be kept secret among the members of the respective OSCORE group and the Group Manager responsible for that group. Also, the Master Secret must have a good amount of randomness, and the Group Manager can generate it offline using a good random number generator. This includes the case where the Group Manager rekeys the group by generating and distributing a new Master Secret. Randomness requirements for security are described in <span>[<a href="#RFC4086" class="cite xref">RFC4086</a>]</span>.<a href="#section-14.11-2" class="pilcrow">¶</a></p>
+<p id="section-14.11-2">With particular reference to the OSCORE Master Secret, it has to be kept secret among the members of the respective OSCORE group and the Group Manager responsible for that group. Also, the Master Secret must have a good amount of randomness, and the Group Manager can generate it offline using a good random number generator. This includes the case where the Group Manager rekeys the group by generating and distributing a new Master Secret.<a href="#section-14.11-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-replay-protection">
@@ -4275,10 +4275,6 @@ Reference: [RFC-XXXX]
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC4086">[RFC4086]</dt>
-        <dd>
-<span class="refAuthor">Eastlake 3rd, D.</span>, <span class="refAuthor">Schiller, J.</span>, and <span class="refAuthor">S. Crocker</span>, <span class="refTitle">"Randomness Requirements for Security"</span>, <span class="seriesInfo">BCP 106</span>, <span class="seriesInfo">RFC 4086</span>, <span class="seriesInfo">DOI 10.17487/RFC4086</span>, <time datetime="2005-06" class="refDate">June 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4086">https://www.rfc-editor.org/rfc/rfc4086</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC5869">[RFC5869]</dt>
         <dd>
