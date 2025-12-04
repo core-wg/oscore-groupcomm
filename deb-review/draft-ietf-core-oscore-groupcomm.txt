@@ -443,9 +443,9 @@ Table of Contents
    *  One Common Context, shared by all the endpoints in the group and
       extended as defined below.
 
-      -  The new parameter Authentication Credential Format, specifying
-         the format of authentication credentials used in the group (see
-         Section 2.1.5).
+      -  The new parameter Authentication Credential Format (see
+         Section 2.1.5), specifying the format of authentication
+         credentials used in the group (see Section 2.4).
 
       -  The new parameter Group Manager Authentication Credential,
          specifying the authentication credential of the Group Manager
