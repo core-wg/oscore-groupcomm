@@ -1738,9 +1738,9 @@ Table of Contents
    [RFC8613]), but a client uses it for handling any response from the
    associated server within a long exchange.
 
-   Group OSCORE allows a long exchange to remain active indefinitely,
-   even if the group is rekeyed (thus changing the ID Context) or the
-   client obtains a new Sender ID.
+   Group OSCORE allows a long exchange to remain active, even if the
+   group is rekeyed (thus changing the ID Context) or the client obtains
+   a new Sender ID.
 
    As defined in Section 7, this is achieved by the client and server(s)
    storing the 'kid' and 'kid context' used in the original request,
