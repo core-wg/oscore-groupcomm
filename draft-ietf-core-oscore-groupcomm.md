@@ -437,9 +437,9 @@ Depending on the particular deployment and the intended group size, limiting the
 
 ## Pairwise Keys ## {#sec-derivation-pairwise}
 
-Certain signature schemes, such as EdDSA and ECDSA, support a secure combined signature and encryption scheme. This section specifies the derivation of "pairwise keys" for use in the pairwise mode defined in {{sec-pairwise-protection}}.
+In certain Elliptic Curve Cryptographic schemes, it is possible to use public/private key pairs with both signature operations (ECDSA or EdDSA) and key agreement operations (ECDH). This section specifies the derivation of "pairwise keys" for use in the pairwise mode defined in {{sec-pairwise-protection}}.
 
-Group OSCORE keys used for both signature and encryption MUST be used only for purposes related to Group OSCORE. These include the processing of messages with Group OSCORE, as well as performing proof of possession of private keys, e.g., upon joining a group through the Group Manager (see {{group-manager}}).
+Group OSCORE keys used for both signature operations and key agreement operations MUST be used only for purposes related to Group OSCORE. These include the processing of messages with Group OSCORE, as well as performing proof of possession of private keys, e.g., upon joining a group through the Group Manager (see {{group-manager}}).
 
 ### Derivation of Pairwise Keys ### {#key-derivation-pairwise}
 
@@ -1212,7 +1212,7 @@ The possible use of the pairwise mode is indicated by the Group Manager as part 
 
 The pairwise mode takes advantage of an existing Security Context to establish keying material shared exclusively with each other member. For encryption and decryption operations in pairwise mode, the AEAD Algorithm from the Common Context is used (see {{ssec-common-context-aead-alg}}).
 
-In order to use the pairwise mode in a group where the group mode is also used (i.e., Group Encryption Algorithm and Signature Algorithm in the Security Context are set), the signature scheme of the group mode MUST support a combined signature and encryption scheme. For example, this can rely on signing operations using ECDSA, and encryption operations using AES-CCM with keying material derived through ECDH.
+In order to use the pairwise mode in a group where the group mode is also used (i.e., Group Encryption Algorithm and Signature Algorithm in the Security Context are set), the public/private key pairs used for signature operations of the group mode MUST be possible to also use for key agreement operations. For example, this can rely on signing operations using ECDSA, and encryption operations using AES-CCM with keying material derived through ECDH.
 
 The pairwise mode does not support external verifiers of source authentication and message integrity like the group mode does, e.g., for external signature checkers (see {{sec-processing-signature-checker}}).
 
