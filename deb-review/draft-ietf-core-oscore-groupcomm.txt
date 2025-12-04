@@ -846,16 +846,17 @@ Table of Contents
 
 2.5.  Pairwise Keys
 
-   Certain signature schemes, such as EdDSA and ECDSA, support a secure
-   combined signature and encryption scheme.  This section specifies the
-   derivation of "pairwise keys" for use in the pairwise mode defined in
-   Section 8.
+   In certain Elliptic Curve Cryptographic schemes, it is possible to
+   use public/private key pairs with both signature operations (ECDSA or
+   EdDSA) and key agreement operations (ECDH).  This section specifies
+   the derivation of "pairwise keys" for use in the pairwise mode
+   defined in Section 8.
 
-   Group OSCORE keys used for both signature and encryption MUST be used
-   only for purposes related to Group OSCORE.  These include the
-   processing of messages with Group OSCORE, as well as performing proof
-   of possession of private keys, e.g., upon joining a group through the
-   Group Manager (see Section 12).
+   Group OSCORE keys used for both signature operations and key
+   agreement operations MUST be used only for purposes related to Group
+   OSCORE.  These include the processing of messages with Group OSCORE,
+   as well as performing proof of possession of private keys, e.g., upon
+   joining a group through the Group Manager (see Section 12).
 
 2.5.1.  Derivation of Pairwise Keys
 
@@ -2525,11 +2526,11 @@ Table of Contents
 
    In order to use the pairwise mode in a group where the group mode is
    also used (i.e., Group Encryption Algorithm and Signature Algorithm
-   in the Security Context are set), the signature scheme of the group
-   mode MUST support a combined signature and encryption scheme.  For
-   example, this can rely on signing operations using ECDSA, and
-   encryption operations using AES-CCM with keying material derived
-   through ECDH.
+   in the Security Context are set), the public/private key pairs used
+   for signature operations of the group mode MUST be possible to also
+   use for key agreement operations.  For example, this can rely on
+   signing operations using ECDSA, and encryption operations using AES-
+   CCM with keying material derived through ECDH.
 
    The pairwise mode does not support external verifiers of source
    authentication and message integrity like the group mode does, e.g.,
