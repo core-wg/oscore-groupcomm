@@ -916,7 +916,7 @@ For each of its ongoing long exchanges, a client maintains one Response Number f
 
 That is, the Response Number has the same purpose that the Notification Number has in OSCORE (see Section 4.1.3.5.2 of {{RFC8613}}), but a client uses it for handling any response from the associated server within a long exchange.
 
-Group OSCORE allows a long exchange to remain active indefinitely, even if the group is rekeyed (thus changing the ID Context) or the client obtains a new Sender ID.
+Group OSCORE allows a long exchange to remain active, even if the group is rekeyed (thus changing the ID Context) or the client obtains a new Sender ID.
 
 As defined in {{mess-processing}}, this is achieved by the client and server(s) storing the 'kid' and 'kid context' used in the original request, throughout the whole duration of the long exchange.
 
