@@ -254,11 +254,11 @@ The Security Context of Group OSCORE extends the OSCORE Security Context defined
 
     * For the group mode, the Common Context is extended with the following new parameters.
 
-         - Group Encryption Algorithm, used for encrypting and decrypting messages protected in group mode (see {{ssec-common-context-cs-enc-alg}}).
+         - Group Encryption Algorithm, specifying the algorithm used for encrypting and decrypting messages protected in group mode (see {{ssec-common-context-cs-enc-alg}}).
 
-         - Signature Algorithm, used for computing and verifying the countersignature of messages protected in group mode (see {{ssec-common-context-cs-alg}}).
+         - Signature Algorithm, specifying the algorithm used for computing and verifying the countersignature of messages protected in group mode (see {{ssec-common-context-cs-alg}}).
 
-         - Signature Encryption Key, used for encrypting and decrypting the countersignature of messages protected in group mode (see {{ssec-common-context-group-enc-key}}).
+         - Signature Encryption Key, specifying the encryption key used for deriving a keystream, which is in turn used for encrypting and decrypting the countersignature of messages protected in group mode (see {{ssec-common-context-group-enc-key}}).
 
     *  For the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm (see {{ssec-common-context-dh-alg}}) used for the agreement on a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}).
 
