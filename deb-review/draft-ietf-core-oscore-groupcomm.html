@@ -1846,6 +1846,7 @@ Except for the Replay Window defined in <span><a href="https://rfc-editor.org/rf
               <p id="section-2.1.4-2.2.1">If both the AEAD Algorithm and the Group Encryption Algorithm are set, the length of the Common IV is the greatest nonce length among those of the two algorithms.<a href="#section-2.1.4-2.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2.1.4-3">If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR (see <span><a href="https://rfc-editor.org/rfc/rfc9459#section-4" class="relref">Section 4</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>), then the length of the nonce used by that algorithm is 12 bytes (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-2.1.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-common-context-authcred-format">
@@ -1870,7 +1871,24 @@ Except for the Replay Window defined in <span><a href="https://rfc-editor.org/rf
 <a href="#section-2.1.7" class="section-number selfRef">2.1.7. </a><a href="#name-group-encryption-algorithm" class="section-name selfRef">Group Encryption Algorithm</a>
           </h4>
 <p id="section-2.1.7-1">The new parameter Group Encryption Algorithm identifies the algorithm to use for encryption and decryption, when messages are protected in group mode (see <a href="#mess-processing" class="auto internal xref">Section 7</a>). This algorithm <span class="bcp14">MAY</span> provide integrity protection. If this parameter is not set, the group mode is not used in the group.<a href="#section-2.1.7-1" class="pilcrow">¶</a></p>
-<p id="section-2.1.7-2">A non-authenticated algorithm <span class="bcp14">MUST NOT</span> be used as Group Encryption Algorithm if it is not possible to ensure uniqueness of the (key, nonce) pairs. This is the case, for instance, for A128CTR, A192CTR, and A256CTR <span>[<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>. Instead, examples of non-authenticated algorithms that can be used as Group Encryption Algorithm are A128CBC, A192CBC, and A256CBC <span>[<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>.<a href="#section-2.1.7-2" class="pilcrow">¶</a></p>
+<p id="section-2.1.7-2">A non-authenticated algorithm <span class="bcp14">MUST NOT</span> be used as Group Encryption Algorithm if it is not possible to ensure uniqueness of the (key, SEQ) pairs, where SEQ is the unique binary sequence used for an encryption operation (e.g., an initialization vector or a counter block).<a href="#section-2.1.7-2" class="pilcrow">¶</a></p>
+<p id="section-2.1.7-3">Examples of non-authenticated algorithms that can be used as Group Encryption Algorithm are A128CTR, A192CTR, and A256CTR (see <span><a href="https://rfc-editor.org/rfc/rfc9459#section-4" class="relref">Section 4</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>). When either of those three algorithms is used, the following applies:<a href="#section-2.1.7-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.1.7-4.1">
+              <p id="section-2.1.7-4.1.1">Each 128-bit counter block <span class="bcp14">MUST</span> be composed of a 12-byte nonce concatenated with a 4-byte counter, in this order.<a href="#section-2.1.7-4.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-2.1.7-4.2">
+              <p id="section-2.1.7-4.2.1">The 12-byte nonce <span class="bcp14">MUST</span> be computed as defined in <a href="#sec-cose-object-aead-nonce" class="auto internal xref">Section 3.3</a> of this document. The Initialization Vector (IV) used in <span><a href="https://rfc-editor.org/rfc/rfc9459#section-4" class="relref">Section 4</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span> is equivalent to this nonce (12 bytes) concatenated with 0x00000000 (4 bytes), in this order.<a href="#section-2.1.7-4.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-2.1.7-4.3">
+              <p id="section-2.1.7-4.3.1">The 4-byte counter <span class="bcp14">MUST</span> have value 0 in the block counter used to process the first plaintext/ciphertext block, and it <span class="bcp14">MUST</span> be incremented by 1 for processing each next block. That is, when processing the i-th block (i = 0, 1, 2, ..., N), the counter has value i.<a href="#section-2.1.7-4.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-2.1.7-4.4">
+              <p id="section-2.1.7-4.4.1">The algorithm <span class="bcp14">MUST NOT</span> be used to encrypt a plaintext or decrypt a ciphertext whose length is larger than 64 GB (i.e., 2<sup>36</sup> bytes).<a href="#section-2.1.7-4.4.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-2.1.7-5">The non-authenticated algorithms A128CBC, A192CBC, and A256CBC (see <span><a href="https://rfc-editor.org/rfc/rfc9459#section-5" class="relref">Section 5</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>) <span class="bcp14">MUST NOT</span> be used as Group Encryption Algorithm.<a href="#section-2.1.7-5" class="pilcrow">¶</a></p>
+<p id="section-2.1.7-6">Future specifications can admit alternative non-authenticated algorithms that can be used as Group Encryption Algorithm. When doing so, it <span class="bcp14">MUST</span> be defined how to compose the unique binary sequence SEQ, building on the nonce computed as defined in <a href="#sec-cose-object-aead-nonce" class="auto internal xref">Section 3.3</a> of this document. Absent such a specification, alternative non-authenticated algorithms <span class="bcp14">MUST NOT</span> be used as Group Encryption Algorithm.<a href="#section-2.1.7-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-common-context-cs-alg">
@@ -1934,10 +1952,11 @@ Except for the Replay Window defined in <span><a href="https://rfc-editor.org/rf
             <p id="section-2.2-3.2.1">If both the AEAD Algorithm and the Group Encryption Algorithm are set, then L is the smallest nonce length among those of the two algorithms.<a href="#section-2.2-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-2.2-4">With the exception of the authentication credential of the sender endpoint, a receiver endpoint can derive a complete Security Context from a received Group OSCORE message and the Common Context (see <a href="#ssec-establishment-context-parameters" class="auto internal xref">Section 2.3</a>).<a href="#section-2.2-4" class="pilcrow">¶</a></p>
-<p id="section-2.2-5">The authentication credentials in the Recipient Contexts can be retrieved from the Group Manager (see <a href="#group-manager" class="auto internal xref">Section 12</a>) upon joining the group. An authentication credential can alternatively be acquired from the Group Manager at a later time, for example the first time a message is received from a particular endpoint in the group (see <a href="#ssec-verify-request" class="auto internal xref">Section 7.2</a> and <a href="#ssec-verify-response" class="auto internal xref">Section 7.4</a>).<a href="#section-2.2-5" class="pilcrow">¶</a></p>
-<p id="section-2.2-6">For severely constrained devices, it may be infeasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the sender endpoint's authentication credential. Such devices can be configured to drop a received message for which there is no (complete) Recipient Context, and retrieve the sender endpoint's authentication credential in order to have it available to verify subsequent messages from that endpoint.<a href="#section-2.2-6" class="pilcrow">¶</a></p>
-<p id="section-2.2-7">An endpoint may admit a maximum number of Recipient Contexts for a same Security Context, e.g., due to memory limitations. After reaching that limit, the endpoint has to delete a current Recipient Context to install a new one (see <a href="#ssec-loss-mutable-context-overflow" class="auto internal xref">Section 2.6.1.2</a>). It is up to the application to define policies for Recipient Contexts to delete.<a href="#section-2.2-7" class="pilcrow">¶</a></p>
+<p id="section-2.2-4">If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR (see <span><a href="https://rfc-editor.org/rfc/rfc9459#section-4" class="relref">Section 4</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>), then the length of the nonce used by that algorithm is 12 bytes (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-2.2-4" class="pilcrow">¶</a></p>
+<p id="section-2.2-5">With the exception of the authentication credential of the sender endpoint, a receiver endpoint can derive a complete Security Context from a received Group OSCORE message and the Common Context (see <a href="#ssec-establishment-context-parameters" class="auto internal xref">Section 2.3</a>).<a href="#section-2.2-5" class="pilcrow">¶</a></p>
+<p id="section-2.2-6">The authentication credentials in the Recipient Contexts can be retrieved from the Group Manager (see <a href="#group-manager" class="auto internal xref">Section 12</a>) upon joining the group. An authentication credential can alternatively be acquired from the Group Manager at a later time, for example the first time a message is received from a particular endpoint in the group (see <a href="#ssec-verify-request" class="auto internal xref">Section 7.2</a> and <a href="#ssec-verify-response" class="auto internal xref">Section 7.4</a>).<a href="#section-2.2-6" class="pilcrow">¶</a></p>
+<p id="section-2.2-7">For severely constrained devices, it may be infeasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the sender endpoint's authentication credential. Such devices can be configured to drop a received message for which there is no (complete) Recipient Context, and retrieve the sender endpoint's authentication credential in order to have it available to verify subsequent messages from that endpoint.<a href="#section-2.2-7" class="pilcrow">¶</a></p>
+<p id="section-2.2-8">An endpoint may admit a maximum number of Recipient Contexts for a same Security Context, e.g., due to memory limitations. After reaching that limit, the endpoint has to delete a current Recipient Context to install a new one (see <a href="#ssec-loss-mutable-context-overflow" class="auto internal xref">Section 2.6.1.2</a>). It is up to the application to define policies for Recipient Contexts to delete.<a href="#section-2.2-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-establishment-context-parameters">
@@ -2295,7 +2314,7 @@ In particular, the Countersign_structure contains the context text string "Count
 </li>
         </ol>
 <p id="section-3.3-3">For example, if X = 7 and the Common IV is 0x00112233445566778899aabbcc (13 bytes), then the bytes to XOR are 0x00112233445566 (7 bytes).<a href="#section-3.3-3" class="pilcrow">¶</a></p>
-<p id="section-3.3-4">The constructed nonce is used both by the AEAD Algorithm (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a>) and by the Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>), independent of whether they are AEAD or plain encryption algorithms. Algorithms that do not use a nonce are not supported, as per <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
+<p id="section-3.3-4">The constructed nonce is used both by the AEAD Algorithm (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a>) and by the Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>), independent of whether they are AEAD or plain encryption algorithms. If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR (see <span><a href="https://rfc-editor.org/rfc/rfc9459#section-4" class="relref">Section 4</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>), then the length of the nonce used by that algorithm is 12 bytes (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>). Algorithms that do not use a nonce are not supported, as per <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-cose-object-ext-aad">
@@ -3251,10 +3270,10 @@ where KEYSTREAM is derived as per <a href="#sssec-encrypted-signature-keystream"
           <p id="section-10-4.1.1">For endpoints that use authenticated encryption, the AEAD algorithm AES-CCM-16-64-128 defined in <span><a href="https://rfc-editor.org/rfc/rfc9053#section-4.2" class="relref">Section 4.2</a> of [<a href="#RFC9053" class="cite xref">RFC9053</a>]</span> is mandatory to implement as Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-10-4.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-10-4.2">
-          <p id="section-10-4.2.1">For endpoints that use non-authenticated encryption, the algorithm A128CBC defined in <span><a href="https://rfc-editor.org/rfc/rfc9459#section-5" class="relref">Section 5</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span> is mandatory to implement as Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-10-4.2.1" class="pilcrow">¶</a></p>
+          <p id="section-10-4.2.1">For endpoints that use non-authenticated encryption, the algorithm A128CTR defined in <span><a href="https://rfc-editor.org/rfc/rfc9459#section-4" class="relref">Section 4</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span> is mandatory to implement as Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-10-4.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-10-4.3">
-          <p id="section-10-4.3.1"><span><a href="https://rfc-editor.org/rfc/rfc9459#section-6" class="relref">Section 6</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span> mandates that COSE libraries supporting either the AES-CTR or AES-CBC algorithm and accepting Additional Authenticated Data (AAD) as input must return an error if one of these non-AEAD content encryption algorithms is selected.<a href="#section-10-4.3.1" class="pilcrow">¶</a></p>
+          <p id="section-10-4.3.1"><span><a href="https://rfc-editor.org/rfc/rfc9459#section-6" class="relref">Section 6</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span> mandates that COSE libraries supporting the AES-CTR algorithm and accepting Additional Authenticated Data (AAD) as input must return an error if such a non-AEAD content encryption algorithms is selected.<a href="#section-10-4.3.1" class="pilcrow">¶</a></p>
 <p id="section-10-4.3.2">
 In case the used Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>) does not provide integrity protection, the following applies.<a href="#section-10-4.3.2" class="pilcrow">¶</a></p>
 <p id="section-10-4.3.3">
@@ -3630,7 +3649,7 @@ to use this information as they see fit".<a href="#section-13-5" class="pilcrow"
                 <p id="section-13.1-1.6.2.2.1">Mapping of public keys for the curve Ed25519 into Montgomery coordinates to use with X25519.<a href="#section-13.1-1.6.2.2.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-13.1-1.6.2.3">
-                <p id="section-13.1-1.6.2.3.1">The following COSE encryption algorithms: AES-CCM-16-64-128, AES-CCM-16-128-128, AES-CCM-16-64-256, AES-CCM-16-128-256, AES_CCM-64-64-128, AES-CCM-64-128-128, AES-CCM-64-64-256, AES-CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305, A128CBC, A192CBC, A256CBC.<a href="#section-13.1-1.6.2.3.1" class="pilcrow">¶</a></p>
+                <p id="section-13.1-1.6.2.3.1">The following COSE encryption algorithms: AES-CCM-16-64-128, AES-CCM-16-128-128, AES-CCM-16-64-256, AES-CCM-16-128-256, AES_CCM-64-64-128, AES-CCM-64-128-128, AES-CCM-64-64-256, AES-CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305.<a href="#section-13.1-1.6.2.3.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-13.1-1.6.2.4">
                 <p id="section-13.1-1.6.2.4.1">The following HKDF algorithms: HKDF SHA-256 (identified as the COSE Algorithm "HMAC 256/256") and HKDF SHA-512 (identified as the COSE Algorithm "HMAC 512/512").<a href="#section-13.1-1.6.2.4.1" class="pilcrow">¶</a></p>
@@ -3700,7 +3719,7 @@ to use this information as they see fit".<a href="#section-13-5" class="pilcrow"
                 <p id="section-13.2-1.5.2.2.1">Mapping of public keys for the curve Ed25519 into Montgomery coordinates to use with X25519.<a href="#section-13.2-1.5.2.2.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-13.2-1.5.2.3">
-                <p id="section-13.2-1.5.2.3.1">The following COSE encryption algorithms: 1-3, 10-13, 24, 30-33, -65531<a href="#section-13.2-1.5.2.3.1" class="pilcrow">¶</a></p>
+                <p id="section-13.2-1.5.2.3.1">The following COSE encryption algorithms: 1-3, 10-13, 24, 30-33.<a href="#section-13.2-1.5.2.3.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-13.2-1.5.2.4">
                 <p id="section-13.2-1.5.2.4.1">The following HKDF algorithms: HKDF SHA-256, -384, -512.<a href="#section-13.2-1.5.2.4.1" class="pilcrow">¶</a></p>
@@ -3786,9 +3805,6 @@ to use this information as they see fit".<a href="#section-13-5" class="pilcrow"
 </li>
               <li class="normal" id="section-13.3-4.6.2.4">
                 <p id="section-13.3-4.6.2.4.1">(ChaCha20/Poly1305, AES-CCM-16-64-128).<a href="#section-13.3-4.6.2.4.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-13.3-4.6.2.5">
-                <p id="section-13.3-4.6.2.5.1">(A128CBC, AES-CCM-16-64-128).<a href="#section-13.3-4.6.2.5.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>

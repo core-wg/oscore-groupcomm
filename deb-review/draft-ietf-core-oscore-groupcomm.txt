@@ -583,6 +583,10 @@ Table of Contents
       set, the length of the Common IV is the greatest nonce length
       among those of the two algorithms.
 
+   If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR
+   (see Section 4 of [RFC9459]), then the length of the nonce used by
+   that algorithm is 12 bytes (see Section 2.1.7).
+
 2.1.5.  Authentication Credential Format
 
    The new parameter Authentication Credential Format specifies the
@@ -611,10 +615,43 @@ Table of Contents
 
    A non-authenticated algorithm MUST NOT be used as Group Encryption
    Algorithm if it is not possible to ensure uniqueness of the (key,
-   nonce) pairs.  This is the case, for instance, for A128CTR, A192CTR,
-   and A256CTR [RFC9459].  Instead, examples of non-authenticated
-   algorithms that can be used as Group Encryption Algorithm are
-   A128CBC, A192CBC, and A256CBC [RFC9459].
+   SEQ) pairs, where SEQ is the unique binary sequence used for an
+   encryption operation (e.g., an initialization vector or a counter
+   block).
+
+   Examples of non-authenticated algorithms that can be used as Group
+   Encryption Algorithm are A128CTR, A192CTR, and A256CTR (see Section 4
+   of [RFC9459]).  When either of those three algorithms is used, the
+   following applies:
+
+   *  Each 128-bit counter block MUST be composed of a 12-byte nonce
+      concatenated with a 4-byte counter, in this order.
+
+   *  The 12-byte nonce MUST be computed as defined in Section 3.3 of
+      this document.  The Initialization Vector (IV) used in Section 4
+      of [RFC9459] is equivalent to this nonce (12 bytes) concatenated
+      with 0x00000000 (4 bytes), in this order.
+
+   *  The 4-byte counter MUST have value 0 in the block counter used to
+      process the first plaintext/ciphertext block, and it MUST be
+      incremented by 1 for processing each next block.  That is, when
+      processing the i-th block (i = 0, 1, 2, ..., N), the counter has
+      value i.
+
+   *  The algorithm MUST NOT be used to encrypt a plaintext or decrypt a
+      ciphertext whose length is larger than 64 GB (i.e., 2^36 bytes).
+
+   The non-authenticated algorithms A128CBC, A192CBC, and A256CBC (see
+   Section 5 of [RFC9459]) MUST NOT be used as Group Encryption
+   Algorithm.
+
+   Future specifications can admit alternative non-authenticated
+   algorithms that can be used as Group Encryption Algorithm.  When
+   doing so, it MUST be defined how to compose the unique binary
+   sequence SEQ, building on the nonce computed as defined in
+   Section 3.3 of this document.  Absent such a specification,
+   alternative non-authenticated algorithms MUST NOT be used as Group
+   Encryption Algorithm.
 
 2.1.8.  Signature Algorithm
 
@@ -703,6 +740,10 @@ Table of Contents
    *  If both the AEAD Algorithm and the Group Encryption Algorithm are
       set, then L is the smallest nonce length among those of the two
       algorithms.
+
+   If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR
+   (see Section 4 of [RFC9459]), then the length of the nonce used by
+   that algorithm is 12 bytes (see Section 2.1.7).
 
    With the exception of the authentication credential of the sender
    endpoint, a receiver endpoint can derive a complete Security Context
@@ -1373,8 +1414,11 @@ Table of Contents
    The constructed nonce is used both by the AEAD Algorithm (see
    Section 2.1.1) and by the Group Encryption Algorithm (see
    Section 2.1.7), independent of whether they are AEAD or plain
-   encryption algorithms.  Algorithms that do not use a nonce are not
-   supported, as per Section 2.1.7.
+   encryption algorithms.  If the Group Encryption Algorithm is A128CTR,
+   A192CTR, or A256CTR (see Section 4 of [RFC9459]), then the length of
+   the nonce used by that algorithm is 12 bytes (see Section 2.1.7).
+   Algorithms that do not use a nonce are not supported, as per
+   Section 2.1.7.
 
 3.4.  Additional Authenticated Data
 
@@ -2864,13 +2908,13 @@ Table of Contents
       Section 2.1.7).
 
    *  For endpoints that use non-authenticated encryption, the algorithm
-      A128CBC defined in Section 5 of [RFC9459] is mandatory to
+      A128CTR defined in Section 4 of [RFC9459] is mandatory to
       implement as Group Encryption Algorithm (see Section 2.1.7).
 
-   *  Section 6 of [RFC9459] mandates that COSE libraries supporting
-      either the AES-CTR or AES-CBC algorithm and accepting Additional
-      Authenticated Data (AAD) as input must return an error if one of
-      these non-AEAD content encryption algorithms is selected.
+   *  Section 6 of [RFC9459] mandates that COSE libraries supporting the
+      AES-CTR algorithm and accepting Additional Authenticated Data
+      (AAD) as input must return an error if such a non-AEAD content
+      encryption algorithms is selected.
 
       In case the used Group Encryption Algorithm (see Section 2.1.7)
       does not provide integrity protection, the following applies.
@@ -3457,8 +3501,7 @@ Table of Contents
       -  The following COSE encryption algorithms: AES-CCM-16-64-128,
          AES-CCM-16-128-128, AES-CCM-16-64-256, AES-CCM-16-128-256,
          AES_CCM-64-64-128, AES-CCM-64-128-128, AES-CCM-64-64-256, AES-
-         CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305,
-         A128CBC, A192CBC, A256CBC.
+         CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305.
 
       -  The following HKDF algorithms: HKDF SHA-256 (identified as the
          COSE Algorithm "HMAC 256/256") and HKDF SHA-512 (identified as
@@ -3513,7 +3556,7 @@ Table of Contents
          coordinates to use with X25519.
 
       -  The following COSE encryption algorithms: 1-3, 10-13, 24,
-         30-33, -65531
+         30-33.
 
       -  The following HKDF algorithms: HKDF SHA-256, -384, -512.
 
@@ -3586,8 +3629,6 @@ Table of Contents
       -  (AES-CCM-16-64-128, ChaCha20/Poly1305).
 
       -  (ChaCha20/Poly1305, AES-CCM-16-64-128).
-
-      -  (A128CBC, AES-CCM-16-64-128).
 
 14.  Security Considerations
 
