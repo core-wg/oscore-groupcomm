@@ -331,6 +331,8 @@ The Common IV parameter (see {{Section 3.1 of RFC8613}}) SHALL identify the Comm
 
 * If both the AEAD Algorithm and the Group Encryption Algorithm are set, the length of the Common IV is the greatest nonce length among those of the two algorithms.
 
+If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR (see {{Section 4 of RFC9459}}), then the length of the nonce used by that algorithm is 12 bytes (see {{ssec-common-context-cs-enc-alg}}).
+
 ### Authentication Credential Format ## {#ssec-common-context-authcred-format}
 
 The new parameter Authentication Credential Format specifies the format of authentication credentials used in the group. Further details on authentication credentials are compiled in {{sec-pub-key-format}}.
@@ -343,7 +345,21 @@ The new parameter Group Manager Authentication Credential specifies the authenti
 
 The new parameter Group Encryption Algorithm identifies the algorithm to use for encryption and decryption, when messages are protected in group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection. If this parameter is not set, the group mode is not used in the group.
 
-A non-authenticated algorithm MUST NOT be used as Group Encryption Algorithm if it is not possible to ensure uniqueness of the (key, nonce) pairs. This is the case, for instance, for A128CTR, A192CTR, and A256CTR {{RFC9459}}. Instead, examples of non-authenticated algorithms that can be used as Group Encryption Algorithm are A128CBC, A192CBC, and A256CBC {{RFC9459}}.
+A non-authenticated algorithm MUST NOT be used as Group Encryption Algorithm if it is not possible to ensure uniqueness of the (key, SEQ) pairs, where SEQ is the unique binary sequence used for an encryption operation (e.g., an initialization vector or a counter block).
+
+Examples of non-authenticated algorithms that can be used as Group Encryption Algorithm are A128CTR, A192CTR, and A256CTR (see {{Section 4 of RFC9459}}). When either of those three algorithms is used, the following applies:
+
+* Each 128-bit counter block MUST be composed of a 12-byte nonce concatenated with a 4-byte counter, in this order.
+
+* The 12-byte nonce MUST be computed as defined in {{sec-cose-object-aead-nonce}} of this document. The Initialization Vector (IV) used in {{Section 4 of RFC9459}} is equivalent to this nonce (12 bytes) concatenated with 0x00000000 (4 bytes), in this order.
+
+* The 4-byte counter MUST have value 0 in the block counter used to process the first plaintext/ciphertext block, and it MUST be incremented by 1 for processing each next block. That is, when processing the i-th block (i = 0, 1, 2, ..., N), the counter has value i.
+
+* The algorithm MUST NOT be used to encrypt a plaintext or decrypt a ciphertext whose length is larger than 64 GB (i.e., 2<sup>36</sup> bytes).
+
+The non-authenticated algorithms A128CBC, A192CBC, and A256CBC (see {{Section 5 of RFC9459}}) MUST NOT be used as Group Encryption Algorithm.
+
+Future specifications can admit alternative non-authenticated algorithms that can be used as Group Encryption Algorithm. When doing so, it MUST be defined how to compose the unique binary sequence SEQ, building on the nonce computed as defined in {{sec-cose-object-aead-nonce}} of this document. Absent such a specification, alternative non-authenticated algorithms MUST NOT be used as Group Encryption Algorithm.
 
 ### Signature Algorithm ## {#ssec-common-context-cs-alg}
 
@@ -386,6 +402,8 @@ The maximum length of a Sender ID in bytes equals L minus 6, where L is determin
 * If only one among the AEAD Algorithm and the Group Encryption Algorithm is set (see {{ssec-common-context-aead-alg}} and {{ssec-common-context-cs-enc-alg}}), then L is the nonce length for the set algorithm.
 
 * If both the AEAD Algorithm and the Group Encryption Algorithm are set, then L is the smallest nonce length among those of the two algorithms.
+
+If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR (see {{Section 4 of RFC9459}}), then the length of the nonce used by that algorithm is 12 bytes (see {{ssec-common-context-cs-enc-alg}}).
 
 With the exception of the authentication credential of the sender endpoint, a receiver endpoint can derive a complete Security Context from a received Group OSCORE message and the Common Context (see {{ssec-establishment-context-parameters}}).
 
@@ -661,7 +679,7 @@ The nonce is constructed like in OSCORE, with the difference that Step 4 in {{Se
 
 For example, if X = 7 and the Common IV is 0x00112233445566778899aabbcc (13 bytes), then the bytes to XOR are 0x00112233445566 (7 bytes).
 
-The constructed nonce is used both by the AEAD Algorithm (see {{ssec-common-context-aead-alg}}) and by the Group Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}), independent of whether they are AEAD or plain encryption algorithms. Algorithms that do not use a nonce are not supported, as per {{ssec-common-context-cs-enc-alg}}.
+The constructed nonce is used both by the AEAD Algorithm (see {{ssec-common-context-aead-alg}}) and by the Group Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}), independent of whether they are AEAD or plain encryption algorithms. If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR (see {{Section 4 of RFC9459}}), then the length of the nonce used by that algorithm is 12 bytes (see {{ssec-common-context-cs-enc-alg}}). Algorithms that do not use a nonce are not supported, as per {{ssec-common-context-cs-enc-alg}}.
 
 ## Additional Authenticated Data # {#sec-cose-object-ext-aad}
 
@@ -1352,9 +1370,9 @@ For endpoints that support the group mode, the following applies.
 
 * For endpoints that use authenticated encryption, the AEAD algorithm AES-CCM-16-64-128 defined in {{Section 4.2 of RFC9053}} is mandatory to implement as Group Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}).
 
-* For endpoints that use non-authenticated encryption, the algorithm A128CBC defined in {{Section 5 of RFC9459}} is mandatory to implement as Group Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}).
+* For endpoints that use non-authenticated encryption, the algorithm A128CTR defined in {{Section 4 of RFC9459}} is mandatory to implement as Group Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}).
 
-* {{Section 6 of RFC9459}} mandates that COSE libraries supporting either the AES-CTR or AES-CBC algorithm and accepting Additional Authenticated Data (AAD) as input must return an error if one of these non-AEAD content encryption algorithms is selected.
+* {{Section 6 of RFC9459}} mandates that COSE libraries supporting the AES-CTR algorithm and accepting Additional Authenticated Data (AAD) as input must return an error if such a non-AEAD content encryption algorithms is selected.
 
   In case the used Group Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}) does not provide integrity protection, the following applies.
 
@@ -1626,7 +1644,7 @@ Note to RFC Editor: when deleting this section, please also delete RFC 7942 from
 
   * The group mode and the pairwise mode.
   * Mapping of public keys for the curve Ed25519 into Montgomery coordinates to use with X25519.
-  * The following COSE encryption algorithms: AES-CCM-16-64-128, AES-CCM-16-128-128, AES-CCM-16-64-256, AES-CCM-16-128-256, AES_CCM-64-64-128, AES-CCM-64-128-128, AES-CCM-64-64-256, AES-CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305, A128CBC, A192CBC, A256CBC.
+  * The following COSE encryption algorithms: AES-CCM-16-64-128, AES-CCM-16-128-128, AES-CCM-16-64-256, AES-CCM-16-128-256, AES_CCM-64-64-128, AES-CCM-64-128-128, AES-CCM-64-64-256, AES-CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305.
   * The following HKDF algorithms: HKDF SHA-256 (identified as the COSE Algorithm "HMAC 256/256") and HKDF SHA-512 (identified as the COSE Algorithm "HMAC 512/512").
   * The following COSE signature algorithms: ECDSA with curves P-256, P-384, and P-521, as well as EdDSA with curve Ed25519.
   * The following COSE key agreement algorithms: ECDH-SS + HKDF-256 and ECDH-SS + HKDF-512, both of which using either keys of COSE Key Type "EC2" with the curve P-256, P-384, and P-521, or keys of COSE Key Type "OKP" key with X25519.
@@ -1658,7 +1676,7 @@ Note to RFC Editor: when deleting this section, please also delete RFC 7942 from
 
   * The group mode and the pairwise mode.
   * Mapping of public keys for the curve Ed25519 into Montgomery coordinates to use with X25519.
-  * The following COSE encryption algorithms: 1-3, 10-13, 24, 30-33, -65531
+  * The following COSE encryption algorithms: 1-3, 10-13, 24, 30-33.
   * The following HKDF algorithms: HKDF SHA-256, -384, -512.
   * The following COSE signature algorithms: EdDSA on Ed25519, ECDSA w/ SHA-256 on P-256
   * The following COSE key agreement algorithms: ECDH on P-256 and curve25519.
@@ -1703,7 +1721,6 @@ The scenarios considered during the interoperability tests are as follows:
   * (ChaCha20/Poly1305, ChaCha20/Poly1305).
   * (AES-CCM-16-64-128, ChaCha20/Poly1305).
   * (ChaCha20/Poly1305, AES-CCM-16-64-128).
-  * (A128CBC, AES-CCM-16-64-128).
 
 # Security Considerations  # {#sec-security-considerations}
 
