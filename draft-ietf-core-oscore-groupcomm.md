@@ -248,7 +248,7 @@ The Security Context of Group OSCORE extends the OSCORE Security Context defined
 
 * One Common Context, shared by all the endpoints in the group and extended as defined below.
 
-    * The new parameter Authentication Credential Format, specifying the format of authentication credentials used in the group (see {{ssec-common-context-authcred-format}}).
+    * The new parameter Authentication Credential Format (see {{ssec-common-context-authcred-format}}), specifying the format of authentication credentials used in the group (see {{sec-pub-key-format}}).
 
     * The new parameter Group Manager Authentication Credential, specifying the authentication credential of the Group Manager responsible for the group (see {{ssec-common-context-gm-pub-key}}).
 
