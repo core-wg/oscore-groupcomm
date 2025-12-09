@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 7 June 2026                                        F. Palombini
+Expires: 12 June 2026                                       F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                         4 December 2025
+                                                         9 December 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -64,7 +64,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 June 2026.
+   This Internet-Draft will expire on 12 June 2026.
 
 Copyright Notice
 
@@ -3501,7 +3501,8 @@ Table of Contents
       -  The following COSE encryption algorithms: AES-CCM-16-64-128,
          AES-CCM-16-128-128, AES-CCM-16-64-256, AES-CCM-16-128-256,
          AES_CCM-64-64-128, AES-CCM-64-128-128, AES-CCM-64-64-256, AES-
-         CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305.
+         CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305,
+         A128CTR, A192CTR, A256CTR.
 
       -  The following HKDF algorithms: HKDF SHA-256 (identified as the
          COSE Algorithm "HMAC 256/256") and HKDF SHA-512 (identified as
