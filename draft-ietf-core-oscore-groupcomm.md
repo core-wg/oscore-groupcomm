@@ -1644,7 +1644,7 @@ Note to RFC Editor: when deleting this section, please also delete RFC 7942 from
 
   * The group mode and the pairwise mode.
   * Mapping of public keys for the curve Ed25519 into Montgomery coordinates to use with X25519.
-  * The following COSE encryption algorithms: AES-CCM-16-64-128, AES-CCM-16-128-128, AES-CCM-16-64-256, AES-CCM-16-128-256, AES_CCM-64-64-128, AES-CCM-64-128-128, AES-CCM-64-64-256, AES-CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305.
+  * The following COSE encryption algorithms: AES-CCM-16-64-128, AES-CCM-16-128-128, AES-CCM-16-64-256, AES-CCM-16-128-256, AES_CCM-64-64-128, AES-CCM-64-128-128, AES-CCM-64-64-256, AES-CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305, A128CTR, A192CTR, A256CTR.
   * The following HKDF algorithms: HKDF SHA-256 (identified as the COSE Algorithm "HMAC 256/256") and HKDF SHA-512 (identified as the COSE Algorithm "HMAC 512/512").
   * The following COSE signature algorithms: ECDSA with curves P-256, P-384, and P-521, as well as EdDSA with curve Ed25519.
   * The following COSE key agreement algorithms: ECDH-SS + HKDF-256 and ECDH-SS + HKDF-512, both of which using either keys of COSE Key Type "EC2" with the curve P-256, P-384, and P-521, or keys of COSE Key Type "OKP" key with X25519.
