@@ -1372,7 +1372,7 @@ For endpoints that support the group mode, the following applies.
 
 * For endpoints that use non-authenticated encryption, the algorithm A128CTR defined in {{Section 4 of RFC9459}} is mandatory to implement as Group Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}).
 
-* {{Section 6 of RFC9459}} mandates that COSE libraries supporting the AES-CTR algorithm and accepting Additional Authenticated Data (AAD) as input must return an error if such a non-AEAD content encryption algorithms is selected.
+* {{Section 6 of RFC9459}} mandates that COSE libraries supporting the AES-CTR algorithm and accepting Additional Authenticated Data (AAD) as input must return an error if AAD is provided when such a non-AEAD content encryption algorithm is selected.
 
   In case the used Group Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}) does not provide integrity protection, the following applies.
 
