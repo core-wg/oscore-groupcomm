@@ -345,21 +345,19 @@ The new parameter Group Manager Authentication Credential specifies the authenti
 
 The new parameter Group Encryption Algorithm identifies the algorithm to use for encryption and decryption, when messages are protected in group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection. If this parameter is not set, the group mode is not used in the group.
 
-A non-authenticated algorithm MUST NOT be used as Group Encryption Algorithm if it is not possible to ensure uniqueness of the (key, SEQ) pairs, where SEQ is the unique binary sequence used for an encryption operation (e.g., an initialization vector or a counter block).
+In order to be eligible to use as Group Encryption Algorithm, a non-authenticated algorithm MUST ensure that the same key is not reused with the same IV or intermediate values used in the algorithm, e.g., for algorithms that increment the IV internally. If a non-authenticated algorithm does not fulfill the requirement above, that algorithm MUST NOT be used as Group Encryption Algorithm.
 
 Examples of non-authenticated algorithms that can be used as Group Encryption Algorithm are A128CTR, A192CTR, and A256CTR (see {{Section 4 of RFC9459}}). When either of those three algorithms is used, the following applies:
 
-* Each 128-bit counter block MUST be composed of a 12-byte nonce concatenated with a 4-byte counter, in this order.
+* A 12-byte nonce MUST be computed as defined in {{sec-cose-object-aead-nonce}} of this document.
 
-* The 12-byte nonce MUST be computed as defined in {{sec-cose-object-aead-nonce}} of this document. The Initialization Vector (IV) used in {{Section 4 of RFC9459}} is equivalent to this nonce (12 bytes) concatenated with 0x00000000 (4 bytes), in this order.
-
-* The 4-byte counter MUST have value 0 in the block counter used to process the first plaintext/ciphertext block, and it MUST be incremented by 1 for processing each next block. That is, when processing the i-th block (i = 0, 1, 2, ..., N), the counter has value i.
+* The Initialization Vector (IV) used in {{Section 4 of RFC9459}} is equivalent to the nonce above (12 bytes) concatenated with 0x00000000 (4 bytes), in this order.
 
 * The algorithm MUST NOT be used to encrypt a plaintext or decrypt a ciphertext whose length is larger than 64 GB (i.e., 2<sup>36</sup> bytes).
 
 The non-authenticated algorithms A128CBC, A192CBC, and A256CBC (see {{Section 5 of RFC9459}}) MUST NOT be used as Group Encryption Algorithm.
 
-Future specifications can admit alternative non-authenticated algorithms that can be used as Group Encryption Algorithm. When doing so, it MUST be defined how to compose the unique binary sequence SEQ, building on the nonce computed as defined in {{sec-cose-object-aead-nonce}} of this document. Absent such a specification, alternative non-authenticated algorithms MUST NOT be used as Group Encryption Algorithm.
+Future specifications can admit alternative non-authenticated algorithms that can be used as Group Encryption Algorithm. When doing so, it MUST be defined how to securely compose the IV and possible intermediate values used in the algorithm, building on the nonce computed as defined in {{sec-cose-object-aead-nonce}} of this document. Absent such a specification, alternative non-authenticated algorithms MUST NOT be used as Group Encryption Algorithm.
 
 ### Signature Algorithm ## {#ssec-common-context-cs-alg}
 
