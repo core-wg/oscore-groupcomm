@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 12 June 2026                                       F. Palombini
+Expires: 13 June 2026                                       F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                         9 December 2025
+                                                        10 December 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -64,7 +64,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 June 2026.
+   This Internet-Draft will expire on 13 June 2026.
 
 Copyright Notice
 
@@ -2913,8 +2913,8 @@ Table of Contents
 
    *  Section 6 of [RFC9459] mandates that COSE libraries supporting the
       AES-CTR algorithm and accepting Additional Authenticated Data
-      (AAD) as input must return an error if such a non-AEAD content
-      encryption algorithms is selected.
+      (AAD) as input must return an error if AAD is provided when such a
+      non-AEAD content encryption algorithm is selected.
 
       In case the used Group Encryption Algorithm (see Section 2.1.7)
       does not provide integrity protection, the following applies.
