@@ -1051,7 +1051,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Tiloca, et al.</td>
-<td class="center">Expires 13 June 2026</td>
+<td class="center">Expires 14 June 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1064,12 +1064,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-core-oscore-groupcomm-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-12-10" class="published">10 December 2025</time>
+<time datetime="2025-12-11" class="published">11 December 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-06-13">13 June 2026</time></dd>
+<dd class="expires"><time datetime="2026-06-14">14 June 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1134,7 +1134,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 13 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 14 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1949,11 +1949,10 @@ Except for the Replay Window defined in <span><a href="https://rfc-editor.org/rf
             <p id="section-2.2-3.2.1">If both the AEAD Algorithm and the Group Encryption Algorithm are set, then L is the smallest nonce length among those of the two algorithms.<a href="#section-2.2-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-2.2-4">If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR (see <span><a href="https://rfc-editor.org/rfc/rfc9459#section-4" class="relref">Section 4</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>), then the length of the nonce used by that algorithm is 12 bytes (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-2.2-4" class="pilcrow">¶</a></p>
-<p id="section-2.2-5">With the exception of the authentication credential of the sender endpoint, a receiver endpoint can derive a complete Security Context from a received Group OSCORE message and the Common Context (see <a href="#ssec-establishment-context-parameters" class="auto internal xref">Section 2.3</a>).<a href="#section-2.2-5" class="pilcrow">¶</a></p>
-<p id="section-2.2-6">The authentication credentials in the Recipient Contexts can be retrieved from the Group Manager (see <a href="#group-manager" class="auto internal xref">Section 12</a>) upon joining the group. An authentication credential can alternatively be acquired from the Group Manager at a later time, for example the first time a message is received from a particular endpoint in the group (see <a href="#ssec-verify-request" class="auto internal xref">Section 7.2</a> and <a href="#ssec-verify-response" class="auto internal xref">Section 7.4</a>).<a href="#section-2.2-6" class="pilcrow">¶</a></p>
-<p id="section-2.2-7">For severely constrained devices, it may be infeasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the sender endpoint's authentication credential. Such devices can be configured to drop a received message for which there is no (complete) Recipient Context, and retrieve the sender endpoint's authentication credential in order to have it available to verify subsequent messages from that endpoint.<a href="#section-2.2-7" class="pilcrow">¶</a></p>
-<p id="section-2.2-8">An endpoint may admit a maximum number of Recipient Contexts for a same Security Context, e.g., due to memory limitations. After reaching that limit, the endpoint has to delete a current Recipient Context to install a new one (see <a href="#ssec-loss-mutable-context-overflow" class="auto internal xref">Section 2.6.1.2</a>). It is up to the application to define policies for Recipient Contexts to delete.<a href="#section-2.2-8" class="pilcrow">¶</a></p>
+<p id="section-2.2-4">With the exception of the authentication credential of the sender endpoint, a receiver endpoint can derive a complete Security Context from a received Group OSCORE message and the Common Context (see <a href="#ssec-establishment-context-parameters" class="auto internal xref">Section 2.3</a>).<a href="#section-2.2-4" class="pilcrow">¶</a></p>
+<p id="section-2.2-5">The authentication credentials in the Recipient Contexts can be retrieved from the Group Manager (see <a href="#group-manager" class="auto internal xref">Section 12</a>) upon joining the group. An authentication credential can alternatively be acquired from the Group Manager at a later time, for example the first time a message is received from a particular endpoint in the group (see <a href="#ssec-verify-request" class="auto internal xref">Section 7.2</a> and <a href="#ssec-verify-response" class="auto internal xref">Section 7.4</a>).<a href="#section-2.2-5" class="pilcrow">¶</a></p>
+<p id="section-2.2-6">For severely constrained devices, it may be infeasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the sender endpoint's authentication credential. Such devices can be configured to drop a received message for which there is no (complete) Recipient Context, and retrieve the sender endpoint's authentication credential in order to have it available to verify subsequent messages from that endpoint.<a href="#section-2.2-6" class="pilcrow">¶</a></p>
+<p id="section-2.2-7">An endpoint may admit a maximum number of Recipient Contexts for a same Security Context, e.g., due to memory limitations. After reaching that limit, the endpoint has to delete a current Recipient Context to install a new one (see <a href="#ssec-loss-mutable-context-overflow" class="auto internal xref">Section 2.6.1.2</a>). It is up to the application to define policies for Recipient Contexts to delete.<a href="#section-2.2-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-establishment-context-parameters">
@@ -2311,7 +2310,7 @@ In particular, the Countersign_structure contains the context text string "Count
 </li>
         </ol>
 <p id="section-3.3-3">For example, if X = 7 and the Common IV is 0x00112233445566778899aabbcc (13 bytes), then the bytes to XOR are 0x00112233445566 (7 bytes).<a href="#section-3.3-3" class="pilcrow">¶</a></p>
-<p id="section-3.3-4">The constructed nonce is used both by the AEAD Algorithm (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a>) and by the Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>), independent of whether they are AEAD or plain encryption algorithms. If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR (see <span><a href="https://rfc-editor.org/rfc/rfc9459#section-4" class="relref">Section 4</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>), then the length of the nonce used by that algorithm is 12 bytes (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>). Algorithms that do not use a nonce are not supported, as per <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
+<p id="section-3.3-4">The constructed nonce is used both by the AEAD Algorithm (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a>) and by the Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>), independent of whether they are AEAD or plain encryption algorithms. Algorithms that do not use a nonce are not supported, as per <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-cose-object-ext-aad">

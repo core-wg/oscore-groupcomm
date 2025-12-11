@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 13 June 2026                                       F. Palombini
+Expires: 14 June 2026                                       F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                        10 December 2025
+                                                        11 December 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -64,7 +64,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 June 2026.
+   This Internet-Draft will expire on 14 June 2026.
 
 Copyright Notice
 
@@ -735,10 +735,6 @@ Table of Contents
       set, then L is the smallest nonce length among those of the two
       algorithms.
 
-   If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR
-   (see Section 4 of [RFC9459]), then the length of the nonce used by
-   that algorithm is 12 bytes (see Section 2.1.7).
-
    With the exception of the authentication credential of the sender
    endpoint, a receiver endpoint can derive a complete Security Context
    from a received Group OSCORE message and the Common Context (see
@@ -1408,11 +1404,8 @@ Table of Contents
    The constructed nonce is used both by the AEAD Algorithm (see
    Section 2.1.1) and by the Group Encryption Algorithm (see
    Section 2.1.7), independent of whether they are AEAD or plain
-   encryption algorithms.  If the Group Encryption Algorithm is A128CTR,
-   A192CTR, or A256CTR (see Section 4 of [RFC9459]), then the length of
-   the nonce used by that algorithm is 12 bytes (see Section 2.1.7).
-   Algorithms that do not use a nonce are not supported, as per
-   Section 2.1.7.
+   encryption algorithms.  Algorithms that do not use a nonce are not
+   supported, as per Section 2.1.7.
 
 3.4.  Additional Authenticated Data
 
