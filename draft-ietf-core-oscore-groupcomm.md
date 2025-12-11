@@ -401,8 +401,6 @@ The maximum length of a Sender ID in bytes equals L minus 6, where L is determin
 
 * If both the AEAD Algorithm and the Group Encryption Algorithm are set, then L is the smallest nonce length among those of the two algorithms.
 
-If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR (see {{Section 4 of RFC9459}}), then the length of the nonce used by that algorithm is 12 bytes (see {{ssec-common-context-cs-enc-alg}}).
-
 With the exception of the authentication credential of the sender endpoint, a receiver endpoint can derive a complete Security Context from a received Group OSCORE message and the Common Context (see {{ssec-establishment-context-parameters}}).
 
 The authentication credentials in the Recipient Contexts can be retrieved from the Group Manager (see {{group-manager}}) upon joining the group. An authentication credential can alternatively be acquired from the Group Manager at a later time, for example the first time a message is received from a particular endpoint in the group (see {{ssec-verify-request}} and {{ssec-verify-response}}).
@@ -677,7 +675,7 @@ The nonce is constructed like in OSCORE, with the difference that Step 4 in {{Se
 
 For example, if X = 7 and the Common IV is 0x00112233445566778899aabbcc (13 bytes), then the bytes to XOR are 0x00112233445566 (7 bytes).
 
-The constructed nonce is used both by the AEAD Algorithm (see {{ssec-common-context-aead-alg}}) and by the Group Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}), independent of whether they are AEAD or plain encryption algorithms. If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR (see {{Section 4 of RFC9459}}), then the length of the nonce used by that algorithm is 12 bytes (see {{ssec-common-context-cs-enc-alg}}). Algorithms that do not use a nonce are not supported, as per {{ssec-common-context-cs-enc-alg}}.
+The constructed nonce is used both by the AEAD Algorithm (see {{ssec-common-context-aead-alg}}) and by the Group Encryption Algorithm (see {{ssec-common-context-cs-enc-alg}}), independent of whether they are AEAD or plain encryption algorithms. Algorithms that do not use a nonce are not supported, as per {{ssec-common-context-cs-enc-alg}}.
 
 ## Additional Authenticated Data # {#sec-cose-object-ext-aad}
 
