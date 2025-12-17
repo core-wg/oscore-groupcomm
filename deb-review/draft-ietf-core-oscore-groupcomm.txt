@@ -462,7 +462,7 @@ Table of Contents
             computing and verifying the countersignature of messages
             protected in group mode (see Section 2.1.8).
 
-         o  Signature Encryption Key, specifying the encryption key used
+         o  Signature Encryption Key, specifying the symmetric key used
             for deriving a keystream, which is in turn used for
             encrypting and decrypting the countersignature of messages
             protected in group mode (see Section 2.1.9).
@@ -657,7 +657,7 @@ Table of Contents
 
 2.1.9.  Signature Encryption Key
 
-   The new parameter Signature Encryption Key specifies the encryption
+   The new parameter Signature Encryption Key specifies the symmetric
    key for deriving a keystream to encrypt/decrypt a countersignature,
    when a message is protected in group mode (see Section 7).
 
