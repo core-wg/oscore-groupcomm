@@ -258,7 +258,7 @@ The Security Context of Group OSCORE extends the OSCORE Security Context defined
 
          - Signature Algorithm, specifying the algorithm used for computing and verifying the countersignature of messages protected in group mode (see {{ssec-common-context-cs-alg}}).
 
-         - Signature Encryption Key, specifying the encryption key used for deriving a keystream, which is in turn used for encrypting and decrypting the countersignature of messages protected in group mode (see {{ssec-common-context-group-enc-key}}).
+         - Signature Encryption Key, specifying the symmetric key used for deriving a keystream, which is in turn used for encrypting and decrypting the countersignature of messages protected in group mode (see {{ssec-common-context-group-enc-key}}).
 
     *  For the pairwise mode, the Common Context is extended with a Pairwise Key Agreement Algorithm (see {{ssec-common-context-dh-alg}}) used for the agreement on a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}).
 
@@ -365,7 +365,7 @@ The new parameter Signature Algorithm identifies the digital signature algorithm
 
 ### Signature Encryption Key ## {#ssec-common-context-group-enc-key}
 
-The new parameter Signature Encryption Key specifies the encryption key for deriving a keystream to encrypt/decrypt a countersignature, when a message is protected in group mode (see {{mess-processing}}).
+The new parameter Signature Encryption Key specifies the symmetric key for deriving a keystream to encrypt/decrypt a countersignature, when a message is protected in group mode (see {{mess-processing}}).
 
 The Signature Encryption Key is derived as defined for Sender/Recipient Keys in {{Section 3.2.1 of RFC8613}}, with the following differences.
 
