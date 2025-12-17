@@ -335,7 +335,7 @@ If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR (see {{Section
 
 ### Authentication Credential Format ## {#ssec-common-context-authcred-format}
 
-The new parameter Authentication Credential Format specifies the format of authentication credentials used in the group. Further details on authentication credentials are compiled in {{sec-pub-key-format}}.
+The new parameter Authentication Credential Format specifies the format of authentication credentials used in the group.
 
 ### Group Manager Authentication Credential ## {#ssec-common-context-gm-pub-key}
 
