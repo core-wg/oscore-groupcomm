@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 14 June 2026                                       F. Palombini
+Expires: 20 June 2026                                       F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                        11 December 2025
+                                                        17 December 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -64,7 +64,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 June 2026.
+   This Internet-Draft will expire on 20 June 2026.
 
 Copyright Notice
 
@@ -590,8 +590,7 @@ Table of Contents
 2.1.5.  Authentication Credential Format
 
    The new parameter Authentication Credential Format specifies the
-   format of authentication credentials used in the group.  Further
-   details on authentication credentials are compiled in Section 2.4.
+   format of authentication credentials used in the group.
 
 2.1.6.  Group Manager Authentication Credential
 
