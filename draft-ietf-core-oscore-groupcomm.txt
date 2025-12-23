@@ -2016,7 +2016,7 @@ Table of Contents
    constructions where a variation of the pairwise mode protects
    requests possibly intended to multiple servers, in such a way that
    the corresponding responses are effectively cacheable by
-   intermediaries (e.g., see [I-D.amsuess-core-cachable-oscore]).
+   intermediaries (e.g., see [I-D.ietf-core-cacheable-oscore]).
 
    As per [RFC7252][I-D.ietf-core-groupcomm-bis], group requests sent
    over multicast are always Non-confirmable, and thus are not
@@ -2542,7 +2542,7 @@ Table of Contents
    *  The response may not include a Sender ID.  This can happen when
       the response protected in group mode matches a request protected
       in pairwise mode (see Section 8.1), with a case in point provided
-      by [I-D.amsuess-core-cachable-oscore].  In such a case, the
+      by [I-D.ietf-core-cacheable-oscore].  In such a case, the
       signature checker needs to use other means (e.g., source
       addressing information of the server endpoint) to identify the
       correct authentication credential including the public key to use
@@ -4678,13 +4678,6 @@ Table of Contents
               and Signature in EMV", December 2011,
               <https://eprint.iacr.org/2011/615>.
 
-   [I-D.amsuess-core-cachable-oscore]
-              Amsüss, C. and M. Tiloca, "Cacheable OSCORE", Work in
-              Progress, Internet-Draft, draft-amsuess-core-cachable-
-              oscore-11, 6 July 2025,
-              <https://datatracker.ietf.org/doc/html/draft-amsuess-core-
-              cachable-oscore-11>.
-
    [I-D.ietf-ace-key-groupcomm-oscore]
               Tiloca, M. and F. Palombini, "Key Management for Group
               Object Security for Constrained RESTful Environments
@@ -4693,6 +4686,13 @@ Table of Contents
               Internet-Draft, draft-ietf-ace-key-groupcomm-oscore-18, 28
               August 2025, <https://datatracker.ietf.org/doc/html/draft-
               ietf-ace-key-groupcomm-oscore-18>.
+
+   [I-D.ietf-core-cacheable-oscore]
+              Amsüss, C. and M. Tiloca, "Cacheable OSCORE", Work in
+              Progress, Internet-Draft, draft-ietf-core-cacheable-
+              oscore-00, 22 September 2025,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-core-
+              cacheable-oscore-00>.
 
    [I-D.ietf-core-groupcomm-proxy]
               Tiloca, M. and E. Dijk, "Proxy Operations for CoAP Group
