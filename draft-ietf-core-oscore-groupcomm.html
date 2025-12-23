@@ -3371,81 +3371,82 @@ RES: 2.05 Content
 <p id="section-12.2-4">The set of group members should not be assumed as fixed, i.e., the group membership is subject to changes, possibly on a frequent basis.<a href="#section-12.2-4" class="pilcrow">¶</a></p>
 <p id="section-12.2-5">The Group Manager <span class="bcp14">MUST</span> rekey the group without undue delay when one or more endpoints leave the group. An endpoint may leave the group at own initiative, or may be evicted from the group by the Group Manager, e.g., in case the endpoint is compromised, or is suspected to be compromised (as determined by the Group Manager through its own means or based on information that it obtains from a trusted source such as an Intrusion Detection System or an issuer of authentication credentials). In either case, rekeying the group excludes such endpoints from future communications in the group, and thus preserves forward security. If a network node is compromised or suspected to be compromised, the Group Manager <span class="bcp14">MUST</span> evict from the group all the endpoints hosted by that node that are members of the group and rekey the group accordingly.<a href="#section-12.2-5" class="pilcrow">¶</a></p>
 <p id="section-12.2-6">If required by the application, the Group Manager <span class="bcp14">MUST</span> also rekey the group when one or more new joining endpoints are added to the group, thus preserving backward security.<a href="#section-12.2-6" class="pilcrow">¶</a></p>
-<p id="section-12.2-7">Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see below).<a href="#section-12.2-7" class="pilcrow">¶</a></p>
-<p id="section-12.2-8">The establishment of the new Security Context for the group takes the following steps.<a href="#section-12.2-8" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-12.2-9">
-<li id="section-12.2-9.1">
-            <p id="section-12.2-9.1.1">The Group Manager <span class="bcp14">MUST</span> increment the Key Generation Number for the group by 1. It is up to the Group Manager what actions to take when a wrap-around of the Key Generation Number is detected.<a href="#section-12.2-9.1.1" class="pilcrow">¶</a></p>
+<p id="section-12.2-7">The Group Manager <span class="bcp14">MAY</span> also rekey the group for other reasons, e.g., according to an application-specific rekeying period or scheduling.<a href="#section-12.2-7" class="pilcrow">¶</a></p>
+<p id="section-12.2-8">Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see below).<a href="#section-12.2-8" class="pilcrow">¶</a></p>
+<p id="section-12.2-9">The establishment of the new Security Context for the group takes the following steps.<a href="#section-12.2-9" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-12.2-10">
+<li id="section-12.2-10.1">
+            <p id="section-12.2-10.1.1">The Group Manager <span class="bcp14">MUST</span> increment the Key Generation Number for the group by 1. It is up to the Group Manager what actions to take when a wrap-around of the Key Generation Number is detected.<a href="#section-12.2-10.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-12.2-9.2">
-            <p id="section-12.2-9.2.1">The Group Manager <span class="bcp14">MUST</span> build a set of stale Sender IDs including:<a href="#section-12.2-9.2.1" class="pilcrow">¶</a></p>
+          <li id="section-12.2-10.2">
+            <p id="section-12.2-10.2.1">The Group Manager <span class="bcp14">MUST</span> build a set of stale Sender IDs including:<a href="#section-12.2-10.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-12.2-9.2.2.1">
-                <p id="section-12.2-9.2.2.1.1">The Sender IDs that, during the current Gid, were both assigned to an endpoint and subsequently relinquished (see <a href="#new-sender-id" class="auto internal xref">Section 2.6.3.1</a>).<a href="#section-12.2-9.2.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-12.2-10.2.2.1">
+                <p id="section-12.2-10.2.2.1.1">The Sender IDs that, during the current Gid, were both assigned to an endpoint and subsequently relinquished (see <a href="#new-sender-id" class="auto internal xref">Section 2.6.3.1</a>).<a href="#section-12.2-10.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-12.2-9.2.2.2">
-                <p id="section-12.2-9.2.2.2.1">The current Sender IDs of the group members that the upcoming group rekeying aims to exclude from future group communications, if any.<a href="#section-12.2-9.2.2.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-12.2-10.2.2.2">
+                <p id="section-12.2-10.2.2.2.1">The current Sender IDs of the group members that the upcoming group rekeying aims to exclude from future group communications, if any.<a href="#section-12.2-10.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li id="section-12.2-9.3">
-            <p id="section-12.2-9.3.1">The Group Manager rekeys the group, by distributing:<a href="#section-12.2-9.3.1" class="pilcrow">¶</a></p>
+          <li id="section-12.2-10.3">
+            <p id="section-12.2-10.3.1">The Group Manager rekeys the group, by distributing:<a href="#section-12.2-10.3.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-12.2-9.3.2.1">
-                <p id="section-12.2-9.3.2.1.1">The new keying material, i.e., the new Master Secret, the new Gid and (optionally) the new Master Salt.<a href="#section-12.2-9.3.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-12.2-10.3.2.1">
+                <p id="section-12.2-10.3.2.1.1">The new keying material, i.e., the new Master Secret, the new Gid and (optionally) the new Master Salt.<a href="#section-12.2-10.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-12.2-9.3.2.2">
-                <p id="section-12.2-9.3.2.2.1">The new Key Generation Number from Step 1.<a href="#section-12.2-9.3.2.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-12.2-10.3.2.2">
+                <p id="section-12.2-10.3.2.2.1">The new Key Generation Number from Step 1.<a href="#section-12.2-10.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-12.2-9.3.2.3">
-                <p id="section-12.2-9.3.2.3.1">The set of stale Sender IDs from Step 2.<a href="#section-12.2-9.3.2.3.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-12.2-10.3.2.3">
+                <p id="section-12.2-10.3.2.3.1">The set of stale Sender IDs from Step 2.<a href="#section-12.2-10.3.2.3.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
-<p id="section-12.2-9.3.3">
-Further information may be distributed, depending on the specific group key management scheme used in the group.<a href="#section-12.2-9.3.3" class="pilcrow">¶</a></p>
+<p id="section-12.2-10.3.3">
+Further information may be distributed, depending on the specific group key management scheme used in the group.<a href="#section-12.2-10.3.3" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-12.2-10">When receiving the new group keying material, a group member considers the received stale Sender IDs and performs the following actions.<a href="#section-12.2-10" class="pilcrow">¶</a></p>
+<p id="section-12.2-11">When receiving the new group keying material, a group member considers the received stale Sender IDs and performs the following actions.<a href="#section-12.2-11" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-12.2-11.1">
-            <p id="section-12.2-11.1.1">The group member <span class="bcp14">MUST</span> remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group.<a href="#section-12.2-11.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-12.2-12.1">
+            <p id="section-12.2-12.1.1">The group member <span class="bcp14">MUST</span> remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group.<a href="#section-12.2-12.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.2-11.2">
-            <p id="section-12.2-11.2.1">The group member <span class="bcp14">MUST</span> delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.<a href="#section-12.2-11.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-12.2-12.2">
+            <p id="section-12.2-12.2.1">The group member <span class="bcp14">MUST</span> delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.<a href="#section-12.2-12.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-12.2-12">After that, the group member installs the new keying material and derives the corresponding new Security Context.<a href="#section-12.2-12" class="pilcrow">¶</a></p>
-<p id="section-12.2-13">A group member might miss one or more consecutive instances of group rekeying. As a result, the group member will retain old group keying material with Key Generation Number GEN_OLD. Eventually, the group member can notice the discrepancy, e.g., by repeatedly failing to verify incoming messages, or by explicitly querying the Group Manager for the current Key Generation Number. Once the group member gains knowledge of having missed a group rekeying, it <span class="bcp14">MUST</span> delete the old keying material it stores.<a href="#section-12.2-13" class="pilcrow">¶</a></p>
-<p id="section-12.2-14">Then, the group member proceeds according to the following steps.<a href="#section-12.2-14" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-12.2-15">
-<li id="section-12.2-15.1">
-            <p id="section-12.2-15.1.1">The group member retrieves from the Group Manager the current group keying material, together with the current Key Generation Number GEN_NEW. The group member <span class="bcp14">MUST NOT</span> install the obtained group keying material yet.<a href="#section-12.2-15.1.1" class="pilcrow">¶</a></p>
+<p id="section-12.2-13">After that, the group member installs the new keying material and derives the corresponding new Security Context.<a href="#section-12.2-13" class="pilcrow">¶</a></p>
+<p id="section-12.2-14">A group member might miss one or more consecutive instances of group rekeying. As a result, the group member will retain old group keying material with Key Generation Number GEN_OLD. Eventually, the group member can notice the discrepancy, e.g., by repeatedly failing to verify incoming messages, or by explicitly querying the Group Manager for the current Key Generation Number. Once the group member gains knowledge of having missed a group rekeying, it <span class="bcp14">MUST</span> delete the old keying material it stores.<a href="#section-12.2-14" class="pilcrow">¶</a></p>
+<p id="section-12.2-15">Then, the group member proceeds according to the following steps.<a href="#section-12.2-15" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-12.2-16">
+<li id="section-12.2-16.1">
+            <p id="section-12.2-16.1.1">The group member retrieves from the Group Manager the current group keying material, together with the current Key Generation Number GEN_NEW. The group member <span class="bcp14">MUST NOT</span> install the obtained group keying material yet.<a href="#section-12.2-16.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-12.2-15.2">
-            <p id="section-12.2-15.2.1">The group member asks the Group Manager for the set of stale Sender IDs between GEN_OLD and GEN_NEW.<a href="#section-12.2-15.2.1" class="pilcrow">¶</a></p>
+          <li id="section-12.2-16.2">
+            <p id="section-12.2-16.2.1">The group member asks the Group Manager for the set of stale Sender IDs between GEN_OLD and GEN_NEW.<a href="#section-12.2-16.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-12.2-15.3">
-            <p id="section-12.2-15.3.1">If no exact and complete indication can be obtained from the Group Manager, the group member <span class="bcp14">MUST</span> remove all the authentication credentials from its list of group members' authentication credentials used in the group and <span class="bcp14">MUST</span> delete all its Recipient Contexts used in the group.<a href="#section-12.2-15.3.1" class="pilcrow">¶</a></p>
-<p id="section-12.2-15.3.2">
-Otherwise, the group member <span class="bcp14">MUST</span> remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group, and <span class="bcp14">MUST</span> delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.<a href="#section-12.2-15.3.2" class="pilcrow">¶</a></p>
+          <li id="section-12.2-16.3">
+            <p id="section-12.2-16.3.1">If no exact and complete indication can be obtained from the Group Manager, the group member <span class="bcp14">MUST</span> remove all the authentication credentials from its list of group members' authentication credentials used in the group and <span class="bcp14">MUST</span> delete all its Recipient Contexts used in the group.<a href="#section-12.2-16.3.1" class="pilcrow">¶</a></p>
+<p id="section-12.2-16.3.2">
+Otherwise, the group member <span class="bcp14">MUST</span> remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group, and <span class="bcp14">MUST</span> delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.<a href="#section-12.2-16.3.2" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-12.2-15.4">
-            <p id="section-12.2-15.4.1">The group member installs the current group keying material, and derives the corresponding new Security Context.<a href="#section-12.2-15.4.1" class="pilcrow">¶</a></p>
+          <li id="section-12.2-16.4">
+            <p id="section-12.2-16.4.1">The group member installs the current group keying material, and derives the corresponding new Security Context.<a href="#section-12.2-16.4.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-12.2-16">Alternatively, the group member can re-join the group. In such a case, the group member <span class="bcp14">MUST</span> take one of the following two actions.<a href="#section-12.2-16" class="pilcrow">¶</a></p>
+<p id="section-12.2-17">Alternatively, the group member can re-join the group. In such a case, the group member <span class="bcp14">MUST</span> take one of the following two actions.<a href="#section-12.2-17" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-12.2-17.1">
-            <p id="section-12.2-17.1.1">First, the group member performs Steps 2 and 3 above. Then, the group member re-joins the group.<a href="#section-12.2-17.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-12.2-18.1">
+            <p id="section-12.2-18.1.1">First, the group member performs Steps 2 and 3 above. Then, the group member re-joins the group.<a href="#section-12.2-18.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.2-17.2">
-            <p id="section-12.2-17.2.1">The group member re-joins the group with the same roles it currently has in the group, and, during the re-join process, it asks the Group Manager for the authentication credentials of all the current group members.<a href="#section-12.2-17.2.1" class="pilcrow">¶</a></p>
-<p id="section-12.2-17.2.2">
-Then, given Z the set of authentication credentials received from the Group Manager, the group member removes every authentication credential which is not in Z from its list of group members' authentication credentials used in the group, and deletes each of its Recipient Contexts used in the group that does not include any of the authentication credentials in Z.<a href="#section-12.2-17.2.2" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-12.2-18.2">
+            <p id="section-12.2-18.2.1">The group member re-joins the group with the same roles it currently has in the group, and, during the re-join process, it asks the Group Manager for the authentication credentials of all the current group members.<a href="#section-12.2-18.2.1" class="pilcrow">¶</a></p>
+<p id="section-12.2-18.2.2">
+Then, given Z the set of authentication credentials received from the Group Manager, the group member removes every authentication credential which is not in Z from its list of group members' authentication credentials used in the group, and deletes each of its Recipient Contexts used in the group that does not include any of the authentication credentials in Z.<a href="#section-12.2-18.2.2" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-12.2-18">By removing authentication credentials and deleting Recipient Contexts associated with stale Sender IDs, it is ensured that a recipient endpoint storing the latest group keying material does not store the authentication credentials of sender endpoints that are not current group members. This in turn allows group members to rely on stored authentication credentials to confidently verify the group membership of sender endpoints, when receiving incoming messages protected in group mode (see <a href="#mess-processing" class="auto internal xref">Section 7</a>).<a href="#section-12.2-18" class="pilcrow">¶</a></p>
-<p id="section-12.2-19">Strictness in managing the authentication credentials and Recipient Contexts associated with other group members is required for two reasons. First, as further discussed in <a href="#ssec-group-mode-security" class="auto internal xref">Section 14.1</a>, it ensures that the group mode can be used securely, even in a group where the Group Encryption Algorithm does not provide integrity protection (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>) and external signature checkers are used (see <a href="#sec-processing-signature-checker" class="auto internal xref">Section 7.5</a>). Second, it ensures that the wrong (old) authentication credential associated with a group member A is never used with a Sender ID that used to be associated with A and has been later issued to a different group member B (see <a href="#sec-sid-recycling" class="auto internal xref">Section 12.2.1.2</a>), thus preventing the need to recover from an identity mix-up.<a href="#section-12.2-19" class="pilcrow">¶</a></p>
+<p id="section-12.2-19">By removing authentication credentials and deleting Recipient Contexts associated with stale Sender IDs, it is ensured that a recipient endpoint storing the latest group keying material does not store the authentication credentials of sender endpoints that are not current group members. This in turn allows group members to rely on stored authentication credentials to confidently verify the group membership of sender endpoints, when receiving incoming messages protected in group mode (see <a href="#mess-processing" class="auto internal xref">Section 7</a>).<a href="#section-12.2-19" class="pilcrow">¶</a></p>
+<p id="section-12.2-20">Strictness in managing the authentication credentials and Recipient Contexts associated with other group members is required for two reasons. First, as further discussed in <a href="#ssec-group-mode-security" class="auto internal xref">Section 14.1</a>, it ensures that the group mode can be used securely, even in a group where the Group Encryption Algorithm does not provide integrity protection (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>) and external signature checkers are used (see <a href="#sec-processing-signature-checker" class="auto internal xref">Section 7.5</a>). Second, it ensures that the wrong (old) authentication credential associated with a group member A is never used with a Sender ID that used to be associated with A and has been later issued to a different group member B (see <a href="#sec-sid-recycling" class="auto internal xref">Section 12.2.1.2</a>), thus preventing the need to recover from an identity mix-up.<a href="#section-12.2-20" class="pilcrow">¶</a></p>
 <div id="recycling-of-identifiers">
 <section id="section-12.2.1">
           <h4 id="name-recycling-of-identifiers">
