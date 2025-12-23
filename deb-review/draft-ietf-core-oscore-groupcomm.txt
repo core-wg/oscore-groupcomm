@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 20 June 2026                                       F. Palombini
+Expires: 26 June 2026                                       F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                        17 December 2025
+                                                        23 December 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -64,7 +64,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 June 2026.
+   This Internet-Draft will expire on 26 June 2026.
 
 Copyright Notice
 
@@ -429,10 +429,10 @@ Table of Contents
    How the Security Context is established by the group members is out
    of scope for this document, but if there is more than one Security
    Context applicable to a message, then the endpoints MUST be able to
-   tell which Security Context was latest established.  The management
-   of information about the group (i.e., identifiers, OSCORE input
-   parameters, and keying material) is described in terms of a Group
-   Manager (see Section 12).
+   determine which Security Context was latest established.  The
+   management of information about the group (i.e., identifiers, OSCORE
+   input parameters, and keying material) is described in terms of a
+   Group Manager (see Section 12).
 
    An endpoint of the group may use the group mode (see Section 7), the
    pairwise mode (see Section 8), or both, depending on the modes it
@@ -547,33 +547,33 @@ Table of Contents
 
 2.1.1.  AEAD Algorithm
 
-   The AEAD Algorithm (see Section 3.1 of [RFC8613]) SHALL identify the
-   COSE AEAD algorithm to use for encryption and decryption when
-   messages are protected using the pairwise mode (see Section 8).  This
-   algorithm MUST provide integrity protection.  If this parameter is
-   not set, the pairwise mode is not used in the group.
+   The AEAD Algorithm (see Section 3.1 of [RFC8613]) identifies the COSE
+   AEAD algorithm to use for encryption and decryption when messages are
+   protected using the pairwise mode (see Section 8).  This algorithm
+   MUST provide integrity protection.  If this parameter is not set, the
+   pairwise mode is not used in the group.
 
 2.1.2.  HKDF Algorithm
 
-   The HKDF Algorithm (see Section 3.1 of [RFC8613]) SHALL identify the
-   used key derivation function, which MUST be one of the HMAC-based
-   HKDF [RFC5869] algorithms defined for COSE (see Section 5.1 of
-   [RFC9053]) and registered at [COSE.Algorithms].
+   The HKDF Algorithm (see Section 3.1 of [RFC8613]) identifies the used
+   key derivation function, which MUST be one of the HMAC-based HKDF
+   [RFC5869] algorithms defined for COSE (see Section 5.1 of [RFC9053])
+   and registered at [COSE.Algorithms].
 
 2.1.3.  ID Context
 
    The ID Context parameter (see Sections 3.1 and 3.3 of [RFC8613])
-   SHALL contain the Group Identifier (Gid) of the group.  The choice of
-   the Gid format is application specific.  An example of specific
+   contains the Group Identifier (Gid) of the group.  The choice of the
+   Gid format is application specific.  An example of specific
    formatting of the Gid is given in Appendix C.  The application needs
    to specify how to handle potential collisions between Gids (see
    Section 14.6).
 
 2.1.4.  Common IV
 
-   The Common IV parameter (see Section 3.1 of [RFC8613]) SHALL identify
-   the Common IV used in the group.  Differently from OSCORE, the length
-   of the Common IV is determined as follows.
+   The Common IV parameter (see Section 3.1 of [RFC8613]) identifies the
+   Common IV used in the group.  Differently from OSCORE, the length of
+   the Common IV is determined as follows.
 
    *  If only one among the AEAD Algorithm and the Group Encryption
       Algorithm is set (see Section 2.1.1 and Section 2.1.7), the length
@@ -609,7 +609,9 @@ Table of Contents
    The new parameter Group Encryption Algorithm identifies the algorithm
    to use for encryption and decryption, when messages are protected in
    group mode (see Section 7).  This algorithm MAY provide integrity
-   protection.  If this parameter is not set, the group mode is not used
+   protection.  If it does not, integrity protection is still provided
+   by the countersignature added to the message due to the use of the
+   group mode.  If this parameter is not set, the group mode is not used
    in the group.
 
    In order to be eligible to use as Group Encryption Algorithm, a non-
@@ -658,8 +660,9 @@ Table of Contents
 2.1.9.  Signature Encryption Key
 
    The new parameter Signature Encryption Key specifies the symmetric
-   key for deriving a keystream to encrypt/decrypt a countersignature,
-   when a message is protected in group mode (see Section 7).
+   key for deriving a keystream to encrypt/decrypt a countersignature
+   (see Section 4.2) when a message is protected in group mode (see
+   Section 7).
 
    The Signature Encryption Key is derived as defined for Sender/
    Recipient Keys in Section 3.2.1 of [RFC8613], with the following
@@ -759,7 +762,9 @@ Table of Contents
    same Security Context, e.g., due to memory limitations.  After
    reaching that limit, the endpoint has to delete a current Recipient
    Context to install a new one (see Section 2.6.1.2).  It is up to the
-   application to define policies for Recipient Contexts to delete.
+   application to define the maximum number of Recipient Contexts for a
+   same Security Context as well as policies for deleting Recipient
+   Contexts.
 
 2.3.  Establishment of Security Context Parameters
 
@@ -812,13 +817,20 @@ Table of Contents
    [RFC5280], and C509 certificates [I-D.ietf-cose-cbor-encoded-cert].
 
    If the authentication credentials are X.509 certificates or C509
-   certificates, the public key algorithm is fully described by the
+   certificates, the public key algorithm is identified by the
    "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the
    "subjectPublicKeyAlgorithm" element, respectively.
 
    If authentication credentials are CBOR Web Tokens (CWTs) or CWT
-   Claims Sets (CCSs), the public key algorithm is fully described by a
-   COSE key type and its "kty" and "crv" parameters.
+   Claims Sets (CCSs), then a COSE Key structure and its "kty" and "crv"
+   parameters identify the types of pertinent public key algorithms.
+   For example: the pair ("crv" = X25519, "kty" = OKP) indicates that
+   the public key is meant to be used with X25519 ECDH key agreement;
+   the pair ("crv" = Ed25519, "kty" = OKP) indicates that the public key
+   is meant to be used with the signature algorithm EdDSA; the pair
+   ("crv" = P-256, "kty" = EC2) indicates that the public key is meant
+   to be used with the signature algorithm ECDSA and/or with P-256 ECDH
+   key agreement.
 
    Authentication credentials are used to derive pairwise keys (see
    Section 2.5.1) and are included in the external additional
@@ -1146,7 +1158,10 @@ Table of Contents
    circumstances include the need to reclaim memory or other resources
    on the node hosting the endpoint, for example because the predefined
    maximum number of Recipient Contexts has been reached in the Security
-   Context (see Section 2.2).
+   Context (see Section 2.2).  Implementations can provide means for the
+   application to gain knowledge about the deliberate deletion of
+   Recipient Contexts, e.g., through notifications sent to the
+   application and/or logs made available to the application.
 
    When a Recipient Context is deleted, this not only results in losing
    information about previously received messages from the corresponding
@@ -2003,7 +2018,7 @@ Table of Contents
    intermediaries (e.g., see [I-D.amsuess-core-cachable-oscore]).
 
    As per [RFC7252][I-D.ietf-core-groupcomm-bis], group requests sent
-   over multicast MUST be Non-confirmable, and thus are not
+   over multicast are always Non-confirmable, and thus are not
    retransmitted by the CoAP messaging layer.  Instead, applications
    should store such outgoing messages for a predefined, sufficient
    amount of time, in order to correctly perform potential
@@ -2011,12 +2026,12 @@ Table of Contents
    retransmissions are repetitions of previous protected messages, which
    the sender endpoint does not protect again with Group OSCORE.
 
-   According to Section 5.2.3 of [RFC7252], responses to Non-confirmable
-   group requests SHOULD also be Non-confirmable, but endpoints MUST be
-   prepared to receive Confirmable responses in reply to a Non-
-   confirmable group request.  Confirmable group requests are
-   acknowledged when sent over non-multicast transports, as specified in
-   [RFC7252].
+   According to Section 5.2.3 of [RFC7252], "[i]f the request message is
+   Non-confirmable, then the response SHOULD be returned in a Non-
+   confirmable message as well.  However, an endpoint MUST be prepared
+   to receive (...) a Confirmable response in reply to a Non-confirmable
+   request."  Confirmable group requests are acknowledged when sent over
+   non-multicast transports, as specified in [RFC7252].
 
    Furthermore, endpoints in the group locally perform error handling
    and processing of invalid messages according to the same principles
@@ -3116,11 +3131,28 @@ Table of Contents
    The specific group key management scheme used to distribute new
    keying material is out of the scope of this document.  A simple group
    key management scheme is defined in
-   [I-D.ietf-ace-key-groupcomm-oscore].  When possible, the delivery of
-   rekeying messages should use a reliable transport, in order to reduce
-   chances of group members missing a rekeying instance.  The use of an
-   unreliable transport MUST NOT forego enforcing congestion control as
-   appropriate for that transport.
+   [I-D.ietf-ace-key-groupcomm-oscore].  Different group key management
+   schemes rely on different approaches to compose and deliver rekeying
+   messages, i.e., individually targeting single recipients, or
+   targeting multiple recipients at once (e.g., over UDP/IP multicast),
+   or a combination of the two approaches.  As long as it is viable for
+   the specific rekeying message to be delivered and it is supported by
+   the intended message recipient(s), using a reliable transport to
+   deliver a rekeying message should be preferred, as it reduces chances
+   of group members missing a rekeying instance.
+
+   Irrespective of the transport used being reliable or unreliable,
+   appropriate congestion control MUST be enforced.  If the key
+   distribution traffic uses CoAP over UDP or over other unreliable
+   transports, mechanisms for enforcing congestion control are specified
+   in Section 4.7 of [RFC7252] and in Section 3.6 of
+   [I-D.ietf-core-groupcomm-bis] for the case of group communication
+   (e.g., over UDP/IP multicast).  If, irrespective of using CoAP, the
+   key distribution traffic relies on alternative setups with unreliable
+   transports, one can rely on general congestion-control mechanisms
+   such as DCCP [RFC4340], or on dedicated congestion control mechanisms
+   for the transport specifically used (e.g., those defined in [RFC9002]
+   for QUIC [RFC9000]).
 
    The set of group members should not be assumed as fixed, i.e., the
    group membership is subject to changes, possibly on a frequent basis.
@@ -3952,8 +3984,8 @@ Table of Contents
    However, the recipient receives the message after having installed
    the new Security Context, and is thus unable to correctly process it.
 
-   A possible way to ameliorate this issue is to preserve the old
-   retained Security Context for a maximum amount of time defined by the
+   A possible way to mitigate this issue is to preserve the old retained
+   Security Context for a maximum amount of time defined by the
    application.  By doing so, the recipient can still try to process the
    received message using the old retained Security Context.
 
@@ -4244,8 +4276,7 @@ Table of Contents
    must have a good amount of randomness, and the Group Manager can
    generate it offline using a good random number generator.  This
    includes the case where the Group Manager rekeys the group by
-   generating and distributing a new Master Secret.  Randomness
-   requirements for security are described in [RFC4086].
+   generating and distributing a new Master Secret.
 
 14.12.  Replay Protection
 
@@ -4557,10 +4588,10 @@ Table of Contents
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
 
-   [RFC4086]  Eastlake 3rd, D., Schiller, J., and S. Crocker,
-              "Randomness Requirements for Security", BCP 106, RFC 4086,
-              DOI 10.17487/RFC4086, June 2005,
-              <https://www.rfc-editor.org/rfc/rfc4086>.
+   [RFC4340]  Kohler, E., Handley, M., and S. Floyd, "Datagram
+              Congestion Control Protocol (DCCP)", RFC 4340,
+              DOI 10.17487/RFC4340, March 2006,
+              <https://www.rfc-editor.org/rfc/rfc4340>.
 
    [RFC5869]  Krawczyk, H. and P. Eronen, "HMAC-based Extract-and-Expand
               Key Derivation Function (HKDF)", RFC 5869,
@@ -4614,6 +4645,15 @@ Table of Contents
               Representation (CBOR)", STD 94, RFC 8949,
               DOI 10.17487/RFC8949, December 2020,
               <https://www.rfc-editor.org/rfc/rfc8949>.
+
+   [RFC9000]  Iyengar, J., Ed. and M. Thomson, Ed., "QUIC: A UDP-Based
+              Multiplexed and Secure Transport", RFC 9000,
+              DOI 10.17487/RFC9000, May 2021,
+              <https://www.rfc-editor.org/rfc/rfc9000>.
+
+   [RFC9002]  Iyengar, J., Ed. and I. Swett, Ed., "QUIC Loss Detection
+              and Congestion Control", RFC 9002, DOI 10.17487/RFC9002,
+              May 2021, <https://www.rfc-editor.org/rfc/rfc9002>.
 
    [RFC9052]  Schaad, J., "CBOR Object Signing and Encryption (COSE):
               Structures and Process", STD 96, RFC 9052,
@@ -5894,11 +5934,12 @@ Acknowledgments
    document.
 
    The authors sincerely thank Christian Amsüss, Stefan Beck, Mike
-   Bishop, Rolf Blom, Carsten Bormann, Deb Cooley, Esko Dijk, Patrik
-   Fältström, Martin Gunnarsson, Klaus Hartke, Richard Kelsey, Paul
-   Kyzivat, Joerg Ott, Dave Robin, Jim Schaad, Ludwig Seitz, Peter van
-   der Stok, Erik Thormarker, and Mališa Vučinić for their feedback and
-   comments.
+   Bishop, Rolf Blom, Carsten Bormann, Mohamed Boucadair, Deb Cooley,
+   Esko Dijk, Gorry Fairhurst, Patrik Fältström, Martin Gunnarsson,
+   Klaus Hartke, Richard Kelsey, Paul Kyzivat, Joerg Ott, Dave Robin,
+   Jim Schaad, Ludwig Seitz, Orie Steele, Peter van der Stok, Ketan
+   Talaulikar, Erik Thormarker, Mališa Vučinić, and Paul Wouters for
+   their feedback and comments.
 
    The work on this document has been partly supported by the Sweden's
    Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and
