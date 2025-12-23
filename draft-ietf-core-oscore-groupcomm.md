@@ -74,6 +74,7 @@ normative:
 
   I-D.ietf-core-groupcomm-bis:
   RFC4086:
+  RFC4340:
   RFC5869:
   RFC6979:
   RFC7252:
@@ -84,6 +85,8 @@ normative:
   RFC8610:
   RFC8613:
   RFC8949:
+  RFC9000:
+  RFC9002:
   RFC9052:
   RFC9053:
   RFC9175:
@@ -1439,7 +1442,9 @@ In case of successful authorization check, the Group Manager provides the joinin
 
 In order to establish a new Security Context for a group, the Group Manager MUST generate and assign to the group a new Group Identifier (Gid) and a new value for the Master Secret parameter. When doing so, a new value for the Master Salt parameter MAY also be generated and assigned to the group. When establishing the new Security Context, the Group Manager SHOULD preserve the current value of the Sender ID of each group member in order to ensure an efficient key rollover. Exceptions can apply if there are compelling reasons for making available again some of the Sender ID values currently used.
 
-The specific group key management scheme used to distribute new keying material is out of the scope of this document. A simple group key management scheme is defined in {{I-D.ietf-ace-key-groupcomm-oscore}}. When possible, the delivery of rekeying messages should use a reliable transport, in order to reduce chances of group members missing a rekeying instance. The use of an unreliable transport MUST NOT forego enforcing congestion control as appropriate for that transport.
+The specific group key management scheme used to distribute new keying material is out of the scope of this document. A simple group key management scheme is defined in {{I-D.ietf-ace-key-groupcomm-oscore}}. Different group key management schemes rely on different approaches to compose and deliver rekeying messages, i.e., individually targeting single recipients, or targeting multiple recipients at once (e.g., over UDP/IP multicast), or a combination of the two approaches. As long as it is viable for the specific rekeying message to be delivered and it is supported by the intended message recipient(s), using a reliable transport to deliver a rekeying message should be preferred, as it reduces chances of group members missing a rekeying instance.
+
+Irrespective of the transport used being reliable or unreliable, appropriate congestion control MUST be enforced. If the key distribution traffic uses CoAP over UDP or over other unreliable transports, mechanisms for enforcing congestion control are specified in {{Section 4.7 of RFC7252}} and in {{Section 3.6 of I-D.ietf-core-groupcomm-bis}} for the case of group communication (e.g., over UDP/IP multicast). If, irrespective of using CoAP, the key distribution traffic relies on alternative setups with unreliable transports, one can rely on general congestion-control mechanisms such as DCCP {{RFC4340}}, or on dedicated congestion control mechanisms for the transport specifically used (e.g., those defined in {{RFC9002}} for QUIC {{RFC9000}}).
 
 The set of group members should not be assumed as fixed, i.e., the group membership is subject to changes, possibly on a frequent basis.
 
@@ -2757,6 +2762,6 @@ member is now optional to support and use for the Group Manager.
 
 Jiye Park contributed as a co-author of initial versions of this document.
 
-The authors sincerely thank {{{Christian Amsüss}}}, {{{Stefan Beck}}}, {{{Mike Bishop}}}, {{{Rolf Blom}}}, {{{Carsten Bormann}}}, {{{Esko Dijk}}}, {{{Patrik Fältström}}}, {{{Martin Gunnarsson}}}, {{{Klaus Hartke}}}, {{{Richard Kelsey}}}, {{{Paul Kyzivat}}}, {{{Joerg Ott}}}, {{{Dave Robin}}}, {{{Jim Schaad}}}, {{{Ludwig Seitz}}}, {{{Peter van der Stok}}}, {{{Erik Thormarker}}}, and {{{Mališa Vučinić}}} for their feedback and comments.
+The authors sincerely thank {{{Christian Amsüss}}}, {{{Stefan Beck}}}, {{{Mike Bishop}}}, {{{Rolf Blom}}}, {{{Carsten Bormann}}}, {{{Esko Dijk}}}, {{{Gorry Fairhurst}}}, {{{Patrik Fältström}}}, {{{Martin Gunnarsson}}}, {{{Klaus Hartke}}}, {{{Richard Kelsey}}}, {{{Paul Kyzivat}}}, {{{Joerg Ott}}}, {{{Dave Robin}}}, {{{Jim Schaad}}}, {{{Ludwig Seitz}}}, {{{Peter van der Stok}}}, {{{Erik Thormarker}}}, and {{{Mališa Vučinić}}} for their feedback and comments.
 
 The work on this document has been partly supported by the Sweden's Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and CYPRESS; the H2020 projects SIFIS-Home (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement 101020259); the SSF project SEC4Factory under the grant RIT17-0032; and the EIT-Digital High Impact Initiative ACTIVE.
