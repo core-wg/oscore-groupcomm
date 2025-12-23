@@ -73,6 +73,7 @@ author:
 normative:
 
   I-D.ietf-core-groupcomm-bis:
+  RFC4340:
   RFC5869:
   RFC6979:
   RFC7252:
@@ -83,6 +84,8 @@ normative:
   RFC8610:
   RFC8613:
   RFC8949:
+  RFC9000:
+  RFC9002:
   RFC9052:
   RFC9053:
   RFC9175:
@@ -240,7 +243,7 @@ This document refers also to the following terminology.
 
 This document refers to a group as a set of endpoints sharing keying material and security parameters for executing the Group OSCORE protocol, see {{terminology}}. All members of a group maintain a Security Context as defined in this section.
 
-How the Security Context is established by the group members is out of scope for this document, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to tell which Security Context was latest established. The management of information about the group (i.e., identifiers, OSCORE input parameters, and keying material) is described in terms of a Group Manager (see {{group-manager}}).
+How the Security Context is established by the group members is out of scope for this document, but if there is more than one Security Context applicable to a message, then the endpoints MUST be able to determine which Security Context was latest established. The management of information about the group (i.e., identifiers, OSCORE input parameters, and keying material) is described in terms of a Group Manager (see {{group-manager}}).
 
 An endpoint of the group may use the group mode (see {{mess-processing}}), the pairwise mode (see {{sec-pairwise-protection}}), or both, depending on the modes it supports and on the parameters of the Security Context.
 The Security Context of Group OSCORE extends the OSCORE Security Context defined in {{Section 3 of RFC8613}} as follows (see {{fig-additional-context-information}}).
@@ -392,7 +395,7 @@ The authentication credentials in the Recipient Contexts can be retrieved from t
 
 For severely constrained devices, it may be infeasible to simultaneously handle the ongoing processing of a recently received message in parallel with the retrieval of the sender endpoint's authentication credential. Such devices can be configured to drop a received message for which there is no (complete) Recipient Context, and retrieve the sender endpoint's authentication credential in order to have it available to verify subsequent messages from that endpoint.
 
-An endpoint may admit a maximum number of Recipient Contexts for a same Security Context, e.g., due to memory limitations. After reaching that limit, the endpoint has to delete a current Recipient Context to install a new one (see {{ssec-loss-mutable-context-overflow}}). It is up to the application to define policies for Recipient Contexts to delete.
+An endpoint may admit a maximum number of Recipient Contexts for a same Security Context, e.g., due to memory limitations. After reaching that limit, the endpoint has to delete a current Recipient Context to install a new one (see {{ssec-loss-mutable-context-overflow}}). It is up to the application to define the maximum number of Recipient Contexts for a same Security Context as well as policies for deleting Recipient Contexts.
 
 ## Establishment of Security Context Parameters ## {#ssec-establishment-context-parameters}
 
@@ -414,9 +417,9 @@ The format of authentication credentials MUST provide the public key and a compr
 
 Examples of formats of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) {{RFC8392}}, X.509 certificates {{RFC5280}}, and C509 certificates {{I-D.ietf-cose-cbor-encoded-cert}}.
 
-If the authentication credentials are X.509 certificates or C509 certificates, the public key algorithm is fully described by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
+If the authentication credentials are X.509 certificates or C509 certificates, the public key algorithm is identified by the "algorithm" field of the "SubjectPublicKeyInfo" structure, and by the "subjectPublicKeyAlgorithm" element, respectively.
 
-If authentication credentials are CBOR Web Tokens (CWTs) or CWT Claims Sets (CCSs), the public key algorithm is fully described by a COSE key type and its "kty" and "crv" parameters.
+If authentication credentials are CBOR Web Tokens (CWTs) or CWT Claims Sets (CCSs), then a COSE Key structure and its "kty" and "crv" parameters identify the types of pertinent public key algorithms. For example: the pair ("crv" = X25519, "kty" = OKP) indicates that the public key is meant to be used with X25519 ECDH key agreement; the pair ("crv" = Ed25519, "kty" = OKP) indicates that the public key is meant to be used with the signature algorithm EdDSA; the pair ("crv" = P-256, "kty" = EC2) indicates that the public key is meant to be used with the signature algorithm ECDSA and/or with P-256 ECDH key agreement.
 
 Authentication credentials are used to derive pairwise keys (see {{key-derivation-pairwise}}) and are included in the external additional authenticated data when processing messages (see {{sec-cose-object-ext-aad}}). In both these cases, an endpoint in a group MUST treat authentication credentials as opaque data, i.e., by considering the same binary representation made available to other endpoints in the group, possibly through a designated trusted source (e.g., the Group Manager).
 
@@ -547,7 +550,7 @@ If an endpoint is configured as a silent server and is not able to establish an 
 
 #### Deliberately Deleted Recipient Contexts {#ssec-loss-mutable-context-overflow}
 
-The Security Context may contain a large and variable number of Recipient Contexts. While Group OSCORE in itself does not establish a maximum number of Recipient Contexts, there are circumstances by which implementations might choose to discard Recipient Contexts or have to do so in accordance with enforced application policies. Such circumstances include the need to reclaim memory or other resources on the node hosting the endpoint, for example because the predefined maximum number of Recipient Contexts has been reached in the Security Context (see {{ssec-sender-recipient-context}}).
+The Security Context may contain a large and variable number of Recipient Contexts. While Group OSCORE in itself does not establish a maximum number of Recipient Contexts, there are circumstances by which implementations might choose to discard Recipient Contexts or have to do so in accordance with enforced application policies. Such circumstances include the need to reclaim memory or other resources on the node hosting the endpoint, for example because the predefined maximum number of Recipient Contexts has been reached in the Security Context (see {{ssec-sender-recipient-context}}). Implementations can provide means for the application to gain knowledge about the deliberate deletion of Recipient Contexts, e.g., through notifications sent to the application and/or logs made available to the application.
 
 When a Recipient Context is deleted, this not only results in losing information about previously received messages from the corresponding other endpoint. It also results in the inability to be aware of the Security Contexts from which information has been lost.
 
@@ -997,9 +1000,9 @@ During all the steps of the message processing, an endpoint MUST use the same Se
 
 The group mode SHOULD be used to protect group requests intended for multiple recipients or for the whole group. This applies to both requests directly addressed to multiple recipients, e.g., sent by the client over multicast, as well as requests sent by the client over unicast to a proxy that forwards them to the intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}. Exceptions where the requirement above is not fulfilled and the pairwise mode is used to protect group requests include: the efficient discovery of a server's address in the group (see {{ssec-pre-conditions}}); or the enabling of simple constructions where a variation of the pairwise mode protects requests possibly intended to multiple servers, in such a way that the corresponding responses are effectively cacheable by intermediaries (e.g., see {{I-D.amsuess-core-cachable-oscore}}).
 
-As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast MUST be Non-confirmable, and thus are not retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a predefined, sufficient amount of time, in order to correctly perform potential retransmissions at the application layer. If performed, these retransmissions are repetitions of previous protected messages, which the sender endpoint does not protect again with Group OSCORE.
+As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast are always Non-confirmable, and thus are not retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a predefined, sufficient amount of time, in order to correctly perform potential retransmissions at the application layer. If performed, these retransmissions are repetitions of previous protected messages, which the sender endpoint does not protect again with Group OSCORE.
 
-According to {{Section 5.2.3 of RFC7252}}, responses to Non-confirmable group requests SHOULD also be Non-confirmable, but endpoints MUST be prepared to receive Confirmable responses in reply to a Non-confirmable group request. Confirmable group requests are acknowledged when sent over non-multicast transports, as specified in {{RFC7252}}.
+According to {{Section 5.2.3 of RFC7252}}, "\[i\]f the request message is Non-confirmable, then the response SHOULD be returned in a Non-confirmable message as well. However, an endpoint MUST be prepared to receive (...) a Confirmable response in reply to a Non-confirmable request." Confirmable group requests are acknowledged when sent over non-multicast transports, as specified in {{RFC7252}}.
 
 Furthermore, endpoints in the group locally perform error handling and processing of invalid messages according to the same principles adopted in {{RFC8613}}. In addition, a recipient MUST stop processing and reject any message that is malformed and that does not follow the format specified in {{sec-cose-object}} of this document, or that is not cryptographically validated in a successful way as per the processing defined in {{ssec-verify-request}} and {{ssec-verify-response}} of this document.
 
@@ -1440,7 +1443,9 @@ In case of successful authorization check, the Group Manager provides the joinin
 
 In order to establish a new Security Context for a group, the Group Manager MUST generate and assign to the group a new Group Identifier (Gid) and a new value for the Master Secret parameter. When doing so, a new value for the Master Salt parameter MAY also be generated and assigned to the group. When establishing the new Security Context, the Group Manager SHOULD preserve the current value of the Sender ID of each group member in order to ensure an efficient key rollover. Exceptions can apply if there are compelling reasons for making available again some of the Sender ID values currently used.
 
-The specific group key management scheme used to distribute new keying material is out of the scope of this document. A simple group key management scheme is defined in {{I-D.ietf-ace-key-groupcomm-oscore}}. When possible, the delivery of rekeying messages should use a reliable transport, in order to reduce chances of group members missing a rekeying instance. The use of an unreliable transport MUST NOT forego enforcing congestion control as appropriate for that transport.
+The specific group key management scheme used to distribute new keying material is out of the scope of this document. A simple group key management scheme is defined in {{I-D.ietf-ace-key-groupcomm-oscore}}. Different group key management schemes rely on different approaches to compose and deliver rekeying messages, i.e., individually targeting single recipients, or targeting multiple recipients at once (e.g., over UDP/IP multicast), or a combination of the two approaches. As long as it is viable for the specific rekeying message to be delivered and it is supported by the intended message recipient(s), using a reliable transport to deliver a rekeying message should be preferred, as it reduces chances of group members missing a rekeying instance.
+
+Irrespective of the transport used being reliable or unreliable, appropriate congestion control MUST be enforced. If the key distribution traffic uses CoAP over UDP or over other unreliable transports, mechanisms for enforcing congestion control are specified in {{Section 4.7 of RFC7252}} and in {{Section 3.6 of I-D.ietf-core-groupcomm-bis}} for the case of group communication (e.g., over UDP/IP multicast). If, irrespective of using CoAP, the key distribution traffic relies on alternative setups with unreliable transports, one can rely on general congestion-control mechanisms such as DCCP {{RFC4340}}, or on dedicated congestion control mechanisms for the transport specifically used (e.g., those defined in {{RFC9002}} for QUIC {{RFC9000}}).
 
 The set of group members should not be assumed as fixed, i.e., the group membership is subject to changes, possibly on a frequent basis.
 
@@ -2758,6 +2763,6 @@ member is now optional to support and use for the Group Manager.
 
 Jiye Park contributed as a co-author of initial versions of this document.
 
-The authors sincerely thank {{{Christian Amsüss}}}, {{{Stefan Beck}}}, {{{Mike Bishop}}}, {{{Rolf Blom}}}, {{{Carsten Bormann}}}, {{{Esko Dijk}}}, {{{Patrik Fältström}}}, {{{Martin Gunnarsson}}}, {{{Klaus Hartke}}}, {{{Richard Kelsey}}}, {{{Paul Kyzivat}}}, {{{Joerg Ott}}}, {{{Dave Robin}}}, {{{Jim Schaad}}}, {{{Ludwig Seitz}}}, {{{Peter van der Stok}}}, {{{Erik Thormarker}}}, {{{Mališa Vučinić}}}, and {{{Paul Wouters}}} for their feedback and comments.
+The authors sincerely thank {{{Christian Amsüss}}}, {{{Stefan Beck}}}, {{{Mike Bishop}}}, {{{Rolf Blom}}}, {{{Carsten Bormann}}}, {{{Mohamed Boucadair}}}, {{{Esko Dijk}}}, {{{Gorry Fairhurst}}}, {{{Patrik Fältström}}}, {{{Martin Gunnarsson}}}, {{{Klaus Hartke}}}, {{{Richard Kelsey}}}, {{{Paul Kyzivat}}}, {{{Joerg Ott}}}, {{{Dave Robin}}}, {{{Jim Schaad}}}, {{{Ludwig Seitz}}}, {{{Orie Steele}}}, {{{Peter van der Stok}}}, {{{Ketan Talaulikar}}}, {{{Erik Thormarker}}}, {{{Mališa Vučinić}}}, and {{{Paul Wouters}}} for their feedback and comments.
 
 The work on this document has been partly supported by the Sweden's Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and CYPRESS; the H2020 projects SIFIS-Home (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement 101020259); the SSF project SEC4Factory under the grant RIT17-0032; and the EIT-Digital High Impact Initiative ACTIVE.
