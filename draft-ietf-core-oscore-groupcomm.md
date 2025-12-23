@@ -1466,6 +1466,8 @@ The Group Manager MUST rekey the group without undue delay when one or more endp
 
 If required by the application, the Group Manager MUST also rekey the group when one or more new joining endpoints are added to the group, thus preserving backward security.
 
+The Group Manager MAY also rekey the group for other reasons, e.g., according to an application-specific rekeying period or scheduling.
+
 Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see below).
 
 The establishment of the new Security Context for the group takes the following steps.
