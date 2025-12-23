@@ -2071,7 +2071,7 @@ Attribute Name: gosc
 Brief Description: Hint: resource only accessible
                    using Group OSCORE or OSCORE
 Change Controller: IETF
-Reference: [RFC-XXXX]
+Reference: [RFC-XXXX, Section 11]
 ~~~~~~~~~~~
 
 --- back
