@@ -5,12 +5,12 @@
 CoRE Working Group                                             M. Tiloca
 Internet-Draft                                                   RISE AB
 Intended status: Standards Track                             G. Selander
-Expires: 31 May 2026                                        F. Palombini
+Expires: 26 June 2026                                       F. Palombini
                                                        J. Preuß Mattsson
                                                              Ericsson AB
                                                               R. Höglund
                                                                  RISE AB
-                                                        27 November 2025
+                                                        23 December 2025
 
 
    Group Object Security for Constrained RESTful Environments (Group
@@ -64,7 +64,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 May 2026.
+   This Internet-Draft will expire on 26 June 2026.
 
 Copyright Notice
 
@@ -3080,11 +3080,28 @@ Table of Contents
    The specific group key management scheme used to distribute new
    keying material is out of the scope of this document.  A simple group
    key management scheme is defined in
-   [I-D.ietf-ace-key-groupcomm-oscore].  When possible, the delivery of
-   rekeying messages should use a reliable transport, in order to reduce
-   chances of group members missing a rekeying instance.  The use of an
-   unreliable transport MUST NOT forego enforcing congestion control as
-   appropriate for that transport.
+   [I-D.ietf-ace-key-groupcomm-oscore].  Different group key management
+   schemes rely on different approaches to compose and deliver rekeying
+   messages, i.e., individually targeting single recipients, or
+   targeting multiple recipients at once (e.g., over UDP/IP multicast),
+   or a combination of the two approaches.  As long as it is viable for
+   the specific rekeying message to be delivered and it is supported by
+   the intended message recipient(s), using a reliable transport to
+   deliver a rekeying message should be preferred, as it reduces chances
+   of group members missing a rekeying instance.
+
+   Irrespective of the transport used being reliable or unreliable,
+   appropriate congestion control MUST be enforced.  If the key
+   distribution traffic uses CoAP over UDP or over other unreliable
+   transports, mechanisms for enforcing congestion control are specified
+   in Section 4.7 of [RFC7252] and in Section 3.6 of
+   [I-D.ietf-core-groupcomm-bis] for the case of group communication
+   (e.g., over UDP/IP multicast).  If, irrespective of using CoAP, the
+   key distribution traffic relies on alternative setups with unreliable
+   transports, one can rely on general congestion-control mechanisms
+   such as DCCP [RFC4340], or on dedicated congestion control mechanisms
+   for the transport specifically used (e.g., those defined in [RFC9002]
+   for QUIC [RFC9000]).
 
    The set of group members should not be assumed as fixed, i.e., the
    group membership is subject to changes, possibly on a frequent basis.
@@ -4528,6 +4545,11 @@ Table of Contents
               DOI 10.17487/RFC4086, June 2005,
               <https://www.rfc-editor.org/rfc/rfc4086>.
 
+   [RFC4340]  Kohler, E., Handley, M., and S. Floyd, "Datagram
+              Congestion Control Protocol (DCCP)", RFC 4340,
+              DOI 10.17487/RFC4340, March 2006,
+              <https://www.rfc-editor.org/rfc/rfc4340>.
+
    [RFC5869]  Krawczyk, H. and P. Eronen, "HMAC-based Extract-and-Expand
               Key Derivation Function (HKDF)", RFC 5869,
               DOI 10.17487/RFC5869, May 2010,
@@ -4580,6 +4602,15 @@ Table of Contents
               Representation (CBOR)", STD 94, RFC 8949,
               DOI 10.17487/RFC8949, December 2020,
               <https://www.rfc-editor.org/rfc/rfc8949>.
+
+   [RFC9000]  Iyengar, J., Ed. and M. Thomson, Ed., "QUIC: A UDP-Based
+              Multiplexed and Secure Transport", RFC 9000,
+              DOI 10.17487/RFC9000, May 2021,
+              <https://www.rfc-editor.org/rfc/rfc9000>.
+
+   [RFC9002]  Iyengar, J., Ed. and I. Swett, Ed., "QUIC Loss Detection
+              and Congestion Control", RFC 9002, DOI 10.17487/RFC9002,
+              May 2021, <https://www.rfc-editor.org/rfc/rfc9002>.
 
    [RFC9052]  Schaad, J., "CBOR Object Signing and Encryption (COSE):
               Structures and Process", STD 96, RFC 9052,
@@ -5860,11 +5891,11 @@ Acknowledgments
    document.
 
    The authors sincerely thank Christian Amsüss, Stefan Beck, Mike
-   Bishop, Rolf Blom, Carsten Bormann, Esko Dijk, Patrik Fältström,
-   Martin Gunnarsson, Klaus Hartke, Richard Kelsey, Paul Kyzivat, Joerg
-   Ott, Dave Robin, Jim Schaad, Ludwig Seitz, Orie Steele, Peter van der
-   Stok, Erik Thormarker, and Mališa Vučinić for their feedback and
-   comments.
+   Bishop, Rolf Blom, Carsten Bormann, Esko Dijk, Gorry Fairhurst,
+   Patrik Fältström, Martin Gunnarsson, Klaus Hartke, Richard Kelsey,
+   Paul Kyzivat, Joerg Ott, Dave Robin, Jim Schaad, Ludwig Seitz, Orie
+   Steele, Peter van der Stok, Erik Thormarker, and Mališa Vučinić for
+   their feedback and comments.
 
    The work on this document has been partly supported by the Sweden's
    Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and
