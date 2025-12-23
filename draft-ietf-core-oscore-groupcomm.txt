@@ -5894,8 +5894,8 @@ Acknowledgments
    Bishop, Rolf Blom, Carsten Bormann, Esko Dijk, Gorry Fairhurst,
    Patrik Fältström, Martin Gunnarsson, Klaus Hartke, Richard Kelsey,
    Paul Kyzivat, Joerg Ott, Dave Robin, Jim Schaad, Ludwig Seitz, Orie
-   Steele, Peter van der Stok, Erik Thormarker, and Mališa Vučinić for
-   their feedback and comments.
+   Steele, Peter van der Stok, Ketan Talaulikar, Erik Thormarker, and
+   Mališa Vučinić for their feedback and comments.
 
    The work on this document has been partly supported by the Sweden's
    Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and
