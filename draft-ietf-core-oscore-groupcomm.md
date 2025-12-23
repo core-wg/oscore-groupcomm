@@ -73,7 +73,6 @@ author:
 normative:
 
   I-D.ietf-core-groupcomm-bis:
-  RFC4086:
   RFC4340:
   RFC5869:
   RFC6979:
@@ -316,19 +315,19 @@ The following sections specify how the Common Context is used and extended compa
 
 ### AEAD Algorithm ## {#ssec-common-context-aead-alg}
 
-The AEAD Algorithm (see {{Section 3.1 of RFC8613}}) SHALL identify the COSE AEAD algorithm to use for encryption and decryption when messages are protected using the pairwise mode (see {{sec-pairwise-protection}}). This algorithm MUST provide integrity protection. If this parameter is not set, the pairwise mode is not used in the group.
+The AEAD Algorithm (see {{Section 3.1 of RFC8613}}) identifies the COSE AEAD algorithm to use for encryption and decryption when messages are protected using the pairwise mode (see {{sec-pairwise-protection}}). This algorithm MUST provide integrity protection. If this parameter is not set, the pairwise mode is not used in the group.
 
 ### HKDF Algorithm ## {#ssec-common-context-hkdf-alg}
 
-The HKDF Algorithm (see {{Section 3.1 of RFC8613}}) SHALL identify the used key derivation function, which MUST be one of the HMAC-based HKDF {{RFC5869}} algorithms defined for COSE (see {{Section 5.1 of RFC9053}}) and registered at {{COSE.Algorithms}}.
+The HKDF Algorithm (see {{Section 3.1 of RFC8613}}) identifies the used key derivation function, which MUST be one of the HMAC-based HKDF {{RFC5869}} algorithms defined for COSE (see {{Section 5.1 of RFC9053}}) and registered at {{COSE.Algorithms}}.
 
 ### ID Context ## {#ssec-common-context-id-context}
 
-The ID Context parameter (see {{Sections 3.1 and 3.3 of RFC8613}}) SHALL contain the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle potential collisions between Gids (see {{ssec-gid-collision}}).
+The ID Context parameter (see {{Sections 3.1 and 3.3 of RFC8613}}) contains the Group Identifier (Gid) of the group. The choice of the Gid format is application specific. An example of specific formatting of the Gid is given in {{gid-ex}}. The application needs to specify how to handle potential collisions between Gids (see {{ssec-gid-collision}}).
 
 ### Common IV ##  {#ssec-common-common-iv}
 
-The Common IV parameter (see {{Section 3.1 of RFC8613}}) SHALL identify the Common IV used in the group. Differently from OSCORE, the length of the Common IV is determined as follows.
+The Common IV parameter (see {{Section 3.1 of RFC8613}}) identifies the Common IV used in the group. Differently from OSCORE, the length of the Common IV is determined as follows.
 
 * If only one among the AEAD Algorithm and the Group Encryption Algorithm is set (see {{ssec-common-context-aead-alg}} and {{ssec-common-context-cs-enc-alg}}), the length of the Common IV is the nonce length for the set algorithm.
 
@@ -344,7 +343,7 @@ The new parameter Group Manager Authentication Credential specifies the authenti
 
 ### Group Encryption Algorithm ## {#ssec-common-context-cs-enc-alg}
 
-The new parameter Group Encryption Algorithm identifies the algorithm to use for encryption and decryption, when messages are protected in group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection. If this parameter is not set, the group mode is not used in the group.
+The new parameter Group Encryption Algorithm identifies the algorithm to use for encryption and decryption, when messages are protected in group mode (see {{mess-processing}}). This algorithm MAY provide integrity protection. If it does not, integrity protection is still provided by the countersignature added to the message due to the use of the group mode. If this parameter is not set, the group mode is not used in the group.
 
 A non-authenticated algorithm MUST NOT be used as Group Encryption Algorithm if it is not possible to ensure uniqueness of the (key, nonce) pairs. This is the case, for instance, for A128CTR, A192CTR, and A256CTR {{RFC9459}}. Instead, examples of non-authenticated algorithms that can be used as Group Encryption Algorithm are A128CBC, A192CBC, and A256CBC {{RFC9459}}.
 
@@ -354,7 +353,7 @@ The new parameter Signature Algorithm identifies the digital signature algorithm
 
 ### Signature Encryption Key ## {#ssec-common-context-group-enc-key}
 
-The new parameter Signature Encryption Key specifies the encryption key for deriving a keystream to encrypt/decrypt a countersignature, when a message is protected in group mode (see {{mess-processing}}).
+The new parameter Signature Encryption Key specifies the encryption key for deriving a keystream to encrypt/decrypt a countersignature (see {{sssec-encrypted-signature-keystream}}) when a message is protected in group mode (see {{mess-processing}}).
 
 The Signature Encryption Key is derived as defined for Sender/Recipient Keys in {{Section 3.2.1 of RFC8613}}, with the following differences.
 
@@ -369,6 +368,8 @@ The Signature Encryption Key is derived as defined for Sender/Recipient Keys in 
 ### Pairwise Key Agreement Algorithm ## {#ssec-common-context-dh-alg}
 
 The new parameter Pairwise Key Agreement Algorithm identifies the elliptic curve Diffie-Hellman algorithm used to derive a static-static Diffie-Hellman shared secret, from which pairwise keys are derived (see {{key-derivation-pairwise}}) to protect messages with the pairwise mode (see {{sec-pairwise-protection}}). If this parameter is not set, the pairwise mode is not used in the group.
+
+When two endpoints compute their Diffie-Hellman shared secret, the Pairwise Key Agreement Algorithm takes as input the static-static Diffie-Hellman keys of the two endpoints. The lifetime of those keys is the same as the lifetime of the authentication credentials that the two endpoints use in the group. As detailed in {{key-derivation-pairwise}}, the derivation of the pairwise keys takes as input not only the Diffie-Hellman shared secret, but also group keying material from the latest established Security Context.
 
 If the HKDF Algorithm specified in the Common Context is "HKDF SHA-256" (identified as "HMAC 256/256"), then the Pairwise Key Agreement Algorithm is "ECDH-SS + HKDF-256" (COSE algorithm encoding: -27).
 
@@ -490,9 +491,9 @@ where:
 
 If EdDSA asymmetric keys are used, the Edward coordinates are mapped to Montgomery coordinates using the maps defined in {{Sections 4.1 and 4.2 of RFC7748}}, before using the X25519 or X448 function defined in {{Section 5 of RFC7748}}. For further details, see {{montgomery}}. ECC asymmetric keys in Montgomery or Weierstrass form are used directly in the key agreement algorithm, without coordinate mapping.
 
-After establishing a partially or completely new Security Context (see {{ssec-sec-context-persistence}} and {{sec-group-key-management}}), the old pairwise keys MUST be deleted. Since new Sender/Recipient Keys are derived from the new group keying material (see {{ssec-sender-recipient-context}}), every group member MUST use the new Sender/Recipient Keys when deriving new pairwise keys.
+As long as any two group members preserve the same asymmetric keys, their Diffie-Hellman shared secret does not change across updates of the group keying material. The lifetime of those keys is the same as the lifetime of the authentication credentials Sender Auth Cred and Recipient Auth Cred.
 
-As long as any two group members preserve the same asymmetric keys, their Diffie-Hellman shared secret does not change across updates of the group keying material.
+After establishing a partially or completely new Security Context (see {{ssec-sec-context-persistence}} and {{sec-group-key-management}}), the old pairwise keys MUST be deleted. Since new Sender/Recipient Keys are derived from the new group keying material (see {{ssec-sender-recipient-context}}), every group member MUST use the new Sender/Recipient Keys when deriving new pairwise keys.
 
 ### ECDH with Montgomery Coordinates {#montgomery}
 
@@ -1836,7 +1837,7 @@ Furthermore, as described below, a group rekeying may temporarily result in misa
 
 In this case, the sender protects a message using the old Security Context, i.e., before having installed the new Security Context. However, the recipient receives the message after having installed the new Security Context, and is thus unable to correctly process it.
 
-A possible way to ameliorate this issue is to preserve the old retained Security Context for a maximum amount of time defined by the application. By doing so, the recipient can still try to process the received message using the old retained Security Context.
+A possible way to mitigate this issue is to preserve the old retained Security Context for a maximum amount of time defined by the application. By doing so, the recipient can still try to process the received message using the old retained Security Context.
 
 This makes particular sense when the recipient is a client, that would hence be able to process incoming responses protected with the old retained Security Context used to protect the associated request. If, as typically expected, the old Gid is not included in the response, then the client will first fail to process the response using the latest Security Context, and then use the old retained Security Context as a second attempt.
 
@@ -1949,7 +1950,7 @@ Additionally, (D)TLS and Group OSCORE can be combined for protecting message exc
 
 Group OSCORE derives the Security Context using the same construction used by OSCORE, and by using the Group Identifier of a group as the related ID Context. Hence, the same required properties of the Security Context parameters discussed in {{Section 3.3 of RFC8613}} hold for this document.
 
-With particular reference to the OSCORE Master Secret, it has to be kept secret among the members of the respective OSCORE group and the Group Manager responsible for that group. Also, the Master Secret must have a good amount of randomness, and the Group Manager can generate it offline using a good random number generator. This includes the case where the Group Manager rekeys the group by generating and distributing a new Master Secret. Randomness requirements for security are described in {{RFC4086}}.
+With particular reference to the OSCORE Master Secret, it has to be kept secret among the members of the respective OSCORE group and the Group Manager responsible for that group. Also, the Master Secret must have a good amount of randomness, and the Group Manager can generate it offline using a good random number generator. This includes the case where the Group Manager rekeys the group by generating and distributing a new Master Secret.
 
 ## Replay Protection {#ssec-replay-protection}
 
@@ -2762,6 +2763,6 @@ member is now optional to support and use for the Group Manager.
 
 Jiye Park contributed as a co-author of initial versions of this document.
 
-The authors sincerely thank {{{Christian Amsüss}}}, {{{Stefan Beck}}}, {{{Mike Bishop}}}, {{{Rolf Blom}}}, {{{Carsten Bormann}}}, {{{Mohamed Boucadair}}}, {{{Esko Dijk}}}, {{{Gorry Fairhurst}}}, {{{Patrik Fältström}}}, {{{Martin Gunnarsson}}}, {{{Klaus Hartke}}}, {{{Richard Kelsey}}}, {{{Paul Kyzivat}}}, {{{Joerg Ott}}}, {{{Dave Robin}}}, {{{Jim Schaad}}}, {{{Ludwig Seitz}}}, {{{Orie Steele}}}, {{{Peter van der Stok}}}, {{{Ketan Talaulikar}}}, {{{Erik Thormarker}}}, and {{{Mališa Vučinić}}} for their feedback and comments.
+The authors sincerely thank {{{Christian Amsüss}}}, {{{Stefan Beck}}}, {{{Mike Bishop}}}, {{{Rolf Blom}}}, {{{Carsten Bormann}}}, {{{Mohamed Boucadair}}}, {{{Esko Dijk}}}, {{{Gorry Fairhurst}}}, {{{Patrik Fältström}}}, {{{Martin Gunnarsson}}}, {{{Klaus Hartke}}}, {{{Richard Kelsey}}}, {{{Paul Kyzivat}}}, {{{Joerg Ott}}}, {{{Dave Robin}}}, {{{Jim Schaad}}}, {{{Ludwig Seitz}}}, {{{Orie Steele}}}, {{{Peter van der Stok}}}, {{{Ketan Talaulikar}}}, {{{Erik Thormarker}}}, {{{Mališa Vučinić}}}, and {{{Paul Wouters}}} for their feedback and comments.
 
 The work on this document has been partly supported by the Sweden's Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and CYPRESS; the H2020 projects SIFIS-Home (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement 101020259); the SSF project SEC4Factory under the grant RIT17-0032; and the EIT-Digital High Impact Initiative ACTIVE.
