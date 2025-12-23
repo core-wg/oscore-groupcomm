@@ -1716,7 +1716,7 @@ The Security Context of Group OSCORE extends the OSCORE Security Context defined
           <p id="section-2-4.1.1">One Common Context, shared by all the endpoints in the group and extended as defined below.<a href="#section-2-4.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2-4.1.2.1">
-              <p id="section-2-4.1.2.1.1">The new parameter Authentication Credential Format, specifying the format of authentication credentials used in the group (see <a href="#ssec-common-context-authcred-format" class="auto internal xref">Section 2.1.5</a>).<a href="#section-2-4.1.2.1.1" class="pilcrow">¶</a></p>
+              <p id="section-2-4.1.2.1.1">The new parameter Authentication Credential Format (see <a href="#ssec-common-context-authcred-format" class="auto internal xref">Section 2.1.5</a>), specifying the format of authentication credentials used in the group (see <a href="#sec-pub-key-format" class="auto internal xref">Section 2.4</a>).<a href="#section-2-4.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2-4.1.2.2">
               <p id="section-2-4.1.2.2.1">The new parameter Group Manager Authentication Credential, specifying the authentication credential of the Group Manager responsible for the group (see <a href="#ssec-common-context-gm-pub-key" class="auto internal xref">Section 2.1.6</a>).<a href="#section-2-4.1.2.2.1" class="pilcrow">¶</a></p>
@@ -1725,13 +1725,13 @@ The Security Context of Group OSCORE extends the OSCORE Security Context defined
               <p id="section-2-4.1.2.3.1">For the group mode, the Common Context is extended with the following new parameters.<a href="#section-2-4.1.2.3.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2-4.1.2.3.2.1">
-                  <p id="section-2-4.1.2.3.2.1.1">Group Encryption Algorithm, used for encrypting and decrypting messages protected in group mode (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-2-4.1.2.3.2.1.1" class="pilcrow">¶</a></p>
+                  <p id="section-2-4.1.2.3.2.1.1">Group Encryption Algorithm, specifying the algorithm used for encrypting and decrypting messages protected in group mode (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-2-4.1.2.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2-4.1.2.3.2.2">
-                  <p id="section-2-4.1.2.3.2.2.1">Signature Algorithm, used for computing and verifying the countersignature of messages protected in group mode (see <a href="#ssec-common-context-cs-alg" class="auto internal xref">Section 2.1.8</a>).<a href="#section-2-4.1.2.3.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-2-4.1.2.3.2.2.1">Signature Algorithm, specifying the algorithm used for computing and verifying the countersignature of messages protected in group mode (see <a href="#ssec-common-context-cs-alg" class="auto internal xref">Section 2.1.8</a>).<a href="#section-2-4.1.2.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2-4.1.2.3.2.3">
-                  <p id="section-2-4.1.2.3.2.3.1">Signature Encryption Key, used for encrypting and decrypting the countersignature of messages protected in group mode (see <a href="#ssec-common-context-group-enc-key" class="auto internal xref">Section 2.1.9</a>).<a href="#section-2-4.1.2.3.2.3.1" class="pilcrow">¶</a></p>
+                  <p id="section-2-4.1.2.3.2.3.1">Signature Encryption Key, specifying the symmetric key used for deriving a keystream, which is in turn used for encrypting and decrypting the countersignature of messages protected in group mode (see <a href="#ssec-common-context-group-enc-key" class="auto internal xref">Section 2.1.9</a>).<a href="#section-2-4.1.2.3.2.3.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
@@ -1846,6 +1846,7 @@ Except for the Replay Window defined in <span><a href="https://rfc-editor.org/rf
               <p id="section-2.1.4-2.2.1">If both the AEAD Algorithm and the Group Encryption Algorithm are set, the length of the Common IV is the greatest nonce length among those of the two algorithms.<a href="#section-2.1.4-2.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2.1.4-3">If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR (see <span><a href="https://rfc-editor.org/rfc/rfc9459#section-4" class="relref">Section 4</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>), then the length of the nonce used by that algorithm is 12 bytes (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-2.1.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-common-context-authcred-format">
@@ -1853,7 +1854,7 @@ Except for the Replay Window defined in <span><a href="https://rfc-editor.org/rf
           <h4 id="name-authentication-credential-f">
 <a href="#section-2.1.5" class="section-number selfRef">2.1.5. </a><a href="#name-authentication-credential-f" class="section-name selfRef">Authentication Credential Format</a>
           </h4>
-<p id="section-2.1.5-1">The new parameter Authentication Credential Format specifies the format of authentication credentials used in the group. Further details on authentication credentials are compiled in <a href="#sec-pub-key-format" class="auto internal xref">Section 2.4</a>.<a href="#section-2.1.5-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.5-1">The new parameter Authentication Credential Format specifies the format of authentication credentials used in the group.<a href="#section-2.1.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-common-context-gm-pub-key">
@@ -1870,7 +1871,21 @@ Except for the Replay Window defined in <span><a href="https://rfc-editor.org/rf
 <a href="#section-2.1.7" class="section-number selfRef">2.1.7. </a><a href="#name-group-encryption-algorithm" class="section-name selfRef">Group Encryption Algorithm</a>
           </h4>
 <p id="section-2.1.7-1">The new parameter Group Encryption Algorithm identifies the algorithm to use for encryption and decryption, when messages are protected in group mode (see <a href="#mess-processing" class="auto internal xref">Section 7</a>). This algorithm <span class="bcp14">MAY</span> provide integrity protection. If it does not, integrity protection is still provided by the countersignature added to the message due to the use of the group mode. If this parameter is not set, the group mode is not used in the group.<a href="#section-2.1.7-1" class="pilcrow">¶</a></p>
-<p id="section-2.1.7-2">A non-authenticated algorithm <span class="bcp14">MUST NOT</span> be used as Group Encryption Algorithm if it is not possible to ensure uniqueness of the (key, nonce) pairs. This is the case, for instance, for A128CTR, A192CTR, and A256CTR <span>[<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>. Instead, examples of non-authenticated algorithms that can be used as Group Encryption Algorithm are A128CBC, A192CBC, and A256CBC <span>[<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>.<a href="#section-2.1.7-2" class="pilcrow">¶</a></p>
+<p id="section-2.1.7-2">In order to be eligible to use as Group Encryption Algorithm, a non-authenticated algorithm <span class="bcp14">MUST</span> ensure that the same key is not reused with the same IV or intermediate values used in the algorithm, e.g., for algorithms that increment the IV internally. If a non-authenticated algorithm does not fulfill the requirement above, that algorithm <span class="bcp14">MUST NOT</span> be used as Group Encryption Algorithm.<a href="#section-2.1.7-2" class="pilcrow">¶</a></p>
+<p id="section-2.1.7-3">Examples of non-authenticated algorithms that can be used as Group Encryption Algorithm are A128CTR, A192CTR, and A256CTR (see <span><a href="https://rfc-editor.org/rfc/rfc9459#section-4" class="relref">Section 4</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>). When either of those three algorithms is used, the following applies:<a href="#section-2.1.7-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.1.7-4.1">
+              <p id="section-2.1.7-4.1.1">A 12-byte nonce <span class="bcp14">MUST</span> be computed as defined in <a href="#sec-cose-object-aead-nonce" class="auto internal xref">Section 3.3</a> of this document.<a href="#section-2.1.7-4.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-2.1.7-4.2">
+              <p id="section-2.1.7-4.2.1">The Initialization Vector (IV) used in <span><a href="https://rfc-editor.org/rfc/rfc9459#section-4" class="relref">Section 4</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span> is equivalent to the nonce above (12 bytes) concatenated with 0x00000000 (4 bytes), in this order.<a href="#section-2.1.7-4.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-2.1.7-4.3">
+              <p id="section-2.1.7-4.3.1">The algorithm <span class="bcp14">MUST NOT</span> be used to encrypt a plaintext or decrypt a ciphertext whose length is larger than 64 GB (i.e., 2<sup>36</sup> bytes).<a href="#section-2.1.7-4.3.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-2.1.7-5">The non-authenticated algorithms A128CBC, A192CBC, and A256CBC (see <span><a href="https://rfc-editor.org/rfc/rfc9459#section-5" class="relref">Section 5</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span>) <span class="bcp14">MUST NOT</span> be used as Group Encryption Algorithm.<a href="#section-2.1.7-5" class="pilcrow">¶</a></p>
+<p id="section-2.1.7-6">Future specifications can admit alternative non-authenticated algorithms that can be used as Group Encryption Algorithm. When doing so, it <span class="bcp14">MUST</span> be defined how to securely compose the IV and possible intermediate values used in the algorithm, building on the nonce computed as defined in <a href="#sec-cose-object-aead-nonce" class="auto internal xref">Section 3.3</a> of this document. Absent such a specification, alternative non-authenticated algorithms <span class="bcp14">MUST NOT</span> be used as Group Encryption Algorithm.<a href="#section-2.1.7-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ssec-common-context-cs-alg">
@@ -1886,7 +1901,7 @@ Except for the Replay Window defined in <span><a href="https://rfc-editor.org/rf
           <h4 id="name-signature-encryption-key">
 <a href="#section-2.1.9" class="section-number selfRef">2.1.9. </a><a href="#name-signature-encryption-key" class="section-name selfRef">Signature Encryption Key</a>
           </h4>
-<p id="section-2.1.9-1">The new parameter Signature Encryption Key specifies the encryption key for deriving a keystream to encrypt/decrypt a countersignature (see <a href="#sssec-encrypted-signature-keystream" class="auto internal xref">Section 4.2</a>) when a message is protected in group mode (see <a href="#mess-processing" class="auto internal xref">Section 7</a>).<a href="#section-2.1.9-1" class="pilcrow">¶</a></p>
+<p id="section-2.1.9-1">The new parameter Signature Encryption Key specifies the symmetric key for deriving a keystream to encrypt/decrypt a countersignature (see <a href="#sssec-encrypted-signature-keystream" class="auto internal xref">Section 4.2</a>) when a message is protected in group mode (see <a href="#mess-processing" class="auto internal xref">Section 7</a>).<a href="#section-2.1.9-1" class="pilcrow">¶</a></p>
 <p id="section-2.1.9-2">The Signature Encryption Key is derived as defined for Sender/Recipient Keys in <span><a href="https://rfc-editor.org/rfc/rfc8613#section-3.2.1" class="relref">Section 3.2.1</a> of [<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, with the following differences.<a href="#section-2.1.9-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2.1.9-3.1">
@@ -1991,8 +2006,8 @@ Except for the Replay Window defined in <span><a href="https://rfc-editor.org/rf
         <h3 id="name-pairwise-keys">
 <a href="#section-2.5" class="section-number selfRef">2.5. </a><a href="#name-pairwise-keys" class="section-name selfRef">Pairwise Keys</a>
         </h3>
-<p id="section-2.5-1">Certain signature schemes, such as EdDSA and ECDSA, support a secure combined signature and encryption scheme. This section specifies the derivation of "pairwise keys" for use in the pairwise mode defined in <a href="#sec-pairwise-protection" class="auto internal xref">Section 8</a>.<a href="#section-2.5-1" class="pilcrow">¶</a></p>
-<p id="section-2.5-2">Group OSCORE keys used for both signature and encryption <span class="bcp14">MUST</span> be used only for purposes related to Group OSCORE. These include the processing of messages with Group OSCORE, as well as performing proof of possession of private keys, e.g., upon joining a group through the Group Manager (see <a href="#group-manager" class="auto internal xref">Section 12</a>).<a href="#section-2.5-2" class="pilcrow">¶</a></p>
+<p id="section-2.5-1">In certain Elliptic Curve Cryptographic schemes, it is possible to use public/private key pairs with both signature operations (ECDSA or EdDSA) and key agreement operations (ECDH). This section specifies the derivation of "pairwise keys" for use in the pairwise mode defined in <a href="#sec-pairwise-protection" class="auto internal xref">Section 8</a>.<a href="#section-2.5-1" class="pilcrow">¶</a></p>
+<p id="section-2.5-2">Group OSCORE keys used for both signature operations and key agreement operations <span class="bcp14">MUST</span> be used only for purposes related to Group OSCORE. These include the processing of messages with Group OSCORE, as well as performing proof of possession of private keys, e.g., upon joining a group through the Group Manager (see <a href="#group-manager" class="auto internal xref">Section 12</a>).<a href="#section-2.5-2" class="pilcrow">¶</a></p>
 <div id="key-derivation-pairwise">
 <section id="section-2.5.1">
           <h4 id="name-derivation-of-pairwise-keys">
@@ -2643,7 +2658,7 @@ Note that, in the case of group rekeying, a server might use a different Gid whe
         </h3>
 <p id="section-5.1-1">For each of its ongoing long exchanges, a client maintains one Response Number for each different server. Then, separately for each server, the client uses the associated Response Number to perform ordering and replay protection of responses received from that server within that long exchange (see <a href="#sec-replay-protection-responses" class="auto internal xref">Section 5.3.1</a>).<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 <p id="section-5.1-2">That is, the Response Number has the same purpose that the Notification Number has in OSCORE (see Section 4.1.3.5.2 of <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>), but a client uses it for handling any response from the associated server within a long exchange.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
-<p id="section-5.1-3">Group OSCORE allows a long exchange to remain active indefinitely, even if the group is rekeyed (thus changing the ID Context) or the client obtains a new Sender ID.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
+<p id="section-5.1-3">Group OSCORE allows a long exchange to remain active, even if the group is rekeyed (thus changing the ID Context) or the client obtains a new Sender ID.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
 <p id="section-5.1-4">As defined in <a href="#mess-processing" class="auto internal xref">Section 7</a>, this is achieved by the client and server(s) storing the 'kid' and 'kid context' used in the original request, throughout the whole duration of the long exchange.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
 <p id="section-5.1-5">Upon leaving the group or before re-joining the group, a group member <span class="bcp14">MUST</span> terminate all the ongoing long exchanges that it has started in the group as a client. This frees up the CoAP Token associated with the corresponding request.<a href="#section-5.1-5" class="pilcrow">¶</a></p>
 </section>
@@ -3049,7 +3064,7 @@ where KEYSTREAM is derived as per <a href="#sssec-encrypted-signature-keystream"
 <p id="section-8-1">When using the pairwise mode of Group OSCORE, messages are protected and processed as in <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span> with the modifications described in this section. The security objectives of the pairwise mode are discussed in <a href="#ssec-sec-objectives" class="auto internal xref">Appendix A.2</a>.<a href="#section-8-1" class="pilcrow">¶</a></p>
 <p id="section-8-2">The possible use of the pairwise mode is indicated by the Group Manager as part of the group data provided to new group members when joining the group, according to which the parameters AEAD Algorithm and Pairwise Key Agreement Algorithm in the Security Context are set (see <a href="#sec-context" class="auto internal xref">Section 2</a>).<a href="#section-8-2" class="pilcrow">¶</a></p>
 <p id="section-8-3">The pairwise mode takes advantage of an existing Security Context to establish keying material shared exclusively with each other member. For encryption and decryption operations in pairwise mode, the AEAD Algorithm from the Common Context is used (see <a href="#ssec-common-context-aead-alg" class="auto internal xref">Section 2.1.1</a>).<a href="#section-8-3" class="pilcrow">¶</a></p>
-<p id="section-8-4">In order to use the pairwise mode in a group where the group mode is also used (i.e., Group Encryption Algorithm and Signature Algorithm in the Security Context are set), the signature scheme of the group mode <span class="bcp14">MUST</span> support a combined signature and encryption scheme. For example, this can rely on signing operations using ECDSA, and encryption operations using AES-CCM with keying material derived through ECDH.<a href="#section-8-4" class="pilcrow">¶</a></p>
+<p id="section-8-4">In order to use the pairwise mode in a group where the group mode is also used (i.e., Group Encryption Algorithm and Signature Algorithm in the Security Context are set), the public/private key pairs used for signature operations of the group mode <span class="bcp14">MUST</span> be possible to also use for key agreement operations. For example, this can rely on signing operations using ECDSA, and encryption operations using AES-CCM with keying material derived through ECDH.<a href="#section-8-4" class="pilcrow">¶</a></p>
 <p id="section-8-5">The pairwise mode does not support external verifiers of source authentication and message integrity like the group mode does, e.g., for external signature checkers (see <a href="#sec-processing-signature-checker" class="auto internal xref">Section 7.5</a>).<a href="#section-8-5" class="pilcrow">¶</a></p>
 <p id="section-8-6">An endpoint implementing only a silent server does not support the pairwise mode.<a href="#section-8-6" class="pilcrow">¶</a></p>
 <p id="section-8-7">Endpoints using the CoAP Echo Option <span>[<a href="#RFC9175" class="cite xref">RFC9175</a>]</span> in a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set <span class="bcp14">MUST</span> support the pairwise mode. When using the challenge-response method defined in <a href="#sec-synch-challenge-response" class="auto internal xref">Section 9</a>, this prevents the attack described in <a href="#ssec-unicast-requests" class="auto internal xref">Section 14.9</a>, which leverages requests sent over unicast to a single group member and protected in group mode.<a href="#section-8-7" class="pilcrow">¶</a></p>
@@ -3251,10 +3266,10 @@ where KEYSTREAM is derived as per <a href="#sssec-encrypted-signature-keystream"
           <p id="section-10-4.1.1">For endpoints that use authenticated encryption, the AEAD algorithm AES-CCM-16-64-128 defined in <span><a href="https://rfc-editor.org/rfc/rfc9053#section-4.2" class="relref">Section 4.2</a> of [<a href="#RFC9053" class="cite xref">RFC9053</a>]</span> is mandatory to implement as Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-10-4.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-10-4.2">
-          <p id="section-10-4.2.1">For endpoints that use non-authenticated encryption, the algorithm A128CBC defined in <span><a href="https://rfc-editor.org/rfc/rfc9459#section-5" class="relref">Section 5</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span> is mandatory to implement as Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-10-4.2.1" class="pilcrow">¶</a></p>
+          <p id="section-10-4.2.1">For endpoints that use non-authenticated encryption, the algorithm A128CTR defined in <span><a href="https://rfc-editor.org/rfc/rfc9459#section-4" class="relref">Section 4</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span> is mandatory to implement as Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>).<a href="#section-10-4.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-10-4.3">
-          <p id="section-10-4.3.1"><span><a href="https://rfc-editor.org/rfc/rfc9459#section-6" class="relref">Section 6</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span> mandates that COSE libraries supporting either the AES-CTR or AES-CBC algorithm and accepting Additional Authenticated Data (AAD) as input must return an error if one of these non-AEAD content encryption algorithms is selected.<a href="#section-10-4.3.1" class="pilcrow">¶</a></p>
+          <p id="section-10-4.3.1"><span><a href="https://rfc-editor.org/rfc/rfc9459#section-6" class="relref">Section 6</a> of [<a href="#RFC9459" class="cite xref">RFC9459</a>]</span> mandates that COSE libraries supporting the AES-CTR algorithm and accepting Additional Authenticated Data (AAD) as input must return an error if AAD is provided when such a non-AEAD content encryption algorithm is selected.<a href="#section-10-4.3.1" class="pilcrow">¶</a></p>
 <p id="section-10-4.3.2">
 In case the used Group Encryption Algorithm (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>) does not provide integrity protection, the following applies.<a href="#section-10-4.3.2" class="pilcrow">¶</a></p>
 <p id="section-10-4.3.3">
@@ -3631,7 +3646,7 @@ to use this information as they see fit".<a href="#section-13-5" class="pilcrow"
                 <p id="section-13.1-1.6.2.2.1">Mapping of public keys for the curve Ed25519 into Montgomery coordinates to use with X25519.<a href="#section-13.1-1.6.2.2.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-13.1-1.6.2.3">
-                <p id="section-13.1-1.6.2.3.1">The following COSE encryption algorithms: AES-CCM-16-64-128, AES-CCM-16-128-128, AES-CCM-16-64-256, AES-CCM-16-128-256, AES_CCM-64-64-128, AES-CCM-64-128-128, AES-CCM-64-64-256, AES-CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305, A128CBC, A192CBC, A256CBC.<a href="#section-13.1-1.6.2.3.1" class="pilcrow">¶</a></p>
+                <p id="section-13.1-1.6.2.3.1">The following COSE encryption algorithms: AES-CCM-16-64-128, AES-CCM-16-128-128, AES-CCM-16-64-256, AES-CCM-16-128-256, AES_CCM-64-64-128, AES-CCM-64-128-128, AES-CCM-64-64-256, AES-CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305, A128CTR, A192CTR, A256CTR.<a href="#section-13.1-1.6.2.3.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-13.1-1.6.2.4">
                 <p id="section-13.1-1.6.2.4.1">The following HKDF algorithms: HKDF SHA-256 (identified as the COSE Algorithm "HMAC 256/256") and HKDF SHA-512 (identified as the COSE Algorithm "HMAC 512/512").<a href="#section-13.1-1.6.2.4.1" class="pilcrow">¶</a></p>
@@ -3701,7 +3716,7 @@ to use this information as they see fit".<a href="#section-13-5" class="pilcrow"
                 <p id="section-13.2-1.5.2.2.1">Mapping of public keys for the curve Ed25519 into Montgomery coordinates to use with X25519.<a href="#section-13.2-1.5.2.2.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-13.2-1.5.2.3">
-                <p id="section-13.2-1.5.2.3.1">The following COSE encryption algorithms: 1-3, 10-13, 24, 30-33, -65531<a href="#section-13.2-1.5.2.3.1" class="pilcrow">¶</a></p>
+                <p id="section-13.2-1.5.2.3.1">The following COSE encryption algorithms: 1-3, 10-13, 24, 30-33.<a href="#section-13.2-1.5.2.3.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-13.2-1.5.2.4">
                 <p id="section-13.2-1.5.2.4.1">The following HKDF algorithms: HKDF SHA-256, -384, -512.<a href="#section-13.2-1.5.2.4.1" class="pilcrow">¶</a></p>
@@ -3787,9 +3802,6 @@ to use this information as they see fit".<a href="#section-13-5" class="pilcrow"
 </li>
               <li class="normal" id="section-13.3-4.6.2.4">
                 <p id="section-13.3-4.6.2.4.1">(ChaCha20/Poly1305, AES-CCM-16-64-128).<a href="#section-13.3-4.6.2.4.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-13.3-4.6.2.5">
-                <p id="section-13.3-4.6.2.5.1">(A128CBC, AES-CCM-16-64-128).<a href="#section-13.3-4.6.2.5.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
@@ -5696,7 +5708,7 @@ member is now optional to support and use for the Group Manager.<a href="#append
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
 <p id="appendix-F-1">Jiye Park contributed as a co-author of initial versions of this document.<a href="#appendix-F-1" class="pilcrow">¶</a></p>
-<p id="appendix-F-2">The authors sincerely thank <span class="contact-name">Christian Amsüss</span>, <span class="contact-name">Stefan Beck</span>, <span class="contact-name">Mike Bishop</span>, <span class="contact-name">Rolf Blom</span>, <span class="contact-name">Carsten Bormann</span>, <span class="contact-name">Mohamed Boucadair</span>, <span class="contact-name">Esko Dijk</span>, <span class="contact-name">Gorry Fairhurst</span>, <span class="contact-name">Patrik Fältström</span>, <span class="contact-name">Martin Gunnarsson</span>, <span class="contact-name">Klaus Hartke</span>, <span class="contact-name">Richard Kelsey</span>, <span class="contact-name">Paul Kyzivat</span>, <span class="contact-name">Joerg Ott</span>, <span class="contact-name">Dave Robin</span>, <span class="contact-name">Jim Schaad</span>, <span class="contact-name">Ludwig Seitz</span>, <span class="contact-name">Orie Steele</span>, <span class="contact-name">Peter van der Stok</span>, <span class="contact-name">Ketan Talaulikar</span>, <span class="contact-name">Erik Thormarker</span>, <span class="contact-name">Mališa Vučinić</span>, and <span class="contact-name">Paul Wouters</span> for their feedback and comments.<a href="#appendix-F-2" class="pilcrow">¶</a></p>
+<p id="appendix-F-2">The authors sincerely thank <span class="contact-name">Christian Amsüss</span>, <span class="contact-name">Stefan Beck</span>, <span class="contact-name">Mike Bishop</span>, <span class="contact-name">Rolf Blom</span>, <span class="contact-name">Carsten Bormann</span>, <span class="contact-name">Mohamed Boucadair</span>, <span class="contact-name">Deb Cooley</span>, <span class="contact-name">Esko Dijk</span>, <span class="contact-name">Gorry Fairhurst</span>, <span class="contact-name">Patrik Fältström</span>, <span class="contact-name">Martin Gunnarsson</span>, <span class="contact-name">Klaus Hartke</span>, <span class="contact-name">Richard Kelsey</span>, <span class="contact-name">Paul Kyzivat</span>, <span class="contact-name">Joerg Ott</span>, <span class="contact-name">Dave Robin</span>, <span class="contact-name">Jim Schaad</span>, <span class="contact-name">Ludwig Seitz</span>, <span class="contact-name">Orie Steele</span>, <span class="contact-name">Peter van der Stok</span>, <span class="contact-name">Ketan Talaulikar</span>, <span class="contact-name">Erik Thormarker</span>, <span class="contact-name">Mališa Vučinić</span>, and <span class="contact-name">Paul Wouters</span> for their feedback and comments.<a href="#appendix-F-2" class="pilcrow">¶</a></p>
 <p id="appendix-F-3">The work on this document has been partly supported by the Sweden's Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and CYPRESS; the H2020 projects SIFIS-Home (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement 101020259); the SSF project SEC4Factory under the grant RIT17-0032; and the EIT-Digital High Impact Initiative ACTIVE.<a href="#appendix-F-3" class="pilcrow">¶</a></p>
 </section>
 </div>

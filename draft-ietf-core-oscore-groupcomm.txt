@@ -443,9 +443,9 @@ Table of Contents
    *  One Common Context, shared by all the endpoints in the group and
       extended as defined below.
 
-      -  The new parameter Authentication Credential Format, specifying
-         the format of authentication credentials used in the group (see
-         Section 2.1.5).
+      -  The new parameter Authentication Credential Format (see
+         Section 2.1.5), specifying the format of authentication
+         credentials used in the group (see Section 2.4).
 
       -  The new parameter Group Manager Authentication Credential,
          specifying the authentication credential of the Group Manager
@@ -454,17 +454,18 @@ Table of Contents
       -  For the group mode, the Common Context is extended with the
          following new parameters.
 
-         o  Group Encryption Algorithm, used for encrypting and
-            decrypting messages protected in group mode (see
-            Section 2.1.7).
+         o  Group Encryption Algorithm, specifying the algorithm used
+            for encrypting and decrypting messages protected in group
+            mode (see Section 2.1.7).
 
-         o  Signature Algorithm, used for computing and verifying the
-            countersignature of messages protected in group mode (see
-            Section 2.1.8).
+         o  Signature Algorithm, specifying the algorithm used for
+            computing and verifying the countersignature of messages
+            protected in group mode (see Section 2.1.8).
 
-         o  Signature Encryption Key, used for encrypting and decrypting
-            the countersignature of messages protected in group mode
-            (see Section 2.1.9).
+         o  Signature Encryption Key, specifying the symmetric key used
+            for deriving a keystream, which is in turn used for
+            encrypting and decrypting the countersignature of messages
+            protected in group mode (see Section 2.1.9).
 
       -  For the pairwise mode, the Common Context is extended with a
          Pairwise Key Agreement Algorithm (see Section 2.1.10) used for
@@ -582,11 +583,14 @@ Table of Contents
       set, the length of the Common IV is the greatest nonce length
       among those of the two algorithms.
 
+   If the Group Encryption Algorithm is A128CTR, A192CTR, or A256CTR
+   (see Section 4 of [RFC9459]), then the length of the nonce used by
+   that algorithm is 12 bytes (see Section 2.1.7).
+
 2.1.5.  Authentication Credential Format
 
    The new parameter Authentication Credential Format specifies the
-   format of authentication credentials used in the group.  Further
-   details on authentication credentials are compiled in Section 2.4.
+   format of authentication credentials used in the group.
 
 2.1.6.  Group Manager Authentication Credential
 
@@ -610,12 +614,39 @@ Table of Contents
    group mode.  If this parameter is not set, the group mode is not used
    in the group.
 
-   A non-authenticated algorithm MUST NOT be used as Group Encryption
-   Algorithm if it is not possible to ensure uniqueness of the (key,
-   nonce) pairs.  This is the case, for instance, for A128CTR, A192CTR,
-   and A256CTR [RFC9459].  Instead, examples of non-authenticated
-   algorithms that can be used as Group Encryption Algorithm are
-   A128CBC, A192CBC, and A256CBC [RFC9459].
+   In order to be eligible to use as Group Encryption Algorithm, a non-
+   authenticated algorithm MUST ensure that the same key is not reused
+   with the same IV or intermediate values used in the algorithm, e.g.,
+   for algorithms that increment the IV internally.  If a non-
+   authenticated algorithm does not fulfill the requirement above, that
+   algorithm MUST NOT be used as Group Encryption Algorithm.
+
+   Examples of non-authenticated algorithms that can be used as Group
+   Encryption Algorithm are A128CTR, A192CTR, and A256CTR (see Section 4
+   of [RFC9459]).  When either of those three algorithms is used, the
+   following applies:
+
+   *  A 12-byte nonce MUST be computed as defined in Section 3.3 of this
+      document.
+
+   *  The Initialization Vector (IV) used in Section 4 of [RFC9459] is
+      equivalent to the nonce above (12 bytes) concatenated with
+      0x00000000 (4 bytes), in this order.
+
+   *  The algorithm MUST NOT be used to encrypt a plaintext or decrypt a
+      ciphertext whose length is larger than 64 GB (i.e., 2^36 bytes).
+
+   The non-authenticated algorithms A128CBC, A192CBC, and A256CBC (see
+   Section 5 of [RFC9459]) MUST NOT be used as Group Encryption
+   Algorithm.
+
+   Future specifications can admit alternative non-authenticated
+   algorithms that can be used as Group Encryption Algorithm.  When
+   doing so, it MUST be defined how to securely compose the IV and
+   possible intermediate values used in the algorithm, building on the
+   nonce computed as defined in Section 3.3 of this document.  Absent
+   such a specification, alternative non-authenticated algorithms MUST
+   NOT be used as Group Encryption Algorithm.
 
 2.1.8.  Signature Algorithm
 
@@ -628,7 +659,7 @@ Table of Contents
 
 2.1.9.  Signature Encryption Key
 
-   The new parameter Signature Encryption Key specifies the encryption
+   The new parameter Signature Encryption Key specifies the symmetric
    key for deriving a keystream to encrypt/decrypt a countersignature
    (see Section 4.2) when a message is protected in group mode (see
    Section 7).
@@ -857,16 +888,17 @@ Table of Contents
 
 2.5.  Pairwise Keys
 
-   Certain signature schemes, such as EdDSA and ECDSA, support a secure
-   combined signature and encryption scheme.  This section specifies the
-   derivation of "pairwise keys" for use in the pairwise mode defined in
-   Section 8.
+   In certain Elliptic Curve Cryptographic schemes, it is possible to
+   use public/private key pairs with both signature operations (ECDSA or
+   EdDSA) and key agreement operations (ECDH).  This section specifies
+   the derivation of "pairwise keys" for use in the pairwise mode
+   defined in Section 8.
 
-   Group OSCORE keys used for both signature and encryption MUST be used
-   only for purposes related to Group OSCORE.  These include the
-   processing of messages with Group OSCORE, as well as performing proof
-   of possession of private keys, e.g., upon joining a group through the
-   Group Manager (see Section 12).
+   Group OSCORE keys used for both signature operations and key
+   agreement operations MUST be used only for purposes related to Group
+   OSCORE.  These include the processing of messages with Group OSCORE,
+   as well as performing proof of possession of private keys, e.g., upon
+   joining a group through the Group Manager (see Section 12).
 
 2.5.1.  Derivation of Pairwise Keys
 
@@ -1751,9 +1783,9 @@ Table of Contents
    [RFC8613]), but a client uses it for handling any response from the
    associated server within a long exchange.
 
-   Group OSCORE allows a long exchange to remain active indefinitely,
-   even if the group is rekeyed (thus changing the ID Context) or the
-   client obtains a new Sender ID.
+   Group OSCORE allows a long exchange to remain active, even if the
+   group is rekeyed (thus changing the ID Context) or the client obtains
+   a new Sender ID.
 
    As defined in Section 7, this is achieved by the client and server(s)
    storing the 'kid' and 'kid context' used in the original request,
@@ -2539,11 +2571,11 @@ Table of Contents
 
    In order to use the pairwise mode in a group where the group mode is
    also used (i.e., Group Encryption Algorithm and Signature Algorithm
-   in the Security Context are set), the signature scheme of the group
-   mode MUST support a combined signature and encryption scheme.  For
-   example, this can rely on signing operations using ECDSA, and
-   encryption operations using AES-CCM with keying material derived
-   through ECDH.
+   in the Security Context are set), the public/private key pairs used
+   for signature operations of the group mode MUST be possible to also
+   use for key agreement operations.  For example, this can rely on
+   signing operations using ECDSA, and encryption operations using AES-
+   CCM with keying material derived through ECDH.
 
    The pairwise mode does not support external verifiers of source
    authentication and message integrity like the group mode does, e.g.,
@@ -2877,13 +2909,13 @@ Table of Contents
       Section 2.1.7).
 
    *  For endpoints that use non-authenticated encryption, the algorithm
-      A128CBC defined in Section 5 of [RFC9459] is mandatory to
+      A128CTR defined in Section 4 of [RFC9459] is mandatory to
       implement as Group Encryption Algorithm (see Section 2.1.7).
 
-   *  Section 6 of [RFC9459] mandates that COSE libraries supporting
-      either the AES-CTR or AES-CBC algorithm and accepting Additional
-      Authenticated Data (AAD) as input must return an error if one of
-      these non-AEAD content encryption algorithms is selected.
+   *  Section 6 of [RFC9459] mandates that COSE libraries supporting the
+      AES-CTR algorithm and accepting Additional Authenticated Data
+      (AAD) as input must return an error if AAD is provided when such a
+      non-AEAD content encryption algorithm is selected.
 
       In case the used Group Encryption Algorithm (see Section 2.1.7)
       does not provide integrity protection, the following applies.
@@ -3488,7 +3520,7 @@ Table of Contents
          AES-CCM-16-128-128, AES-CCM-16-64-256, AES-CCM-16-128-256,
          AES_CCM-64-64-128, AES-CCM-64-128-128, AES-CCM-64-64-256, AES-
          CCM-64-128-256, A128GCM, A192GCM, A256GCM, ChaCha20/Poly1305,
-         A128CBC, A192CBC, A256CBC.
+         A128CTR, A192CTR, A256CTR.
 
       -  The following HKDF algorithms: HKDF SHA-256 (identified as the
          COSE Algorithm "HMAC 256/256") and HKDF SHA-512 (identified as
@@ -3543,7 +3575,7 @@ Table of Contents
          coordinates to use with X25519.
 
       -  The following COSE encryption algorithms: 1-3, 10-13, 24,
-         30-33, -65531
+         30-33.
 
       -  The following HKDF algorithms: HKDF SHA-256, -384, -512.
 
@@ -3616,8 +3648,6 @@ Table of Contents
       -  (AES-CCM-16-64-128, ChaCha20/Poly1305).
 
       -  (ChaCha20/Poly1305, AES-CCM-16-64-128).
-
-      -  (A128CBC, AES-CCM-16-64-128).
 
 14.  Security Considerations
 
@@ -5904,12 +5934,12 @@ Acknowledgments
    document.
 
    The authors sincerely thank Christian Amsüss, Stefan Beck, Mike
-   Bishop, Rolf Blom, Carsten Bormann, Mohamed Boucadair, Esko Dijk,
-   Gorry Fairhurst, Patrik Fältström, Martin Gunnarsson, Klaus Hartke,
-   Richard Kelsey, Paul Kyzivat, Joerg Ott, Dave Robin, Jim Schaad,
-   Ludwig Seitz, Orie Steele, Peter van der Stok, Ketan Talaulikar, Erik
-   Thormarker, Mališa Vučinić, and Paul Wouters for their feedback and
-   comments.
+   Bishop, Rolf Blom, Carsten Bormann, Mohamed Boucadair, Deb Cooley,
+   Esko Dijk, Gorry Fairhurst, Patrik Fältström, Martin Gunnarsson,
+   Klaus Hartke, Richard Kelsey, Paul Kyzivat, Joerg Ott, Dave Robin,
+   Jim Schaad, Ludwig Seitz, Orie Steele, Peter van der Stok, Ketan
+   Talaulikar, Erik Thormarker, Mališa Vučinić, and Paul Wouters for
+   their feedback and comments.
 
    The work on this document has been partly supported by the Sweden's
    Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and
