@@ -13,23 +13,22 @@
 <meta content="
        This document defines the security protocol Group Object Security for Constrained RESTful Environments (Group OSCORE), providing end-to-end security of messages exchanged with the Constrained Application Protocol (CoAP) between members of a group, e.g., sent over IP multicast. In particular, the described protocol defines how OSCORE is used in a group communication setting to provide source authentication for CoAP group requests, sent by a client to multiple servers, and for protection of the corresponding CoAP responses. Group OSCORE also defines a pairwise mode where each member of the group can efficiently derive a symmetric pairwise key with each other member of the group for pairwise OSCORE communication. Group OSCORE can be used between endpoints communicating with CoAP or CoAP-mappable HTTP. 
     " name="description">
-<meta content="xml2rfc 3.30.1" name="generator">
+<meta content="xml2rfc 3.31.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-core-oscore-groupcomm-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.30.1
-    Python 3.12.11
+  xml2rfc 3.31.0
+    Python 3.12.12
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
-    lxml 5.3.1
-    platformdirs 4.4.0
+    lxml 6.0.2
+    platformdirs 4.5.1
     pycountry 24.6.1
-    PyYAML 6.0.2
+    PyYAML 6.0.3
     requests 2.32.5
-    setuptools 80.9.0
-    wcwidth 0.2.13
+    wcwidth 0.2.14
 -->
 <link href="draft-ietf-core-oscore-groupcomm.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1048,11 +1047,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Group OSCORE</td>
-<td class="right">September 2025</td>
+<td class="right">December 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Tiloca, et al.</td>
-<td class="center">Expires 16 March 2026</td>
+<td class="center">Expires 26 June 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1064,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-core-oscore-groupcomm-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-09-12" class="published">12 September 2025</time>
+<time datetime="2025-12-23" class="published">23 December 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-03-16">16 March 2026</time></dd>
+<dd class="expires"><time datetime="2026-06-26">26 June 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1135,7 +1134,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 16 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 26 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1670,7 +1669,7 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
             <p id="section-1.1-6.2.1">Authentication credential: information associated with an entity, including that entity's public key and parameters associated with the public key. Examples of formats of authentication credentials are CBOR Web Tokens (CWTs) and CWT Claims Sets (CCSs) <span>[<a href="#RFC8392" class="cite xref">RFC8392</a>]</span>, X.509 certificates <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>, and C509 certificates <span>[<a href="#I-D.ietf-cose-cbor-encoded-cert" class="cite xref">I-D.ietf-cose-cbor-encoded-cert</a>]</span>. Further details about authentication credentials are provided in <a href="#sec-pub-key-format" class="auto internal xref">Section 2.4</a>.<a href="#section-1.1-6.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.1-6.3">
-            <p id="section-1.1-6.3.1">Group: a set of endpoints that share group keying material and security parameters (Common Context, see <a href="#sec-context" class="auto internal xref">Section 2</a>). That is, unless otherwise specified, the term group used in this document refers to a "security group" (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-14#section-2.1" class="relref">Section 2.1</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>), not to be confused with "CoAP group" or "application group".<a href="#section-1.1-6.3.1" class="pilcrow">¶</a></p>
+            <p id="section-1.1-6.3.1">Group: a set of endpoints that share group keying material and security parameters (Common Context, see <a href="#sec-context" class="auto internal xref">Section 2</a>). That is, unless otherwise specified, the term group used in this document refers to a "security group" (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-15#section-2.1" class="relref">Section 2.1</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>), not to be confused with "CoAP group" or "application group".<a href="#section-1.1-6.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.1-6.4">
             <p id="section-1.1-6.4.1">Group Manager: an entity responsible for a group, required neither to be an actual group member nor to take part in the group communication. The operations of the Group Manager are defined in <a href="#group-manager" class="auto internal xref">Section 12</a> and its responsibilities are listed in <a href="#sec-group-manager" class="auto internal xref">Appendix D</a>.<a href="#section-1.1-6.4.1" class="pilcrow">¶</a></p>
@@ -3351,85 +3350,86 @@ RES: 2.05 Content
 <a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-management-of-group-keying-" class="section-name selfRef">Management of Group Keying Material</a>
         </h3>
 <p id="section-12.2-1">In order to establish a new Security Context for a group, the Group Manager <span class="bcp14">MUST</span> generate and assign to the group a new Group Identifier (Gid) and a new value for the Master Secret parameter. When doing so, a new value for the Master Salt parameter <span class="bcp14">MAY</span> also be generated and assigned to the group. When establishing the new Security Context, the Group Manager <span class="bcp14">SHOULD</span> preserve the current value of the Sender ID of each group member in order to ensure an efficient key rollover. Exceptions can apply if there are compelling reasons for making available again some of the Sender ID values currently used.<a href="#section-12.2-1" class="pilcrow">¶</a></p>
-<p id="section-12.2-2">The specific group key management scheme used to distribute new keying material is out of the scope of this document. A simple group key management scheme is defined in <span>[<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>. When possible, the delivery of rekeying messages should use a reliable transport, in order to reduce chances of group members missing a rekeying instance. The use of an unreliable transport <span class="bcp14">MUST NOT</span> forego enforcing congestion control as appropriate for that transport.<a href="#section-12.2-2" class="pilcrow">¶</a></p>
-<p id="section-12.2-3">The set of group members should not be assumed as fixed, i.e., the group membership is subject to changes, possibly on a frequent basis.<a href="#section-12.2-3" class="pilcrow">¶</a></p>
-<p id="section-12.2-4">The Group Manager <span class="bcp14">MUST</span> rekey the group without undue delay when one or more endpoints leave the group. An endpoint may leave the group at own initiative, or may be evicted from the group by the Group Manager, e.g., in case the endpoint is compromised, or is suspected to be compromised (as determined by the Group Manager through its own means or based on information that it obtains from a trusted source such as an Intrusion Detection System or an issuer of authentication credentials). In either case, rekeying the group excludes such endpoints from future communications in the group, and thus preserves forward security. If a network node is compromised or suspected to be compromised, the Group Manager <span class="bcp14">MUST</span> evict from the group all the endpoints hosted by that node that are members of the group and rekey the group accordingly.<a href="#section-12.2-4" class="pilcrow">¶</a></p>
-<p id="section-12.2-5">If required by the application, the Group Manager <span class="bcp14">MUST</span> also rekey the group when one or more new joining endpoints are added to the group, thus preserving backward security.<a href="#section-12.2-5" class="pilcrow">¶</a></p>
-<p id="section-12.2-6">Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see below).<a href="#section-12.2-6" class="pilcrow">¶</a></p>
-<p id="section-12.2-7">The establishment of the new Security Context for the group takes the following steps.<a href="#section-12.2-7" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-12.2-8">
-<li id="section-12.2-8.1">
-            <p id="section-12.2-8.1.1">The Group Manager <span class="bcp14">MUST</span> increment the Key Generation Number for the group by 1. It is up to the Group Manager what actions to take when a wrap-around of the Key Generation Number is detected.<a href="#section-12.2-8.1.1" class="pilcrow">¶</a></p>
+<p id="section-12.2-2">The specific group key management scheme used to distribute new keying material is out of the scope of this document. A simple group key management scheme is defined in <span>[<a href="#I-D.ietf-ace-key-groupcomm-oscore" class="cite xref">I-D.ietf-ace-key-groupcomm-oscore</a>]</span>. Different group key management schemes rely on different approaches to compose and deliver rekeying messages, i.e., individually targeting single recipients, or targeting multiple recipients at once (e.g., over UDP/IP multicast), or a combination of the two approaches. As long as it is viable for the specific rekeying message to be delivered and it is supported by the intended message recipient(s), using a reliable transport to deliver a rekeying message should be preferred, as it reduces chances of group members missing a rekeying instance.<a href="#section-12.2-2" class="pilcrow">¶</a></p>
+<p id="section-12.2-3">Irrespective of the transport used being reliable or unreliable, appropriate congestion control <span class="bcp14">MUST</span> be enforced. If the key distribution traffic uses CoAP over UDP or over other unreliable transports, mechanisms for enforcing congestion control are specified in <span><a href="https://rfc-editor.org/rfc/rfc7252#section-4.7" class="relref">Section 4.7</a> of [<a href="#RFC7252" class="cite xref">RFC7252</a>]</span> and in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-15#section-3.6" class="relref">Section 3.6</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span> for the case of group communication (e.g., over UDP/IP multicast). If, irrespective of using CoAP, the key distribution traffic relies on alternative setups with unreliable transports, one can rely on general congestion-control mechanisms such as DCCP <span>[<a href="#RFC4340" class="cite xref">RFC4340</a>]</span>, or on dedicated congestion control mechanisms for the transport specifically used (e.g., those defined in <span>[<a href="#RFC9002" class="cite xref">RFC9002</a>]</span> for QUIC <span>[<a href="#RFC9000" class="cite xref">RFC9000</a>]</span>).<a href="#section-12.2-3" class="pilcrow">¶</a></p>
+<p id="section-12.2-4">The set of group members should not be assumed as fixed, i.e., the group membership is subject to changes, possibly on a frequent basis.<a href="#section-12.2-4" class="pilcrow">¶</a></p>
+<p id="section-12.2-5">The Group Manager <span class="bcp14">MUST</span> rekey the group without undue delay when one or more endpoints leave the group. An endpoint may leave the group at own initiative, or may be evicted from the group by the Group Manager, e.g., in case the endpoint is compromised, or is suspected to be compromised (as determined by the Group Manager through its own means or based on information that it obtains from a trusted source such as an Intrusion Detection System or an issuer of authentication credentials). In either case, rekeying the group excludes such endpoints from future communications in the group, and thus preserves forward security. If a network node is compromised or suspected to be compromised, the Group Manager <span class="bcp14">MUST</span> evict from the group all the endpoints hosted by that node that are members of the group and rekey the group accordingly.<a href="#section-12.2-5" class="pilcrow">¶</a></p>
+<p id="section-12.2-6">If required by the application, the Group Manager <span class="bcp14">MUST</span> also rekey the group when one or more new joining endpoints are added to the group, thus preserving backward security.<a href="#section-12.2-6" class="pilcrow">¶</a></p>
+<p id="section-12.2-7">Separately for each group, the value of the Key Generation Number increases by one each time the Group Manager distributes new keying material to that group (see below).<a href="#section-12.2-7" class="pilcrow">¶</a></p>
+<p id="section-12.2-8">The establishment of the new Security Context for the group takes the following steps.<a href="#section-12.2-8" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-12.2-9">
+<li id="section-12.2-9.1">
+            <p id="section-12.2-9.1.1">The Group Manager <span class="bcp14">MUST</span> increment the Key Generation Number for the group by 1. It is up to the Group Manager what actions to take when a wrap-around of the Key Generation Number is detected.<a href="#section-12.2-9.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-12.2-8.2">
-            <p id="section-12.2-8.2.1">The Group Manager <span class="bcp14">MUST</span> build a set of stale Sender IDs including:<a href="#section-12.2-8.2.1" class="pilcrow">¶</a></p>
+          <li id="section-12.2-9.2">
+            <p id="section-12.2-9.2.1">The Group Manager <span class="bcp14">MUST</span> build a set of stale Sender IDs including:<a href="#section-12.2-9.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-12.2-8.2.2.1">
-                <p id="section-12.2-8.2.2.1.1">The Sender IDs that, during the current Gid, were both assigned to an endpoint and subsequently relinquished (see <a href="#new-sender-id" class="auto internal xref">Section 2.6.3.1</a>).<a href="#section-12.2-8.2.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-12.2-9.2.2.1">
+                <p id="section-12.2-9.2.2.1.1">The Sender IDs that, during the current Gid, were both assigned to an endpoint and subsequently relinquished (see <a href="#new-sender-id" class="auto internal xref">Section 2.6.3.1</a>).<a href="#section-12.2-9.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-12.2-8.2.2.2">
-                <p id="section-12.2-8.2.2.2.1">The current Sender IDs of the group members that the upcoming group rekeying aims to exclude from future group communications, if any.<a href="#section-12.2-8.2.2.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-12.2-9.2.2.2">
+                <p id="section-12.2-9.2.2.2.1">The current Sender IDs of the group members that the upcoming group rekeying aims to exclude from future group communications, if any.<a href="#section-12.2-9.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li id="section-12.2-8.3">
-            <p id="section-12.2-8.3.1">The Group Manager rekeys the group, by distributing:<a href="#section-12.2-8.3.1" class="pilcrow">¶</a></p>
+          <li id="section-12.2-9.3">
+            <p id="section-12.2-9.3.1">The Group Manager rekeys the group, by distributing:<a href="#section-12.2-9.3.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-12.2-8.3.2.1">
-                <p id="section-12.2-8.3.2.1.1">The new keying material, i.e., the new Master Secret, the new Gid and (optionally) the new Master Salt.<a href="#section-12.2-8.3.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-12.2-9.3.2.1">
+                <p id="section-12.2-9.3.2.1.1">The new keying material, i.e., the new Master Secret, the new Gid and (optionally) the new Master Salt.<a href="#section-12.2-9.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-12.2-8.3.2.2">
-                <p id="section-12.2-8.3.2.2.1">The new Key Generation Number from Step 1.<a href="#section-12.2-8.3.2.2.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-12.2-9.3.2.2">
+                <p id="section-12.2-9.3.2.2.1">The new Key Generation Number from Step 1.<a href="#section-12.2-9.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-12.2-8.3.2.3">
-                <p id="section-12.2-8.3.2.3.1">The set of stale Sender IDs from Step 2.<a href="#section-12.2-8.3.2.3.1" class="pilcrow">¶</a></p>
+              <li class="normal" id="section-12.2-9.3.2.3">
+                <p id="section-12.2-9.3.2.3.1">The set of stale Sender IDs from Step 2.<a href="#section-12.2-9.3.2.3.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
-<p id="section-12.2-8.3.3">
-Further information may be distributed, depending on the specific group key management scheme used in the group.<a href="#section-12.2-8.3.3" class="pilcrow">¶</a></p>
+<p id="section-12.2-9.3.3">
+Further information may be distributed, depending on the specific group key management scheme used in the group.<a href="#section-12.2-9.3.3" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-12.2-9">When receiving the new group keying material, a group member considers the received stale Sender IDs and performs the following actions.<a href="#section-12.2-9" class="pilcrow">¶</a></p>
+<p id="section-12.2-10">When receiving the new group keying material, a group member considers the received stale Sender IDs and performs the following actions.<a href="#section-12.2-10" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-12.2-10.1">
-            <p id="section-12.2-10.1.1">The group member <span class="bcp14">MUST</span> remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group.<a href="#section-12.2-10.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-12.2-11.1">
+            <p id="section-12.2-11.1.1">The group member <span class="bcp14">MUST</span> remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group.<a href="#section-12.2-11.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.2-10.2">
-            <p id="section-12.2-10.2.1">The group member <span class="bcp14">MUST</span> delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.<a href="#section-12.2-10.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-12.2-11.2">
+            <p id="section-12.2-11.2.1">The group member <span class="bcp14">MUST</span> delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.<a href="#section-12.2-11.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-12.2-11">After that, the group member installs the new keying material and derives the corresponding new Security Context.<a href="#section-12.2-11" class="pilcrow">¶</a></p>
-<p id="section-12.2-12">A group member might miss one or more consecutive instances of group rekeying. As a result, the group member will retain old group keying material with Key Generation Number GEN_OLD. Eventually, the group member can notice the discrepancy, e.g., by repeatedly failing to verify incoming messages, or by explicitly querying the Group Manager for the current Key Generation Number. Once the group member gains knowledge of having missed a group rekeying, it <span class="bcp14">MUST</span> delete the old keying material it stores.<a href="#section-12.2-12" class="pilcrow">¶</a></p>
-<p id="section-12.2-13">Then, the group member proceeds according to the following steps.<a href="#section-12.2-13" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-12.2-14">
-<li id="section-12.2-14.1">
-            <p id="section-12.2-14.1.1">The group member retrieves from the Group Manager the current group keying material, together with the current Key Generation Number GEN_NEW. The group member <span class="bcp14">MUST NOT</span> install the obtained group keying material yet.<a href="#section-12.2-14.1.1" class="pilcrow">¶</a></p>
+<p id="section-12.2-12">After that, the group member installs the new keying material and derives the corresponding new Security Context.<a href="#section-12.2-12" class="pilcrow">¶</a></p>
+<p id="section-12.2-13">A group member might miss one or more consecutive instances of group rekeying. As a result, the group member will retain old group keying material with Key Generation Number GEN_OLD. Eventually, the group member can notice the discrepancy, e.g., by repeatedly failing to verify incoming messages, or by explicitly querying the Group Manager for the current Key Generation Number. Once the group member gains knowledge of having missed a group rekeying, it <span class="bcp14">MUST</span> delete the old keying material it stores.<a href="#section-12.2-13" class="pilcrow">¶</a></p>
+<p id="section-12.2-14">Then, the group member proceeds according to the following steps.<a href="#section-12.2-14" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-12.2-15">
+<li id="section-12.2-15.1">
+            <p id="section-12.2-15.1.1">The group member retrieves from the Group Manager the current group keying material, together with the current Key Generation Number GEN_NEW. The group member <span class="bcp14">MUST NOT</span> install the obtained group keying material yet.<a href="#section-12.2-15.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-12.2-14.2">
-            <p id="section-12.2-14.2.1">The group member asks the Group Manager for the set of stale Sender IDs between GEN_OLD and GEN_NEW.<a href="#section-12.2-14.2.1" class="pilcrow">¶</a></p>
+          <li id="section-12.2-15.2">
+            <p id="section-12.2-15.2.1">The group member asks the Group Manager for the set of stale Sender IDs between GEN_OLD and GEN_NEW.<a href="#section-12.2-15.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-12.2-14.3">
-            <p id="section-12.2-14.3.1">If no exact and complete indication can be obtained from the Group Manager, the group member <span class="bcp14">MUST</span> remove all the authentication credentials from its list of group members' authentication credentials used in the group and <span class="bcp14">MUST</span> delete all its Recipient Contexts used in the group.<a href="#section-12.2-14.3.1" class="pilcrow">¶</a></p>
-<p id="section-12.2-14.3.2">
-Otherwise, the group member <span class="bcp14">MUST</span> remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group, and <span class="bcp14">MUST</span> delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.<a href="#section-12.2-14.3.2" class="pilcrow">¶</a></p>
+          <li id="section-12.2-15.3">
+            <p id="section-12.2-15.3.1">If no exact and complete indication can be obtained from the Group Manager, the group member <span class="bcp14">MUST</span> remove all the authentication credentials from its list of group members' authentication credentials used in the group and <span class="bcp14">MUST</span> delete all its Recipient Contexts used in the group.<a href="#section-12.2-15.3.1" class="pilcrow">¶</a></p>
+<p id="section-12.2-15.3.2">
+Otherwise, the group member <span class="bcp14">MUST</span> remove every authentication credential associated with a stale Sender ID from its list of group members' authentication credentials used in the group, and <span class="bcp14">MUST</span> delete each of its Recipient Contexts used in the group whose corresponding Recipient ID is a stale Sender ID.<a href="#section-12.2-15.3.2" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-12.2-14.4">
-            <p id="section-12.2-14.4.1">The group member installs the current group keying material, and derives the corresponding new Security Context.<a href="#section-12.2-14.4.1" class="pilcrow">¶</a></p>
+          <li id="section-12.2-15.4">
+            <p id="section-12.2-15.4.1">The group member installs the current group keying material, and derives the corresponding new Security Context.<a href="#section-12.2-15.4.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-12.2-15">Alternatively, the group member can re-join the group. In such a case, the group member <span class="bcp14">MUST</span> take one of the following two actions.<a href="#section-12.2-15" class="pilcrow">¶</a></p>
+<p id="section-12.2-16">Alternatively, the group member can re-join the group. In such a case, the group member <span class="bcp14">MUST</span> take one of the following two actions.<a href="#section-12.2-16" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-12.2-16.1">
-            <p id="section-12.2-16.1.1">First, the group member performs Steps 2 and 3 above. Then, the group member re-joins the group.<a href="#section-12.2-16.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-12.2-17.1">
+            <p id="section-12.2-17.1.1">First, the group member performs Steps 2 and 3 above. Then, the group member re-joins the group.<a href="#section-12.2-17.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.2-16.2">
-            <p id="section-12.2-16.2.1">The group member re-joins the group with the same roles it currently has in the group, and, during the re-join process, it asks the Group Manager for the authentication credentials of all the current group members.<a href="#section-12.2-16.2.1" class="pilcrow">¶</a></p>
-<p id="section-12.2-16.2.2">
-Then, given Z the set of authentication credentials received from the Group Manager, the group member removes every authentication credential which is not in Z from its list of group members' authentication credentials used in the group, and deletes each of its Recipient Contexts used in the group that does not include any of the authentication credentials in Z.<a href="#section-12.2-16.2.2" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-12.2-17.2">
+            <p id="section-12.2-17.2.1">The group member re-joins the group with the same roles it currently has in the group, and, during the re-join process, it asks the Group Manager for the authentication credentials of all the current group members.<a href="#section-12.2-17.2.1" class="pilcrow">¶</a></p>
+<p id="section-12.2-17.2.2">
+Then, given Z the set of authentication credentials received from the Group Manager, the group member removes every authentication credential which is not in Z from its list of group members' authentication credentials used in the group, and deletes each of its Recipient Contexts used in the group that does not include any of the authentication credentials in Z.<a href="#section-12.2-17.2.2" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-12.2-17">By removing authentication credentials and deleting Recipient Contexts associated with stale Sender IDs, it is ensured that a recipient endpoint storing the latest group keying material does not store the authentication credentials of sender endpoints that are not current group members. This in turn allows group members to rely on stored authentication credentials to confidently verify the group membership of sender endpoints, when receiving incoming messages protected in group mode (see <a href="#mess-processing" class="auto internal xref">Section 7</a>).<a href="#section-12.2-17" class="pilcrow">¶</a></p>
-<p id="section-12.2-18">Strictness in managing the authentication credentials and Recipient Contexts associated with other group members is required for two reasons. First, as further discussed in <a href="#ssec-group-mode-security" class="auto internal xref">Section 14.1</a>, it ensures that the group mode can be used securely, even in a group where the Group Encryption Algorithm does not provide integrity protection (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>) and external signature checkers are used (see <a href="#sec-processing-signature-checker" class="auto internal xref">Section 7.5</a>). Second, it ensures that the wrong (old) authentication credential associated with a group member A is never used with a Sender ID that used to be associated with A and has been later issued to a different group member B (see <a href="#sec-sid-recycling" class="auto internal xref">Section 12.2.1.2</a>), thus preventing the need to recover from an identity mix-up.<a href="#section-12.2-18" class="pilcrow">¶</a></p>
+<p id="section-12.2-18">By removing authentication credentials and deleting Recipient Contexts associated with stale Sender IDs, it is ensured that a recipient endpoint storing the latest group keying material does not store the authentication credentials of sender endpoints that are not current group members. This in turn allows group members to rely on stored authentication credentials to confidently verify the group membership of sender endpoints, when receiving incoming messages protected in group mode (see <a href="#mess-processing" class="auto internal xref">Section 7</a>).<a href="#section-12.2-18" class="pilcrow">¶</a></p>
+<p id="section-12.2-19">Strictness in managing the authentication credentials and Recipient Contexts associated with other group members is required for two reasons. First, as further discussed in <a href="#ssec-group-mode-security" class="auto internal xref">Section 14.1</a>, it ensures that the group mode can be used securely, even in a group where the Group Encryption Algorithm does not provide integrity protection (see <a href="#ssec-common-context-cs-enc-alg" class="auto internal xref">Section 2.1.7</a>) and external signature checkers are used (see <a href="#sec-processing-signature-checker" class="auto internal xref">Section 7.5</a>). Second, it ensures that the wrong (old) authentication credential associated with a group member A is never used with a Sender ID that used to be associated with A and has been later issued to a different group member B (see <a href="#sec-sid-recycling" class="auto internal xref">Section 12.2.1.2</a>), thus preventing the need to recover from an identity mix-up.<a href="#section-12.2-19" class="pilcrow">¶</a></p>
 <div id="recycling-of-identifiers">
 <section id="section-12.2.1">
           <h4 id="name-recycling-of-identifiers">
@@ -3807,7 +3807,7 @@ to use this information as they see fit".<a href="#section-13-5" class="pilcrow"
 <p id="section-14-3">Note that, even if an endpoint is authorized to be a group member and to take part in group communications, there is a risk that it behaves inappropriately. For instance, it can forward the content of messages in the group to unauthorized entities. However, in many use cases, the devices in the group belong to a common authority and are configured by a commissioner (see <a href="#sec-use-cases" class="auto internal xref">Appendix B</a>), which limits this risk in practice and enables a prompt detection/reaction in case of misbehaving.<a href="#section-14-3" class="pilcrow">¶</a></p>
 <p id="section-14-4">With respect to unprotected message fields, the following holds. First, the 'kid context' of request messages is part of the Additional Authenticated Data, making it possible to keep long exchanges active safely beyond a possible change of ID Context (Gid) following a group rekeying (see <a href="#sec-cose-object-ext-aad" class="auto internal xref">Section 3.4</a>). Second, the countersignature included in a Group OSCORE message protected in group mode is also computed over the value of the OSCORE Option, which is also part of the Additional Authenticated Data used in the signing process. This is further discussed in <a href="#ssec-cross-group-injection" class="auto internal xref">Section 14.7</a> of this document.<a href="#section-14-4" class="pilcrow">¶</a></p>
 <p id="section-14-5">In accordance with <span>[<a href="#RFC8613" class="cite xref">RFC8613</a>]</span>, all elements used in Group OSCORE as opaque binary values (e.g., Sender ID, ID Context) are not to be interpreted as text, Unicode, or otherwise. Implementations ought not to apply encoding transformations to the content of those elements, e.g., UTF-8 decoding <span>[<a href="#RFC3629" class="cite xref">RFC3629</a>]</span> or normalization. Information elements that may contain text such as those found within authentication credentials (e.g., X.509 distinguished names, CWT claims, or JSON Web Key fields) are to be treated as opaque structured data and to be interpreted only according to the rules of the credential format as defined in their respective specifications. This avoids misinterpretation, Unicode normalization attacks, or mismatches in identity comparison.<a href="#section-14-5" class="pilcrow">¶</a></p>
-<p id="section-14-6">As discussed in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-14#section-6.2.3" class="relref">Section 6.2.3</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>, Group OSCORE addresses security attacks against CoAP listed in Sections <a href="https://rfc-editor.org/rfc/rfc7252#section-11.2" class="relref">11.2</a>–<a href="https://rfc-editor.org/rfc/rfc7252#section-11.6" class="relref">11.6</a> of <span>[<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>, especially when run over IP multicast.<a href="#section-14-6" class="pilcrow">¶</a></p>
+<p id="section-14-6">As discussed in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-15#section-6.2.3" class="relref">Section 6.2.3</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>, Group OSCORE addresses security attacks against CoAP listed in Sections <a href="https://rfc-editor.org/rfc/rfc7252#section-11.2" class="relref">11.2</a>–<a href="https://rfc-editor.org/rfc/rfc7252#section-11.6" class="relref">11.6</a> of <span>[<a href="#RFC7252" class="cite xref">RFC7252</a>]</span>, especially when run over IP multicast.<a href="#section-14-6" class="pilcrow">¶</a></p>
 <p id="section-14-7">Group OSCORE does not aim to meet the following properties:<a href="#section-14-7" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-14-8.1">
@@ -4073,7 +4073,7 @@ This allows a recipient endpoint to rely on the stored authentication credential
 <p id="section-14.9-6">A client can instead use the pairwise mode as defined in <a href="#sec-pairwise-protection-req" class="auto internal xref">Section 8.3</a>, in order to protect a request sent to a single group member by using pairwise keying material (see <a href="#sec-derivation-pairwise" class="auto internal xref">Section 2.5</a>). This prevents the attack discussed above by construction, as only the intended server is able to derive the pairwise keying material used by the client to protect the request.<a href="#section-14.9-6" class="pilcrow">¶</a></p>
 <p id="section-14.9-7">Before delivering to the application an incoming request protected in group mode that was sent over unicast, a server should carefully consider the impact that processing the request would have, without dismissing the possibility that the request reception was in fact the result of the attack discussed above. This is especially important for endpoints implementing only a silent server, since they do not support the pairwise mode and thus are able to process only requests protected in group mode. Application policies can also define specific exceptional cases where it is safe for a server to deliver such requests to the application, which can then take a final decision about whether acting on the request or not. For instance, such decision can leverage an application-level unique identifier of the server specified in the payload of the request.<a href="#section-14.9-7" class="pilcrow">¶</a></p>
 <p id="section-14.9-8">In a group where the AEAD Algorithm and Pairwise Key Agreement Algorithm are set in the Security Context, an endpoint supporting the pairwise mode <span class="bcp14">SHOULD</span> use it to protect requests sent to a single group member over unicast. Using the group mode to protect such requests would make the request possible to decrypt and verify for any other group member; this may sometimes be a desired property (e.g. see <span>[<a href="#I-D.ietf-core-observe-multicast-notifications" class="cite xref">I-D.ietf-core-observe-multicast-notifications</a>]</span>).<a href="#section-14.9-8" class="pilcrow">¶</a></p>
-<p id="section-14.9-9">The use of block-wise transfers <span>[<a href="#RFC7959" class="cite xref">RFC7959</a>]</span> with group communication for CoAP is as discussed in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-14#section-3.8" class="relref">Section 3.8</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>. Note that, after the first request targeting all servers in the group over multicast, a client can switch to sending unicast requests for retrieving further blocks from the servers. In particular, after a first block-wise request that targets all servers in the group and includes the CoAP Block2 Option, the retrieval of further blocks can use unicast requests, which should therefore be protected using the pairwise mode. Similarly, if the first request that targeted all servers in the group did not include the CoAP Block2 Option and the corresponding responses included the Block2 Option at the servers' own initiative, then the retrieval of further blocks can use unicast requests, which should therefore be protected using the pairwise mode.<a href="#section-14.9-9" class="pilcrow">¶</a></p>
+<p id="section-14.9-9">The use of block-wise transfers <span>[<a href="#RFC7959" class="cite xref">RFC7959</a>]</span> with group communication for CoAP is as discussed in <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-15#section-3.8" class="relref">Section 3.8</a> of [<a href="#I-D.ietf-core-groupcomm-bis" class="cite xref">I-D.ietf-core-groupcomm-bis</a>]</span>. Note that, after the first request targeting all servers in the group over multicast, a client can switch to sending unicast requests for retrieving further blocks from the servers. In particular, after a first block-wise request that targets all servers in the group and includes the CoAP Block2 Option, the retrieval of further blocks can use unicast requests, which should therefore be protected using the pairwise mode. Similarly, if the first request that targeted all servers in the group did not include the CoAP Block2 Option and the corresponding responses included the Block2 Option at the servers' own initiative, then the retrieval of further blocks can use unicast requests, which should therefore be protected using the pairwise mode.<a href="#section-14.9-9" class="pilcrow">¶</a></p>
 <p id="section-14.9-10">Additional considerations are discussed in <a href="#sec-synch-challenge-response" class="auto internal xref">Section 9</a>, with respect to requests including a CoAP Echo Option <span>[<a href="#RFC9175" class="cite xref">RFC9175</a>]</span> that have to be sent over unicast, as a challenge-response method for servers to achieve freshness or to initialize as valid a previously invalid Replay Window.<a href="#section-14.9-10" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -4266,7 +4266,7 @@ Reference: [RFC-XXXX]
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-groupcomm-bis">[I-D.ietf-core-groupcomm-bis]</dt>
         <dd>
-<span class="refAuthor">Dijk, E.</span> and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Group Communication for the Constrained Application Protocol (CoAP)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-groupcomm-bis-14</span>, <time datetime="2025-07-02" class="refDate">2 July 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-14">https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-14</a>&gt;</span>. </dd>
+<span class="refAuthor">Dijk, E.</span> and <span class="refAuthor">M. Tiloca</span>, <span class="refTitle">"Group Communication for the Constrained Application Protocol (CoAP)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-groupcomm-bis-15</span>, <time datetime="2025-09-25" class="refDate">25 September 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-15">https://datatracker.ietf.org/doc/html/draft-ietf-core-groupcomm-bis-15</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="NIST-800-56A">[NIST-800-56A]</dt>
         <dd>
@@ -4279,6 +4279,10 @@ Reference: [RFC-XXXX]
 <dt id="RFC4086">[RFC4086]</dt>
         <dd>
 <span class="refAuthor">Eastlake 3rd, D.</span>, <span class="refAuthor">Schiller, J.</span>, and <span class="refAuthor">S. Crocker</span>, <span class="refTitle">"Randomness Requirements for Security"</span>, <span class="seriesInfo">BCP 106</span>, <span class="seriesInfo">RFC 4086</span>, <span class="seriesInfo">DOI 10.17487/RFC4086</span>, <time datetime="2005-06" class="refDate">June 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4086">https://www.rfc-editor.org/rfc/rfc4086</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC4340">[RFC4340]</dt>
+        <dd>
+<span class="refAuthor">Kohler, E.</span>, <span class="refAuthor">Handley, M.</span>, and <span class="refAuthor">S. Floyd</span>, <span class="refTitle">"Datagram Congestion Control Protocol (DCCP)"</span>, <span class="seriesInfo">RFC 4340</span>, <span class="seriesInfo">DOI 10.17487/RFC4340</span>, <time datetime="2006-03" class="refDate">March 2006</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4340">https://www.rfc-editor.org/rfc/rfc4340</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC5869">[RFC5869]</dt>
         <dd>
@@ -4323,6 +4327,14 @@ Reference: [RFC-XXXX]
 <dt id="RFC8949">[RFC8949]</dt>
         <dd>
 <span class="refAuthor">Bormann, C.</span> and <span class="refAuthor">P. Hoffman</span>, <span class="refTitle">"Concise Binary Object Representation (CBOR)"</span>, <span class="seriesInfo">STD 94</span>, <span class="seriesInfo">RFC 8949</span>, <span class="seriesInfo">DOI 10.17487/RFC8949</span>, <time datetime="2020-12" class="refDate">December 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8949">https://www.rfc-editor.org/rfc/rfc8949</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9000">[RFC9000]</dt>
+        <dd>
+<span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">M. Thomson, Ed.</span>, <span class="refTitle">"QUIC: A UDP-Based Multiplexed and Secure Transport"</span>, <span class="seriesInfo">RFC 9000</span>, <span class="seriesInfo">DOI 10.17487/RFC9000</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9000">https://www.rfc-editor.org/rfc/rfc9000</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9002">[RFC9002]</dt>
+        <dd>
+<span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">I. Swett, Ed.</span>, <span class="refTitle">"QUIC Loss Detection and Congestion Control"</span>, <span class="seriesInfo">RFC 9002</span>, <span class="seriesInfo">DOI 10.17487/RFC9002</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9002">https://www.rfc-editor.org/rfc/rfc9002</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9052">[RFC9052]</dt>
         <dd>
@@ -4371,7 +4383,7 @@ Reference: [RFC-XXXX]
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-observe-multicast-notifications">[I-D.ietf-core-observe-multicast-notifications]</dt>
         <dd>
-<span class="refAuthor">Tiloca, M.</span>, <span class="refAuthor">Höglund, R.</span>, <span class="refAuthor">Amsüss, C.</span>, and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Observe Notifications as CoAP Multicast Responses"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-observe-multicast-notifications-12</span>, <time datetime="2025-07-07" class="refDate">7 July 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-12">https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-12</a>&gt;</span>. </dd>
+<span class="refAuthor">Tiloca, M.</span>, <span class="refAuthor">Höglund, R.</span>, <span class="refAuthor">Amsüss, C.</span>, and <span class="refAuthor">F. Palombini</span>, <span class="refTitle">"Observe Notifications as CoAP Multicast Responses"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-core-observe-multicast-notifications-13</span>, <time datetime="2025-10-20" class="refDate">20 October 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-13">https://datatracker.ietf.org/doc/html/draft-ietf-core-observe-multicast-notifications-13</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-core-oscore-capable-proxies">[I-D.ietf-core-oscore-capable-proxies]</dt>
         <dd>
@@ -5687,7 +5699,7 @@ member is now optional to support and use for the Group Manager.<a href="#append
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
 <p id="appendix-F-1">Jiye Park contributed as a co-author of initial versions of this document.<a href="#appendix-F-1" class="pilcrow">¶</a></p>
-<p id="appendix-F-2">The authors sincerely thank <span class="contact-name">Christian Amsüss</span>, <span class="contact-name">Stefan Beck</span>, <span class="contact-name">Mike Bishop</span>, <span class="contact-name">Rolf Blom</span>, <span class="contact-name">Carsten Bormann</span>, <span class="contact-name">Esko Dijk</span>, <span class="contact-name">Patrik Fältström</span>, <span class="contact-name">Martin Gunnarsson</span>, <span class="contact-name">Klaus Hartke</span>, <span class="contact-name">Richard Kelsey</span>, <span class="contact-name">Paul Kyzivat</span>, <span class="contact-name">Joerg Ott</span>, <span class="contact-name">Dave Robin</span>, <span class="contact-name">Jim Schaad</span>, <span class="contact-name">Ludwig Seitz</span>, <span class="contact-name">Peter van der Stok</span>, <span class="contact-name">Erik Thormarker</span>, and <span class="contact-name">Mališa Vučinić</span> for their feedback and comments.<a href="#appendix-F-2" class="pilcrow">¶</a></p>
+<p id="appendix-F-2">The authors sincerely thank <span class="contact-name">Christian Amsüss</span>, <span class="contact-name">Stefan Beck</span>, <span class="contact-name">Mike Bishop</span>, <span class="contact-name">Rolf Blom</span>, <span class="contact-name">Carsten Bormann</span>, <span class="contact-name">Esko Dijk</span>, <span class="contact-name">Gorry Fairhurst</span>, <span class="contact-name">Patrik Fältström</span>, <span class="contact-name">Martin Gunnarsson</span>, <span class="contact-name">Klaus Hartke</span>, <span class="contact-name">Richard Kelsey</span>, <span class="contact-name">Paul Kyzivat</span>, <span class="contact-name">Joerg Ott</span>, <span class="contact-name">Dave Robin</span>, <span class="contact-name">Jim Schaad</span>, <span class="contact-name">Ludwig Seitz</span>, <span class="contact-name">Peter van der Stok</span>, <span class="contact-name">Erik Thormarker</span>, and <span class="contact-name">Mališa Vučinić</span> for their feedback and comments.<a href="#appendix-F-2" class="pilcrow">¶</a></p>
 <p id="appendix-F-3">The work on this document has been partly supported by the Sweden's Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and CYPRESS; the H2020 projects SIFIS-Home (Grant agreement 952652) and ARCADIAN-IoT (Grant agreement 101020259); the SSF project SEC4Factory under the grant RIT17-0032; and the EIT-Digital High Impact Initiative ACTIVE.<a href="#appendix-F-3" class="pilcrow">¶</a></p>
 </section>
 </div>
