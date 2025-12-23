@@ -71,9 +71,7 @@ author:
         email: rikard.hoglund@ri.se
 
 normative:
-
   I-D.ietf-core-groupcomm-bis:
-  RFC4340:
   RFC5869:
   RFC6979:
   RFC7252:
@@ -84,8 +82,6 @@ normative:
   RFC8610:
   RFC8613:
   RFC8949:
-  RFC9000:
-  RFC9002:
   RFC9052:
   RFC9053:
   RFC9175:
@@ -129,6 +125,7 @@ informative:
   I-D.irtf-cfrg-det-sigs-with-noise:
   I-D.amsuess-core-cachable-oscore:
   RFC3629:
+  RFC4340:
   RFC4944:
   RFC4949:
   RFC5280:
@@ -138,6 +135,8 @@ informative:
   RFC7959:
   RFC8075:
   RFC8392:
+  RFC9000:
+  RFC9002:
   RFC9147:
   RFC9200:
   RFC9594:
