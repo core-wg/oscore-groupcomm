@@ -4840,25 +4840,27 @@ Appendix A.  Assumptions and Security Objectives
    *  Application group, i.e., a set of CoAP endpoints that share a
       common pool of resources.
 
-   *  Security group, as defined in Section 1.1 of this document.  There
-      can be a one-to-one or a one-to-many relation between security
-      groups and application groups, and vice versa.
+   *  Security group, as defined in Section 1.1 of this document.
+      Between security groups and application groups, there can be a
+      many-to-many, one-to-many, many-to-one, or one-to-one
+      relationship.
 
    *  CoAP group, i.e., a set of CoAP endpoints where each endpoint is
       configured to receive one-to-many CoAP requests, e.g., sent to the
       group's associated IP multicast address and UDP port as defined in
       [I-D.ietf-core-groupcomm-bis].  An endpoint may be a member of
-      multiple CoAP groups.  There can be a one-to-one or a one-to-many
-      relation between application groups and CoAP groups.  Note that a
-      device sending a CoAP request to a CoAP group is not necessarily
-      itself a member of that group: it is a member only if it also has
-      a CoAP server endpoint listening to requests for this CoAP group,
-      sent to the associated IP multicast address and port.  In order to
-      provide secure group communication, all members of a CoAP group as
-      well as all further endpoints configured only as clients sending
-      CoAP (multicast) requests to the CoAP group have to be member of a
-      security group.  There can be a one-to-one or a one-to-many
-      relation between security groups and CoAP groups, and vice versa.
+      multiple CoAP groups.  Between application groups and CoAP groups,
+      there can be a many-to-many, one-to-many, many-to-one, or one-to-
+      one relationship.  Note that a device sending a CoAP request to a
+      CoAP group is not necessarily itself a member of that group: it is
+      a member only if it also has a CoAP server endpoint listening to
+      requests for this CoAP group, sent to the associated IP multicast
+      address and port.  In order to provide secure group communication,
+      all members of a CoAP group as well as all further endpoints
+      configured only as clients sending CoAP (multicast) requests to
+      the CoAP group have to be member of a security group.  Between
+      security groups and CoAP groups, there can be a many-to-many, one-
+      to-many, many-to-one, or one-to-one relationship.
 
 A.1.  Assumptions
 
