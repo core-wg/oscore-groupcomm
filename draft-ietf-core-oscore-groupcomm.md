@@ -123,7 +123,7 @@ informative:
   I-D.ietf-core-oscore-capable-proxies:
   I-D.ietf-core-groupcomm-proxy:
   I-D.irtf-cfrg-det-sigs-with-noise:
-  I-D.amsuess-core-cachable-oscore:
+  I-D.ietf-core-cacheable-oscore:
   RFC3629:
   RFC4340:
   RFC4944:
@@ -1011,7 +1011,7 @@ The possible use of the group mode is indicated by the Group Manager as part of 
 
 During all the steps of the message processing, an endpoint MUST use the same Security Context for the considered group. That is, an endpoint MUST NOT install a new Security Context for that group (see {{new-sec-context}}) until the message processing is completed.
 
-The group mode SHOULD be used to protect group requests intended for multiple recipients or for the whole group. This applies to both requests directly addressed to multiple recipients, e.g., sent by the client over multicast, as well as requests sent by the client over unicast to a proxy that forwards them to the intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}. Exceptions where the requirement above is not fulfilled and the pairwise mode is used to protect group requests include: the efficient discovery of a server's address in the group (see {{ssec-pre-conditions}}); or the enabling of simple constructions where a variation of the pairwise mode protects requests possibly intended to multiple servers, in such a way that the corresponding responses are effectively cacheable by intermediaries (e.g., see {{I-D.amsuess-core-cachable-oscore}}).
+The group mode SHOULD be used to protect group requests intended for multiple recipients or for the whole group. This applies to both requests directly addressed to multiple recipients, e.g., sent by the client over multicast, as well as requests sent by the client over unicast to a proxy that forwards them to the intended recipients over multicast {{I-D.ietf-core-groupcomm-bis}}. Exceptions where the requirement above is not fulfilled and the pairwise mode is used to protect group requests include: the efficient discovery of a server's address in the group (see {{ssec-pre-conditions}}); or the enabling of simple constructions where a variation of the pairwise mode protects requests possibly intended to multiple servers, in such a way that the corresponding responses are effectively cacheable by intermediaries (e.g., see {{I-D.ietf-core-cacheable-oscore}}).
 
 As per {{RFC7252}}{{I-D.ietf-core-groupcomm-bis}}, group requests sent over multicast are always Non-confirmable, and thus are not retransmitted by the CoAP messaging layer. Instead, applications should store such outgoing messages for a predefined, sufficient amount of time, in order to correctly perform potential retransmissions at the application layer. If performed, these retransmissions are repetitions of previous protected messages, which the sender endpoint does not protect again with Group OSCORE.
 
@@ -1215,7 +1215,7 @@ Note that the following applies when attempting to verify the countersignature o
 
 * The response may not include a Partial IV and/or an ID Context. In such a case, the signature checker considers the same values from the corresponding request, i.e., the request matching with the response by CoAP Token value.
 
-* The response may not include a Sender ID. This can happen when the response protected in group mode matches a request protected in pairwise mode (see {{ssec-pre-conditions}}), with a case in point provided by {{I-D.amsuess-core-cachable-oscore}}. In such a case, the signature checker needs to use other means (e.g., source addressing information of the server endpoint) to identify the correct authentication credential including the public key to use for verifying the countersignature of the response.
+* The response may not include a Sender ID. This can happen when the response protected in group mode matches a request protected in pairwise mode (see {{ssec-pre-conditions}}), with a case in point provided by {{I-D.ietf-core-cacheable-oscore}}. In such a case, the signature checker needs to use other means (e.g., source addressing information of the server endpoint) to identify the correct authentication credential including the public key to use for verifying the countersignature of the response.
 
 The particular actions following a successful or unsuccessful verification of the countersignature are application specific and out of the scope of this document.
 
