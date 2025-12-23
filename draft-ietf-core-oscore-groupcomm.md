@@ -2193,6 +2193,42 @@ The Group Manager specified in {{I-D.ietf-ace-key-groupcomm-oscore}} provides th
 # Document Updates # {#sec-document-updates}
 {:removeinrfc}
 
+## Version -27 to -28 ## {#sec-27-28}
+
+* Group Encryption Algorithm: admitted AES-CTR and ruled out AES-CBC.
+
+* Considerations on unreliable/reliable transports for group key management traffic.
+
+* Explicit mentioning that group rekeying can also be regular/periodic.
+
+* Clarifications:
+
+  * Clearer definition of Signature Encryption Key.
+
+  * Integrity protection for the Group Encryption Algorithm.
+
+  * Use and lifetime of static-static Diffie-Hellman keys.
+
+  * Fixed confusing text on keys used for signing and/or ECDH.
+
+  * Long exchanges do not actually last "indefinitely".
+
+  * In CWTs/CSSs, (kty, crv) indicates types of public key algorithms (not "fully described" public key algorithms).
+
+  * Applications can define the maximum number of Recipient Contexts.
+
+  * Possible means for the application to learn about deliberately deleted Recipient Contexts.
+
+  * Clearer requirement and examples on congestion control for group key management traffic.
+
+* Avoided restatements with normative language.
+
+* Avoided unnecessary normative language for parameters of the Security Context.
+
+* Updated references.
+
+* Editorial fixes and improvements.
+
 ## Version -26 to -27 ## {#sec-26-27}
 
 * Clarified "SHOULD" for the Group Manager's authentication credential having the same format of that of the group members.
