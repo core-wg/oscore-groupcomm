@@ -429,10 +429,10 @@ Table of Contents
    How the Security Context is established by the group members is out
    of scope for this document, but if there is more than one Security
    Context applicable to a message, then the endpoints MUST be able to
-   tell which Security Context was latest established.  The management
-   of information about the group (i.e., identifiers, OSCORE input
-   parameters, and keying material) is described in terms of a Group
-   Manager (see Section 12).
+   determine which Security Context was latest established.  The
+   management of information about the group (i.e., identifiers, OSCORE
+   input parameters, and keying material) is described in terms of a
+   Group Manager (see Section 12).
 
    An endpoint of the group may use the group mode (see Section 7), the
    pairwise mode (see Section 8), or both, depending on the modes it
@@ -719,7 +719,9 @@ Table of Contents
    same Security Context, e.g., due to memory limitations.  After
    reaching that limit, the endpoint has to delete a current Recipient
    Context to install a new one (see Section 2.6.1.2).  It is up to the
-   application to define policies for Recipient Contexts to delete.
+   application to define the maximum number of Recipient Contexts for a
+   same Security Context as well as policies for deleting Recipient
+   Contexts.
 
 2.3.  Establishment of Security Context Parameters
 
@@ -1110,7 +1112,10 @@ Table of Contents
    circumstances include the need to reclaim memory or other resources
    on the node hosting the endpoint, for example because the predefined
    maximum number of Recipient Contexts has been reached in the Security
-   Context (see Section 2.2).
+   Context (see Section 2.2).  Implementations can provide means for the
+   application to gain knowledge about the deliberate deletion of
+   Recipient Contexts, e.g., through notifications sent to the
+   application and/or logs made available to the application.
 
    When a Recipient Context is deleted, this not only results in losing
    information about previously received messages from the corresponding
@@ -1967,7 +1972,7 @@ Table of Contents
    intermediaries (e.g., see [I-D.amsuess-core-cachable-oscore]).
 
    As per [RFC7252][I-D.ietf-core-groupcomm-bis], group requests sent
-   over multicast MUST be Non-confirmable, and thus are not
+   over multicast are always Non-confirmable, and thus are not
    retransmitted by the CoAP messaging layer.  Instead, applications
    should store such outgoing messages for a predefined, sufficient
    amount of time, in order to correctly perform potential
@@ -1975,12 +1980,12 @@ Table of Contents
    retransmissions are repetitions of previous protected messages, which
    the sender endpoint does not protect again with Group OSCORE.
 
-   According to Section 5.2.3 of [RFC7252], responses to Non-confirmable
-   group requests SHOULD also be Non-confirmable, but endpoints MUST be
-   prepared to receive Confirmable responses in reply to a Non-
-   confirmable group request.  Confirmable group requests are
-   acknowledged when sent over non-multicast transports, as specified in
-   [RFC7252].
+   According to Section 5.2.3 of [RFC7252], "[i]f the request message is
+   Non-confirmable, then the response SHOULD be returned in a Non-
+   confirmable message as well.  However, an endpoint MUST be prepared
+   to receive (...) a Confirmable response in reply to a Non-confirmable
+   request."  Confirmable group requests are acknowledged when sent over
+   non-multicast transports, as specified in [RFC7252].
 
    Furthermore, endpoints in the group locally perform error handling
    and processing of invalid messages according to the same principles
@@ -5891,11 +5896,11 @@ Acknowledgments
    document.
 
    The authors sincerely thank Christian Amsüss, Stefan Beck, Mike
-   Bishop, Rolf Blom, Carsten Bormann, Esko Dijk, Gorry Fairhurst,
-   Patrik Fältström, Martin Gunnarsson, Klaus Hartke, Richard Kelsey,
-   Paul Kyzivat, Joerg Ott, Dave Robin, Jim Schaad, Ludwig Seitz, Orie
-   Steele, Peter van der Stok, Ketan Talaulikar, Erik Thormarker, and
-   Mališa Vučinić for their feedback and comments.
+   Bishop, Rolf Blom, Carsten Bormann, Mohamed Boucadair, Esko Dijk,
+   Gorry Fairhurst, Patrik Fältström, Martin Gunnarsson, Klaus Hartke,
+   Richard Kelsey, Paul Kyzivat, Joerg Ott, Dave Robin, Jim Schaad,
+   Ludwig Seitz, Orie Steele, Peter van der Stok, Ketan Talaulikar, Erik
+   Thormarker, and Mališa Vučinić for their feedback and comments.
 
    The work on this document has been partly supported by the Sweden's
    Innovation Agency VINNOVA and the Celtic-Next projects CRITISEC and
